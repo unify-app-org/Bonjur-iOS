@@ -1,0 +1,84 @@
+//
+//  AuthDependencyContainer.swift
+//  AppFeature
+//
+//  Created by Huseyn Hasanov on 24.11.25.
+//
+
+
+import Foundation
+import DependecyInjection
+import AppAuth
+
+func resolve<T>(
+    _ type: T.Type = T.self
+) -> T {
+    AuthDependencyContainer.resolve(type)
+}
+
+func register<T>(
+    _ type: T.Type = T.self,
+    isSingleton: Bool = false,
+    _ factory: @escaping () -> T
+) {
+    AuthDependencyContainer.register(
+        type,
+        isSingleton: isSingleton,
+        factory
+    )
+}
+
+enum AuthDependencyContainer {
+    private static var container = AppDIContainer()
+    
+    // MARK: - Setup
+    
+    static func setup(container: AppDIContainer? = nil) {
+        if let inputContainer = container {
+            self.container = inputContainer
+        }
+        
+        registerModule()
+        registerHelpers()
+        registerDataSource()
+        registerUseCase()
+    }
+    
+    // MARK: - Dependencies Registration
+    
+    private static func registerHelpers() {
+        
+    }
+    
+    private static func registerDataSource() {
+        register { AuthDataSourceImpl() as AuthDataSource }
+    }
+    
+    private static func registerUseCase() {
+        register { RegisterUsecaseImpl() as RegisterUsecase }
+    }
+    
+    private static func registerModule() {
+        register { AppAuthEntryModuleImpl() as AppAuthEntryModule }
+    }
+    
+    // MARK: - Dependencies Managing
+    
+    fileprivate static func register<T>(
+        _ type: T.Type = T.self,
+        isSingleton: Bool = false,
+        _ factory: @escaping () -> T
+    ) {
+        container.register(
+            type,
+            isSingleton: isSingleton,
+            factory
+        )
+    }
+    
+    fileprivate static func resolve<T>(_ type: T.Type) -> T {
+        let service = container.resolve(type)
+        return service
+    }
+}
+

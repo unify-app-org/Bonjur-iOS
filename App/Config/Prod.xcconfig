@@ -1,0 +1,12 @@
+//
+//  Prod.xcconfig
+//  App
+//
+//  Created by Huseyn Hasanov on 24.11.25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+BASE_URL = https:/$()/prod.api.bonjur.co
+ENVIRONMENT = PROD

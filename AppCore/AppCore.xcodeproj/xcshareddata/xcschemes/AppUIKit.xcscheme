@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1640"
-   version = "1.7">
+   LastUpgradeVersion = "1010"
+   version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES"
-      buildArchitectures = "Automatic">
+      buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -15,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E542A7A62ED4917C00C90916"
-               BuildableName = "AppCore.app"
-               BlueprintName = "AppCore"
+               BlueprintIdentifier = "F618A10BE9AB63E79C8D971B"
+               BuildableName = "AppUIKit.framework"
+               BlueprintName = "AppUIKit"
                ReferencedContainer = "container:AppCore.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,7 +27,9 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      shouldAutocreateTestPlan = "YES">
+      disableMainThreadChecker = "YES">
+      <Testables>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -40,16 +41,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E542A7A62ED4917C00C90916"
-            BuildableName = "AppCore.app"
-            BlueprintName = "AppCore"
+            BlueprintIdentifier = "F618A10BE9AB63E79C8D971B"
+            BuildableName = "AppUIKit.framework"
+            BlueprintName = "AppUIKit"
             ReferencedContainer = "container:AppCore.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -57,16 +57,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E542A7A62ED4917C00C90916"
-            BuildableName = "AppCore.app"
-            BlueprintName = "AppCore"
+            BlueprintIdentifier = "F618A10BE9AB63E79C8D971B"
+            BuildableName = "AppUIKit.framework"
+            BlueprintName = "AppUIKit"
             ReferencedContainer = "container:AppCore.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

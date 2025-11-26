@@ -5,9 +5,9 @@
       location = "group:App/App.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:AppFeature/AppFeature.xcodeproj">
+      location = "group:AppCore/AppCore.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:AppCore/AppCore.xcodeproj">
+      location = "group:AppFeature/AppFeature.xcodeproj">
    </FileRef>
 </Workspace>

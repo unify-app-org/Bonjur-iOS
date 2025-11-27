@@ -2,6 +2,7 @@ import ProjectDescription
 
 let project = Project(
     name: "AppFeature",
+    options: .options(automaticSchemesOptions: .disabled),
     targets: [
         // AppAuth Interface
         .target(
@@ -30,6 +31,7 @@ let project = Project(
                 .project(target: "AppNetwork", path: "../AppCore")
             ]
         )
-    ]
+    ],
+    schemes: []
 )
 

@@ -94,7 +94,7 @@ let project = Project(
     options: .options(automaticSchemesOptions: .disabled),
     targets: [
         appUtilsTarget,
-        DIarget,
+        DITarget,
         appStorageTarget,
         appNetworkTarget,
         appFoundationTarget,

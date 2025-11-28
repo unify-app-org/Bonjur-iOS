@@ -7,15 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0925CFD93923B26626014D8D /* AppStorage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EF4D3FD8B73FE40F48FFB49 /* AppStorage.framework */; };
 		1A278FBB1DB0B8DA17785545 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DD0F2B1D6000CD7A3364D374 /* LaunchScreen.storyboard */; };
+		1CF75BC9D71820CBE53ED2D2 /* AppNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EF973CA346C73939652AA14 /* AppNetwork.framework */; };
+		226FBA1D76A603D531B09910 /* AppUIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5D2E7FC637DF046ED29FA57 /* AppUIKit.framework */; };
 		2BCEB2E7371DDDCAC79ED11F /* AppDelegate+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529DD9F88D5160789A80C7B7 /* AppDelegate+Auth.swift */; };
 		2D4506838D088EBCDEA0CF49 /* DependecyInjection.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC764963A5465F3FC7C1C2CC /* DependecyInjection.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2E743A6F76CCB6064D781210 /* TuistAssets+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D529DAAF6A9D59C44D9D68 /* TuistAssets+App.swift */; };
 		2FA532D6E2E145A317A5AEEF /* AppAuthImpl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 685B5C8D776F76583CA84BAE /* AppAuthImpl.framework */; };
+		346F907DFE44E16801940CE3 /* AppUIKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C5D2E7FC637DF046ED29FA57 /* AppUIKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		56C55AB6695869B245749C3B /* AppAuth.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DD1CC3ACFA9FB14C87C4BA83 /* AppAuth.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		626971A0F58C64A5A5AE0073 /* App.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 34F973EAC9EF4045D4D33DD3 /* App.entitlements */; };
 		73B8AAB136BCED6B529436E5 /* AppDelegate+Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7D1DD5A1C973057674581E /* AppDelegate+Manager.swift */; };
 		8621DE743669C5E4E5557E2F /* AppStorage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6EF4D3FD8B73FE40F48FFB49 /* AppStorage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8694361BA114F76F4DD10658 /* AppLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CB27BEF77813CCB0F10CB0A /* AppLocalization.framework */; };
 		8AA3765EEE964B5EEC9B4506 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB47DFBBC77A5CAF3644D79 /* SceneDelegate.swift */; };
 		9C2C0FEFEC90A000B4B3E787 /* AppAuthImpl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 685B5C8D776F76583CA84BAE /* AppAuthImpl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A82AA341B7E1CE336207AD54 /* AppFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 745E38B38FFBC7C7C5A3E380 /* AppFoundation.framework */; };
@@ -24,6 +29,7 @@
 		BDC93B2B5BA20BBF4A08BAC8 /* AppUtils.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7CD15E58F8E75BA33559FD63 /* AppUtils.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C1E35C687D8DF96309F5AABB /* AppDelegate+Feature.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28B9F9C8F5348361D08445C /* AppDelegate+Feature.swift */; };
 		C2147A9C3C35B939C48A78D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA45B3DB5250588961CBB00A /* Assets.xcassets */; };
+		DC62CA77C1E3079B98CE1FF7 /* AppAuth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD1CC3ACFA9FB14C87C4BA83 /* AppAuth.framework */; };
 		EB429DE0F66860CC3AC81B97 /* AppFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 745E38B38FFBC7C7C5A3E380 /* AppFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EE7AC0D67B8BBE6B6A391BFC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7F72C3401330BA902B6213F3 /* Localizable.strings */; };
 		F25AC5036FB912B2850EF3CF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DCEBF1277AEA6F14B5BF58 /* AppDelegate.swift */; };
@@ -46,6 +52,7 @@
 				FAEFFE0D69C1B8B33B6CC3B8 /* AppLocalization.framework in Embed Frameworks */,
 				F492C78C5963AE3D28B95BAD /* AppNetwork.framework in Embed Frameworks */,
 				8621DE743669C5E4E5557E2F /* AppStorage.framework in Embed Frameworks */,
+				346F907DFE44E16801940CE3 /* AppUIKit.framework in Embed Frameworks */,
 				BDC93B2B5BA20BBF4A08BAC8 /* AppUtils.framework in Embed Frameworks */,
 				2D4506838D088EBCDEA0CF49 /* DependecyInjection.framework in Embed Frameworks */,
 			);
@@ -75,6 +82,7 @@
 		9EF973CA346C73939652AA14 /* AppNetwork.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AppNetwork.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA45B3DB5250588961CBB00A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B3950E244643E50A69EF1C9A /* AppDelegate+Core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+Core.swift"; sourceTree = "<group>"; };
+		C5D2E7FC637DF046ED29FA57 /* AppUIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AppUIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5DCEBF1277AEA6F14B5BF58 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DD0F2B1D6000CD7A3364D374 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DD1CC3ACFA9FB14C87C4BA83 /* AppAuth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AppAuth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,8 +98,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC62CA77C1E3079B98CE1FF7 /* AppAuth.framework in Frameworks */,
 				2FA532D6E2E145A317A5AEEF /* AppAuthImpl.framework in Frameworks */,
 				A82AA341B7E1CE336207AD54 /* AppFoundation.framework in Frameworks */,
+				8694361BA114F76F4DD10658 /* AppLocalization.framework in Frameworks */,
+				1CF75BC9D71820CBE53ED2D2 /* AppNetwork.framework in Frameworks */,
+				0925CFD93923B26626014D8D /* AppStorage.framework in Frameworks */,
+				226FBA1D76A603D531B09910 /* AppUIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +207,7 @@
 				7CB27BEF77813CCB0F10CB0A /* AppLocalization.framework */,
 				9EF973CA346C73939652AA14 /* AppNetwork.framework */,
 				6EF4D3FD8B73FE40F48FFB49 /* AppStorage.framework */,
+				C5D2E7FC637DF046ED29FA57 /* AppUIKit.framework */,
 				7CD15E58F8E75BA33559FD63 /* AppUtils.framework */,
 				FC764963A5465F3FC7C1C2CC /* DependecyInjection.framework */,
 			);

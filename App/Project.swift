@@ -11,6 +11,12 @@ let appTarget: Target =  .target(
     resources: ["App/Resources/**"],
     dependencies: [
         .project(target: "AppFoundation", path: "../AppCore"),
+        .project(target: "AppStorage", path: "../AppCore"),
+        .project(target: "AppNetwork", path: "../AppCore"),
+        .project(target: "AppLocalization", path: "../AppCore"),
+        .project(target: "AppUIKit", path: "../AppCore"),
+        
+        .project(target: "AppAuth", path: "../AppFeature"),
         .project(target: "AppAuthImpl", path: "../AppFeature")
     ],
     settings: .settings(
@@ -21,6 +27,48 @@ let appTarget: Target =  .target(
         ]
     )
 )
+
+let prodScheme: Scheme = .scheme(
+    name: "Bonjur-Release",
+    shared: true,
+    buildAction: .buildAction(
+        targets: ["App"]
+    ),
+    testAction: .targets(
+        ["App"],
+        configuration: "Release"
+    ),
+    runAction: .runAction(
+        configuration: "Release"
+    ),
+    archiveAction: .archiveAction(
+        configuration: "Release"
+    ),
+    profileAction: .profileAction(
+        configuration: "Release"
+    )
+)
+
+let testScheme: Scheme = .scheme(
+    name: "Bonjur-Test",
+    shared: true,
+    buildAction: .buildAction(
+        targets: ["App"]
+    ),
+    testAction: .targets(
+        ["App"],
+        configuration: "Debug"
+    ),
+    runAction: .runAction(
+        configuration: "Debug"
+    ),
+    archiveAction: .archiveAction(
+        configuration: "Debug"
+    ),
+    profileAction: .profileAction(
+        configuration: "Debug"
+    )
+)
     
 
 let project = Project(
@@ -29,45 +77,7 @@ let project = Project(
     options: .options(automaticSchemesOptions: .disabled),
     targets: [appTarget],
     schemes: [
-        .scheme(
-            name: "Bonjur-Test",
-            shared: true,
-            buildAction: .buildAction(
-                targets: ["App"]
-            ),
-            testAction: .targets(
-                ["App"],
-                configuration: "Debug"
-            ),
-            runAction: .runAction(
-                configuration: "Debug"
-            ),
-            archiveAction: .archiveAction(
-                configuration: "Debug"
-            ),
-            profileAction: .profileAction(
-                configuration: "Debug"
-            )
-        ),
-        .scheme(
-            name: "Bonjur-Release",
-            shared: true,
-            buildAction: .buildAction(
-                targets: ["App"]
-            ),
-            testAction: .targets(
-                ["App"],
-                configuration: "Release"
-            ),
-            runAction: .runAction(
-                configuration: "Release"
-            ),
-            archiveAction: .archiveAction(
-                configuration: "Release"
-            ),
-            profileAction: .profileAction(
-                configuration: "Release"
-            )
-        )
+        testScheme,
+        prodScheme
     ]
 )

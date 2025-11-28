@@ -71,7 +71,7 @@ let appUIKitTarget: Target = .target(
     bundleId: "com.bonjur.AppUIKit",
     deploymentTargets: .iOS("15.0"),
     sources: ["AppUIKit/**"],
-    resources: [],
+    resources: ["AppUIKit/**"],
     dependencies: []
 )
 

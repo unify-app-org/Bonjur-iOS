@@ -10,6 +10,6 @@ import SwiftUICore
 public extension Color {
     
     enum Palette {
-        public static let primary = Color.example
+        public static let primary = Color.init(.example)
     }
 }

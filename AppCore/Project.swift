@@ -11,7 +11,7 @@ let appUtilsTarget: Target = .target(
     dependencies: []
 )
 
-let DIarget: Target = .target(
+let DITarget: Target = .target(
     name: "DependecyInjection",
     destinations: [.iPhone, .iPad],
     product: .framework,

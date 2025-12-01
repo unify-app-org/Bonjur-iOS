@@ -1,5 +1,14 @@
 import ProjectDescription
 
+let projectSettings: Settings = .settings(
+    base: [:],
+    configurations: [
+        .debug(name: "Debug", xcconfig: "Config/Test.xcconfig"),
+        .release(name: "Release", xcconfig: "Config/Prod.xcconfig"),
+        .release(name: "Staging", xcconfig: "Config/Staging.xcconfig")
+    ]
+)
+
 let appTarget: Target = .target(
     name: "App",
     destinations: [.iPhone, .iPad],
@@ -20,14 +29,7 @@ let appTarget: Target = .target(
         .project(target: "AppAuth", path: "../AppFeature"),
         .project(target: "AppAuthImpl", path: "../AppFeature")
     ],
-    settings: .settings(
-        base: [:],
-        configurations: [
-            .debug(name: "Debug", xcconfig: "Config/Test.xcconfig"),
-            .debug(name: "Staging", xcconfig: "Config/Staging.xcconfig"),
-            .release(name: "Release", xcconfig: "Config/Prod.xcconfig"),
-        ]
-    )
+    settings: projectSettings
 )
 
 let prodScheme: Scheme = .scheme(
@@ -92,16 +94,16 @@ let stagingScheme: Scheme = .scheme(
         configuration: "Staging"
     )
 )
-    
 
 let project = Project(
     name: "App",
     organizationName: "Bonjur",
     options: .options(automaticSchemesOptions: .disabled),
+    settings: projectSettings,
     targets: [appTarget],
     schemes: [
         testScheme,
-        prodScheme
-//        stagingScheme
+        prodScheme,
+        stagingScheme
     ]
 )

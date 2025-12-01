@@ -19,7 +19,7 @@
       disablePerformanceAntipatternChecker = "YES"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "/Users/huseynhasanov/Desktop/Mine/MyProject/BonjuriOS"
+      customWorkingDirectory = "/Users/huseynhasanov/Desktop/Mine/MyProject/Bonjur-iOS"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"

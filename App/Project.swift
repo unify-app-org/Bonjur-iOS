@@ -25,7 +25,7 @@ let appTarget: Target = .target(
         configurations: [
             .debug(name: "Debug", xcconfig: "Config/Test.xcconfig"),
             .debug(name: "Staging", xcconfig: "Config/Staging.xcconfig"),
-//            .release(name: "Release", xcconfig: "Config/Prod.xcconfig"),
+            .release(name: "Release", xcconfig: "Config/Prod.xcconfig"),
         ]
     )
 )

@@ -1,12 +1,13 @@
 //
-//  Prod.xcconfig
+//  Staging.xcconfig
 //  App
 //
-//  Created by Huseyn Hasanov on 24.11.25.
+//  Created by Huseyn Hasanov on 01.12.25.
+//  Copyright © 2025 Bonjur. All rights reserved.
 //
 
 // Configuration settings file format documentation can be found at:
 // https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
 
 BASE_URL = https:/$()/api.bonjur.co
-ENVIRONMENT = PROD
+ENVIRONMENT = STAGING

@@ -1,6 +1,6 @@
 import ProjectDescription
 
-let appTarget: Target =  .target(
+let appTarget: Target = .target(
     name: "App",
     destinations: [.iPhone, .iPad],
     product: .app,
@@ -10,12 +10,13 @@ let appTarget: Target =  .target(
     sources: ["App/**/*.swift"],
     resources: ["App/Resources/**"],
     dependencies: [
+        // Core
         .project(target: "AppFoundation", path: "../AppCore"),
         .project(target: "AppStorage", path: "../AppCore"),
         .project(target: "AppNetwork", path: "../AppCore"),
         .project(target: "AppLocalization", path: "../AppCore"),
         .project(target: "AppUIKit", path: "../AppCore"),
-        
+        // Feature
         .project(target: "AppAuth", path: "../AppFeature"),
         .project(target: "AppAuthImpl", path: "../AppFeature")
     ],
@@ -23,7 +24,8 @@ let appTarget: Target =  .target(
         base: [:],
         configurations: [
             .debug(name: "Debug", xcconfig: "Config/Test.xcconfig"),
-            .release(name: "Release", xcconfig: "Config/Prod.xcconfig")
+            .debug(name: "Staging", xcconfig: "Config/Staging.xcconfig"),
+//            .release(name: "Release", xcconfig: "Config/Prod.xcconfig"),
         ]
     )
 )
@@ -69,6 +71,27 @@ let testScheme: Scheme = .scheme(
         configuration: "Debug"
     )
 )
+
+let stagingScheme: Scheme = .scheme(
+    name: "Bonjur-Staging",
+    shared: true,
+    buildAction: .buildAction(
+        targets: ["App"]
+    ),
+    testAction: .targets(
+        ["App"],
+        configuration: "Staging"
+    ),
+    runAction: .runAction(
+        configuration: "Staging"
+    ),
+    archiveAction: .archiveAction(
+        configuration: "Staging"
+    ),
+    profileAction: .profileAction(
+        configuration: "Staging"
+    )
+)
     
 
 let project = Project(
@@ -79,5 +102,6 @@ let project = Project(
     schemes: [
         testScheme,
         prodScheme
+//        stagingScheme
     ]
 )

@@ -12,7 +12,7 @@ struct RegisterView: View {
     @ObservedObject var store: StoreOf<RegisterFeature>
     
     var body: some View {
-        Text("RegisterView")
+        Text("example".localized)
             .onFirstAppear {
                 store.send(.fetchData)
             }

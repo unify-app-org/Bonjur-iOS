@@ -24,7 +24,7 @@ let project = Project(
             bundleId: "com.Bonjur.AppAuthImpl",
             deploymentTargets: .iOS("15.0"),
             sources: ["AppAuth/AppAuthImpl/**"],
-            resources: [],
+            resources: ["AppAuth/AppAuthImpl/**"],
             dependencies: [
                 .target(name: "AppAuth"),
                 .project(target: "AppFoundation", path: "../AppCore"),

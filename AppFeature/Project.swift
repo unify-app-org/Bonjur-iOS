@@ -1,37 +1,27 @@
+//
+//  Project.swift
+//  Manifests
+//
+//  Created by Huseyn Hasanov
+//
+
 import ProjectDescription
+import ProjectDescriptionHelpers
+
+nonisolated(unsafe) var frameworkTargets: [BonjurTarget] = []
+
+let appAuthTarget = Target.createFeatureModule(
+    name: "AppAuth",
+    implConfig: .init(
+        dependencies: [
+            
+        ]
+    )
+).add(to: &frameworkTargets)
 
 let project = Project(
-    name: "AppFeature",
+    name: Project.Projects.features,
     options: .options(automaticSchemesOptions: .disabled),
-    targets: [
-        // AppAuth Interface
-        .target(
-            name: "AppAuth",
-            destinations: [.iPhone, .iPad],
-            product: .framework,
-            bundleId: "com.Bonjur.AppAuth",
-            deploymentTargets: .iOS("15.0"),
-            sources: ["AppAuth/AppAuth/**"],
-            resources: [],
-            dependencies: []
-        ),
-
-        // AppAuth Implementation
-        .target(
-            name: "AppAuthImpl",
-            destinations: [.iPhone, .iPad],
-            product: .framework,
-            bundleId: "com.Bonjur.AppAuthImpl",
-            deploymentTargets: .iOS("15.0"),
-            sources: ["AppAuth/AppAuthImpl/**"],
-            resources: ["AppAuth/AppAuthImpl/**"],
-            dependencies: [
-                .target(name: "AppAuth"),
-                .project(target: "AppFoundation", path: "../AppCore"),
-                .project(target: "AppNetwork", path: "../AppCore")
-            ]
-        )
-    ],
+    targets: frameworkTargets.map(\.target),
     schemes: []
 )
-

@@ -1,105 +1,61 @@
+//
+//  Project.swift
+//  Manifests
+//
+//  Created by Huseyn Hasanov
+//
+
 import ProjectDescription
+import ProjectDescriptionHelpers
 
-let appUtilsTarget: Target = .target(
-    name: "AppUtils",
-    destinations: [.iPhone, .iPad],
-    product: .framework,
-    bundleId: "com.bonjur.AppUtils",
-    deploymentTargets: .iOS("15.0"),
-    sources: ["AppUtils/**"],
-    resources: [],
-    dependencies: []
-)
+nonisolated(unsafe) var frameworkTargets: [BonjurTarget] = []
 
-let DITarget: Target = .target(
-    name: "DependecyInjection",
-    destinations: [.iPhone, .iPad],
-    product: .framework,
-    bundleId: "com.bonjur.DependecyInjection",
-    deploymentTargets: .iOS("15.0"),
-    sources: ["DependecyInjection/**"],
-    resources: [],
-    dependencies: []
-)
+let appUtilsTarget = Target.createFrameworkTarget(
+    name: "AppUtils"
+).add(to: &frameworkTargets)
 
-let appStorageTarget: Target = .target(
+let DITarget = Target.createFrameworkTarget(
+    name: "DependecyInjection"
+).add(to: &frameworkTargets)
+
+let appStorageTarget = Target.createFrameworkTarget(
     name: "AppStorage",
-    destinations: [.iPhone, .iPad],
-    product: .framework,
-    bundleId: "com.bonjur.AppStorage",
-    deploymentTargets: .iOS("15.0"),
-    sources: ["AppStorage/**"],
-    resources: [],
     dependencies: [
-        .target(name: "DependecyInjection")
+        .AppCore.DependecyInjection
     ]
-)
+).add(to: &frameworkTargets)
 
-let appNetworkTarget: Target = .target(
+let appNetworkTarget = Target.createFrameworkTarget(
     name: "AppNetwork",
-    destinations: [.iPhone, .iPad],
-    product: .framework,
-    bundleId: "com.bonjur.AppNetwork",
-    deploymentTargets: .iOS("15.0"),
-    sources: ["AppNetwork/**"],
-    resources: [],
     dependencies: [
-        .target(name: "AppStorage"),
-        .target(name: "AppUtils")
+        .AppCore.AppStorage,
+        .AppCore.AppUtils
     ]
-)
+).add(to: &frameworkTargets)
     
-let appFoundationTarget: Target = .target(
+let appFoundationTarget = Target.createFrameworkTarget(
     name: "AppFoundation",
-    destinations: [.iPhone, .iPad],
-    product: .framework,
-    bundleId: "com.bonjur.AppFoundation",
-    deploymentTargets: .iOS("15.0"),
-    sources: ["AppFoundation/**"],
-    resources: [],
     dependencies: [
-        .target(name: "AppUtils"),
-        .target(name: "AppLocalization"),
-        .target(name: "DependecyInjection")
+        .AppCore.AppUtils,
+        .AppCore.AppLocalization,
+        .AppCore.DependecyInjection
     ]
-)
+).add(to: &frameworkTargets)
     
-let appUIKitTarget: Target = .target(
-    name: "AppUIKit",
-    destinations: [.iPhone, .iPad],
-    product: .framework,
-    bundleId: "com.bonjur.AppUIKit",
-    deploymentTargets: .iOS("15.0"),
-    sources: ["AppUIKit/**"],
-    resources: ["AppUIKit/**"],
-    dependencies: []
-)
+let appUIKitTarget = Target.createFrameworkTarget(
+    name: "AppUIKit"
+).add(to: &frameworkTargets)
 
-let appLocalizationTarget: Target = .target(
+let appLocalizationTarget = Target.createFrameworkTarget(
     name: "AppLocalization",
-    destinations: [.iPhone, .iPad],
-    product: .framework,
-    bundleId: "com.bonjur.AppLocalization",
-    deploymentTargets: .iOS("15.0"),
-    sources: ["AppLocalization/**"],
-    resources: [],
     dependencies: [
-        .target(name: "DependecyInjection")
+        .AppCore.DependecyInjection
     ]
-)
-    
+).add(to: &frameworkTargets)
 
 let project = Project(
-    name: "AppCore",
+    name: Project.Projects.core,
     options: .options(automaticSchemesOptions: .disabled),
-    targets: [
-        appUtilsTarget,
-        DITarget,
-        appStorageTarget,
-        appNetworkTarget,
-        appFoundationTarget,
-        appUIKitTarget,
-        appLocalizationTarget
-    ],
+    targets: frameworkTargets.map(\.target),
     schemes: []
 )

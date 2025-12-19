@@ -14,6 +14,7 @@ install-templates: uninstall-templates ## install template
 	mkdir -p "$(TEMPLATES_ORIGIN_PATH)"
 	# Copy the entire .xctemplate folder, not just its contents
 	cp -R Templates/BonjurFeatureModule.xctemplate "$(TEMPLATES_ORIGIN_PATH)/"
+	cp -R Templates/Bonjur-MVVM.xctemplate "$(TEMPLATES_ORIGIN_PATH)/"
 	@echo "Xcode template installed successfully!"
 	@echo "Restart Xcode to use it."
 

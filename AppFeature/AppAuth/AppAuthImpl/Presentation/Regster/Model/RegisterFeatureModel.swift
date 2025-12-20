@@ -47,6 +47,4 @@ enum RegisterEffect: UISideEffect {
 
 // MARK: - InputData
 
-struct RegisterInputData {
-    
-}
+struct RegisterInputData { }

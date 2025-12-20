@@ -16,12 +16,10 @@ public extension Array where Element == TargetDependency {
 public extension TargetDependency {
     static var CoreDependencies: [Self] {
         [
-            .AppCore.AppUtils,
-            .AppCore.DependecyInjection,
+            .AppCore.AppFoundation,
             .AppCore.AppUIKit,
             .AppCore.AppStorage,
-            .AppCore.AppNetwork,
-            .AppCore.AppLocalization
+            .AppCore.AppNetwork
         ]
     }
     

@@ -2,6 +2,7 @@
 xcuserdata/
 *.xcuserstate
 *.xcodeproj
+*.xcworkspace
 project.xcworkspace/xcuserdata/
 DerivedData/
 build/
@@ -9,6 +10,9 @@ build/
 *.mode1v3
 *.mode2v3
 *.perspectivev3
+
+## Tuist
+Derived/
 
 # SPM
 .swiftpm/

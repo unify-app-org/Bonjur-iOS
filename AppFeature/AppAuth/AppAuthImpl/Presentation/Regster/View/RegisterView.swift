@@ -7,12 +7,14 @@
 
 import SwiftUI
 import AppFoundation
+import AppUIKit
 
 struct RegisterView: View {
     @ObservedObject var store: StoreOf<RegisterFeature>
     
     var body: some View {
         Text("example".localized)
+            .font(Font.Typography.TitleXl.extraBold)
             .onFirstAppear {
                 store.send(.fetchData)
             }

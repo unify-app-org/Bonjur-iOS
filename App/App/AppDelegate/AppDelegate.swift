@@ -7,8 +7,7 @@
 
 import UIKit
 import DependecyInjection
-import AppLocalization
-import AppAuthImpl
+import AppUIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,7 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         setUpCore(container: dependencyContainer)
-        setupLocalization()
+        setupLocalization(container: dependencyContainer)
+        setupTypography()
         setUpFeature(container: dependencyContainer)
         return true
     }
@@ -49,11 +49,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 extension AppDelegate {
-    private func setupLocalization() {
-        let localization = dependencyContainer.resolve(AppLocalizationProtocol.self)
-        localization.registerBundle(
-            Bundle.main,
-            Bundle(for: AuthModuleConfigurator.self),
-        )
+    
+    private func setupTypography() {
+        let _ = AppFonts()
      }
 }

@@ -56,6 +56,6 @@ let appLocalizationTarget = Target.createFrameworkTarget(
 let project = Project(
     name: Project.Projects.core,
     options: .options(automaticSchemesOptions: .disabled),
-    targets: frameworkTargets.map(\.target),
-    schemes: []
+    settings: .settings(base: .default),
+    targets: frameworkTargets.map(\.target)
 )

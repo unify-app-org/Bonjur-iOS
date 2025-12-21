@@ -16,3 +16,12 @@ public extension Array where Element == ProjectDescription.Configuration {
         ]
     }()
 }
+
+public extension Dictionary where Element == ProjectDescription.SettingsDictionary.Element {
+    static let `default`: ProjectDescription.SettingsDictionary = {
+        [
+            "ENABLE_MODULE_VERIFIER": "YES",
+            "ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS": "YES"
+        ]
+    }()
+}

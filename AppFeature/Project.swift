@@ -22,6 +22,6 @@ let appAuthTarget = Target.createFeatureModule(
 let project = Project(
     name: Project.Projects.features,
     options: .options(automaticSchemesOptions: .disabled),
-    targets: frameworkTargets.map(\.target),
-    schemes: []
+    settings: .settings(base: .default),
+    targets: frameworkTargets.map(\.target)
 )

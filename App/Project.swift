@@ -25,7 +25,7 @@ let project = Project(
     name: Project.Projects.main,
     organizationName: "Bonjur",
     options: .options(automaticSchemesOptions: .disabled),
-    settings: .settings(configurations: .default),
+    settings: .settings(base: .default, configurations: .default),
     targets: [appTarget],
     schemes: [
         .testScheme,

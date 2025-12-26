@@ -10,7 +10,7 @@ import AppFoundation
 final class RegisterViewModel: UIFeatureViewModel<RegisterFeature> {
     
     struct Dependencies {
-        let useCase: RegisterUsecase
+        let useCase: AuthUsecases
     }
     
     private let router: RegsiterRouter

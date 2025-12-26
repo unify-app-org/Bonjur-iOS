@@ -8,6 +8,7 @@
 import UIKit
 import DependecyInjection
 import AppUIKit
+import SwiftUICore
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -22,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupLocalization(container: dependencyContainer)
         setupTypography()
         setUpFeature(container: dependencyContainer)
+        setupGlobalNavigationAppearance()
         return true
     }
     

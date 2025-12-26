@@ -27,7 +27,7 @@ final class AppCoordinator {
     func start() {
         let registerVc = dependencyContainer.resolve(
             AppAuthEntryModule.self
-        ).buildRegister()
+        ).buildOnBoarding()
         let navigation = UINavigationController(rootViewController: registerVc)
         window.rootViewController = navigation
         window.makeKeyAndVisible()

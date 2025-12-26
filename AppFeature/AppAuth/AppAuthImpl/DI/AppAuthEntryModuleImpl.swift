@@ -15,4 +15,8 @@ public final class AppAuthEntryModuleImpl: AppAuthEntryModule {
     public func buildRegister() -> UIViewController {
         RegisterBuilder().build(inputData: .init())
     }
+    
+    public func buildOnBoarding() -> UIViewController {
+        OnboardingBuilder(inputData: .init()).build()
+    }
 }

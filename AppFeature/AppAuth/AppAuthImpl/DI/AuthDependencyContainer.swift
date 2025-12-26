@@ -55,7 +55,7 @@ enum AuthDependencyContainer {
     }
     
     private static func registerUseCase() {
-        register { RegisterUsecaseImpl() as RegisterUsecase }
+        register { AuthUsecasesImpl() as AuthUsecases }
     }
     
     private static func registerModule() {

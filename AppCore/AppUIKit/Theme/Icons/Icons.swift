@@ -6,9 +6,26 @@
 //
 
 import SwiftUICore
+import UIKit
 
-public extension Image {
+public extension UIImage {
     enum Icons {
-        public static let example = Image(.example)
+        public static let logoWithText = UIImage(resource: .logoWithText)
+        
+        public static let bigGraduationHat = UIImage(resource: .bigGraduationHat)
+        
+        public static let bigLamps = UIImage(resource: .bigLamps)
+        
+        public static let bigPeopleGroups = UIImage(resource: .bigPeopleGroups)
+        
+        public static let arrowLeft01 = UIImage(resource: .arrowLeft01)
+        
+        public static let notSelectedCheckBox = UIImage(resource: .notSelectedCheckBox)
+        
+        public static let selectedCheckBox = UIImage(resource: .selectedCheckBox)
+        
+        public static let xmark = UIImage(resource: .xmark)
+        
+        public static let bigResume = UIImage(resource: .bigResume)
     }
 }

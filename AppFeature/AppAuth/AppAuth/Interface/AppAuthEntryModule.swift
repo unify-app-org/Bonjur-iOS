@@ -9,6 +9,8 @@ import UIKit
 
 public protocol AppAuthEntryModule {
     func buildRegister() -> UIViewController
+    
+    func buildOnBoarding() -> UIViewController
 }
 
 

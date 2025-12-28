@@ -11,7 +11,39 @@ import AppUIKit
 
 struct AuthOptionalInfoView: View {
     @ObservedObject var store: StoreOf<AuthOptionalInfoFeature>
-    @State private var currentStep: Int = 1
+    
+    private var viewSteps: [AuthOptionalInfoViewState.StepItem] {
+        [
+            .init(
+                id: 1,
+                view: AnyView(
+                    AuthOptionalBirthdayView()
+                        .environmentObject(store)
+                )
+            ),
+            .init(
+                id: 2,
+                view: AnyView(
+                    AuthOptionalSelectGenderView()
+                        .environmentObject(store)
+                )
+            ),
+            .init(
+                id: 3,
+                view: AnyView(
+                    AuthOptionalSelectLanguageView()
+                        .environmentObject(store)
+                )
+            ),
+            .init(
+                id: 4,
+                view: AnyView(
+                    AuthOptionalBioView()
+                        .environmentObject(store)
+                )
+            )
+        ]
+    }
     
     var body: some View {
         VStack {
@@ -19,18 +51,22 @@ struct AuthOptionalInfoView: View {
             midView
             bottomView
         }
+        .onTapGesture {
+            UIApplication.shared.endEditing()
+        }
+        .onAppear {
+            store.send(.fetchData)
+        }
     }
     
     private var topView: some View {
         ZStack {
             HStack {
                 Button {
-                    withAnimation {
-                        if currentStep != 1 {
-                            currentStep -= 1
-                        } else {
-                            
-                        }
+                    if store.state.currentStep != 1 {
+                        store.state.currentStep -= 1
+                    } else {
+                        
                     }
                 } label: {
                     Image(uiImage: UIImage.Icons.arrowLeft01)
@@ -42,8 +78,8 @@ struct AuthOptionalInfoView: View {
             HStack {
                 Spacer()
                 AppProgressView(
-                    currentStep: currentStep,
-                    totalSteps: 3
+                    currentStep: store.state.currentStep,
+                    totalSteps: viewSteps.count
                 )
                 .padding(.horizontal, 32)
                 Spacer()
@@ -54,15 +90,14 @@ struct AuthOptionalInfoView: View {
     }
     
     private var midView: some View {
-        TabView(selection: $currentStep) {
-            Text("Test")
-                .tag(1)
-            Text("Test2")
-                .tag(2)
-            Text("Test3")
-                .tag(3)
+        TabView(selection: $store.state.currentStep) {
+            ForEach(viewSteps) { step in
+                step.view
+                    .tag(step.id)
+            }
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
+        .animation(.easeInOut, value: store.state.currentStep)
     }
     
     private var bottomView: some View {
@@ -77,11 +112,10 @@ struct AuthOptionalInfoView: View {
                 title: "Next",
                 model: .init(contentSize: .fill)
             ) {
-                withAnimation {
-                    currentStep += 1
-                }
+                store.state.currentStep += 1
             }
         }
         .padding(.horizontal)
+        .padding(.bottom, 8)
     }
 }

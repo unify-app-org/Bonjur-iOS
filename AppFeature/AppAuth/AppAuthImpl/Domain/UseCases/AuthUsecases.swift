@@ -7,6 +7,7 @@
 
 import AppNetwork
 import UIKit
+import AppUIKit
 
 protocol AuthUsecases {
     func register(
@@ -18,6 +19,10 @@ protocol AuthUsecases {
     func chooseUniversity() async throws(APIError) -> [ChooseUniversityUIModel]
     
     func welcome(name: String) -> OnboardingUIModel
+    
+    func languages() -> [SelectableListItemView.Model]
+    
+    func genders() -> [SelectableListItemView.Model]
 }
 
 final class AuthUsecasesImpl: AuthUsecases {
@@ -83,5 +88,48 @@ final class AuthUsecasesImpl: AuthUsecases {
             subtitle: "Complete your profile for better interaction.It will take only 5 minutes.",
             image: UIImage.Icons.bigResume
         )
+    }
+    
+    func languages() -> [SelectableListItemView.Model] {
+        [
+            .init(
+                title: "Azerbaijan",
+                selected: false,
+                style: .multySelect
+            ),
+            .init(
+                title: "English",
+                selected: false,
+                style: .multySelect
+            ),
+            .init(
+                title: "Russian",
+                selected: false,
+                style: .multySelect
+            ),
+            .init(
+                title: "French",
+                selected: false,
+                style: .multySelect
+            ),
+            .init(
+                title: "Turkish",
+                selected: false,
+                style: .multySelect
+            )
+        ]
+    }
+    
+    func genders() -> [SelectableListItemView.Model] {
+        [
+            .init(
+                title: "Female",
+                selected: false
+            ),
+            .init(
+                title: "Male",
+                selected: false
+            )
+        ]
     }
 }

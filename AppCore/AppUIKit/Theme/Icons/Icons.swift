@@ -27,5 +27,7 @@ public extension UIImage {
         public static let xmark = UIImage(resource: .xmark)
         
         public static let bigResume = UIImage(resource: .bigResume)
+        
+        public static let search = UIImage(resource: .search)
     }
 }

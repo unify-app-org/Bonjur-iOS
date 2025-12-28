@@ -6,6 +6,8 @@
 //
 
 import AppFoundation
+import SwiftUICore
+import AppUIKit
 
 // MARK: - AuthOptionalInfo input
 
@@ -29,9 +31,21 @@ typealias AuthOptionalInfoFeature = UIFeatureDefinition<
 // MARK: - View State
 
 final class AuthOptionalInfoViewState: UIFeatureState {
+    @Published var currentStep: Int = 1
+    @Published var langauges: [SelectableListItemView.Model] = []
+    @Published var genders: [SelectableListItemView.Model] = []
+    @Published var biography: String = ""
+    
+    struct StepItem: Identifiable {
+        let id: Int
+        let view: AnyView
+    }
 }
 
 // MARK: - Feature Action
 
 enum AuthOptionalInfoAction: UIFeatureAction {
+    case fetchData
+    case selectedGender(Int)
+    case selectedLanguage(Int)
 }

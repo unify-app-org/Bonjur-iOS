@@ -29,5 +29,7 @@ public extension Color {
         public static let graySecondary = Color.init(.graySecondary) // #929292
         
         public static let grayTeritary = Color.init(.grayTeritary) // #C8C8C8
+        
+        public static let grayQuaternary = Color.init(.grayQuaternary) // #F3F3F3
     }
 }

@@ -9,10 +9,11 @@ import SwiftUI
 
 public extension SelectableListItemView {
     
-    struct Model {
-        let title: String
-        let selected: Bool
-        let style: Style
+    struct Model: Identifiable {
+        public let id: UUID = UUID()
+        public let title: String
+        public var selected: Bool
+        public let style: Style
         
         public init(
             title: String,

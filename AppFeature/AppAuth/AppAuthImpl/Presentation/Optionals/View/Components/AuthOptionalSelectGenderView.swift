@@ -15,10 +15,12 @@ struct AuthOptionalSelectGenderView: View {
     var body: some View {
         VStack(spacing: 16) {
             topView
-            SearchView(text: .constant(""))
             gendersView
         }
         .padding(.horizontal)
+        .onTapGesture {
+            store.send(.closeKeyboard)
+        }
     }
     
     private var topView: some View {

@@ -34,8 +34,10 @@ final class AuthOptionalInfoViewState: UIFeatureState {
     @Published var currentStep: Int = 1
     @Published var langauges: [SelectableListItemView.Model] = []
     @Published var genders: [SelectableListItemView.Model] = []
-    @Published var biography: String = ""
-    
+    @Published var biography: String?
+    @Published var birthDate: Date?
+    @Published var showDatePicker: Bool = false
+
     struct StepItem: Identifiable {
         let id: Int
         let view: AnyView
@@ -48,4 +50,9 @@ enum AuthOptionalInfoAction: UIFeatureAction {
     case fetchData
     case selectedGender(Int)
     case selectedLanguage(Int)
+    case nextTapped
+    case closeKeyboard
+    case closeDatePicker
+    case previouseTapped
+    case skipTapped
 }

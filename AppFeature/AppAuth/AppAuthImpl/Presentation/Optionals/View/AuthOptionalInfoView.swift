@@ -46,14 +46,27 @@ struct AuthOptionalInfoView: View {
     }
     
     var body: some View {
-        VStack {
-            topView
-            midView
-            bottomView
+        ZStack {
+            Color.clear
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    store.send(.closeKeyboard)
+                    store.send(.closeDatePicker)
+                }
+            VStack {
+                topView
+                midView
+                bottomView
+                
+                if store.state.showDatePicker {
+                    datePickerOverlay
+                }
+            }
         }
-        .onTapGesture {
-            UIApplication.shared.endEditing()
-        }
+        .animation(
+            .spring(response: 0.25, dampingFraction: 0.8),
+            value: store.state.showDatePicker
+        )
         .onAppear {
             store.send(.fetchData)
         }
@@ -63,11 +76,7 @@ struct AuthOptionalInfoView: View {
         ZStack {
             HStack {
                 Button {
-                    if store.state.currentStep != 1 {
-                        store.state.currentStep -= 1
-                    } else {
-                        
-                    }
+                    store.send(.previouseTapped)
                 } label: {
                     Image(uiImage: UIImage.Icons.arrowLeft01)
                         .frame(width: 28)
@@ -100,19 +109,33 @@ struct AuthOptionalInfoView: View {
         .animation(.easeInOut, value: store.state.currentStep)
     }
     
+    private var datePickerOverlay: some View {
+        DatePicker(
+            "Select Date",
+            selection: Binding(
+                get: { store.state.birthDate ?? Date() },
+                set: { store.state.birthDate = $0 }
+            ),
+            displayedComponents: .date
+        )
+        .datePickerStyle(.wheel)
+        .labelsHidden()
+        .scaleEffect(x: 1.1, y: 1.1)
+    }
+    
     private var bottomView: some View {
         HStack {
             AppButton(
                 title: "Skip",
                 model: .init(type: .tertiary)
             ) {
-                
+                store.send(.skipTapped)
             }
             AppButton(
                 title: "Next",
                 model: .init(contentSize: .fill)
             ) {
-                store.state.currentStep += 1
+                store.send(.nextTapped)
             }
         }
         .padding(.horizontal)

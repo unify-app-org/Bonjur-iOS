@@ -6,6 +6,7 @@
 //
 
 import AppFoundation
+import UIKit
 
 final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeature> {
     
@@ -37,7 +38,30 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
             selectGender(at: index)
         case .selectedLanguage(let index):
             selectLanguage(at: index)
+        case .nextTapped:
+            nextStepTapped()
+        case .closeKeyboard:
+            UIApplication.shared.endEditing()
+        case .skipTapped:
+            break
+        case .previouseTapped:
+            previouseTapped()
+        case .closeDatePicker:
+            state.showDatePicker = false
         }
+    }
+    
+    private func previouseTapped() {
+        if state.currentStep != 1 {
+            state.currentStep -= 1
+        } else {
+            
+        }
+    }
+    
+    private func nextStepTapped() {
+        state.currentStep += 1
+        state.showDatePicker = false
     }
     
     private func selectGender(at index: Int) {

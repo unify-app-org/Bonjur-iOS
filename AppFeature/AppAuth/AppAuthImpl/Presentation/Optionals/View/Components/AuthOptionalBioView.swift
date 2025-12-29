@@ -16,11 +16,19 @@ struct AuthOptionalBioView: View {
         ScrollView {
             VStack(spacing: 16) {
                 topView
-                TextView(text: $store.state.biography)
-                    .frame(height: 230)
+                TextView(
+                    text: Binding(
+                        get: { store.state.biography ?? "" },
+                        set: { store.state.biography = $0 }
+                    )
+                )
+                .frame(height: 230)
             }
         }
         .padding(.horizontal)
+        .onTapGesture {
+            store.send(.closeKeyboard)
+        }
     }
     
     

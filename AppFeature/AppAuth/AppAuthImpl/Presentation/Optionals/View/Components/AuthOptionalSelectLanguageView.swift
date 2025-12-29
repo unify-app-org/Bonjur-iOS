@@ -19,6 +19,9 @@ struct AuthOptionalSelectLanguageView: View {
             listView
         }
         .padding(.horizontal)
+        .onTapGesture {
+            store.send(.closeKeyboard)
+        }
     }
     
     private var topView: some View {

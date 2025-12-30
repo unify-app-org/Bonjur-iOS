@@ -13,7 +13,7 @@ let appTarget: Target = .target(
     destinations: [.iPhone, .iPad],
     product: .app,
     bundleId: "com.bonjur.app",
-    deploymentTargets: .iOS("15.0"),
+    deploymentTargets: .iOS("16.0"),
     infoPlist: "App/Info.plist",
     sources: ["App/**/*.swift"],
     resources: ["App/Resources/**"],

@@ -23,6 +23,8 @@ protocol AuthUsecases {
     func languages() -> [SelectableListItemView.Model]
     
     func genders() -> [SelectableListItemView.Model]
+    
+    func interests() -> [AuthInterestsModel]
 }
 
 final class AuthUsecasesImpl: AuthUsecases {
@@ -130,6 +132,90 @@ final class AuthUsecasesImpl: AuthUsecases {
                 title: "Male",
                 selected: false
             )
+        ]
+    }
+    
+    func interests() -> [AuthInterestsModel] {
+        return [
+            .init(
+                title: "Example",
+                interests: [
+                    .init(
+                        title: "love",
+                        selected: false
+                    ),
+                    .init(
+                        title: "love",
+                        selected: false
+                    ),
+                    .init(
+                        title: "beautiful",
+                        selected: false
+                    ),
+                    .init(
+                        title: "fashion",
+                        selected: false
+                    ),
+                    .init(
+                        title: "dog",
+                        selected: false
+                    ),
+                    .init(
+                        title: "art",
+                        selected: false
+                    ),
+                ]
+            ),
+            .init(
+                title: "Example",
+                interests: [
+                    .init(
+                        title: "love",
+                        selected: false
+                    ),
+                    .init(
+                        title: "love",
+                        selected: false
+                    ),
+                    .init(
+                        title: "beautiful",
+                        selected: false
+                    ),
+                    .init(
+                        title: "fashion",
+                        selected: false
+                    ),
+                    .init(
+                        title: "dog",
+                        selected: false
+                    ),
+                    .init(
+                        title: "art",
+                        selected: false
+                    ),
+                    .init(
+                        title: "love",
+                        selected: false
+                    ),
+                    .init(
+                        title: "beautiful",
+                        selected: false
+                    ),
+                    .init(
+                        title: "fashion",
+                        selected: false
+                    ),
+                    .init(
+                        title: "dog",
+                        selected: false
+                    ),
+                    .init(
+                        title: "art",
+                        selected: false
+                    ),
+                ]
+            )
+            
         ]
     }
 }

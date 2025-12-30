@@ -31,5 +31,11 @@ public extension UIImage {
         public static let search = UIImage(resource: .search)
         
         public static let calendar = UIImage(resource: .calendar)
+        
+        public static let emojiSmile = UIImage(resource: .emojiSmile)
+        
+        public static let plus = UIImage(resource: .plus)
+        
+        public static let camera = UIImage(resource: .camera)
     }
 }

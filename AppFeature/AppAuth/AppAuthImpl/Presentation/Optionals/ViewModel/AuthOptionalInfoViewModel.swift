@@ -60,7 +60,9 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
     }
     
     private func nextStepTapped() {
-        state.currentStep += 1
+        if state.currentStep != state.getAllViews(store: store).count {
+            state.currentStep += 1
+        }
         state.showDatePicker = false
     }
     
@@ -85,5 +87,6 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
     private func fetchData() {
         state.genders = dependencies.useCase.genders()
         state.langauges = dependencies.useCase.languages()
+        state.interests = dependencies.useCase.interests()
     }
 }

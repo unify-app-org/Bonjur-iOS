@@ -12,39 +12,6 @@ import AppUIKit
 struct AuthOptionalInfoView: View {
     @ObservedObject var store: StoreOf<AuthOptionalInfoFeature>
     
-    private var viewSteps: [AuthOptionalInfoViewState.StepItem] {
-        [
-            .init(
-                id: 1,
-                view: AnyView(
-                    AuthOptionalBirthdayView()
-                        .environmentObject(store)
-                )
-            ),
-            .init(
-                id: 2,
-                view: AnyView(
-                    AuthOptionalSelectGenderView()
-                        .environmentObject(store)
-                )
-            ),
-            .init(
-                id: 3,
-                view: AnyView(
-                    AuthOptionalSelectLanguageView()
-                        .environmentObject(store)
-                )
-            ),
-            .init(
-                id: 4,
-                view: AnyView(
-                    AuthOptionalBioView()
-                        .environmentObject(store)
-                )
-            )
-        ]
-    }
-    
     var body: some View {
         ZStack {
             Color.clear
@@ -88,7 +55,7 @@ struct AuthOptionalInfoView: View {
                 Spacer()
                 AppProgressView(
                     currentStep: store.state.currentStep,
-                    totalSteps: viewSteps.count
+                    totalSteps: store.state.getAllViews(store: store).count
                 )
                 .padding(.horizontal, 32)
                 Spacer()
@@ -100,7 +67,7 @@ struct AuthOptionalInfoView: View {
     
     private var midView: some View {
         TabView(selection: $store.state.currentStep) {
-            ForEach(viewSteps) { step in
+            ForEach(store.state.getAllViews(store: store)) { step in
                 step.view
                     .tag(step.id)
             }

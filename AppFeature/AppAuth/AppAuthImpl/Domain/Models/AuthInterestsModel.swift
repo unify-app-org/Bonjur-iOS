@@ -11,5 +11,5 @@ import AppUIKit
 struct AuthInterestsModel: Identifiable {
     let id: UUID = UUID()
     let title: String
-    let interests: [CategorieChipsView.Model]
+    var interests: [CategoriesChipsView.Model]
 }

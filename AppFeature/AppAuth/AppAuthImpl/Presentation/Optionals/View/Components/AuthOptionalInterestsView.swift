@@ -47,7 +47,10 @@ struct AuthOptionalInterestsView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
                     FlowLayout(spacing: 12, items: section.interests) { item in
-                        CategorieChipsView(model: item)
+                        CategoriesChipsView(model: item)
+                            .onTapGesture {
+                                store.send(.selectedInterest(item.id))
+                            }
                     }
                 }
             }

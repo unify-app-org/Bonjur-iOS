@@ -6,6 +6,7 @@
 //
 
 import AppFoundation
+import AppUIKit
 import Combine
 
 // MARK: - ChooseUniversity input
@@ -30,7 +31,7 @@ typealias ChooseUniversityFeature = UIFeatureDefinition<
 // MARK: - View State
 
 final class ChooseUniversityViewState: UIFeatureState {
-    @Published var uiModel: [ChooseUniversityUIModel] = []
+    @Published var uiModel: [SelectableListItemView.Model] = []
     var disabled: Bool {
          uiModel.first(where: { $0.selected }) == nil
      }

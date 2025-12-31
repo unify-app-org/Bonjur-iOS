@@ -41,10 +41,10 @@ struct AuthOptionalSelectGenderView: View {
     private var gendersView: some View {
         ScrollView {
             VStack(spacing: 16) {
-                ForEach(Array(store.state.genders.enumerated()), id: \.element.id) { index, language in
+                ForEach(store.state.genders, id: \.uuid) { language in
                     SelectableListItemView(model: language)
                         .onTapGesture {
-                            store.send(.selectedGender(index))
+                            store.send(.selectedGender(language.id))
                         }
                 }
             }

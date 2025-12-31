@@ -100,6 +100,7 @@ enum AuthOptionalInfoAction: UIFeatureAction {
     case fetchData
     case selectedGender(Int)
     case selectedLanguage(Int)
+    case selectedInterest(Int)
     case nextTapped
     case closeKeyboard
     case closeDatePicker

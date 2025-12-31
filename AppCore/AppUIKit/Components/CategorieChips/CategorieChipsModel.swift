@@ -8,14 +8,20 @@
 import Foundation
 import SwiftUICore
 
-public extension CategorieChipsView {
+public extension CategoriesChipsView {
     
     struct Model: Identifiable, Hashable {
-        public let id: UUID = UUID()
+        public let uuid: UUID = UUID()
+        public let id: Int
         public let title: String
-        public let selected: Bool
+        public var selected: Bool
         
-        public init(title: String, selected: Bool) {
+        public init(
+            id: Int,
+            title: String,
+            selected: Bool
+        ) {
+            self.id = id
             self.title = title
             self.selected = selected
         }

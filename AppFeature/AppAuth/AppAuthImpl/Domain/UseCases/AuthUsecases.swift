@@ -16,7 +16,7 @@ protocol AuthUsecases {
     
     func onboarding() -> [OnboardingUIModel]
     
-    func chooseUniversity() async throws(APIError) -> [ChooseUniversityUIModel]
+    func chooseUniversity() async throws(APIError) -> [SelectableListItemView.Model]
     
     func welcome(name: String) -> OnboardingUIModel
     
@@ -65,17 +65,20 @@ final class AuthUsecasesImpl: AuthUsecases {
         ]
     }
     
-    func chooseUniversity() async throws(APIError) -> [ChooseUniversityUIModel] {
+    func chooseUniversity() async throws(APIError) -> [SelectableListItemView.Model] {
         return [
             .init(
+                id: 1,
                 title: "UFAZ",
                 selected: false
             ),
             .init(
+                id: 2,
                 title: "ADNSU",
                 selected: false
             ),
             .init(
+                id: 3,
                 title: "BHOS",
                 selected: false
             )
@@ -95,26 +98,31 @@ final class AuthUsecasesImpl: AuthUsecases {
     func languages() -> [SelectableListItemView.Model] {
         [
             .init(
+                id: 1,
                 title: "Azerbaijan",
                 selected: false,
                 style: .multySelect
             ),
             .init(
+                id: 2,
                 title: "English",
                 selected: false,
                 style: .multySelect
             ),
             .init(
+                id: 3,
                 title: "Russian",
                 selected: false,
                 style: .multySelect
             ),
             .init(
+                id: 4,
                 title: "French",
                 selected: false,
                 style: .multySelect
             ),
             .init(
+                id: 5,
                 title: "Turkish",
                 selected: false,
                 style: .multySelect
@@ -125,10 +133,12 @@ final class AuthUsecasesImpl: AuthUsecases {
     func genders() -> [SelectableListItemView.Model] {
         [
             .init(
+                id: 1,
                 title: "Female",
                 selected: false
             ),
             .init(
+                id: 2,
                 title: "Male",
                 selected: false
             )
@@ -141,26 +151,32 @@ final class AuthUsecasesImpl: AuthUsecases {
                 title: "Example",
                 interests: [
                     .init(
+                        id: 1,
                         title: "love",
                         selected: false
                     ),
                     .init(
+                        id: 2,
                         title: "love",
                         selected: false
                     ),
                     .init(
+                        id: 3,
                         title: "beautiful",
                         selected: false
                     ),
                     .init(
+                        id: 4,
                         title: "fashion",
                         selected: false
                     ),
                     .init(
+                        id: 5,
                         title: "dog",
                         selected: false
                     ),
                     .init(
+                        id: 6,
                         title: "art",
                         selected: false
                     ),
@@ -170,46 +186,57 @@ final class AuthUsecasesImpl: AuthUsecases {
                 title: "Example",
                 interests: [
                     .init(
+                        id: 7,
                         title: "love",
                         selected: false
                     ),
                     .init(
+                        id: 8,
                         title: "love",
                         selected: false
                     ),
                     .init(
+                        id: 9,
                         title: "beautiful",
                         selected: false
                     ),
                     .init(
+                        id: 10,
                         title: "fashion",
                         selected: false
                     ),
                     .init(
+                        id: 11,
                         title: "dog",
                         selected: false
                     ),
                     .init(
+                        id: 12,
                         title: "art",
                         selected: false
                     ),
                     .init(
+                        id: 13,
                         title: "love",
                         selected: false
                     ),
                     .init(
+                        id: 14,
                         title: "beautiful",
                         selected: false
                     ),
                     .init(
+                        id: 15,
                         title: "fashion",
                         selected: false
                     ),
                     .init(
+                        id: 16,
                         title: "dog",
                         selected: false
                     ),
                     .init(
+                        id: 17,
                         title: "art",
                         selected: false
                     ),

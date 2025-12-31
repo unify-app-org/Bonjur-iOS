@@ -42,10 +42,10 @@ struct AuthOptionalSelectLanguageView: View {
     private var listView: some View {
         ScrollView {
             VStack(spacing: 16) {
-                ForEach(Array(store.state.langauges.enumerated()), id: \.element.id) { index, language in
+                ForEach(store.state.langauges, id: \.uuid) { language in
                     SelectableListItemView(model: language)
                         .onTapGesture {
-                            store.send(.selectedLanguage(index))
+                            store.send(.selectedLanguage(language.id))
                         }
                 }
             }

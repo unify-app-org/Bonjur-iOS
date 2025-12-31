@@ -34,10 +34,12 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
         switch action {
         case .fetchData:
             fetchData()
-        case .selectedGender(let index):
-            selectGender(at: index)
-        case .selectedLanguage(let index):
-            selectLanguage(at: index)
+        case .selectedGender(let id):
+            selectGender(id)
+        case .selectedLanguage(let id):
+            selectLanguage(id)
+        case .selectedInterest(let id):
+            selectedInterest(id)
         case .nextTapped:
             nextStepTapped()
         case .closeKeyboard:
@@ -59,6 +61,20 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
         }
     }
     
+    private func selectedInterest(_ id: Int) {
+        state.interests = state.interests.map { interest in
+            var updated = interest
+            updated.interests = updated.interests.map { category in
+                var updatedCategory = category
+                if category.id == id {
+                    updatedCategory.selected.toggle()
+                }
+                return updatedCategory
+            }
+            return updated
+        }
+    }
+    
     private func nextStepTapped() {
         if state.currentStep != state.getAllViews(store: store).count {
             state.currentStep += 1
@@ -66,18 +82,18 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
         state.showDatePicker = false
     }
     
-    private func selectGender(at index: Int) {
-        state.genders = state.genders.enumerated().map { (i, gender) in
+    private func selectGender(_ id: Int) {
+        state.genders = state.genders.map { gender in
             var updated = gender
-            updated.selected = (i == index)
+            updated.selected = (gender.id == id)
             return updated
         }
     }
     
-    private func selectLanguage(at index: Int) {
-        state.langauges = state.langauges.enumerated().map { (i, language) in
+    private func selectLanguage(_ id: Int) {
+        state.langauges = state.langauges.map { language in
             var updated = language
-            if i == index {
+            if language.id == id {
                 updated.selected.toggle()
             }
             return updated

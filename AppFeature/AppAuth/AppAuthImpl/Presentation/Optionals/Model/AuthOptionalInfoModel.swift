@@ -65,7 +65,7 @@ final class AuthOptionalInfoViewState: UIFeatureState {
             .init(
                 id: 3,
                 view: AnyView(
-                    AuthOptionalSelectLanguageView()
+                    AuthOptionalInterestsView()
                         .environmentObject(store)
                 )
             ),
@@ -79,7 +79,7 @@ final class AuthOptionalInfoViewState: UIFeatureState {
             .init(
                 id: 5,
                 view: AnyView(
-                    AuthOptionalInterestsView()
+                    AuthOptionalSelectLanguageView()
                         .environmentObject(store)
                 )
             ),

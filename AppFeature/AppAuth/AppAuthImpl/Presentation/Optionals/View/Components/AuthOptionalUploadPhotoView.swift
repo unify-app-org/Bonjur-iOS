@@ -33,12 +33,12 @@ struct AuthOptionalUploadPhotoView: View {
     
     private var topView: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Upload your photos")
+            Text("Your profile photo")
                 .font(Font.Typography.TitleXl.extraBold)
                 .foregroundStyle(Color.Palette.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
-            Text("Upload 1 images to get started")
+            Text("Upload a photo to get started")
                 .font(Font.Typography.BodyTextMd.regular)
                 .foregroundStyle(Color.Palette.grayPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)

@@ -24,14 +24,14 @@ struct AuthWelcomeView: View {
     }
     
     private var backButton: some View {
-        HStack{
-            Button{
-                store.send(.dismiss)
+        HStack {
+            Spacer()
+            Button {
+                store.send(.skipTapped)
             } label: {
                 Image(uiImage: UIImage.Icons.xmark)
                     .padding()
             }
-            Spacer()
         }
     }
     
@@ -54,12 +54,6 @@ struct AuthWelcomeView: View {
     
     private var buttons: some View {
         HStack {
-            AppButton(
-                title: "Skip",
-                model: .init(type: .tertiary)
-            ) {
-                
-            }
             AppButton(
                 title: "Continue",
                 model: .init(contentSize: .fill)

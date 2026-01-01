@@ -32,9 +32,20 @@ public class AppDIContainer: AppDIContainerProtocol {
         _ factory: @escaping () -> T
     ) {
         let key = String(describing: type)
+        
         if isSingleton {
-            if singletons[key] == nil {
-                singletons[key] = factory()
+            registry[key] = { [weak self] in
+                guard let self = self else { fatalError("Container deallocated") }
+                
+                if let existing = self.singletons[key] {
+                    guard let instance = existing as? T else {
+                        fatalError("Singleton type mismatch for \(key)")
+                    }
+                    return instance
+                }
+                let instance = factory()
+                self.singletons[key] = instance
+                return instance
             }
         } else {
             registry[key] = factory
@@ -43,12 +54,15 @@ public class AppDIContainer: AppDIContainerProtocol {
 
     public func resolve<T>(_ type: T.Type) -> T {
         let key = String(describing: type)
-        if let singleton = singletons[key] as? T {
-            return singleton
-        }
-        guard let dependency = registry[key]?() as? T else {
+        
+        guard let factory = registry[key] else {
             fatalError("\(T.self) Dependency not found")
         }
+        
+        guard let dependency = factory() as? T else {
+            fatalError("\(T.self) Failed to cast dependency")
+        }
+        
         return dependency
     }
 }

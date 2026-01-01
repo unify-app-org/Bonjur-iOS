@@ -37,5 +37,13 @@ public extension UIImage {
         public static let plus = UIImage(resource: .plus)
         
         public static let camera = UIImage(resource: .camera)
+        
+        public static let home = UIImage(resource: .home)
+        
+        public static let usersGroup = UIImage(resource: .usersGroup)
+        
+        public static let clipboardList = UIImage(resource: .clipboardList)
+        
+        public static let userIcon = UIImage(resource: .userIcon)
     }
 }

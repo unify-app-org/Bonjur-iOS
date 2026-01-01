@@ -6,11 +6,13 @@
 //
 
 import AppFoundation
+import AppStorage
 
 final class AuthWelcomeViewModel: UIFeatureViewModel<AuthWelcomeFeature> {
     
     struct Dependencies {
         let useCase: AuthUsecases
+        let userDefaults: UserDefaultsProtocol
     }
     
     private let router: AuthWelcomeRouterProtocol
@@ -33,14 +35,19 @@ final class AuthWelcomeViewModel: UIFeatureViewModel<AuthWelcomeFeature> {
         switch action {
         case .fetchData:
             fetchData()
-        case .dismiss:
-            Task {
-                await router.navigate(to: .dismiss)
-            }
         case .continueTapped:
             Task {
                 await router.navigate(to: .optional)
             }
+        case .skipTapped:
+            skipTapped()
+        }
+    }
+    
+    private func skipTapped() {
+        dependencies.userDefaults.set(true, forKey: .isAuthenticated)
+        Task {
+            await router.navigate(to: .dashboard)
         }
     }
     

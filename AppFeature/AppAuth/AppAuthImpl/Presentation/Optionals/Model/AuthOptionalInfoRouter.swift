@@ -8,6 +8,7 @@
 import UIKit
 
 enum AuthOptionalInfoRoute {
+    case skip
 }
 
 protocol AuthOptionalInfoRouterProtocol {
@@ -17,8 +18,21 @@ protocol AuthOptionalInfoRouterProtocol {
 
 final class AuthOptionalInfoRouter: AuthOptionalInfoRouterProtocol {
     weak var view: UIViewController?
+    private var authDelegate: AuthDelegate
+    
+    init(
+        view: UIViewController? = nil,
+        authDelegate: AuthDelegate = resolve()
+    ) {
+        self.view = view
+        self.authDelegate = authDelegate
+    }
     
     @MainActor
     func navigate(to route: AuthOptionalInfoRoute) {
+        switch route {
+        case .skip:
+            authDelegate.finishAuthentication()
+        }
     }
 }

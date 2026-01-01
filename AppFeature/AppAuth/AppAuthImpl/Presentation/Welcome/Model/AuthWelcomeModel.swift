@@ -44,6 +44,6 @@ final class AuthWelcomeViewState: UIFeatureState {
 
 enum AuthWelcomeAction: UIFeatureAction {
     case fetchData
-    case dismiss
     case continueTapped
+    case skipTapped
 }

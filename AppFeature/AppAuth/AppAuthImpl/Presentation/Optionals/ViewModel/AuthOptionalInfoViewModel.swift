@@ -45,7 +45,7 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
         case .closeKeyboard:
             UIApplication.shared.endEditing()
         case .skipTapped:
-            break
+            skipTapped()
         case .previouseTapped:
             previouseTapped()
         case .closeDatePicker:
@@ -53,11 +53,15 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
         }
     }
     
+    private func skipTapped() {
+        Task {
+           await router.navigate(to: .skip)
+       }
+    }
+    
     private func previouseTapped() {
         if state.currentStep != 1 {
             state.currentStep -= 1
-        } else {
-            
         }
     }
     
@@ -78,6 +82,8 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
     private func nextStepTapped() {
         if state.currentStep != state.getAllViews(store: store).count {
             state.currentStep += 1
+        } else {
+            skipTapped()
         }
         state.showDatePicker = false
     }

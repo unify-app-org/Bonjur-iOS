@@ -40,25 +40,17 @@ struct AuthOptionalInfoView: View {
     }
     
     private var topView: some View {
-        ZStack {
-            HStack {
-                Button {
-                    store.send(.previouseTapped)
-                } label: {
-                    Image(uiImage: UIImage.Icons.arrowLeft01)
-                        .frame(width: 28)
-                }
-                Spacer()
-            }
+        HStack(spacing: 25) {
+            AppProgressView(
+                currentStep: store.state.currentStep,
+                totalSteps: store.state.getAllViews(store: store).count
+            )
             
-            HStack {
-                Spacer()
-                AppProgressView(
-                    currentStep: store.state.currentStep,
-                    totalSteps: store.state.getAllViews(store: store).count
-                )
-                .padding(.horizontal, 32)
-                Spacer()
+            Button {
+                store.send(.skipTapped)
+            } label: {
+                Image(uiImage: UIImage.Icons.xmark)
+                    .frame(width: 28)
             }
         }
         .frame(height: 44)
@@ -92,11 +84,13 @@ struct AuthOptionalInfoView: View {
     
     private var bottomView: some View {
         HStack {
-            AppButton(
-                title: "Skip",
-                model: .init(type: .tertiary)
-            ) {
-                store.send(.skipTapped)
+            if store.state.currentStep > 1 {
+                AppButton(
+                    title: "Back",
+                    model: .init(type: .tertiary)
+                ) {
+                    store.send(.previouseTapped)
+                }
             }
             AppButton(
                 title: "Next",

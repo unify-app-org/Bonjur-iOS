@@ -59,7 +59,17 @@ enum AuthDependencyContainer {
     }
     
     private static func registerModule() {
-        register { AppAuthEntryModuleImpl() as AppAuthEntryModule }
+        register(AppAuthEntryModuleImpl.self, isSingleton: true) {
+            AppAuthEntryModuleImpl()
+        }
+        
+        register(AppAuthModule.self, isSingleton: true) {
+            resolve(AppAuthEntryModuleImpl.self)
+        }
+        
+        register(AuthDelegate.self, isSingleton: true) {
+            resolve(AppAuthEntryModuleImpl.self)
+        }
     }
     
     // MARK: - Dependencies Managing

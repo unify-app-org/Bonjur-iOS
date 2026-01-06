@@ -9,6 +9,7 @@ import UIKit
 
 enum ChooseUniversityRoute {
     case welcome
+    case signIn
 }
 
 protocol ChooseUniversityRouterProtocol {
@@ -22,6 +23,11 @@ final class ChooseUniversityRouter: ChooseUniversityRouterProtocol {
     @MainActor
     func navigate(to route: ChooseUniversityRoute) {
         switch route {
+        case .signIn:
+            let vc = SignInBuilder(
+                inputData: .init()
+            ).build()
+            view?.navigationController?.pushViewController(vc, animated: true)
         case .welcome:
             let vc = AuthWelcomeBuilder(
                 inputData: .init(name: "Huseyn")

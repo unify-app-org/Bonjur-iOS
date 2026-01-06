@@ -52,11 +52,14 @@ struct ChooseUniversityView: View {
     private var listView: some View {
         ScrollView {
             VStack(spacing: 16) {
-                ForEach(Array(store.state.uiModel.enumerated()), id: \.element.uuid) { index, university in
+                ForEach(
+                    store.state.uiModel,
+                    id: \.uuid
+                ) { university in
                     SelectableListItemView(model: university)
                         .onTapGesture {
                             withAnimation {
-                                store.send(.selectedCell(index))
+                                store.send(.selectedCell(university.id))
                             }
                         }
                 }

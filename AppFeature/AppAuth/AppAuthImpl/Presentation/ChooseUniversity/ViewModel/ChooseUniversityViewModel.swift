@@ -33,12 +33,10 @@ final class ChooseUniversityViewModel: UIFeatureViewModel<ChooseUniversityFeatur
         switch action {
         case .fetchData:
             fetchData()
-        case .selectedCell(let index):
-            selectedCell(index)
+        case .selectedCell(let id):
+            selectedCell(id)
         case .nextTapped:
-            Task {
-                await router.navigate(to: .welcome)
-            }
+            nextTapped()
         }
     }
     
@@ -48,10 +46,23 @@ final class ChooseUniversityViewModel: UIFeatureViewModel<ChooseUniversityFeatur
         }
     }
     
-    private func selectedCell(_ index: Int) {
-        state.uiModel = state.uiModel.enumerated().map { (i, reason) in
+    private func nextTapped() {
+        let selectedItem = state.uiModel.first(where: { $0.selected == true })
+        if selectedItem?.id == 1 {
+            Task {
+                await router.navigate(to: .welcome)
+            }
+        } else {
+            Task {
+                await router.navigate(to: .signIn)
+            }
+        }
+    }
+    
+    private func selectedCell(_ id: Int) {
+        state.uiModel = state.uiModel.map { reason in
             var updated = reason
-            updated.selected = (i == index)
+            updated.selected = (reason.id == id)
             return updated
         }
     }

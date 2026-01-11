@@ -19,6 +19,15 @@ let appAuthTarget = Target.createFeatureModule(
     )
 ).add(to: &frameworkTargets)
 
+let discoverTarget = Target.createFeatureModule(
+    name: "Discover",
+    implConfig: .init(
+        dependencies: [
+            
+        ]
+    )
+).add(to: &frameworkTargets)
+
 let project = Project(
     name: Project.Projects.features,
     options: .options(automaticSchemesOptions: .disabled),

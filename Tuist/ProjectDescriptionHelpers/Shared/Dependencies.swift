@@ -27,7 +27,9 @@ public extension TargetDependency {
     static var FeaturesDependencies: [Self] {
         [
             .AppFeature.AppAuth,
-            .AppFeature.AppAuthImpl
+            .AppFeature.AppAuthImpl,
+            .AppFeature.Discover,
+            .AppFeature.DiscoverImpl
         ]
     }
     
@@ -73,6 +75,7 @@ public extension TargetDependency {
     }
     
     enum AppFeature {
+        // AppAuth
         public static let AppAuth: TargetDependency = .project(
             target: "AppAuth",
             path: .relativeToRoot(Project.Projects.features)
@@ -82,6 +85,18 @@ public extension TargetDependency {
             target: "AppAuthImpl",
             path: .relativeToRoot(Project.Projects.features)
         )
+        
+        // Discover
+        public static let Discover: TargetDependency = .project(
+            target: "Discover",
+            path: .relativeToRoot(Project.Projects.features)
+        )
+        
+        public static let DiscoverImpl: TargetDependency = .project(
+            target: "DiscoverImpl",
+            path: .relativeToRoot(Project.Projects.features)
+        )
+        
     }
     
     

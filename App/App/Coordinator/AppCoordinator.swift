@@ -46,7 +46,8 @@ final class AppCoordinator {
     
     func showTabBar() {
         let tabBarVC = AppTabBarBuilder(
-            inputData: .init()
+            inputData: .init(),
+            dependencyContainer: dependencyContainer
         ).build()
         window.rootViewController = tabBarVC
         UIView.transition(

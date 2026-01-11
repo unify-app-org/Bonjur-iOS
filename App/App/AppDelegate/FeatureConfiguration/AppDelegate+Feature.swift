@@ -10,5 +10,6 @@ import DependecyInjection
 extension AppDelegate {
     func setUpFeature(container: AppDIContainer) {
         setUpAuth(container)
-    } 
+        setUpDiscovery(container)
+    }
 }

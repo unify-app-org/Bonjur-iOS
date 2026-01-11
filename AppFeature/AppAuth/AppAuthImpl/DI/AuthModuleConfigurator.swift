@@ -11,7 +11,7 @@ public class AuthModuleConfigurator {
     
     public init() {}
     
-    public func setup(
+    public static func setup(
         diContainer: AppDIContainer
     ) {
         AuthDependencyContainer.setup(container: diContainer)

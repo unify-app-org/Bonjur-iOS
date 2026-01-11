@@ -7,13 +7,20 @@
 //
 
 import UIKit
+import DependecyInjection
+import Discover
 
 // MARK: - AppTabBar builder
 
 struct AppTabBarBuilder {
     private let inputData: AppTabBarInputData
+    private var dependencyContainer: AppDIContainer
     
-    init(inputData: AppTabBarInputData) {
+    init(
+        inputData: AppTabBarInputData,
+        dependencyContainer: AppDIContainer
+    ) {
+        self.dependencyContainer = dependencyContainer
         self.inputData = inputData
     }
     
@@ -27,10 +34,11 @@ struct AppTabBarBuilder {
         )
         
         let controller = AppTabBarHostController(
-            viewModel: viewModel
-        ) { store in
-            AppTabBarView(store: store)
-        }
+            viewModel: viewModel,
+            discoverModule: dependencyContainer.resolve(
+                DiscoverModule.self
+            )
+        )
         
         router.view = controller
         return controller

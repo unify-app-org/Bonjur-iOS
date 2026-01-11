@@ -10,6 +10,6 @@ import AppAuthImpl
 
 extension AppDelegate {
     func setUpAuth(_ container: AppDIContainer) {
-        AuthModuleConfigurator().setup(diContainer: container)
+        AuthModuleConfigurator.setup(diContainer: container)
     }
 }

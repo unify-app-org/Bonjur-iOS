@@ -45,5 +45,9 @@ public extension UIImage {
         public static let clipboardList = UIImage(resource: .clipboardList)
         
         public static let userIcon = UIImage(resource: .userIcon)
+        
+        public static let chat = UIImage(resource: .chat)
+        
+        public static let twoUsers = UIImage(resource: .twoUsers)
     }
 }

@@ -17,10 +17,12 @@ final class AppTabBarHostController: UITabBarController {
     
     private let viewModel: AppTabBarViewModel
     private var discoverModule: DiscoverModule
-    private let plusButton = UIButton(type: .custom)
-    private let dimView = OverlayView()
+    
     private var isMenuOpen = false
     
+    private let plusButton = UIButton(type: .custom)
+    private let dimView = OverlayView()
+
     init(
         viewModel: AppTabBarViewModel,
         discoverModule: DiscoverModule
@@ -40,11 +42,28 @@ final class AppTabBarHostController: UITabBarController {
         setupAppearance()
         setupPlusButton()
         setupDimView()
+        setUpCreateMenu()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         updateHighlightFrame()
+    }
+    
+    private func setUpCreateMenu() {
+        let createMenuView = CreateView { [weak self] type in
+            guard let self else { return }
+            selectedCreateType(type)
+        }
+        let createMenuUIView = createMenuView.makeUIView()
+        dimView.addSubview(createMenuUIView)
+        
+        createMenuUIView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            createMenuUIView.leadingAnchor.constraint(equalTo: dimView.leadingAnchor),
+            createMenuUIView.trailingAnchor.constraint(equalTo: dimView.trailingAnchor),
+            createMenuUIView.bottomAnchor.constraint(equalTo: plusButton.topAnchor, constant: -16)
+        ])
     }
     
     private func setupDimView() {
@@ -129,6 +148,20 @@ final class AppTabBarHostController: UITabBarController {
             plusButton.widthAnchor.constraint(equalToConstant: 44),
             plusButton.heightAnchor.constraint(equalToConstant: 44)
         ])
+    }
+    
+    private func selectedCreateType(_ type: CreateType) {
+        isMenuOpen.toggle()
+        animatePlusButtonToPlus()
+        hideCreateMenu()
+        switch type {
+        case .club:
+            break
+        case .event:
+            break
+        case .hangout:
+            break
+        }
     }
     
     @objc
@@ -230,79 +263,5 @@ final class AppTabBarHostController: UITabBarController {
         ])
         
         return vc
-    }
-}
-
-final class OverlayView: UIView {
-    var highlightFrame: CGRect = .zero {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    var highlightCornerRadius: CGFloat = 0 // Add this property
-    
-    var onTapGesture: (() -> Void)?
-    var allowTapToAdvance: Bool = true
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupTapGesture()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupTapGesture()
-    }
-    
-    private func setupTapGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        tapGesture.cancelsTouchesInView = false
-        addGestureRecognizer(tapGesture)
-    }
-    
-    @objc private func handleTap(_ gesture: UITapGestureRecognizer) {
-        guard allowTapToAdvance else { return }
-        
-        let location = gesture.location(in: self)
-        
-        // Check if tap is outside the circular/rounded highlight area
-        if !isPointInHighlightArea(location) {
-            onTapGesture?()
-        }
-    }
-    
-    private func isPointInHighlightArea(_ point: CGPoint) -> Bool {
-        let path = UIBezierPath(
-            roundedRect: highlightFrame,
-            cornerRadius: highlightCornerRadius
-        )
-        return path.contains(point)
-    }
-    
-    override func draw(_ rect: CGRect) {
-        guard let context = UIGraphicsGetCurrentContext() else { return }
-        
-        // Fill the entire view with dark overlay
-        context.setFillColor(UIColor(Color.Palette.blackHigh).withAlphaComponent(0.4).cgColor)
-        context.fill(rect)
-        
-        // Clear the highlight area with rounded corners
-        context.setBlendMode(.clear)
-        
-        let highlightPath = UIBezierPath(
-            roundedRect: highlightFrame,
-            cornerRadius: highlightCornerRadius
-        )
-        highlightPath.fill()
-    }
-    
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        // Allow touches through the circular/rounded highlight area
-        if isPointInHighlightArea(point) {
-            return nil
-        }
-        
-        return super.hitTest(point, with: event)
     }
 }

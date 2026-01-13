@@ -22,7 +22,13 @@ final class FilterViewModel: ObservableObject {
         model: [FilterView.Model],
         selectedItems: @escaping ([FilterView.Items]) -> Void
     ) {
-        self.model = model
+        self.model = model.map { section in
+            var updated = section
+            updated.items = section.items.sorted {
+                $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
+            }
+            return updated
+        }
         self.onItemsSelected = selectedItems
     }
     
@@ -74,7 +80,7 @@ final class FilterViewModel: ObservableObject {
         model = model.map { section in
             var updated = section
             if section.id == selectedItem.id {
-                updated.items = selectedItem.items
+                updated.items = reorderSelectedFirst(selectedItem.items)
             }
             return updated
         }
@@ -84,7 +90,12 @@ final class FilterViewModel: ObservableObject {
     }
     
     func confirmFilterScreen() {
-        model = filterModel
+        model = filterModel.map { section in
+            var updated = section
+            updated.items = reorderSelectedFirst(section.items)
+            return updated
+        }
+        
         notifySelectedItems()
     }
     
@@ -96,11 +107,13 @@ final class FilterViewModel: ObservableObject {
         model = model.map { section in
             var updated = section
             if section.id == selectedItem.id {
-                updated.items = section.items.map { subItem in
-                    var updatedSubItem = subItem
-                    updatedSubItem.selected = false
-                    return updatedSubItem
-                }
+                updated.items = sortAlphabetically(
+                    section.items.map { subItem in
+                        var updatedSubItem = subItem
+                        updatedSubItem.selected = false
+                        return updatedSubItem
+                    }
+                )
             }
             return updated
         }
@@ -111,7 +124,15 @@ final class FilterViewModel: ObservableObject {
     
     func removeAllFilters() {
         filterModel = filterModel.map { section in
-            deselectAllItems(in: section)
+            var updated = section
+            updated.items = sortAlphabetically(
+                section.items.map { subItem in
+                    var updatedSubItem = subItem
+                    updatedSubItem.selected = false
+                    return updatedSubItem
+                }
+            )
+            return updated
         }
         
         model = filterModel
@@ -120,7 +141,10 @@ final class FilterViewModel: ObservableObject {
     
     // MARK: - Private Helpers
     
-    private func updateSection(_ section: FilterView.Model, togglingItem item: FilterView.Items) -> FilterView.Model {
+    private func updateSection(
+        _ section: FilterView.Model,
+        togglingItem item: FilterView.Items
+    ) -> FilterView.Model {
         var updated = section
         updated.items = section.items.map { subItem in
             var updatedSubItem = subItem
@@ -145,5 +169,21 @@ final class FilterViewModel: ObservableObject {
     private func notifySelectedItems() {
         let allSelectedItems = model.flatMap { $0.items.filter(\.selected) }
         onItemsSelected(allSelectedItems)
+    }
+    
+    private func reorderSelectedFirst(
+        _ items: [FilterView.Items]
+    ) -> [FilterView.Items] {
+        let selected = items.filter { $0.selected }
+        let unselected = items.filter { !$0.selected }
+        return selected + unselected
+    }
+    
+    private func sortAlphabetically(
+        _ items: [FilterView.Items]
+    ) -> [FilterView.Items] {
+        items.sorted {
+            $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
+        }
     }
 }

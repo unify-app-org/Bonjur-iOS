@@ -21,7 +21,9 @@ final class AppTabBarHostController: UITabBarController {
     private var isMenuOpen = false
     
     private let plusButton = UIButton(type: .custom)
-    private let dimView = OverlayView()
+    private var dimView: OverlayView?
+    private var createMenuView: CreateView?
+    private var createMenuUIView: UIView?
 
     init(
         viewModel: AppTabBarViewModel,
@@ -41,8 +43,6 @@ final class AppTabBarHostController: UITabBarController {
         setupTabs()
         setupAppearance()
         setupPlusButton()
-        setupDimView()
-        setUpCreateMenu()
     }
     
     override func viewDidLayoutSubviews() {
@@ -51,22 +51,26 @@ final class AppTabBarHostController: UITabBarController {
     }
     
     private func setUpCreateMenu() {
-        let createMenuView = CreateView { [weak self] type in
+        createMenuView = CreateView { [weak self] type in
             guard let self else { return }
             selectedCreateType(type)
         }
-        let createMenuUIView = createMenuView.makeUIView()
-        dimView.addSubview(createMenuUIView)
+        guard let dimView, let createMenuView else { return }
+        let menuUIView = createMenuView.makeUIView()
+        self.createMenuUIView = menuUIView
+        dimView.addSubview(menuUIView)
         
-        createMenuUIView.translatesAutoresizingMaskIntoConstraints = false
+        menuUIView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            createMenuUIView.leadingAnchor.constraint(equalTo: dimView.leadingAnchor),
-            createMenuUIView.trailingAnchor.constraint(equalTo: dimView.trailingAnchor),
-            createMenuUIView.bottomAnchor.constraint(equalTo: plusButton.topAnchor, constant: -16)
+            menuUIView.leadingAnchor.constraint(equalTo: dimView.leadingAnchor),
+            menuUIView.trailingAnchor.constraint(equalTo: dimView.trailingAnchor),
+            menuUIView.bottomAnchor.constraint(equalTo: plusButton.topAnchor, constant: -16)
         ])
     }
     
     private func setupDimView() {
+        dimView = OverlayView()
+        guard let dimView else { return }
         dimView.backgroundColor = .clear
         dimView.alpha = 0
         dimView.highlightCornerRadius = 22
@@ -76,7 +80,6 @@ final class AppTabBarHostController: UITabBarController {
             guard let self else { return }
             isMenuOpen.toggle()
             animatePlusButtonToPlus()
-            hideCreateMenu()
         }
         
         dimView.translatesAutoresizingMaskIntoConstraints = false
@@ -91,7 +94,7 @@ final class AppTabBarHostController: UITabBarController {
     private func setupTabs() {
         let discover = discoverModule.makeDiscover()
         let clubs = makePlaceholderViewController(title: "Clubs")
-        let spacer = UIViewController() // Spacer for the plus button
+        let spacer = UIViewController()
         let plans = makePlaceholderViewController(title: "My plans")
         let profile = makePlaceholderViewController(title: "Profile")
         
@@ -153,7 +156,6 @@ final class AppTabBarHostController: UITabBarController {
     private func selectedCreateType(_ type: CreateType) {
         isMenuOpen.toggle()
         animatePlusButtonToPlus()
-        hideCreateMenu()
         switch type {
         case .club:
             break
@@ -166,14 +168,14 @@ final class AppTabBarHostController: UITabBarController {
     
     @objc
     private func plusTapped() {
+        setupDimView()
+        setUpCreateMenu()
         isMenuOpen.toggle()
         
         if isMenuOpen {
             animatePlusButtonToX()
-            showCreateMenu()
         } else {
             animatePlusButtonToPlus()
-            hideCreateMenu()
         }
     }
     
@@ -183,7 +185,7 @@ final class AppTabBarHostController: UITabBarController {
             self.plusButton.backgroundColor = .white
             self.plusButton.tintColor = .black
             self.plusButton.transform = CGAffineTransform(rotationAngle: .pi / 4)
-            self.dimView.alpha = 1
+            self.dimView?.alpha = 1
         } completion: { [weak self] _ in
             self?.updateHighlightFrame()
         }
@@ -195,8 +197,15 @@ final class AppTabBarHostController: UITabBarController {
             self.plusButton.backgroundColor = .black
             self.plusButton.tintColor = .white
             self.plusButton.transform = .identity
-            self.dimView.alpha = 0
+            self.dimView?.alpha = 0
         } completion: { [weak self] _ in
+            self?.createMenuUIView?.removeFromSuperview()
+            self?.dimView?.removeFromSuperview()
+            
+            self?.createMenuUIView = nil
+            self?.createMenuView = nil
+            self?.dimView = nil
+            
             self?.updateHighlightFrame()
         }
     }
@@ -215,15 +224,7 @@ final class AppTabBarHostController: UITabBarController {
             height: buttonBounds.height
         )
         
-        dimView.highlightFrame = highlightFrame
-    }
-    
-    private func showCreateMenu() {
-        
-    }
-    
-    private func hideCreateMenu() {
-        dismiss(animated: true)
+        dimView?.highlightFrame = highlightFrame
     }
     
     private func setupAppearance() {

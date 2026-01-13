@@ -49,5 +49,11 @@ public extension UIImage {
         public static let chat = UIImage(resource: .chat)
         
         public static let twoUsers = UIImage(resource: .twoUsers)
+        
+        public static let bell = UIImage(resource: .bell)
+        
+        public static let chevronDown02 = UIImage(resource: .chevronDown02)
+        
+        public static let filter04 = UIImage(resource: .filter04)
     }
 }

@@ -15,7 +15,14 @@ struct DiscoverView: View {
     var body: some View {
         VStack(spacing: .zero) {
             topView
-            FilterView(viewModel: .init(model: FilterView.Model.mock))
+            FilterView(
+                viewModel: .init(
+                    model: FilterView.Model.mock,
+                    selectedItems: { item in
+                        // do
+                    }
+                )
+            )
             ScrollView {
                 Button {
                     

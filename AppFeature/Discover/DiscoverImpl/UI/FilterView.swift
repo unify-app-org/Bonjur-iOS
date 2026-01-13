@@ -11,6 +11,7 @@ import Combine
 
 struct FilterView: View {
     @ObservedObject private var viewModel: FilterViewModel
+    @State private var presentFilter: Bool = false
     
     init(viewModel: FilterViewModel) {
         self.viewModel = viewModel
@@ -44,11 +45,15 @@ struct FilterView: View {
                         .frame(height: UIScreen.main.bounds.height)
                         .onTapGesture {
                             withAnimation {
-                                viewModel.selectItem(item: nil)
+                                viewModel.selectItem(nil)
                             }
                         }
                 }
             }
+        }
+        .fullScreenCover(isPresented: $presentFilter) {
+            FilterScreen()
+                .environmentObject(viewModel)
         }
         .animation(.easeInOut(duration: 0.25),
                    value: viewModel.selectedItem?.id)
@@ -66,7 +71,7 @@ struct FilterView: View {
                 LazyVGrid(columns: columns, spacing: 24) {
                     ForEach(items, id: \.uuid) { item in
                         Button {
-                            viewModel.selectedSubItem(item)
+                            viewModel.toggleSubItem(item)
                         } label: {
                             HStack {
                                 Image(uiImage: item.selected
@@ -87,19 +92,26 @@ struct FilterView: View {
             HStack(spacing: 18) {
                 AppButton(
                     title: "Remove",
-                    model: .init(type: .secondary, contentSize: .fill)
+                    model: .init(
+                        type: .secondary,
+                        contentSize: .fill,
+                        size: .small
+                    )
                 ) {
                     withAnimation {
-                        viewModel.removeTapped()
+                        viewModel.removeSelection()
                     }
                 }
                 
                 AppButton(
-                    title: "Confirm",
-                    model: .init(contentSize: .fill)
+                    title: "Apply",
+                    model: .init(
+                        contentSize: .fill,
+                        size: .small
+                    )
                 ) {
                     withAnimation {
-                        viewModel.confirmButtonTapped()
+                        viewModel.confirmSelection()
                     }
                 }
             }
@@ -122,37 +134,45 @@ struct FilterView: View {
     }
     
     private var filterView: some View {
-        HStack {
-            Image(uiImage: UIImage.Icons.filter04)
-            Text("Filter")
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
-        .background(Color.Palette.grayQuaternary)
-        .clipShape(Capsule())
-        .overlay(
-            Capsule()
-                .stroke(Color.Palette.black, lineWidth:  viewModel.getSectedCount() != 0 ? 1 : 0)
-        )
-        .overlay(alignment: .topTrailing) {
-            if viewModel.getSectedCount() != 0 {
-                Text("\(viewModel.getSectedCount())")
-                    .font(Font.Typography.TextSm.regular)
-                    .foregroundStyle(Color.white)
-                    .padding(5)
-                    .background(Color.Palette.black)
-                    .clipShape(Circle())
-                    .offset(x: 4, y: -8)
+        Button {
+            presentFilter = true
+        } label: {
+            HStack {
+                Image(uiImage: UIImage.Icons.filter04)
+                Text("Filter")
+                    .foregroundStyle(Color.Palette.black)
             }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(Color.Palette.grayQuaternary)
+            .clipShape(Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(
+                        Color.Palette.black,
+                        lineWidth:  viewModel.getSelectedCount() != 0 ? 1 : 0
+                    )
+            )
+            .overlay(alignment: .topTrailing) {
+                if viewModel.getSelectedCount() != 0 {
+                    Text("\(viewModel.getSelectedCount())")
+                        .font(Font.Typography.TextSm.regular)
+                        .foregroundStyle(Color.white)
+                        .padding(5)
+                        .background(Color.Palette.black)
+                        .clipShape(Circle())
+                        .offset(x: 4, y: -8)
+                }
+            }
+            .padding(.leading)
         }
-        .padding(.leading)
     }
     
     @ViewBuilder
     private func chipItem(_ item: Model) -> some View {
         Button {
             withAnimation {
-                viewModel.selectItem(item: item)
+                viewModel.selectItem(item)
             }
         } label: {
             HStack {
@@ -164,14 +184,14 @@ struct FilterView: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
             .background(
-                viewModel.selectedItem(item) ? .clear : Color.Palette.grayQuaternary
+                viewModel.isSelected(item) ? .clear : Color.Palette.grayQuaternary
             )
             .clipShape(Capsule())
             .overlay(
                 Capsule()
                     .stroke(
                         Color.Palette.black,
-                        lineWidth: viewModel.selectedItem(item) || viewModel.hasSelectedSubItem(item) ? 1 : 0
+                        lineWidth: viewModel.isSelected(item) || viewModel.hasSelectedSubItems(item) ? 1 : 0
                     )
             )
             .padding(.vertical)
@@ -182,7 +202,11 @@ struct FilterView: View {
 #Preview {
     ScrollView {
         FilterView(
-            viewModel: FilterViewModel(model: FilterView.Model.mock)
+            viewModel: FilterViewModel(
+                model: FilterView.Model.mock,
+                selectedItems: { item in
+                
+            })
         )
     }
 }

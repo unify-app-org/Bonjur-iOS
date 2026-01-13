@@ -14,15 +14,18 @@ public extension AppButton {
         let type: ButtonType
         let style: ButtonStyle
         let contentSize: ContentSize
+        let size: Size
         
         public init(
             type: ButtonType = .primary,
             style: ButtonStyle = .default,
-            contentSize: ContentSize = .fit
+            contentSize: ContentSize = .fit,
+            size: Size = .large
         ) {
             self.type = type
             self.style = style
             self.contentSize = contentSize
+            self.size = size
         }
         
         var backgroundColor: Color {
@@ -53,7 +56,14 @@ public extension AppButton {
         }
         
         var verticalPadding: CGFloat {
-            return 16
+            switch size {
+            case .large:
+                return 16
+            case .medium:
+                return 12
+            case .small:
+                return 10
+            }
         }
         
         var edges: EdgeInsets {
@@ -89,6 +99,12 @@ public extension AppButton {
                 return 0
             }
         }
+    }
+    
+    enum Size {
+        case large
+        case medium
+        case small
     }
     
     enum ContentSize {

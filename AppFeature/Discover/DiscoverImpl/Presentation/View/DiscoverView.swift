@@ -15,6 +15,22 @@ struct DiscoverView: View {
     var body: some View {
         VStack(spacing: .zero) {
             topView
+            scrollView
+        }
+    }
+    
+    private var scrollView: some View {
+        ScrollView {
+            VStack {
+                Text("Test")
+            }
+        }
+    }
+
+    private var topView: some View {
+        VStack(spacing: .zero) {
+            profileView
+                .padding(.horizontal)
             FilterView(
                 viewModel: .init(
                     model: FilterView.Model.mock,
@@ -23,19 +39,7 @@ struct DiscoverView: View {
                     }
                 )
             )
-            ScrollView {
-                Button {
-                    
-                } label: {
-                    Text("Discover")
-                }
-            }
         }
-    }
-
-    private var topView: some View {
-        profileView
-            .padding(.horizontal)
     }
     
     private var profileView: some View {
@@ -75,14 +79,6 @@ struct DiscoverView: View {
                     .foregroundStyle(Color.Palette.graySecondary)
                     .background(Color.Palette.grayQuaternary)
                     .clipShape(RoundedRectangle(cornerRadius: 14))
-            }
-        }
-    }
-    
-    private var scrollView: some View {
-        ScrollView {
-            VStack {
-                Text("Test")
             }
         }
     }

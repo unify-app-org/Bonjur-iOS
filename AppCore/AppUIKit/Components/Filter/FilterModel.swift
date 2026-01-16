@@ -6,25 +6,36 @@
 //
 
 import Foundation
-import AppUIKit
 
-extension FilterView {
+public extension FilterView {
     struct Model: Identifiable, Hashable {
-        let id = UUID()
+        public let id = UUID()
         let title: String
         let type: String
         var items: [Items]
+        
+        public init(title: String, type: String, items: [Items]) {
+            self.title = title
+            self.type = type
+            self.items = items
+        }
     }
     
     struct Items: Identifiable, Hashable {
-        let uuid = UUID()
+        public let uuid = UUID()
         let title: String
         var selected: Bool = false
-        let id: Int
+        public let id: Int
+        
+        public init(title: String, selected: Bool = false, id: Int) {
+            self.title = title
+            self.selected = selected
+            self.id = id
+        }
     }
 }
 
-extension FilterView.Model {
+public extension FilterView.Model {
     static var mock: [FilterView.Model] = [
         .init(
             title: "sport",

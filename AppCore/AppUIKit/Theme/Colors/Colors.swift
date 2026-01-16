@@ -36,5 +36,18 @@ public extension Color {
         
         public static let greenLight = Color.init(.greenLight) // #F2FFE0
         
+        public static let cardBgSecondry = Color.init(.cardBgSecondry) // #4870FF
+        
+        public static let cardBgTeritary = Color.init(.cardBgTeritary) // #E6C1FE
+        
+        public static let cardBgOrange = Color.init(.cardBgOrange) // #FFC144
+        
+        public static let cardBgPink = Color.init(.cardBgPink) // #FF9BF8
+        
+        public static let cardBgRed = Color.init(.cardBgRed) // #FF5558
+        
+        public static let whiteHigh = Color.white.opacity(0.9)
+        
+        public static let white = Color.white
     }
 }

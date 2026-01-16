@@ -6,18 +6,17 @@
 //
 
 import SwiftUI
-import AppUIKit
 import Combine
 
-struct FilterView: View {
+public struct FilterView: View {
     @ObservedObject private var viewModel: FilterViewModel
     @State private var presentFilter: Bool = false
     
-    init(viewModel: FilterViewModel) {
+    public init(viewModel: FilterViewModel) {
         self.viewModel = viewModel
     }
     
-    var body: some View {
+    public var body: some View {
         VStack(spacing: .zero) {
             chipsView
         }

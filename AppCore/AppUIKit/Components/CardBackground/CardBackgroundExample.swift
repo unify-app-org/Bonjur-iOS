@@ -59,7 +59,7 @@ struct CardBackgroundExample: View {
                             .font(.system(size: 20, weight: .semibold))
                     }
                 }
-                .background(Color(red: 0.7, green: 0.85, blue: 0.95))
+                .backgroundType(.secondary)
                 .circleStroke(.white)
                 .strokeWidth(50)
                 .frame(height: 180)
@@ -88,7 +88,7 @@ struct CardBackgroundExample: View {
                     }
                     .padding(.horizontal)
                 }
-                .background(Color(red: 0.95, green: 0.85, blue: 0.95))
+                .backgroundType(.teritary)
                 .circleStroke(.white)
                 .strokeWidth(30)
                 .frame(height: 160)

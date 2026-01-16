@@ -8,19 +8,24 @@ import SwiftUI
 
 public struct CardBackgroundView<Content: View>: View {
     let content: () -> Content
-    var backgroundColor: Color = Color.Palette.primary
-    var circleStrokeColor: Color = .white.opacity(0.5)
+    var cardType: BackgroundType
+    var bgColorType: AppUIEntities.BackgroundType = .primary
+    var circleStrokeColor: Color = .Palette.white.opacity(0.5)
     var strokeWidth: CGFloat = 40
     var cornerRadius: CGFloat = 20
     
-    public init(@ViewBuilder content: @escaping () -> Content) {
+    public init(
+        cardType: BackgroundType = .community,
+        @ViewBuilder content: @escaping () -> Content
+    ) {
         self.content = content
+        self.cardType = cardType
     }
     
     public var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: cornerRadius)
-                .fill(backgroundColor)
+                .fill(bgColorType.bgColor)
             
             GeometryReader { geometry in
                 Circle()
@@ -30,24 +35,25 @@ public struct CardBackgroundView<Content: View>: View {
                         height: geometry.size.width * 0.6
                     )
                     .position(
-                        x: geometry.size.width * 0.6,
+                        x: geometry.size.width * (cardType == .community ? 0.6 : 0.8),
                         y: -geometry.size.width * 0.05
                     )
                 
-                Circle()
-                    .stroke(circleStrokeColor, lineWidth: strokeWidth)
-                    .frame(
-                        width: geometry.size.width * 0.4,
-                        height: geometry.size.width * 0.55
-                    )
-                    .position(
-                        x: geometry.size.width * 0.3,
-                        y: geometry.size.height + geometry.size.width * 0.05
-                    )
+                if cardType == .community {
+                    Circle()
+                        .stroke(circleStrokeColor, lineWidth: strokeWidth)
+                        .frame(
+                            width: geometry.size.width * 0.4,
+                            height: geometry.size.width * 0.55
+                        )
+                        .position(
+                            x: geometry.size.width * 0.3,
+                            y: geometry.size.height + geometry.size.width * 0.05
+                        )
+                }
             }
             
             content()
-                .padding()
         }
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .clipped()
@@ -55,9 +61,9 @@ public struct CardBackgroundView<Content: View>: View {
 }
 
 public extension CardBackgroundView {
-    func background(_ color: Color) -> Self {
+    func backgroundType(_ type: AppUIEntities.BackgroundType) -> Self {
         var view = self
-        view.backgroundColor = color
+        view.bgColorType = type
         return view
     }
     
@@ -78,4 +84,16 @@ public extension CardBackgroundView {
         view.cornerRadius = radius
         return view
     }
+}
+
+public extension CardBackgroundView {
+    enum BackgroundType {
+        case community
+        case club
+    }
+}
+
+
+#Preview {
+    CardBackgroundExample()
 }

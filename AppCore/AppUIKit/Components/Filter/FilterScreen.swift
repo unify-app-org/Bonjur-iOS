@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import AppUIKit
 
 struct FilterScreen: View {
     @EnvironmentObject private var viewModel: FilterViewModel

@@ -5,12 +5,12 @@
 //  Created by Huseyn Hasanov on 11.01.26.
 //
 
-import UIKit
+import Foundation
 import Discover
 
 struct DiscoverModuleImpl: DiscoverModule {
     
-    func makeDiscover() -> UIViewController {
+    func makeDiscover() -> AnyObject {
         return DiscoverBuilder(
             inputData: .init()
         ).build()

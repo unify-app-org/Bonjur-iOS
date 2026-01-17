@@ -5,8 +5,8 @@
 //  Created by Huseyn Hasanov on 11.01.26.
 //
 
-import UIKit
+import Foundation
 
 public protocol DiscoverModule {
-    func makeDiscover() -> UIViewController
+    func makeDiscover() -> AnyObject
 }

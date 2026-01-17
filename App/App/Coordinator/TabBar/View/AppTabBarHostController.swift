@@ -10,6 +10,7 @@ import UIKit
 import AppFoundation
 import SwiftUICore
 import Discover
+import Clubs
 
 // MARK: - Controller
 
@@ -17,7 +18,8 @@ final class AppTabBarHostController: UITabBarController {
     
     private let viewModel: AppTabBarViewModel
     private var discoverModule: DiscoverModule
-    
+    private var clubsModule: ClubsModule
+
     private var isMenuOpen = false
     
     private let plusButton = UIButton(type: .custom)
@@ -27,10 +29,12 @@ final class AppTabBarHostController: UITabBarController {
 
     init(
         viewModel: AppTabBarViewModel,
-        discoverModule: DiscoverModule
+        discoverModule: DiscoverModule,
+        clubsModule: ClubsModule
     ) {
         self.viewModel = viewModel
         self.discoverModule = discoverModule
+        self.clubsModule = clubsModule
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -92,8 +96,8 @@ final class AppTabBarHostController: UITabBarController {
     }
     
     private func setupTabs() {
-        let discover = discoverModule.makeDiscover()
-        let clubs = makePlaceholderViewController(title: "Clubs")
+        let discover = discoverModule.makeDiscover() as! UIViewController
+        let clubs = clubsModule.makeClubsViewController() as! UIViewController
         let spacer = UIViewController()
         let plans = makePlaceholderViewController(title: "My plans")
         let profile = makePlaceholderViewController(title: "Profile")

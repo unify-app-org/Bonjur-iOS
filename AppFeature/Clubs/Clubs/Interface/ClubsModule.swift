@@ -8,4 +8,6 @@
 import Foundation
 
 public protocol ClubsModule {
+    
+    func makeClubsViewController() -> AnyObject
 }

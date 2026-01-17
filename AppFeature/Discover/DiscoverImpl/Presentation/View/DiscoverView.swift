@@ -66,7 +66,7 @@ struct DiscoverView: View {
         VStack(spacing: 0) {
             if !store.state.uiModel.communities.isEmpty {
                 let communities = store.state.uiModel.communities
-                headerTitle("Communities")
+                headerTitle("Communities", type: .community)
                 AppTabView(
                     currentPage: $store.state.currentCommunitiesPage,
                     pageCount: communities.count
@@ -90,7 +90,7 @@ struct DiscoverView: View {
         VStack(spacing: 0) {
             if !store.state.uiModel.clubs.isEmpty {
                 let clubs = store.state.uiModel.clubs
-                headerTitle("Clubs")
+                headerTitle("Clubs", type: .clubs)
                 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
@@ -113,7 +113,7 @@ struct DiscoverView: View {
         VStack(spacing: 0) {
             if !store.state.uiModel.events.isEmpty {
                 let events = store.state.uiModel.events
-                headerTitle("Events")
+                headerTitle("Events", type: .events)
                 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
@@ -141,7 +141,7 @@ struct DiscoverView: View {
         VStack(spacing: 0) {
             if !store.state.uiModel.hangouts.isEmpty {
                 let hangouts = store.state.uiModel.hangouts
-                headerTitle("Hangouts")
+                headerTitle("Hangouts", type: .hangOuts)
                 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
@@ -165,13 +165,26 @@ struct DiscoverView: View {
         }
     }
     
-    private func headerTitle(_ text: String) -> some View {
-        Text(text)
-            .font(Font.Typography.TitleSm.semiBold)
-            .foregroundStyle(Color.Palette.black)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .multilineTextAlignment(.leading)
-            .padding(.horizontal)
+    private func headerTitle(_ text: String, type: AppUIEntities.ActivityType) -> some View {
+        HStack {
+            Text(text)
+                .font(Font.Typography.TitleSm.semiBold)
+                .foregroundStyle(Color.Palette.black)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .multilineTextAlignment(.leading)
+                .padding(.horizontal)
+            if type != .community {
+                Button {
+                    
+                } label: {
+                    Text("view all")
+                        .font(Font.Typography.TextL.semiBold)
+                        .foregroundStyle(Color.Palette.black)
+                        .underline()
+                }
+            }
+        }
+        .padding(.trailing)
     }
 
     @ViewBuilder

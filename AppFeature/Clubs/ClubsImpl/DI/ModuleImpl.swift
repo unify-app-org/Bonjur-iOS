@@ -9,4 +9,9 @@ import Foundation
 import Clubs
 
 struct ClubsModuleImpl: ClubsModule {
+    func makeClubsViewController() -> AnyObject {
+        ClubsBuilder(
+            inputData: .init()
+        ).build()
+    }
 }

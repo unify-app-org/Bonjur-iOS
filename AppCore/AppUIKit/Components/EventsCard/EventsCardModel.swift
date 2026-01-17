@@ -97,36 +97,100 @@ public extension EventsCardView {
 }
 
 
-extension EventsCardView.Model {
-    static let mock: Self = .init(
-        id: UUID().uuidString,
-        name: "Fan events",
-        coverimageURL: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
-        memberCount: 21,
-        totalCapacity: 40,
-        club: .init(
-            name: "Football club",
-            id: 2
+public extension EventsCardView.Model {
+    static let mock: [Self] = [
+        .init(
+            id: UUID().uuidString,
+            name: "Fan events",
+            coverimageURL: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
+            memberCount: 21,
+            totalCapacity: 40,
+            club: .init(
+                name: "Football club",
+                id: 2
+            ),
+            tags: [
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Football"
+                ),
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Voleyball"
+                ),
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Basketball"
+                )
+            ],
+            bgType: .primary,
+            requestType: .none,
+            accessType: .public
         ),
-        tags: [
-            .init(
-                id: 1,
-                type: "SPORT",
-                title: "Football"
+        .init(
+            id: UUID().uuidString,
+            name: "Messi events",
+            coverimageURL: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
+            memberCount: 15,
+            totalCapacity: 34,
+            club: .init(
+                name: "Football club",
+                id: 2
             ),
-            .init(
-                id: 1,
-                type: "SPORT",
-                title: "Voleyball"
+            tags: [
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Football"
+                ),
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Voleyball"
+                ),
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Basketball"
+                )
+            ],
+            bgType: .secondary,
+            requestType: .none,
+            accessType: .private
+        ),
+        .init(
+            id: UUID().uuidString,
+            name: "Chess events",
+            coverimageURL: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
+            memberCount: 15,
+            totalCapacity: 34,
+            club: .init(
+                name: "Chess club",
+                id: 2
             ),
-            .init(
-                id: 1,
-                type: "SPORT",
-                title: "Basketball"
-            )
-        ],
-        bgType: .primary,
-        requestType: .none,
-        accessType: .public
-    )
+            tags: [
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Chess"
+                ),
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Voleyball"
+                ),
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Basketball"
+                )
+            ],
+            bgType: .teritary,
+            requestType: .pending,
+            accessType: .public
+        )
+    ]
 }

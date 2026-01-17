@@ -42,27 +42,51 @@ public extension CommunityCardView {
 }
 
 
-extension CommunityCardView.Model {
-    static let mock: Self = .init(
-        id: 1,
-        name: "UFAZ",
-        subTitle: "Community",
-        logoURL: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
-        memberCount: 123,
-        members: [
-            .init(
-                id: 1,
-                profileImage: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
-            ),
-            .init(
-                id: 2,
-                profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
-            ),
-            .init(
-                id: 3,
-                profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
-            )
-        ],
-        bgType: .primary
-    )
+public extension CommunityCardView.Model {
+    static let mock: [Self] = [
+        .init(
+            id: 1,
+            name: "UFAZ",
+            subTitle: "Community",
+            logoURL: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
+            memberCount: 123,
+            members: [
+                .init(
+                    id: 1,
+                    profileImage: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
+                ),
+                .init(
+                    id: 2,
+                    profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+                ),
+                .init(
+                    id: 3,
+                    profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+                )
+            ],
+            bgType: .secondary
+        ),
+        .init(
+            id: 1,
+            name: "Bonjur",
+            subTitle: "Community",
+            logoURL: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
+            memberCount: 1675,
+            members: [
+                .init(
+                    id: 1,
+                    profileImage: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
+                ),
+                .init(
+                    id: 2,
+                    profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+                ),
+                .init(
+                    id: 3,
+                    profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+                )
+            ],
+            bgType: .primary
+        )
+    ]
 }

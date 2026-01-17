@@ -30,7 +30,6 @@ public struct AppTabView<Content: View>: View {
             .tabViewStyle(.page(indexDisplayMode: .never))
             
             CustomPageIndicator(numberOfPages: pageCount, currentPage: currentPage)
-                .padding(.bottom, 20)
         }
     }
 }

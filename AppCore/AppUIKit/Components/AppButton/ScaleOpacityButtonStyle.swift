@@ -16,45 +16,33 @@ public struct ScaleOpacityButtonStyle: ButtonStyle {
     }
 }
 
-
 public struct PressTapButtonModifier: ViewModifier {
     let action: () -> Void
 
-    @GestureState private var isPressed = false
-    @State private var isInside = true
-    @State private var isTapped = false
+    @State private var isPressed = false
 
     public func body(content: Content) -> some View {
         content
-            .scaleEffect(isPressed ? 0.975 : (isTapped ? 1.03 : 1))
-            .opacity(isPressed ? 0.75 : 1)
+            .scaleEffect(isPressed ? 0.975 : 1)
+            .opacity(isPressed ? 0.8 : 1)
             .animation(.easeInOut(duration: 0.15), value: isPressed)
-            .animation(.spring(response: 0.25, dampingFraction: 0.55), value: isTapped)
             .contentShape(Rectangle())
-            .gesture(
-                DragGesture(minimumDistance: 0)
-                    .updating($isPressed) { value, state, _ in
-                        state = true
-                        isInside = true
+            ._onButtonGesture(pressing: { pressing in
+                withAnimation(.easeInOut(duration: 0.15)) {
+                    isPressed = pressing
+                }
+            }, perform: {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isPressed = true
+                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        isPressed = false
                     }
-                    .onChanged { value in
-                        if abs(value.translation.width) > 20 ||
-                           abs(value.translation.height) > 20 {
-                            isInside = false
-                        }
-                    }
-                    .onEnded { _ in
-                        if isInside {
-                            isTapped = true
-                            action()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                isTapped = false
-                            }
-                        }
-                        isInside = true
-                    }
-            )
+                }
+                
+                action()
+            })
     }
 }
-
-

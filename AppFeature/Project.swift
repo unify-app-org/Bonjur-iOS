@@ -28,6 +28,42 @@ let discoverTarget = Target.createFeatureModule(
     )
 ).add(to: &frameworkTargets)
 
+let communitiesTarget = Target.createFeatureModule(
+    name: "Communities",
+    implConfig: .init(
+        dependencies: [
+            
+        ]
+    )
+).add(to: &frameworkTargets)
+
+let eventsTarget = Target.createFeatureModule(
+    name: "Events",
+    implConfig: .init(
+        dependencies: [
+            
+        ]
+    )
+).add(to: &frameworkTargets)
+
+let hangoutsTarget = Target.createFeatureModule(
+    name: "Hangouts",
+    implConfig: .init(
+        dependencies: [
+            
+        ]
+    )
+).add(to: &frameworkTargets)
+
+let clubsTarget = Target.createFeatureModule(
+    name: "Clubs",
+    implConfig: .init(
+        dependencies: [
+            
+        ]
+    )
+).add(to: &frameworkTargets)
+
 let project = Project(
     name: Project.Projects.features,
     options: .options(automaticSchemesOptions: .disabled),

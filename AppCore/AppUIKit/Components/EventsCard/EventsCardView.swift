@@ -135,6 +135,7 @@ public struct EventsCardView: View {
                 ForEach(model.tags, id: \.uuid) { item in
                     Text("#\(item.title.lowercased())")
                         .font(Font.Typography.TextSm.regular)
+                        .lineLimit(1)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
                         .background(Color.Palette.grayQuaternary)
@@ -164,7 +165,7 @@ public struct EventsCardView: View {
     ScrollView {
         VStack {
             EventsCardView(
-                model: .mock,
+                model: .mock[0],
                 onButtonTap: { accesstype, requestType in
                     
                 },

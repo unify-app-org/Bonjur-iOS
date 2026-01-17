@@ -40,7 +40,7 @@ struct FilterScreen: View {
     private var topView: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Filter")
-                .font(Font.Typography.TitleXl.extraBold)
+                .font(Font.Typography.TitleL.extraBold)
                 .foregroundStyle(Color.Palette.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)

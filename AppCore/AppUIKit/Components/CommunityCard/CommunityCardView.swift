@@ -47,10 +47,12 @@ public struct CommunityCardView: View {
                     .font(Font.Typography.TitleMd.bold)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
+                    .foregroundStyle(model.bgType.foregroundColor)
                 Text(model.subTitle)
                     .font(Font.Typography.TextMd.regular)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
+                    .foregroundStyle(model.bgType.foregroundColor)
             }
             HStack(spacing: 4) {
                 Text("view all")
@@ -132,7 +134,7 @@ public struct CommunityCardView: View {
     ScrollView {
         VStack {
             CommunityCardView(
-                model: CommunityCardView.Model.mock
+                model: CommunityCardView.Model.mock[0]
             ) { item in
                 
             }

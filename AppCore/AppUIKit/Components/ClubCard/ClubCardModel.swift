@@ -50,31 +50,111 @@ public extension ClubCardView {
     }
 }
 
-extension ClubCardView.Model {
-    static let mock = ClubCardView.Model(
-        id: 1,
-        name: "Football club",
-        communityName: "Azerbaijany French university",
-        logoURL: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
-        memberCount: 190,
-        totalCapacity: 200,
-        community: "UFAZ",
-        members: [
-            .init(
-                id: 1,
-                profileImage: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
-            ),
-            .init(
-                id: 2,
-                profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
-            ),
-            .init(
-                id: 3,
-                profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
-            )
-        ],
-        bgType: .color(.orange),
-        accessType: .private,
-        requestType: .pending
-    )
+public extension ClubCardView.Model {
+    static let mock: [Self] = [
+        .init(
+            id: 1,
+            name: "Football club",
+            communityName: "Azerbaijany French university",
+            logoURL: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
+            memberCount: 190,
+            totalCapacity: 200,
+            community: "UFAZ",
+            members: [
+                .init(
+                    id: 1,
+                    profileImage: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
+                ),
+                .init(
+                    id: 2,
+                    profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+                ),
+                .init(
+                    id: 3,
+                    profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+                )
+            ],
+            bgType: .color(.orange),
+            accessType: .private,
+            requestType: .none
+        ),
+        .init(
+            id: 1,
+            name: "Dance club",
+            communityName: "Azerbaijany French university",
+            logoURL: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
+            memberCount: 56,
+            totalCapacity: 120,
+            community: "UFAZ",
+            members: [
+                .init(
+                    id: 1,
+                    profileImage: nil
+                ),
+                .init(
+                    id: 2,
+                    profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+                ),
+                .init(
+                    id: 3,
+                    profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+                )
+            ],
+            bgType: .primary,
+            accessType: .public,
+            requestType: .pending
+        ),
+        .init(
+            id: 1,
+            name: "Boys club",
+            communityName: "Azerbaijany French university",
+            logoURL: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
+            memberCount: 56,
+            totalCapacity: 120,
+            community: "UFAZ",
+            members: [
+                .init(
+                    id: 1,
+                    profileImage: nil
+                ),
+                .init(
+                    id: 2,
+                    profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+                ),
+                .init(
+                    id: 3,
+                    profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+                )
+            ],
+            bgType: .secondary,
+            accessType: .private,
+            requestType: .none
+        ),
+        .init(
+            id: 1,
+            name: "Girls club",
+            communityName: "Azerbaijany French university",
+            logoURL: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
+            memberCount: 56,
+            totalCapacity: 120,
+            community: "UFAZ",
+            members: [
+                .init(
+                    id: 1,
+                    profileImage: nil
+                ),
+                .init(
+                    id: 2,
+                    profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+                ),
+                .init(
+                    id: 3,
+                    profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+                )
+            ],
+            bgType: .color(.red),
+            accessType: .private,
+            requestType: .none
+        )
+    ]
 }

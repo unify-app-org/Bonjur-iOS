@@ -29,7 +29,15 @@ public extension TargetDependency {
             .AppFeature.AppAuth,
             .AppFeature.AppAuthImpl,
             .AppFeature.Discover,
-            .AppFeature.DiscoverImpl
+            .AppFeature.DiscoverImpl,
+            .AppFeature.Communities,
+            .AppFeature.CommunitiesImpl,
+            .AppFeature.Hangouts,
+            .AppFeature.HangoutsImpl,
+            .AppFeature.Events,
+            .AppFeature.EventsImpl,
+            .AppFeature.Clubs,
+            .AppFeature.ClubsImpl
         ]
     }
     
@@ -97,6 +105,49 @@ public extension TargetDependency {
             path: .relativeToRoot(Project.Projects.features)
         )
         
+        // Clubs
+        public static let Clubs: TargetDependency = .project(
+            target: "Clubs",
+            path: .relativeToRoot(Project.Projects.features)
+        )
+        
+        public static let ClubsImpl: TargetDependency = .project(
+            target: "ClubsImpl",
+            path: .relativeToRoot(Project.Projects.features)
+        )
+        
+        // Events
+        public static let Events: TargetDependency = .project(
+            target: "Events",
+            path: .relativeToRoot(Project.Projects.features)
+        )
+        
+        public static let EventsImpl: TargetDependency = .project(
+            target: "EventsImpl",
+            path: .relativeToRoot(Project.Projects.features)
+        )
+        
+        // Hangouts
+        public static let Hangouts: TargetDependency = .project(
+            target: "Hangouts",
+            path: .relativeToRoot(Project.Projects.features)
+        )
+        
+        public static let HangoutsImpl: TargetDependency = .project(
+            target: "HangoutsImpl",
+            path: .relativeToRoot(Project.Projects.features)
+        )
+        
+        // Communities
+        public static let Communities: TargetDependency = .project(
+            target: "Communities",
+            path: .relativeToRoot(Project.Projects.features)
+        )
+        
+        public static let CommunitiesImpl: TargetDependency = .project(
+            target: "CommunitiesImpl",
+            path: .relativeToRoot(Project.Projects.features)
+        )
     }
     
     

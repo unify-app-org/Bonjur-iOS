@@ -131,7 +131,7 @@ public struct ClubCardView: View {
     ScrollView {
         VStack {
             ClubCardView(
-                model: ClubCardView.Model.mock
+                model: ClubCardView.Model.mock[0]
             ) { item in
                 
             }

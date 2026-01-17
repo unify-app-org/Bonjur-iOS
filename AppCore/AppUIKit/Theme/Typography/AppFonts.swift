@@ -50,6 +50,13 @@ public enum Font {
         // MARK: - TitleL (28px)
         /// font sizs 28px
         public enum TitleL {
+            public static var extraBold: SwiftUI.Font {
+                SwiftUI.Font.custom(
+                    AppFonts.FontName.manropeExtraBold.rawValue,
+                    size: AppFonts.Tokens.FontSize.titleL
+                )
+            }
+            
             public static var bold: SwiftUI.Font {
                 SwiftUI.Font.custom(
                     AppFonts.FontName.manropeBold.rawValue,
@@ -111,8 +118,8 @@ public enum Font {
             }
         }
         
-        // MARK: - TitleSm (22px)
-        /// font sizs 22px
+        // MARK: - TitleSm (20px)
+        /// font sizs 20px
         public enum TitleSm {
             public static var bold: SwiftUI.Font {
                 SwiftUI.Font.custom(

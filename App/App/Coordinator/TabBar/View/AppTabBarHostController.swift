@@ -168,11 +168,11 @@ final class AppTabBarHostController: UITabBarController {
     
     @objc
     private func plusTapped() {
-        setupDimView()
-        setUpCreateMenu()
         isMenuOpen.toggle()
         
         if isMenuOpen {
+            setupDimView()
+            setUpCreateMenu()
             animatePlusButtonToX()
         } else {
             animatePlusButtonToPlus()

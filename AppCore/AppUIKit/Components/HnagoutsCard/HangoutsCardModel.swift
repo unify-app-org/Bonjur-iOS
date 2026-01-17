@@ -84,32 +84,86 @@ public extension HangoutsCardView {
     }
 }
 
-extension HangoutsCardView.Model {
+public extension HangoutsCardView.Model {
     
-    static let mock: Self = .init(
-        id: UUID().uuidString,
-        name: "Study night at cafe",
-        description: "I want to have a coffee and then go to evening if someone want just",
-        memberCount: 27,
-        totalCapacity: 35,
-        tags: [
-            .init(
-                id: 1,
-                type: "SPORT",
-                title: "Football"
-            ),
-            .init(
-                id: 1,
-                type: "SPORT",
-                title: "Voleyball"
-            ),
-            .init(
-                id: 1,
-                type: "SPORT",
-                title: "Basketball"
-            )
-        ],
-        accessType: .public,
-        requestType: .none
-    )
+    static let mock: [Self] = [
+        .init(
+            id: UUID().uuidString,
+            name: "Study night at cafe",
+            description: "I want to have a coffee and then go to evening if someone want just",
+            memberCount: 27,
+            totalCapacity: 35,
+            tags: [
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Football"
+                ),
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Voleyball"
+                ),
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Basketball"
+                )
+            ],
+            accessType: .public,
+            requestType: .none
+        ),
+        .init(
+            id: UUID().uuidString,
+            name: "Exam preparation",
+            description: "I want to have a coffee and then go to evening if someone want just",
+            memberCount: 27,
+            totalCapacity: 35,
+            tags: [
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Football"
+                ),
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Voleyball"
+                ),
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Basketball"
+                )
+            ],
+            accessType: .public,
+            requestType: .none
+        ),
+        .init(
+            id: UUID().uuidString,
+            name: "To find new peoples",
+            description: "I want to have a coffee and then go to evening if someone want just",
+            memberCount: 27,
+            totalCapacity: 35,
+            tags: [
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Football"
+                ),
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Voleyball"
+                ),
+                .init(
+                    id: 1,
+                    type: "SPORT",
+                    title: "Basketball"
+                )
+            ],
+            accessType: .public,
+            requestType: .none
+        )
+    ]
 }

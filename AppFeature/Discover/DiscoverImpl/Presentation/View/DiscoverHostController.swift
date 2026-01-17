@@ -22,6 +22,8 @@ final class DiscoverHostController: UIFeatureController<
             } else {
                 
             }
+        case .error(_):
+            break
         }
     }
 }

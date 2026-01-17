@@ -94,6 +94,7 @@ public struct HangoutsCardView: View {
             HStack(spacing: 8) {
                 ForEach(model.tags, id: \.uuid) { item in
                     Text("#\(item.title.lowercased())")
+                        .lineLimit(1)
                         .font(Font.Typography.TextSm.regular)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
@@ -122,7 +123,7 @@ public struct HangoutsCardView: View {
     ScrollView {
         VStack {
             HangoutsCardView(
-                model: HangoutsCardView.Model.mock,
+                model: HangoutsCardView.Model.mock[0],
                 onButtonTap: { accessType, requestType in
                     
                 }, onTap: { item in

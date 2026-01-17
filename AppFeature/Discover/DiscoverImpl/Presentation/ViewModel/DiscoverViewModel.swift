@@ -6,10 +6,12 @@
 //
 
 import AppFoundation
+import AppUIKit
 
 final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     
     struct Dependencies {
+        let useCase: DiscoverUseCase
     }
     
     private let router: DiscoverRouterProtocol
@@ -29,9 +31,102 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     }
     
     override func handle(action: DiscoverFeature.Action) {
+        switch action {
+        case .fetchData:
+            fetchData()
+        }
     }
     
     private func fetchData() {
-        
+        Task {
+            await fetchUsersData()
+            await fetchFilterData()
+            await fetchCommunitiesData()
+            await fetchClubsData()
+            await fetchEventsData()
+            await fetchHangoutsData()
+        }
+    }
+    
+    private func fetchUsersData() async {
+        postEffect(.loading(true))
+        do {
+            let data = try await dependencies.useCase.fetchUserData()
+            handleUserData(data)
+        } catch {
+            postEffect(.error(error))
+        }
+    }
+    
+    private func handleUserData(_ data: UserModel) {
+        state.uiModel.user = data
+    }
+    
+    private func fetchCommunitiesData() async {
+        do {
+            let data = try await dependencies.useCase.fetchCommunitiesData()
+            handleCommunitiesData(data)
+        } catch {
+            postEffect(.error(error))
+        }
+    }
+    
+    private func handleCommunitiesData(_ data: [CommunityCardView.Model]) {
+        state.uiModel.communities = data
+    }
+    
+    private func fetchFilterData() async {
+        do {
+            let data = try await dependencies.useCase.fetchFilterData()
+            handleFilterData(data)
+        } catch {
+            postEffect(.error(error))
+        }
+    }
+    
+    private func handleFilterData(_ data: [FilterView.Model]) {
+        state.uiModel.filters = data
+    }
+    
+    private func fetchClubsData() async {
+        do {
+            let data = try await dependencies.useCase.fetchClubsData()
+            handleClubssData(data)
+        } catch {
+            postEffect(.error(error))
+        }
+    }
+    
+    private func handleClubssData(_ data: [ClubCardView.Model]) {
+        state.uiModel.clubs = data
+    }
+    
+    private func fetchEventsData() async {
+        do {
+            let data = try await dependencies.useCase.fetchEventsData()
+            handleEventsData(data)
+        } catch {
+            postEffect(.error(error))
+        }
+    }
+    
+    private func handleEventsData(_ data: [EventsCardView.Model]) {
+        state.uiModel.events = data
+    }
+    
+    private func fetchHangoutsData() async {
+        defer {
+            postEffect(.loading(false))
+        }
+        do {
+            let data = try await dependencies.useCase.fetchHangoutsData()
+            handleHangoutsData(data)
+        } catch {
+            postEffect(.error(error))
+        }
+    }
+    
+    private func handleHangoutsData(_ data: [HangoutsCardView.Model]) {
+        state.uiModel.hangouts = data
     }
 }

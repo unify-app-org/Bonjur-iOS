@@ -8,11 +8,25 @@
 import Foundation
 import Discover
 
-struct DiscoverModuleImpl: DiscoverModule {
+protocol DiscoverDeleagete {
+    func viewAllClubs()
+}
+
+class DiscoverModuleImpl: DiscoverModule, DiscoverDeleagete {
+    weak var moduleDeleagete: DiscoverModuleDeleagete?
     
-    func makeDiscover() -> AnyObject {
+    public init() {}
+    
+    func makeDiscover(
+        _ delelegate: DiscoverModuleDeleagete
+    ) -> AnyObject {
+        moduleDeleagete = delelegate
         return DiscoverBuilder(
             inputData: .init()
         ).build()
+    }
+    
+    func viewAllClubs() {
+        moduleDeleagete?.viewAllClubs()
     }
 }

@@ -73,6 +73,7 @@ struct OnboardingView: View {
                     .tag(index)
             }
         }
+        .padding(.bottom, 20)
     }
     
     private var buttons: some View {

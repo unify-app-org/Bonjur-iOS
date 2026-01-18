@@ -44,6 +44,7 @@ final class AppTabBarHostController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        delegate = self
         setupTabs()
         setupAppearance()
         setupPlusButton()
@@ -52,6 +53,21 @@ final class AppTabBarHostController: UITabBarController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         updateHighlightFrame()
+    }
+    
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        guard
+            let index = tabBar.items?.firstIndex(of: item),
+            let tabBarButton = tabBar.subviews[index + 1] as? UIControl
+        else { return }
+
+        UIView.animate(withDuration: 0.15, animations: {
+            tabBarButton.transform = CGAffineTransform(scaleX: 1.03, y: 1.03)
+        }) { _ in
+            UIView.animate(withDuration: 0.15) {
+                tabBarButton.transform = .identity
+            }
+        }
     }
     
     private func setUpCreateMenu() {
@@ -96,7 +112,7 @@ final class AppTabBarHostController: UITabBarController {
     }
     
     private func setupTabs() {
-        let discover = discoverModule.makeDiscover() as! UIViewController
+        let discover = discoverModule.makeDiscover(self) as! UIViewController
         let clubs = clubsModule.makeClubsViewController() as! UIViewController
         let spacer = UIViewController()
         let plans = makePlaceholderViewController(title: "My plans")
@@ -181,6 +197,10 @@ final class AppTabBarHostController: UITabBarController {
         } else {
             animatePlusButtonToPlus()
         }
+    }
+    
+    private func preloadTabViews() {
+        viewControllers?.forEach { _ = $0.view }
     }
     
     private func animatePlusButtonToX() {
@@ -268,5 +288,61 @@ final class AppTabBarHostController: UITabBarController {
         ])
         
         return vc
+    }
+    
+    private func switchToTab(_ index: Int, animated: Bool = true) {
+        guard
+            let viewControllers,
+            index < viewControllers.count,
+            index != selectedIndex
+        else { return }
+        
+        if !animated {
+            selectedIndex = index
+            return
+        }
+        
+        let toIndex = index
+        
+        selectedIndex = toIndex
+        
+        UIView.transition(
+            with: view,
+            duration: 0.25,
+            options: [.transitionCrossDissolve, .allowAnimatedContent],
+            animations: nil,
+            completion: nil
+        )
+    }
+}
+
+extension AppTabBarHostController: UITabBarControllerDelegate {
+    
+    func tabBarController(
+        _ tabBarController: UITabBarController,
+        shouldSelect viewController: UIViewController
+    ) -> Bool {
+
+        guard
+            let fromVC = selectedViewController,
+            fromVC !== viewController
+        else { return false }
+
+        UIView.transition(
+            from: fromVC.view,
+            to: viewController.view,
+            duration: 0.25,
+            options: [.transitionCrossDissolve],
+            completion: nil
+        )
+
+        return true
+    }
+}
+
+extension AppTabBarHostController: DiscoverModuleDeleagete {
+    
+    func viewAllClubs() {
+        switchToTab(1)
     }
 }

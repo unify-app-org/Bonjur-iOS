@@ -34,6 +34,8 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .viewAllTapped(let activity):
+            viewAllTapped(activity)
         }
     }
     
@@ -45,6 +47,21 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             await fetchClubsData()
             await fetchEventsData()
             await fetchHangoutsData()
+        }
+    }
+    
+    private func viewAllTapped(_ type: AppUIEntities.ActivityType) {
+        switch type {
+        case .community:
+            break
+        case .events:
+            break
+        case .clubs:
+            Task {
+                await router.navigate(to: .viewAllClubs)
+            }
+        case .hangOuts:
+            break
         }
     }
     

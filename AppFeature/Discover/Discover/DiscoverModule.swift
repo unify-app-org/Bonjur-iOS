@@ -8,5 +8,9 @@
 import Foundation
 
 public protocol DiscoverModule {
-    func makeDiscover() -> AnyObject
+    func makeDiscover(_ deleagete: DiscoverModuleDeleagete) -> AnyObject
+}
+
+public protocol DiscoverModuleDeleagete: AnyObject {
+    func viewAllClubs()
 }

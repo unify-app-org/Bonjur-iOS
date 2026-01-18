@@ -62,8 +62,16 @@ enum DiscoverDependencyContainer {
     }
     
     private static func registerModule() {
-        register(DiscoverModule.self) {
+        register(DiscoverModuleImpl.self, isSingleton: true) {
             DiscoverModuleImpl()
+        }
+        
+        register(DiscoverModule.self, isSingleton: true) {
+            resolve(DiscoverModuleImpl.self)
+        }
+        
+        register(DiscoverDeleagete.self, isSingleton: true) {
+            resolve(DiscoverModuleImpl.self)
         }
     }
     

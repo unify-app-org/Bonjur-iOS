@@ -8,6 +8,7 @@
 import UIKit
 
 enum DiscoverRoute {
+    case viewAllClubs
 }
 
 protocol DiscoverRouterProtocol {
@@ -17,8 +18,21 @@ protocol DiscoverRouterProtocol {
 
 final class DiscoverRouter: DiscoverRouterProtocol {
     weak var view: UIViewController?
+    private var deleagete: DiscoverDeleagete
+    
+    init(
+        view: UIViewController? = nil,
+        deleagete: DiscoverDeleagete = resolve()
+    ) {
+        self.view = view
+        self.deleagete = deleagete
+    }
     
     @MainActor
     func navigate(to route: DiscoverRoute) {
+        switch route {
+        case .viewAllClubs:
+            deleagete.viewAllClubs()
+        }
     }
 }

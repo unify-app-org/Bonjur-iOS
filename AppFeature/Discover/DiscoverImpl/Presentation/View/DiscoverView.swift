@@ -175,7 +175,7 @@ struct DiscoverView: View {
                 .padding(.horizontal)
             if type != .community {
                 Button {
-                    
+                    store.send(.viewAllTapped(type))
                 } label: {
                     Text("view all")
                         .font(Font.Typography.TextL.semiBold)

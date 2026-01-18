@@ -57,4 +57,5 @@ final class DiscoverViewState: UIFeatureState {
 
 enum DiscoverAction: UIFeatureAction {
     case fetchData
+    case viewAllTapped(AppUIEntities.ActivityType)
 }

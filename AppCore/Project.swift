@@ -43,7 +43,10 @@ let appFoundationTarget = Target.createFrameworkTarget(
 ).add(to: &frameworkTargets)
     
 let appUIKitTarget = Target.createFrameworkTarget(
-    name: "AppUIKit"
+    name: "AppUIKit",
+    dependencies: [
+        .AppCore.AppUtils
+    ]
 ).add(to: &frameworkTargets)
 
 let appLocalizationTarget = Target.createFrameworkTarget(

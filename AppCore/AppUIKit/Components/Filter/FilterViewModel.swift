@@ -84,7 +84,7 @@ public final class FilterViewModel: ObservableObject {
             }
             return updated
         }
-        
+        sortFilters()
         notifySelectedItems()
         self.selectedItem = nil
     }
@@ -95,7 +95,7 @@ public final class FilterViewModel: ObservableObject {
             updated.items = reorderSelectedFirst(section.items)
             return updated
         }
-        
+        sortFilters()
         notifySelectedItems()
     }
     
@@ -117,7 +117,7 @@ public final class FilterViewModel: ObservableObject {
             }
             return updated
         }
-        
+        sortFilters()
         notifySelectedItems()
         self.selectedItem = nil
     }
@@ -136,10 +136,32 @@ public final class FilterViewModel: ObservableObject {
         }
         
         model = filterModel
+        sortFilters()
         notifySelectedItems()
     }
     
+    func sortFilters() {
+        let alphabeticallySorted = sortModelsAlphabetically(model)
+        model = reorderSelectedModelsFirst(alphabeticallySorted)
+    }
+    
     // MARK: - Private Helpers
+    
+    private func hasSelectedItems(_ model: FilterView.Model) -> Bool {
+        model.items.contains { $0.selected }
+    }
+
+    private func sortModelsAlphabetically(_ models: [FilterView.Model]) -> [FilterView.Model] {
+        models.sorted {
+            $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
+        }
+    }
+
+    private func reorderSelectedModelsFirst(_ models: [FilterView.Model]) -> [FilterView.Model] {
+        let selected = models.filter { hasSelectedItems($0) }
+        let unselected = models.filter { !hasSelectedItems($0) }
+        return selected + unselected
+    }
     
     private func updateSection(
         _ section: FilterView.Model,

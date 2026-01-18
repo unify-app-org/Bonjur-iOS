@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppUtils
 
 struct FilterScreen: View {
     @EnvironmentObject private var viewModel: FilterViewModel
@@ -57,7 +58,7 @@ struct FilterScreen: View {
         ScrollView(showsIndicators: false) {
             LazyVStack(alignment: .leading, spacing: 16) {
                 ForEach(viewModel.filterModel, id: \.id) { section in
-                    Text(section.title)
+                    Text(section.title.capitalizedFirstLetter)
                         .foregroundStyle(Color.Palette.blackHigh)
                         .font(Font.Typography.BodyTextMd.semiBold)
                         .frame(maxWidth: .infinity, alignment: .leading)

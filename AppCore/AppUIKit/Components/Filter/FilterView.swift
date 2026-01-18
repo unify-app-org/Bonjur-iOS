@@ -9,11 +9,16 @@ import SwiftUI
 import Combine
 
 public struct FilterView: View {
-    @ObservedObject private var viewModel: FilterViewModel
+    @StateObject private var viewModel: FilterViewModel
     @State private var presentFilter: Bool = false
     
     public init(viewModel: FilterViewModel) {
-        self.viewModel = viewModel
+        _viewModel = StateObject(
+            wrappedValue: FilterViewModel(
+                model: FilterView.Model.mock,
+                selectedItems: { _ in }
+            )
+        )
     }
     
     public var body: some View {
@@ -57,6 +62,9 @@ public struct FilterView: View {
         .animation(.easeInOut(duration: 0.25),
                    value: viewModel.selectedItem?.id)
         .zIndex(1)
+        .onAppear {
+            viewModel.sortFilters()
+        }
     }
     
     @ViewBuilder
@@ -143,22 +151,22 @@ public struct FilterView: View {
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
-            .background(Color.Palette.grayQuaternary)
+            .background(viewModel.getSelectedCount() > 0 ? Color.Palette.primary.opacity(0.4) : Color.Palette.grayQuaternary)
             .clipShape(Capsule())
             .overlay(
                 Capsule()
                     .stroke(
-                        Color.Palette.black,
-                        lineWidth:  viewModel.getSelectedCount() != 0 ? 1 : 0
+                        viewModel.getSelectedCount() > 0 ? Color.Palette.border : Color.Palette.black,
+                        lineWidth:  viewModel.getSelectedCount() > 0 ? 1 : 0
                     )
             )
             .overlay(alignment: .topTrailing) {
-                if viewModel.getSelectedCount() != 0 {
+                if viewModel.getSelectedCount() > 0 {
                     Text("\(viewModel.getSelectedCount())")
                         .font(Font.Typography.TextSm.regular)
                         .foregroundStyle(Color.white)
                         .padding(5)
-                        .background(Color.Palette.black)
+                        .background(Color.Palette.border)
                         .clipShape(Circle())
                         .offset(x: 4, y: -8)
                 }
@@ -183,13 +191,13 @@ public struct FilterView: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
             .background(
-                viewModel.isSelected(item) ? .clear : Color.Palette.grayQuaternary
+                viewModel.isSelected(item) ? .clear : viewModel.hasSelectedSubItems(item) ? Color.Palette.primary.opacity(0.4) : Color.Palette.grayQuaternary
             )
             .clipShape(Capsule())
             .overlay(
                 Capsule()
                     .stroke(
-                        Color.Palette.black,
+                        viewModel.hasSelectedSubItems(item) ? viewModel.isSelected(item) ? Color.Palette.black : Color.Palette.border : Color.Palette.black,
                         lineWidth: viewModel.isSelected(item) || viewModel.hasSelectedSubItems(item) ? 1 : 0
                     )
             )

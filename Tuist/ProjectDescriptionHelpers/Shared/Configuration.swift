@@ -23,7 +23,9 @@ public extension Dictionary where Element == ProjectDescription.SettingsDictiona
             "ENABLE_MODULE_VERIFIER": "YES",
             "ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS": "YES",
             "CLANG_ENABLE_MODULE_VERIFIER": "YES",
-            "CLANG_ENABLE_MODULE_VERIFIER_SUPPORTED_LANGUAGES": "Objective-C Objective-C++"
+            "CLANG_ENABLE_MODULE_VERIFIER_SUPPORTED_LANGUAGES": "Objective-C Objective-C++",
+            "CLANG_ENABLE_MODULES": "YES",
+            "DEFINES_MODULE": "YES"
         ]
     }()
 }

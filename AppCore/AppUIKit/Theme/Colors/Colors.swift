@@ -10,9 +10,9 @@ import SwiftUICore
 public extension Color {
     
     enum Palette {
-        public static let primary = Color.init(.primary) // #D5FF9B33
+        public static let primary = Color.init(.appPrimary) // #D5FF9B33
         
-        public static let secondary = Color.init(.secondary) // #BEEB85
+        public static let secondary = Color.init(.appSecondary) // #BEEB85
         
         public static let border = Color.init(.border) // #799A4C
         

@@ -1,26 +1,27 @@
 //
-//  ClubCardModel.swift
-//  AppCore
+//  ClubsModuleModel.swift
+//  AppFeature
 //
-//  Created by Huseyn Hasanov on 16.01.26.
+//  Created by Huseyn Hasanov on 20.01.26.
 //
 
 import Foundation
+import AppPresentationModel
 
-public extension ClubCardView {
+public struct ClubsModuleModel {
     
-    struct Model: Identifiable {
+    public struct CardInputData: Identifiable {
         public let uuid: UUID = UUID()
         public let id: Int
-        let name, communityName: String
-        let logoURL: String
-        let memberCount, totalCapacity: Int
-        let community: String
-        public let type: AppUIEntities.ActivityType = .clubs
-        let members: [AppUIEntities.Member]
-        let bgType: AppUIEntities.BackgroundType
-        let accessType: AppUIEntities.AccessType
-        let requestType: AppUIEntities.RequestType
+        public let name, communityName: String
+        public let logoURL: String
+        public let memberCount, totalCapacity: Int
+        public let community: String
+        public let type: AppPresentationModel.ActivityType = .clubs
+        public let members: [AppPresentationModel.Member]
+        public let bgType: AppPresentationModel.BackgroundType
+        public let accessType: AppPresentationModel.AccessType
+        public let requestType: AppPresentationModel.RequestType
         
         public init(
             id: Int,
@@ -30,10 +31,10 @@ public extension ClubCardView {
             memberCount: Int,
             totalCapacity: Int,
             community: String,
-            members: [AppUIEntities.Member],
-            bgType: AppUIEntities.BackgroundType,
-            accessType: AppUIEntities.AccessType,
-            requestType: AppUIEntities.RequestType,
+            members: [AppPresentationModel.Member],
+            bgType: AppPresentationModel.BackgroundType,
+            accessType: AppPresentationModel.AccessType,
+            requestType: AppPresentationModel.RequestType,
         ) {
             self.id = id
             self.name = name
@@ -50,8 +51,9 @@ public extension ClubCardView {
     }
 }
 
-public extension ClubCardView.Model {
-    static let mock: [Self] = [
+public extension ClubsModuleModel.CardInputData {
+    
+    static let previewMock: [Self] = [
         .init(
             id: 1,
             name: "Football club",

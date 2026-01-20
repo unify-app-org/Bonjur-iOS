@@ -22,6 +22,8 @@ final class ClubsHostController: UIFeatureController<
             } else {
                 
             }
+        case .error(_):
+            break
         }
     }
 }

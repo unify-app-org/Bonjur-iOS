@@ -1,26 +1,27 @@
 //
-//  EventsCardModel.swift
-//  AppCore
+//  EventsModuleModel.swift
+//  AppFeature
 //
-//  Created by Huseyn Hasanov on 16.01.26.
+//  Created by Huseyn Hasanov on 21.01.26.
 //
 
-import SwiftUICore
+import Foundation
+import AppPresentationModel
 
-public extension EventsCardView {
+public enum EventsModuleModel {
     
-    struct Model: Identifiable {
+    public struct CardInputData: Identifiable {
         public let uuid: UUID = UUID()
         public let id: String
-        let name: String
-        let coverimageURL: String?
-        let memberCount: Int
-        let totalCapacity: Int?
-        let club: Club
-        let tags: [Tags]
-        let bgType: AppUIEntities.BackgroundType
-        let requestType: AppUIEntities.RequestType
-        let accessType: AppUIEntities.AccessType
+        public let name: String
+        public let coverimageURL: String?
+        public let memberCount: Int
+        public let totalCapacity: Int?
+        public let club: Club
+        public let tags: [AppPresentationModel.Tags]
+        public let bgType: AppPresentationModel.BackgroundType
+        public let requestType: AppPresentationModel.RequestType
+        public let accessType: AppPresentationModel.AccessType
         
         public init(
             id: String,
@@ -29,10 +30,10 @@ public extension EventsCardView {
             memberCount: Int,
             totalCapacity: Int?,
             club: Club,
-            tags: [Tags],
-            bgType: AppUIEntities.BackgroundType,
-            requestType: AppUIEntities.RequestType,
-            accessType: AppUIEntities.AccessType
+            tags: [AppPresentationModel.Tags],
+            bgType: AppPresentationModel.BackgroundType,
+            requestType: AppPresentationModel.RequestType,
+            accessType: AppPresentationModel.AccessType
         ) {
             self.id = id
             self.name = name
@@ -46,59 +47,15 @@ public extension EventsCardView {
             self.accessType = accessType
         }
         
-        var buttonTitle: String {
-            switch requestType {
-            case .joined:
-                return ""
-            case .rejected:
-                return "Rejected"
-            case .pending:
-                return "Request sent"
-            case .none:
-                switch accessType {
-                case .public:
-                    return "Join"
-                case .private:
-                    return "Request"
-                }
-            }
-        }
-        
-        var memberCountText: String {
-            if let totalCapacity {
-                return "\(memberCount)/\(totalCapacity) members"
-            } else {
-                return "\(memberCount) members"
-            }
-        }
-    }
-    
-    struct Club {
-        let name: String
-        let id: Int
-    }
-    
-    struct Tags: Identifiable {
-        public let uuid: UUID = UUID()
-        public let id: Int
-        public let type: String
-        let title: String
-        
-        init(
-            id: Int,
-            type: String,
-            title: String
-        ) {
-            self.id = id
-            self.type = type
-            self.title = title
+        public struct Club {
+            public let name: String
+            public let id: Int
         }
     }
 }
 
-
-public extension EventsCardView.Model {
-    static let mock: [Self] = [
+public extension EventsModuleModel.CardInputData {
+    static let previewMock: [Self] = [
         .init(
             id: UUID().uuidString,
             name: "Fan events",

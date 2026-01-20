@@ -6,20 +6,21 @@
 //
 
 import SwiftUI
+import AppUIKit
 
-public struct ClubCardView: View {
+struct ClubCardView: View {
     private let model: Model
-    private let onTap: ((Model) -> Void)
+    private let onTap: (() -> Void)
     
-    public init(
+    init(
         model: Model,
-        onTap: @escaping ((Model) -> Void)
+        onTap: @escaping (() -> Void)
     ) {
         self.model = model
         self.onTap = onTap
     }
     
-    public var body: some View {
+    var body: some View {
         CardBackgroundView(cardType: .club) {
             VStack(spacing: 27) {
                 topLeftView
@@ -30,7 +31,7 @@ public struct ClubCardView: View {
         .backgroundType(model.bgType)
         .modifier(
             PressTapButtonModifier {
-                onTap(model)
+                onTap()
             }
         )
     }
@@ -131,8 +132,8 @@ public struct ClubCardView: View {
     ScrollView {
         VStack {
             ClubCardView(
-                model: ClubCardView.Model.mock[0]
-            ) { item in
+                model: .previewData[0]
+            ) {
                 
             }
             .padding()

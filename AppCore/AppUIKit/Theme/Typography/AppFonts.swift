@@ -246,8 +246,8 @@ public enum Font {
             }
         }
         
-        // MARK: - BodyTextSm (16px)
-        /// font sizs 16px
+        // MARK: - BodyTextSm (15px)
+        /// font sizs 15px
         public enum BodyTextSm {
             public static var bold: SwiftUI.Font {
                 SwiftUI.Font.custom(

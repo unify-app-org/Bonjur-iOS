@@ -17,10 +17,14 @@ public struct ScaleOpacityButtonStyle: ButtonStyle {
 }
 
 public struct PressTapButtonModifier: ViewModifier {
-    let action: () -> Void
-
-    @State private var isPressed = false
-
+    private let action: () -> Void
+    @State private var isPressed: Bool
+    
+    public init(action: @escaping () -> Void, isPressed: Bool = false) {
+        self.action = action
+        self.isPressed = isPressed
+    }
+    
     public func body(content: Content) -> some View {
         content
             .scaleEffect(isPressed ? 0.975 : 1)

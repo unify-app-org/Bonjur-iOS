@@ -7,6 +7,9 @@
 
 import AppFoundation
 import AppUIKit
+import Clubs
+import Events
+import Hangouts
 
 final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     
@@ -114,7 +117,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         }
     }
     
-    private func handleClubssData(_ data: [ClubCardView.Model]) {
+    private func handleClubssData(_ data: [ClubsModuleModel.CardInputData]) {
         state.uiModel.clubs = data
     }
     
@@ -127,7 +130,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         }
     }
     
-    private func handleEventsData(_ data: [EventsCardView.Model]) {
+    private func handleEventsData(_ data: [EventsModuleModel.CardInputData]) {
         state.uiModel.events = data
     }
     
@@ -143,7 +146,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         }
     }
     
-    private func handleHangoutsData(_ data: [HangoutsCardView.Model]) {
+    private func handleHangoutsData(_ data: [HangoutsModuleModel.CardInputData]) {
         state.uiModel.hangouts = data
     }
 }

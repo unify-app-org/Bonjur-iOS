@@ -7,14 +7,17 @@
 
 import AppUIKit
 import AppNetwork
+import Clubs
+import Events
+import Hangouts
 
 protocol DiscoverUseCase {
     func fetchUserData() async throws(APIError) -> UserModel
     func fetchFilterData() async throws(APIError) -> [FilterView.Model]
     func fetchCommunitiesData() async throws(APIError) -> [CommunityCardView.Model]
-    func fetchClubsData() async throws(APIError) -> [ClubCardView.Model]
-    func fetchEventsData() async throws(APIError) -> [EventsCardView.Model]
-    func fetchHangoutsData() async throws(APIError) -> [HangoutsCardView.Model]
+    func fetchClubsData() async throws(APIError) -> [ClubsModuleModel.CardInputData]
+    func fetchEventsData() async throws(APIError) -> [EventsModuleModel.CardInputData]
+    func fetchHangoutsData() async throws(APIError) -> [HangoutsModuleModel.CardInputData]
 }
 
 class DiscoverUseCaseImpl: DiscoverUseCase {
@@ -42,15 +45,15 @@ class DiscoverUseCaseImpl: DiscoverUseCase {
         CommunityCardView.Model.mock
     }
     
-    func fetchClubsData() async throws(APIError) -> [ClubCardView.Model] {
-        ClubCardView.Model.mock
+    func fetchClubsData() async throws(APIError) -> [ClubsModuleModel.CardInputData] {
+        ClubsModuleModel.CardInputData.previewMock
     }
     
-    func fetchEventsData() async throws(APIError) -> [EventsCardView.Model] {
-        EventsCardView.Model.mock
+    func fetchEventsData() async throws(APIError) -> [EventsModuleModel.CardInputData] {
+        EventsModuleModel.CardInputData.previewMock
     }
     
-    func fetchHangoutsData() async throws(APIError) -> [HangoutsCardView.Model] {
-        HangoutsCardView.Model.mock
+    func fetchHangoutsData() async throws(APIError) -> [HangoutsModuleModel.CardInputData] {
+        HangoutsModuleModel.CardInputData.previewMock
     }
 }

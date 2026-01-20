@@ -22,6 +22,8 @@ public extension Color {
         
         public static let blackHigh = Color.init(.blackHigh) // #000000 90%
         
+        public static let blackMedium = Color.black.opacity(0.6) // #000000 60%
+        
         public static let blackDisabled = Color.black.opacity(0.38) // #000000 338%
         
         public static let grayPrimary = Color.init(.grayPrimary) // #D5FF9B33

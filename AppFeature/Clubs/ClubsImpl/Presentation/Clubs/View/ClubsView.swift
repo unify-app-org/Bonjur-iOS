@@ -26,18 +26,33 @@ struct ClubsView: View {
             }
         }
         .onAppear {
-            
+            store.send(.fetchData)
         }
     }
     
+    @ViewBuilder
     private var scrollView: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                ForEach(ClubCardView.Model.mock, id: \.uuid) { item in
-                    ClubCardView(model: item) { item in
-                        
+        let clubs = store.state.uiModel.clubs
+        if !clubs.isEmpty {
+            ScrollView {
+                VStack(spacing: 20) {
+                    ForEach(clubs, id: \.uuid) { item in
+                        ClubCardView(model: item) {
+                            
+                        }
                     }
                 }
+                .padding()
+            }
+        } else {
+            AppEmptyView(
+                model: .init(
+                    icon: UIImage.Icons.twoUsers,
+                    text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
+                    buttonTitle: "Create a club +"
+                )
+            ) {
+                
             }
             .padding()
         }

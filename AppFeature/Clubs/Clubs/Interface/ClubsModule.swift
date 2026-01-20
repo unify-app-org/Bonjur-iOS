@@ -6,8 +6,14 @@
 //
 
 import Foundation
+import AppPresentationModel
 
 public protocol ClubsModule {
     
     func makeClubsViewController() -> AnyObject
+    
+    func makeCardView(
+        inputData: ClubsModuleModel.CardInputData,
+        onTap: @escaping (() -> Void)
+    ) -> Any
 }

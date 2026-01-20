@@ -9,6 +9,9 @@ import AppFoundation
 import AppUIKit
 import Combine
 import AppNetwork
+import Clubs
+import Events
+import Hangouts
 
 // MARK: - Discover input
 
@@ -47,9 +50,9 @@ final class DiscoverViewState: UIFeatureState {
         var user: UserModel
         var filters: [FilterView.Model]
         var communities: [CommunityCardView.Model]
-        var clubs: [ClubCardView.Model]
-        var events: [EventsCardView.Model]
-        var hangouts: [HangoutsCardView.Model]
+        var clubs: [ClubsModuleModel.CardInputData]
+        var events: [EventsModuleModel.CardInputData]
+        var hangouts: [HangoutsModuleModel.CardInputData]
     }
 }
 

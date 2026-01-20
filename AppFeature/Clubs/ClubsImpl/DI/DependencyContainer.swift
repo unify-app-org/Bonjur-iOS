@@ -50,11 +50,15 @@ enum ClubsDependencyContainer {
     }
     
     private static func registerDataSource() {
-
+        register(ClubsDataSource.self) {
+            ClubsDataSourceImpl()
+        }
     }
     
     private static func registerUseCase() {
-
+        register(ClubsUseCase.self) {
+            ClubsUseCaseImpl()
+        }
     }
     
     private static func registerModule() {

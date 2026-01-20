@@ -19,7 +19,8 @@ public extension TargetDependency {
             .AppCore.AppFoundation,
             .AppCore.AppUIKit,
             .AppCore.AppStorage,
-            .AppCore.AppNetwork
+            .AppCore.AppNetwork,
+            .AppCore.AppPresentationModel
         ]
     }
     
@@ -78,6 +79,11 @@ public extension TargetDependency {
         
         public static let AppLocalization: TargetDependency = .project(
             target: "AppLocalization",
+            path: .relativeToRoot(Project.Projects.core)
+        )
+        
+        public static let AppPresentationModel: TargetDependency = .project(
+            target: "AppPresentationModel",
             path: .relativeToRoot(Project.Projects.core)
         )
     }

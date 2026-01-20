@@ -6,6 +6,8 @@
 //
 
 import AppFoundation
+import Combine
+import AppNetwork
 
 // MARK: - Clubs input
 
@@ -16,6 +18,7 @@ struct ClubsInputData {
 
 enum ClubsSideEffect: UISideEffect {
     case loading(Bool)
+    case error(APIError)
 }
 
 // MARK: - Feature Definition
@@ -29,9 +32,15 @@ typealias ClubsFeature = UIFeatureDefinition<
 // MARK: - View State
 
 final class ClubsViewState: UIFeatureState {
+    @Published var uiModel: UIModel = .init()
+    
+    struct UIModel {
+        var clubs: [ClubCardView.Model] = []
+    }
 }
 
 // MARK: - Feature Action
 
 enum ClubsAction: UIFeatureAction {
+    case fetchData
 }

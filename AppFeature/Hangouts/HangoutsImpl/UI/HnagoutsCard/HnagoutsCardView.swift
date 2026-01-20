@@ -6,23 +6,24 @@
 //
 
 import SwiftUI
+import AppUIKit
 
-public struct HangoutsCardView: View {
+struct HangoutsCardView: View {
     private let model: Model
-    private let onButtonTap: ((AppUIEntities.AccessType, AppUIEntities.RequestType) -> Void)
-    private let onTap: ((Model) -> Void)
+    private let onButtonTap: (() -> Void)
+    private let onTap: (() -> Void)
     
-    public init(
+    init(
         model: Model,
-        onButtonTap: @escaping ((AppUIEntities.AccessType, AppUIEntities.RequestType) -> Void),
-        onTap: @escaping ((Model) -> Void)
+        onButtonTap: @escaping (() -> Void),
+        onTap: @escaping (() -> Void)
     ) {
         self.model = model
         self.onButtonTap = onButtonTap
         self.onTap = onTap
     }
     
-    public var body: some View {
+    var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             topView
             bottomView
@@ -37,7 +38,7 @@ public struct HangoutsCardView: View {
         )
         .modifier(
             PressTapButtonModifier{
-                onTap(model)
+                onTap()
             }
         )
     }
@@ -111,7 +112,7 @@ public struct HangoutsCardView: View {
                         size: .small
                     )
                 ) {
-                    onButtonTap(model.accessType, model.requestType)
+                    onButtonTap()
                 }
                 .disabled(model.requestType == .pending)
             }
@@ -123,10 +124,10 @@ public struct HangoutsCardView: View {
     ScrollView {
         VStack {
             HangoutsCardView(
-                model: HangoutsCardView.Model.mock[0],
-                onButtonTap: { accessType, requestType in
+                model: .previewMock[0],
+                onButtonTap: {
                     
-                }, onTap: { item in
+                }, onTap: {
                     
                 }
             )

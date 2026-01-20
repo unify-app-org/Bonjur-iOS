@@ -23,7 +23,9 @@ let discoverTarget = Target.createFeatureModule(
     name: "Discover",
     implConfig: .init(
         dependencies: [
-            
+            .AppFeature.Clubs,
+            .AppFeature.Events,
+            .AppFeature.Hangouts
         ]
     )
 ).add(to: &frameworkTargets)

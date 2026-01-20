@@ -8,11 +8,34 @@
 import SwiftUI
 import AppFoundation
 import AppUIKit
+import Clubs
+import Events
+import Hangouts
 
 struct DiscoverView: View {
     @ObservedObject var store: StoreOf<DiscoverFeature>
     @State private var viewHeight: CGFloat = 110
     @State private var offset: CGFloat = 0
+    
+    private let clubsModule: ClubsModule
+    private let eventsModule: EventsModule
+    private let hangoutsModule: HangoutsModule
+
+    init(
+        store: StoreOf<DiscoverFeature>,
+        viewHeight: CGFloat = 110,
+        offset: CGFloat = 0,
+        clubsModule: ClubsModule = resolve(),
+        eventsModule: EventsModule = resolve(),
+        hangoutsModule: HangoutsModule = resolve()
+    ) {
+        self.offset = offset
+        self.viewHeight = viewHeight
+        self.store = store
+        self.clubsModule = clubsModule
+        self.eventsModule = eventsModule
+        self.hangoutsModule = hangoutsModule
+    }
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -88,47 +111,83 @@ struct DiscoverView: View {
     
     private func clubsView(geometry: GeometryProxy) -> some View {
         VStack(spacing: 0) {
-            if !store.state.uiModel.clubs.isEmpty {
+            let isEmpty = store.state.uiModel.clubs.isEmpty
+            headerTitle("Clubs", viewAllVisible: !isEmpty, type: .clubs)
+            if !isEmpty {
                 let clubs = store.state.uiModel.clubs
-                headerTitle("Clubs", type: .clubs)
                 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
                         ForEach(Array(clubs.enumerated()), id: \.element.uuid) { index, item in
-                            ClubCardView(model: item) { item in
-                                
+                            if let view = clubsModule.makeCardView(
+                                inputData: item,
+                                onTap: {
+                                    
+                                }
+                            ) as? AnyView {
+                                view
+                                    .frame(width: geometry.size.width - 60)
+                                    .padding(.vertical)
+                                    .id(index)
                             }
-                            .frame(width: geometry.size.width - 60)
-                            .padding(.vertical)
-                            .id(index)
                         }
                     }
                     .padding(.horizontal, 16)
                 }
+            } else {
+                emptyView(
+                    icon: UIImage.Icons.twoUsers,
+                    text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
+                    buttonTitle: "Create a club +",
+                    type: .clubs
+                )
+                .padding()
             }
         }
+    }
+    
+    private func emptyView(
+        icon: UIImage,
+        text: String,
+        buttonTitle: String,
+        type: AppUIEntities.ActivityType
+    ) -> some View {
+        AppEmptyView(
+            model: .init(
+                icon: UIImage.Icons.twoUsers,
+                text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
+                buttonTitle: "Create a club +"
+            )
+        ) {
+            
+        }
+        .padding()
     }
 
     private func eventsView(geometry: GeometryProxy) -> some View {
         VStack(spacing: 0) {
-            if !store.state.uiModel.events.isEmpty {
+            let uiModel = store.state.uiModel
+            if !uiModel.events.isEmpty, !uiModel.clubs.isEmpty {
                 let events = store.state.uiModel.events
                 headerTitle("Events", type: .events)
                 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
                         ForEach(Array(events.enumerated()), id: \.element.uuid) { index, item in
-                            EventsCardView(
+                            if let view = eventsModule.makeEvents(
                                 model: item,
-                                onButtonTap: { accessType, requestType in
+                                onTap: {
                                     
-                                }, onTap: { item in
+                                },
+                                onButtonTap: {
                                     
                                 }
-                            )
-                            .frame(width: geometry.size.width - 90)
-                            .padding(.vertical)
-                            .id(index)
+                            ) as? AnyView {
+                                view
+                                    .frame(width: geometry.size.width - 90)
+                                    .padding(.vertical)
+                                    .id(index)
+                            }
                         }
                     }
                     .padding(.horizontal, 16)
@@ -139,33 +198,53 @@ struct DiscoverView: View {
 
     private func hangoutsView(geometry: GeometryProxy) -> some View {
         VStack(spacing: 0) {
-            if !store.state.uiModel.hangouts.isEmpty {
+            let isEmpty = store.state.uiModel.hangouts.isEmpty
+            headerTitle(
+                "Hangouts",
+                viewAllVisible: !isEmpty,
+                type: .hangOuts
+            )
+            
+            if !isEmpty {
                 let hangouts = store.state.uiModel.hangouts
-                headerTitle("Hangouts", type: .hangOuts)
-                
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
                         ForEach(Array(hangouts.enumerated()), id: \.element.uuid) { index, item in
-                            HangoutsCardView(
+                            if let view = hangoutsModule.makeCardView(
                                 model: item,
-                                onButtonTap: { accessType, requestType in
+                                onTap: {
                                     
-                                }, onTap: { item in
+                                },
+                                onButtonTap: {
                                     
                                 }
-                            )
-                            .frame(width: geometry.size.width - 90)
-                            .padding(.vertical)
-                            .id(index)
+                            ) as? AnyView {
+                                view
+                                    .frame(width: geometry.size.width - 90)
+                                    .padding(.vertical)
+                                    .id(index)
+                            }
                         }
                     }
                     .padding(.horizontal, 16)
                 }
+            } else {
+                emptyView(
+                    icon: UIImage.Icons.twoUsers,
+                    text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
+                    buttonTitle: "Create a club +",
+                    type: .hangOuts
+                )
+                .padding()
             }
         }
     }
     
-    private func headerTitle(_ text: String, type: AppUIEntities.ActivityType) -> some View {
+    private func headerTitle(
+        _ text: String,
+        viewAllVisible: Bool = true,
+        type: AppUIEntities.ActivityType
+    ) -> some View {
         HStack {
             Text(text)
                 .font(Font.Typography.TitleSm.semiBold)
@@ -173,7 +252,7 @@ struct DiscoverView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
                 .padding(.horizontal)
-            if type != .community {
+            if type != .community, viewAllVisible {
                 Button {
                     store.send(.viewAllTapped(type))
                 } label: {

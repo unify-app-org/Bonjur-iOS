@@ -6,18 +6,19 @@
 //
 
 import SwiftUI
+import AppUIKit
 
-public struct EventsCardView: View {
+struct EventsCardView: View {
     private let model: Model
-    private let onButtonTap: ((AppUIEntities.AccessType, AppUIEntities.RequestType) -> Void)
-    private let onTap: ((Model) -> Void)
+    private let onButtonTap: (() -> Void)
+    private let onTap: (() -> Void)
     private let showCover: Bool
     
-    public init(
+    init(
         showCover: Bool = true,
         model: Model,
-        onButtonTap: @escaping ((AppUIEntities.AccessType, AppUIEntities.RequestType) -> Void),
-        onTap: @escaping ((Model) -> Void)
+        onButtonTap: @escaping (() -> Void),
+        onTap: @escaping (() -> Void)
     ) {
         self.showCover = showCover
         self.model = model
@@ -39,7 +40,7 @@ public struct EventsCardView: View {
         )
         .modifier(
             PressTapButtonModifier{
-                onTap(model)
+                onTap()
             }
         )
     }
@@ -151,7 +152,7 @@ public struct EventsCardView: View {
                         size: .small
                     )
                 ) {
-                    onButtonTap(model.accessType, model.requestType)
+                    onButtonTap()
                 }
                 .disabled(model.requestType == .pending)
             }
@@ -165,11 +166,11 @@ public struct EventsCardView: View {
     ScrollView {
         VStack {
             EventsCardView(
-                model: .mock[0],
-                onButtonTap: { accesstype, requestType in
+                model: .previewMock[0],
+                onButtonTap: {
                     
                 },
-                onTap: { item in
+                onTap: {
                     
                 }
             )

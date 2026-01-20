@@ -15,11 +15,30 @@ public struct AppUIEntities {
     public struct Member: Identifiable {
         public let uuid: UUID = UUID()
         public let id: Int
-        let profileImage: String?
+        public let profileImage: String?
         
         public init(id: Int, profileImage: String?) {
             self.id = id
             self.profileImage = profileImage
+        }
+    }
+    
+    // MARK: - Tags
+
+    public struct Tags: Identifiable {
+        public let uuid: UUID = UUID()
+        public let id: Int
+        public let type: String
+        public let title: String
+        
+        public init(
+            id: Int,
+            type: String,
+            title: String
+        ) {
+            self.id = id
+            self.type = type
+            self.title = title
         }
     }
     
@@ -50,7 +69,7 @@ public struct AppUIEntities {
         case teritary
         case color(ColorType)
         
-        var bgColor: Color {
+        public var bgColor: Color {
             switch self {
             case .primary:
                 return .Palette.primary
@@ -72,7 +91,7 @@ public struct AppUIEntities {
             }
         }
         
-        var foregroundColor: Color {
+        public var foregroundColor: Color {
             switch self {
             case .teritary, .primary:
                 return .Palette.blackHigh
@@ -90,7 +109,7 @@ public struct AppUIEntities {
             }
         }
         
-        var arrowTint: Color {
+        public var arrowTint: Color {
             switch self {
             case .primary:
                 return .Palette.whiteHigh
@@ -106,7 +125,7 @@ public struct AppUIEntities {
             }
         }
         
-        var arrowBgColor: Color {
+        public var arrowBgColor: Color {
             switch self {
             case .primary:
                 return .Palette.cardBgSecondry

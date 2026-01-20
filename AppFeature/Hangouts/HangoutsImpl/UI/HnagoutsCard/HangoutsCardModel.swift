@@ -6,8 +6,11 @@
 //
 
 import Foundation
+import AppUIKit
+import Hangouts
+import AppPresentationModel
 
-public extension HangoutsCardView {
+extension HangoutsCardView {
     
     struct Model: Identifiable {
         public let uuid: UUID = UUID()
@@ -15,7 +18,7 @@ public extension HangoutsCardView {
         let name, description: String
         let memberCount: Int
         let totalCapacity: Int?
-        let tags: [Tags]
+        let tags: [AppUIEntities.Tags]
         let accessType: AppUIEntities.AccessType
         let requestType: AppUIEntities.RequestType
         
@@ -25,7 +28,7 @@ public extension HangoutsCardView {
             description: String,
             memberCount: Int,
             totalCapacity: Int?,
-            tags: [Tags],
+            tags: [AppUIEntities.Tags],
             accessType: AppUIEntities.AccessType,
             requestType: AppUIEntities.RequestType
         ) {
@@ -65,28 +68,64 @@ public extension HangoutsCardView {
             }
         }
     }
+}
+
+extension HangoutsCardView.Model {
+    init(from: HangoutsModuleModel.CardInputData) {
+        self.init(
+            id: from.id,
+            name: from.name,
+            description: from.description,
+            memberCount: from.memberCount,
+            totalCapacity: from.totalCapacity,
+            tags: Self.mapTags(from.tags),
+            accessType: Self.mapAccessType(from.accessType),
+            requestType: Self.mapRequestType(from.requestType)
+        )
+    }
     
-    struct Tags: Identifiable {
-        public let uuid: UUID = UUID()
-        public let id: Int
-        public let type: String
-        let title: String
-        
-        init(
-            id: Int,
-            type: String,
-            title: String
-        ) {
-            self.id = id
-            self.type = type
-            self.title = title
+    private static func mapRequestType(
+        _ type: AppPresentationModel.RequestType
+    ) -> AppUIEntities.RequestType {
+        switch type {
+        case .joined:
+            return .joined
+        case .rejected:
+            return .rejected
+        case .pending:
+            return .pending
+        case .none:
+            return .none
+        }
+    }
+    
+    private static func mapAccessType(
+        _ type: AppPresentationModel.AccessType
+    ) -> AppUIEntities.AccessType {
+        switch type {
+        case .public:
+            return .public
+        case .private:
+            return .private
+        }
+    }
+    
+    private static func mapTags(
+        _ tags: [AppPresentationModel.Tags]
+    ) -> [AppUIEntities.Tags] {
+        tags.map {
+            AppUIEntities.Tags(
+                id: $0.id,
+                type: $0.type,
+                title: $0.title
+            )
         }
     }
 }
 
-public extension HangoutsCardView.Model {
+extension HangoutsCardView.Model {
     
-    static let mock: [Self] = [
+    static let previewMock: [Self] = [
         .init(
             id: UUID().uuidString,
             name: "Study night at cafe",

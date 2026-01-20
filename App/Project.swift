@@ -18,7 +18,7 @@ let appTarget: Target = .target(
     sources: ["App/**/*.swift"],
     resources: ["App/Resources/**"],
     dependencies: TargetDependency.AllDependencies,
-    settings: .settings(configurations: .default)
+    settings: .settings(base: .default)
 )
 
 let project = Project(

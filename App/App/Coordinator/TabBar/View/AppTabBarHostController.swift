@@ -55,21 +55,6 @@ final class AppTabBarHostController: UITabBarController {
         updateHighlightFrame()
     }
     
-    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        guard
-            let index = tabBar.items?.firstIndex(of: item),
-            let tabBarButton = tabBar.subviews[index + 1] as? UIControl
-        else { return }
-
-        UIView.animate(withDuration: 0.15, animations: {
-            tabBarButton.transform = CGAffineTransform(scaleX: 1.03, y: 1.03)
-        }) { _ in
-            UIView.animate(withDuration: 0.15) {
-                tabBarButton.transform = .identity
-            }
-        }
-    }
-    
     private func setUpCreateMenu() {
         createMenuView = CreateView { [weak self] type in
             guard let self else { return }

@@ -9,7 +9,10 @@ import Foundation
 import AppPresentationModel
 
 public protocol EventsModule {
-    func makeEvents(
+    
+    func makeEventsList() -> AnyObject
+
+    func makeEventsCard(
         model: EventsModuleModel.CardInputData,
         onTap: @escaping (() -> Void),
         onButtonTap: @escaping (() -> Void)

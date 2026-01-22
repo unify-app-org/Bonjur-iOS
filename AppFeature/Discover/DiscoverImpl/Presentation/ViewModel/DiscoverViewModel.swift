@@ -58,13 +58,17 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         case .community:
             break
         case .events:
-            break
+            Task {
+                await router.navigate(to: .viewAllEvents)
+            }
         case .clubs:
             Task {
                 await router.navigate(to: .viewAllClubs)
             }
         case .hangOuts:
-            break
+            Task {
+                await router.navigate(to: .viewAllHangouts)
+            }
         }
     }
     

@@ -97,8 +97,12 @@ final class AppTabBarHostController: UITabBarController {
     }
     
     private func setupTabs() {
-        let discover = discoverModule.makeDiscover(self) as! UIViewController
-        let clubs = clubsModule.makeClubsViewController() as! UIViewController
+        let discoverVC = discoverModule.makeDiscover(self) as! UIViewController
+        let discover = UINavigationController(rootViewController: discoverVC)
+        
+        let clubsVC = clubsModule.makeClubsViewController() as! UIViewController
+        let clubs = UINavigationController(rootViewController: clubsVC)
+        
         let spacer = UIViewController()
         let plans = makePlaceholderViewController(title: "My plans")
         let profile = makePlaceholderViewController(title: "Profile")
@@ -147,7 +151,7 @@ final class AppTabBarHostController: UITabBarController {
             for: .touchUpInside
         )
         
-        view.addSubview(plusButton)
+        tabBar.addSubview(plusButton)
         
         plusButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -220,20 +224,18 @@ final class AppTabBarHostController: UITabBarController {
     }
     
     private func updateHighlightFrame() {
-        let buttonBounds = plusButton.bounds
-        let buttonCenter = CGPoint(
-            x: plusButton.frame.midX,
-            y: plusButton.frame.midY
-        )
+        guard let dimView = dimView else { return }
+        
+        let buttonFrameInDimView = tabBar.convert(plusButton.frame, to: dimView)
         
         let highlightFrame = CGRect(
-            x: buttonCenter.x - buttonBounds.width / 2,
-            y: buttonCenter.y - buttonBounds.height / 2,
-            width: buttonBounds.width,
-            height: buttonBounds.height
+            x: buttonFrameInDimView.midX - plusButton.bounds.width / 2,
+            y: buttonFrameInDimView.midY - plusButton.bounds.height / 2,
+            width: plusButton.bounds.width,
+            height: plusButton.bounds.height
         )
         
-        dimView?.highlightFrame = highlightFrame
+        dimView.highlightFrame = highlightFrame
     }
     
     private func setupAppearance() {
@@ -325,7 +327,7 @@ extension AppTabBarHostController: UITabBarControllerDelegate {
     }
 }
 
-extension AppTabBarHostController: DiscoverModuleDeleagete {
+extension AppTabBarHostController: DiscoverModuleDelegate {
     
     func viewAllClubs() {
         switchToTab(1)

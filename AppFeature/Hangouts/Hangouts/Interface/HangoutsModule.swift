@@ -8,7 +8,9 @@
 import Foundation
 
 public protocol HangoutsModule {
-    func makeCardView(
+    func makeHangoutsList() -> AnyObject
+    
+    func makeHangoutsCard(
         model: HangoutsModuleModel.CardInputData,
         onTap: @escaping (() -> Void),
         onButtonTap: @escaping (() -> Void)

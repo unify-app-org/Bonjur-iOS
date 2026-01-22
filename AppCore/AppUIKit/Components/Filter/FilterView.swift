@@ -202,6 +202,7 @@ public struct FilterView: View {
                     )
             )
             .padding(.vertical)
+            .padding(.trailing, viewModel.model.last?.id == item.id ? 16 : 0)
         }
     }
 }

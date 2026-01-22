@@ -50,11 +50,15 @@ enum HangoutsDependencyContainer {
     }
     
     private static func registerDataSource() {
-
+        register(HangoutsDataSource.self) {
+            HangoutsDataSourceImpl()
+        }
     }
     
     private static func registerUseCase() {
-
+        register(HangoutsUseCase.self) {
+            HangoutsUseCaseImpl()
+        }
     }
     
     private static func registerModule() {

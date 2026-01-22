@@ -11,7 +11,7 @@ import SwiftUICore
 
 struct HangoutsModuleImpl: HangoutsModule {
     
-    func makeCardView(
+    func makeHangoutsCard(
         model: HangoutsModuleModel.CardInputData,
         onTap: @escaping () -> Void,
         onButtonTap: @escaping () -> Void
@@ -25,5 +25,9 @@ struct HangoutsModuleImpl: HangoutsModule {
                 onTap: onTap
             )
         )
+    }
+    
+    func makeHangoutsList() -> AnyObject {
+        HangoutListBuilder(inputData: .init()).build()
     }
 }

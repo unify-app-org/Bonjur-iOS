@@ -20,7 +20,7 @@ struct DiscoverView: View {
     private let clubsModule: ClubsModule
     private let eventsModule: EventsModule
     private let hangoutsModule: HangoutsModule
-
+    
     init(
         store: StoreOf<DiscoverFeature>,
         viewHeight: CGFloat = 110,
@@ -46,12 +46,14 @@ struct DiscoverView: View {
             }
             VStack(spacing: .zero) {
                 topView
+                    .padding(.vertical, 8)
                 Spacer()
             }
         }
         .onAppear {
             store.send(.fetchData)
         }
+        .navigationBarHidden(true)
     }
     
     private var scrollView: some View {
@@ -174,7 +176,7 @@ struct DiscoverView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
                         ForEach(Array(events.enumerated()), id: \.element.uuid) { index, item in
-                            if let view = eventsModule.makeEvents(
+                            if let view = eventsModule.makeEventsCard(
                                 model: item,
                                 onTap: {
                                     
@@ -210,7 +212,7 @@ struct DiscoverView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
                         ForEach(Array(hangouts.enumerated()), id: \.element.uuid) { index, item in
-                            if let view = hangoutsModule.makeCardView(
+                            if let view = hangoutsModule.makeHangoutsCard(
                                 model: item,
                                 onTap: {
                                     

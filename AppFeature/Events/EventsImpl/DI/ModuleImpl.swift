@@ -12,7 +12,7 @@ import SwiftUICore
 
 struct EventsModuleImpl: EventsModule {
     
-    func makeEvents(
+    func makeEventsCard(
         model: EventsModuleModel.CardInputData,
         onTap: @escaping (() -> Void),
         onButtonTap: @escaping (() -> Void)
@@ -26,5 +26,9 @@ struct EventsModuleImpl: EventsModule {
                 onTap: onTap
             )
         )
+    }
+    
+    func makeEventsList() -> AnyObject {
+        EventsListBuilder(inputData: .init()).build()
     }
 }

@@ -70,7 +70,7 @@ enum DiscoverDependencyContainer {
             resolve(DiscoverModuleImpl.self)
         }
         
-        register(DiscoverDeleagete.self, isSingleton: true) {
+        register(DiscoverDelegate.self, isSingleton: true) {
             resolve(DiscoverModuleImpl.self)
         }
     }

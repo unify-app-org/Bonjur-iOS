@@ -1,16 +1,16 @@
 //
-//  ClubsView.swift
-//  ClubsImpl
+//  HangoutListView.swift
+//  HangoutsImpl
 //
-//  Created by Huseyn Hasanov on 17.01.26.
+//  Created by Huseyn Hasanov on 22.01.26.
 //
 
 import SwiftUI
 import AppFoundation
 import AppUIKit
 
-struct ClubsView: View {
-    @ObservedObject var store: StoreOf<ClubsFeature>
+struct HangoutListView: View {
+    @ObservedObject var store: StoreOf<HangoutListFeature>
     @State private var viewHeight: CGFloat = 0
     
     var body: some View {
@@ -28,17 +28,19 @@ struct ClubsView: View {
         .onAppear {
             store.send(.fetchData)
         }
-        .toolbar(.hidden)
+        .toolbar(.visible)
     }
     
     @ViewBuilder
     private var scrollView: some View {
-        let clubs = store.state.uiModel.clubs
-        if !clubs.isEmpty {
+        let hangouts = store.state.uiModel.hangouts
+        if !hangouts.isEmpty {
             ScrollView {
                 VStack(spacing: 20) {
-                    ForEach(clubs, id: \.uuid) { item in
-                        ClubCardView(model: item) {
+                    ForEach(hangouts, id: \.uuid) { item in
+                        HangoutsCardView(model: item) {
+                            
+                        } onTap: {
                             
                         }
                     }
@@ -62,7 +64,7 @@ struct ClubsView: View {
     @ViewBuilder
     private var topView: some View {
         VStack(spacing: 24) {
-            Text("Clubs")
+            Text("Events")
                 .font(Font.Typography.TitleL.extraBold)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal)

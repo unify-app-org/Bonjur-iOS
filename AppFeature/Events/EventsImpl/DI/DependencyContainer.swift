@@ -50,11 +50,15 @@ enum EventsDependencyContainer {
     }
     
     private static func registerDataSource() {
-
+        register(EventsDataSource.self) {
+            EventsDataSourceImpl()
+        }
     }
     
     private static func registerUseCase() {
-
+        register(EventsUseCase.self) {
+            EventsUseCaseImpl()
+        }
     }
     
     private static func registerModule() {

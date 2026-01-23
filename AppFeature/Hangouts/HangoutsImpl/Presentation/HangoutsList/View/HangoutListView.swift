@@ -72,12 +72,10 @@ struct HangoutListView: View {
                 SearchView(text: .constant(""))
                     .padding(.horizontal)
                 FilterView(
-                    viewModel: .init(
-                        model: FilterView.Model.mock,
-                        selectedItems: { item in
-                            // do
-                        }
-                    )
+                    model: FilterView.Model.mock,
+                    selectedItems: { item in
+                        // do
+                    }
                 )
             }
         }

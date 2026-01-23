@@ -12,6 +12,7 @@ import AppNetwork
 import Clubs
 import Events
 import Hangouts
+import Communities
 
 // MARK: - Discover input
 
@@ -44,12 +45,11 @@ final class DiscoverViewState: UIFeatureState {
         events: [],
         hangouts: []
     )
-    @Published var currentCommunitiesPage = 0
     
     struct UIModel {
         var user: UserModel
         var filters: [FilterView.Model]
-        var communities: [CommunityCardView.Model]
+        var communities: [CommunitiesModuleModel.CardInputData]
         var clubs: [ClubsModuleModel.CardInputData]
         var events: [EventsModuleModel.CardInputData]
         var hangouts: [HangoutsModuleModel.CardInputData]

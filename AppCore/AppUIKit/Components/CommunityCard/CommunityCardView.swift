@@ -85,7 +85,7 @@ public struct CommunityCardView: View {
                 )
                 .frame(width: 40, height: 40)
         } placeholder: {
-            Text("⚽️")
+            Text("🤙")
                 .frame(width: 40, height: 40)
                 .foregroundStyle(Color.Palette.black)
                 .background(Color.Palette.white)

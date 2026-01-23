@@ -8,4 +8,8 @@
 import Foundation
 
 public protocol CommunitiesModule {
+    func makeCommunityCard(
+        inputData: CommunitiesModuleModel.CardInputData,
+        onTap: @escaping (() -> Void)
+    ) -> Any
 }

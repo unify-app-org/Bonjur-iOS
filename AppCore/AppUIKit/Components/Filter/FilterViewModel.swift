@@ -34,6 +34,11 @@ public final class FilterViewModel: ObservableObject {
     
     // MARK: - Public Methods
     
+    func updateModel(_ updatedModel: [FilterView.Model]) {
+        model = updatedModel
+        sortFilters()
+    }
+    
     func fetchFilterScreenData() {
         filterModel = model
     }

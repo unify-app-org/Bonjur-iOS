@@ -12,7 +12,7 @@ protocol DiscoverDataSource {
     
 }
 
-final class DiscoverDataSourceImpl: NetworkService<DisoverEndPoint>, DiscoverDataSource {
+final class DiscoverDataSourceImpl: NetworkService<DiscoverEndPoint>, DiscoverDataSource {
     
     
 }

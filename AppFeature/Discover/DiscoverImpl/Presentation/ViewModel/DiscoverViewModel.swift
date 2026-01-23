@@ -10,6 +10,7 @@ import AppUIKit
 import Clubs
 import Events
 import Hangouts
+import Communities
 
 final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     
@@ -95,7 +96,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         }
     }
     
-    private func handleCommunitiesData(_ data: [CommunityCardView.Model]) {
+    private func handleCommunitiesData(_ data: [CommunitiesModuleModel.CardInputData]) {
         state.uiModel.communities = data
     }
     
@@ -115,13 +116,13 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     private func fetchClubsData() async {
         do {
             let data = try await dependencies.useCase.fetchClubsData()
-            handleClubssData(data)
+            handleClubsData(data)
         } catch {
             postEffect(.error(error))
         }
     }
     
-    private func handleClubssData(_ data: [ClubsModuleModel.CardInputData]) {
+    private func handleClubsData(_ data: [ClubsModuleModel.CardInputData]) {
         state.uiModel.clubs = data
     }
     

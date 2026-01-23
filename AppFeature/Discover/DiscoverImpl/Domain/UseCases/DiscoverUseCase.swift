@@ -10,11 +10,12 @@ import AppNetwork
 import Clubs
 import Events
 import Hangouts
+import Communities
 
 protocol DiscoverUseCase {
     func fetchUserData() async throws(APIError) -> UserModel
     func fetchFilterData() async throws(APIError) -> [FilterView.Model]
-    func fetchCommunitiesData() async throws(APIError) -> [CommunityCardView.Model]
+    func fetchCommunitiesData() async throws(APIError) -> [CommunitiesModuleModel.CardInputData]
     func fetchClubsData() async throws(APIError) -> [ClubsModuleModel.CardInputData]
     func fetchEventsData() async throws(APIError) -> [EventsModuleModel.CardInputData]
     func fetchHangoutsData() async throws(APIError) -> [HangoutsModuleModel.CardInputData]
@@ -41,8 +42,8 @@ class DiscoverUseCaseImpl: DiscoverUseCase {
         FilterView.Model.mock
     }
     
-    func fetchCommunitiesData() async throws(APIError) -> [CommunityCardView.Model] {
-        CommunityCardView.Model.mock
+    func fetchCommunitiesData() async throws(APIError) -> [CommunitiesModuleModel.CardInputData] {
+        CommunitiesModuleModel.CardInputData.previewMock
     }
     
     func fetchClubsData() async throws(APIError) -> [ClubsModuleModel.CardInputData] {

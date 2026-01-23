@@ -12,11 +12,19 @@ public struct FilterView: View {
     @StateObject private var viewModel: FilterViewModel
     @State private var presentFilter: Bool = false
     
-    public init(viewModel: FilterViewModel) {
+    private let model: [FilterView.Model]
+
+    // MARK: - Init
+    public init(
+        model: [FilterView.Model],
+        selectedItems: @escaping ([FilterView.Items]) -> Void
+    ) {
+        self.model = model
+        
         _viewModel = StateObject(
             wrappedValue: FilterViewModel(
-                model: FilterView.Model.mock,
-                selectedItems: { _ in }
+                model: model,
+                selectedItems: selectedItems
             )
         )
     }
@@ -61,6 +69,9 @@ public struct FilterView: View {
         }
         .animation(.easeInOut(duration: 0.25),
                    value: viewModel.selectedItem?.id)
+        .onChange(of: model) { newModel in
+            viewModel.updateModel(newModel)
+        }
         .zIndex(1)
         .onAppear {
             viewModel.sortFilters()
@@ -128,16 +139,19 @@ public struct FilterView: View {
         .background(.white)
     }
     
+    @ViewBuilder
     private var chipsView: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 16) {
-                filterView
-                ForEach(viewModel.model, id: \.id) { item in
-                    chipItem(item)
+        if !viewModel.model.isEmpty {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 16) {
+                    filterView
+                    ForEach(viewModel.model, id: \.id) { item in
+                        chipItem(item)
+                    }
                 }
             }
+            .background(Color.white)
         }
-        .background(Color.white)
     }
     
     private var filterView: some View {
@@ -210,11 +224,10 @@ public struct FilterView: View {
 #Preview {
     ScrollView {
         FilterView(
-            viewModel: FilterViewModel(
-                model: FilterView.Model.mock,
-                selectedItems: { item in
-                
-            })
+            model: FilterView.Model.mock,
+            selectedItems: { item in
+                // do
+            }
         )
     }
 }

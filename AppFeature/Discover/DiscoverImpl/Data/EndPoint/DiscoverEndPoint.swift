@@ -1,5 +1,5 @@
 //
-//  DisoverEndPoint.swift
+//  DiscoverEndPoint.swift
 //  AppFeature
 //
 //  Created by Huseyn Hasanov on 17.01.26.
@@ -7,11 +7,11 @@
 
 import AppNetwork
 
-enum DisoverEndPoint {
+enum DiscoverEndPoint {
     case test
 }
 
-extension DisoverEndPoint: AppEndPoint {
+extension DiscoverEndPoint: AppEndPoint {
     
     var path: String {
         switch self {

@@ -11,23 +11,27 @@ import AppUIKit
 import Clubs
 import Events
 import Hangouts
+import Communities
 
 struct DiscoverView: View {
     @ObservedObject var store: StoreOf<DiscoverFeature>
     @State private var viewHeight: CGFloat = 110
     @State private var offset: CGFloat = 0
+    @State private var currentCommunitiesPage = 0
     
     private let clubsModule: ClubsModule
     private let eventsModule: EventsModule
     private let hangoutsModule: HangoutsModule
-    
+    private let communitiesModule: CommunitiesModule
+
     init(
         store: StoreOf<DiscoverFeature>,
         viewHeight: CGFloat = 110,
         offset: CGFloat = 0,
         clubsModule: ClubsModule = resolve(),
         eventsModule: EventsModule = resolve(),
-        hangoutsModule: HangoutsModule = resolve()
+        hangoutsModule: HangoutsModule = resolve(),
+        communitiesModule: CommunitiesModule = resolve()
     ) {
         self.offset = offset
         self.viewHeight = viewHeight
@@ -35,6 +39,7 @@ struct DiscoverView: View {
         self.clubsModule = clubsModule
         self.eventsModule = eventsModule
         self.hangoutsModule = hangoutsModule
+        self.communitiesModule = communitiesModule
     }
     
     var body: some View {
@@ -93,17 +98,22 @@ struct DiscoverView: View {
                 let communities = store.state.uiModel.communities
                 headerTitle("Communities", type: .community)
                 AppTabView(
-                    currentPage: $store.state.currentCommunitiesPage,
+                    currentPage: $currentCommunitiesPage,
                     pageCount: communities.count
                 ) {
                     ForEach(Array(communities.enumerated()), id: \.element.uuid) { index, item in
-                        CommunityCardView(model: item) { item in
-                            
+                        if let view = communitiesModule.makeCommunityCard(
+                            inputData: item,
+                            onTap: {
+                                
+                            }
+                        ) as? AnyView {
+                            view
+                                .frame(width: geometry.size.width - 32)
+                                .padding(.horizontal)
+                                .padding(.vertical)
+                                .tag(index)
                         }
-                        .frame(width: geometry.size.width - 32)
-                        .padding(.horizontal)
-                        .padding(.vertical)
-                        .tag(index)
                     }
                 }
                 .frame(height: 200)
@@ -274,12 +284,10 @@ struct DiscoverView: View {
             profileView
                 .padding(.horizontal)
             FilterView(
-                viewModel: .init(
-                    model: store.state.uiModel.filters,
-                    selectedItems: { item in
-                        // do
-                    }
-                )
+                model: store.state.uiModel.filters,
+                selectedItems: { item in
+                    // do
+                }
             )
         }
         .onGeometryChange(for: CGFloat.self) { proxy in

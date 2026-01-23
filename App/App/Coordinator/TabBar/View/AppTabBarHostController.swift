@@ -104,7 +104,7 @@ final class AppTabBarHostController: UITabBarController {
         let clubs = UINavigationController(rootViewController: clubsVC)
         
         let spacer = UIViewController()
-        let plans = makePlaceholderViewController(title: "My plans")
+        let plans = makePlaceholderViewController(title: "Groups")
         let profile = makePlaceholderViewController(title: "Profile")
         
         discover.tabBarItem = makeTabBarItem(
@@ -121,7 +121,7 @@ final class AppTabBarHostController: UITabBarController {
         spacer.tabBarItem.isEnabled = false
         
         plans.tabBarItem = makeTabBarItem(
-            title: "My plans",
+            title: "Groups",
             icon: UIImage.Icons.clipboardList
         )
         

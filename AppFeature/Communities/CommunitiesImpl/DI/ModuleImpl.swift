@@ -7,6 +7,19 @@
 
 import Foundation
 import Communities
+import SwiftUICore
 
 struct CommunitiesModuleImpl: CommunitiesModule {
+    
+    func makeCommunityCard(
+        inputData: CommunitiesModuleModel.CardInputData,
+        onTap: @escaping () -> Void
+    ) -> Any {
+        AnyView(
+            CommunityCardView(
+                model: .init(from: inputData),
+                onTap: onTap
+            )
+        )
+    }
 }

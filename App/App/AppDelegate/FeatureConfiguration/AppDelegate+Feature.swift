@@ -15,5 +15,6 @@ extension AppDelegate {
         setUpEvents(container)
         setUpHangouts(container)
         setUpClubs(container)
+        setUpGroups(container)
     }
 }

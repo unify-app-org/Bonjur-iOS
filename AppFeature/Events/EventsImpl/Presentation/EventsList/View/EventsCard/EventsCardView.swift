@@ -72,14 +72,14 @@ struct EventsCardView: View {
             CardBackgroundView(cardType: .club) {
                 ZStack {
                     let url = URL(string: model.coverimageURL ?? "")
-                    AsyncImage(url: url) { image in
+                    CachedAsyncImage(url: url) { image in
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(height: 103)
                             .clipped()
                     } placeholder: {
-                        EmptyView()
+                        Color.clear
                     }
                     
                     VStack {

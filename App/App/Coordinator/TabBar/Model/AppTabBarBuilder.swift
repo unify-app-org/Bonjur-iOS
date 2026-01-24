@@ -10,6 +10,7 @@ import UIKit
 import DependecyInjection
 import Discover
 import Clubs
+import Groups
 
 // MARK: - AppTabBar builder
 
@@ -41,6 +42,9 @@ struct AppTabBarBuilder {
             ),
             clubsModule: dependencyContainer.resolve(
                 ClubsModule.self
+            ),
+            groupsModule: dependencyContainer.resolve(
+                GroupsModule.self
             )
         )
         

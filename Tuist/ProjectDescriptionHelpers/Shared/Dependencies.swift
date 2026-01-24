@@ -38,7 +38,9 @@ public extension TargetDependency {
             .AppFeature.Events,
             .AppFeature.EventsImpl,
             .AppFeature.Clubs,
-            .AppFeature.ClubsImpl
+            .AppFeature.ClubsImpl,
+            .AppFeature.Groups,
+            .AppFeature.GroupsImpl
         ]
     }
     
@@ -121,6 +123,18 @@ public extension TargetDependency {
             target: "ClubsImpl",
             path: .relativeToRoot(Project.Projects.features)
         )
+        
+        // Clubs
+        public static let Groups: TargetDependency = .project(
+            target: "Groups",
+            path: .relativeToRoot(Project.Projects.features)
+        )
+        
+        public static let GroupsImpl: TargetDependency = .project(
+            target: "GroupsImpl",
+            path: .relativeToRoot(Project.Projects.features)
+        )
+        
         
         // Events
         public static let Events: TargetDependency = .project(

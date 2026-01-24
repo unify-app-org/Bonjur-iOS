@@ -11,6 +11,7 @@ import AppFoundation
 import SwiftUICore
 import Discover
 import Clubs
+import Groups
 
 // MARK: - Controller
 
@@ -19,6 +20,7 @@ final class AppTabBarHostController: UITabBarController {
     private let viewModel: AppTabBarViewModel
     private var discoverModule: DiscoverModule
     private var clubsModule: ClubsModule
+    private var groupsModule: GroupsModule
 
     private var isMenuOpen = false
     
@@ -30,11 +32,13 @@ final class AppTabBarHostController: UITabBarController {
     init(
         viewModel: AppTabBarViewModel,
         discoverModule: DiscoverModule,
-        clubsModule: ClubsModule
+        clubsModule: ClubsModule,
+        groupsModule: GroupsModule
     ) {
         self.viewModel = viewModel
         self.discoverModule = discoverModule
         self.clubsModule = clubsModule
+        self.groupsModule = groupsModule
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -104,7 +108,10 @@ final class AppTabBarHostController: UITabBarController {
         let clubs = UINavigationController(rootViewController: clubsVC)
         
         let spacer = UIViewController()
-        let plans = makePlaceholderViewController(title: "Groups")
+        
+        let plansVC = groupsModule.makeGroups() as! UIViewController
+        let plans = UINavigationController(rootViewController: plansVC)
+
         let profile = makePlaceholderViewController(title: "Profile")
         
         discover.tabBarItem = makeTabBarItem(

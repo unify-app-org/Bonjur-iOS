@@ -304,7 +304,7 @@ struct DiscoverView: View {
             Button {
                 
             } label: {
-                AsyncImage(url: url) { image in
+                CachedAsyncImage(url: url) { image in
                     image
                         .resizable()
                         .frame(width: 40, height: 40)

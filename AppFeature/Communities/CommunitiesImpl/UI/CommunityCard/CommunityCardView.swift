@@ -74,7 +74,7 @@ struct CommunityCardView: View {
     @ViewBuilder
     private var logoView: some View {
         let url = URL(string: model.logoURL)
-        AsyncImage(url: url) { image in
+        CachedAsyncImage(url: url) { image in
             image
                 .resizable()
                 .clipShape(RoundedRectangle(cornerRadius: .infinity))
@@ -104,7 +104,7 @@ struct CommunityCardView: View {
                 .multilineTextAlignment(.leading)
             HStack(spacing: -10) {
                 ForEach(Array(model.members.enumerated()), id: \.element.uuid) { index, member in
-                    AsyncImage(url: URL(string: member.profileImage ?? "")) { image in
+                    CachedAsyncImage(url: URL(string: member.profileImage ?? "")) { image in
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)

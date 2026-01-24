@@ -55,7 +55,7 @@ struct ClubCardView: View {
     @ViewBuilder
     private var logoImage: some View {
         let url = URL(string: model.logoURL)
-        AsyncImage(url: url) { image in
+        CachedAsyncImage(url: url) { image in
             image
                 .resizable()
                 .clipShape(RoundedRectangle(cornerRadius: .infinity))
@@ -96,7 +96,8 @@ struct ClubCardView: View {
         HStack(spacing: 8) {
             HStack(spacing: -10) {
                 ForEach(Array(model.members.enumerated()), id: \.element.uuid) { index, member in
-                    AsyncImage(url: URL(string: member.profileImage ?? "")) { image in
+                    let url = URL(string: member.profileImage ?? "")
+                    CachedAsyncImage(url: url) { image in
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)

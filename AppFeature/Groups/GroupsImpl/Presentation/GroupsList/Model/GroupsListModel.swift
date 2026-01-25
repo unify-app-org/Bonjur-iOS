@@ -11,6 +11,7 @@ import Combine
 import Clubs
 import Hangouts
 import AppNetwork
+import SwiftUICore
 
 // MARK: - GroupsList input
 
@@ -42,6 +43,30 @@ final class GroupsListViewState: UIFeatureState {
     )
     
     @Published var selectedSegment: SegmentType = .clubs
+    
+    func currentPageBinding() -> Binding<Int> {
+        Binding { [self] in
+            switch selectedSegment {
+            case .clubs:
+                return 0
+            case .events:
+                return 1
+            case .hangouts:
+                return 2
+            }
+        } set: { [self] newValue in
+            switch newValue {
+            case 0:
+                selectedSegment = .clubs
+            case 1:
+                selectedSegment = .events
+            case 2:
+                selectedSegment = .hangouts
+            default:
+                break
+            }
+        }
+    }
     
     struct UIModel {
         var events: [EventsModuleModel.CardInputData]

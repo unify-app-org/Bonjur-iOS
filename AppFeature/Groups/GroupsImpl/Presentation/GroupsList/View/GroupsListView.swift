@@ -41,26 +41,21 @@ struct GroupsListView: View {
     var body: some View {
         VStack {
             topView
-            scrollView
+            TabView(selection: store.state.currentPageBinding()) {
+                clubsScrollView
+                    .tag(0)
+                eventsScrollView
+                    .tag(1)
+                hangoutsScrollView
+                    .tag(2)
+            }
         }
+        .tabViewStyle(.page(indexDisplayMode: .never))
         .onAppear {
             store.send(.fetchData)
         }
+        .animation(.easeInOut, value: store.state.selectedSegment)
         .toolbar(.hidden)
-    }
-    
-    // MARK: - Content Views
-    
-    @ViewBuilder
-    private var scrollView: some View {
-        switch store.state.selectedSegment {
-        case .clubs:
-            clubsScrollView
-        case .events:
-            eventsScrollView
-        case .hangouts:
-            hangoutsScrollView
-        }
     }
     
     // MARK: - Top View
@@ -93,8 +88,15 @@ struct GroupsListView: View {
     
     private var segmentView: some View {
         CapsuleSegmentedPicker(
-             selection: $store.state.selectedSegment
-         )
+            selection: Binding(
+                get: { store.state.selectedSegment },
+                set: { newValue in
+                    withAnimation(.easeInOut) {
+                        store.state.selectedSegment = newValue
+                    }
+                }
+            )
+        )
         .padding(.top)
         .padding(.horizontal)
     }

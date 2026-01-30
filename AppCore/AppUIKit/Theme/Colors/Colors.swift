@@ -51,5 +51,9 @@ public extension Color {
         public static let whiteHigh = Color.white.opacity(0.9)
         
         public static let white = Color.white
+        
+        public static let whiteMedium = Color.white.opacity(0.6)
+        
+        public static let appBlue = Color.init(.appBlue) // #6D8DFF
     }
 }

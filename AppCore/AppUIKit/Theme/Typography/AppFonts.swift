@@ -89,6 +89,13 @@ public enum Font {
         // MARK: - TitleMd (22px)
         /// font sizs 22px
         public enum TitleMd {
+            public static var extraBold: SwiftUI.Font {
+                SwiftUI.Font.custom(
+                    AppFonts.FontName.manropeExtraBold.rawValue,
+                    size: AppFonts.Tokens.FontSize.titleMd
+                )
+            }
+            
             public static var bold: SwiftUI.Font {
                 SwiftUI.Font.custom(
                     AppFonts.FontName.manropeBold.rawValue,

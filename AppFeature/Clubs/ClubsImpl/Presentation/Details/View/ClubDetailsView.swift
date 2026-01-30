@@ -13,7 +13,12 @@ struct ClubDetailsView: View {
     @ObservedObject var store: StoreOf<ClubDetailsFeature>
     @State private var isScrolled = false
     @State private var isNameVisible = true
+    @State private var isSegmentSticky = false
     private let baseHeight: CGFloat = 164
+    private let navBarHeight: CGFloat = 100 // Approximate nav bar height
+    
+    // Test
+    @State private var selectedSegment: SegmentTypes = .about
     
     init(store: StoreOf<ClubDetailsFeature>, isScrolled: Bool = false) {
         self.store = store
@@ -34,16 +39,24 @@ struct ClubDetailsView: View {
                 }
                 .coordinateSpace(name: "scroll")
                 
-                customNavigationBar(safeAreaTop: proxy.safeAreaInsets.top)
-                    .background(isScrolled ? Color.white : Color.clear)
-                    .clipShape(RoundedRectangle(cornerRadius: .zero))
-                    .shadow(
-                        color: isScrolled ? Color.black.opacity(0.1) : Color.clear,
-                        radius: isScrolled ? 4 : 0,
-                        x: 0,
-                        y: isScrolled ? 2 : 0
-                    )
-                    .animation(.easeInOut(duration: 0.2), value: isScrolled)
+                VStack(spacing: 0) {
+                    customNavigationBar(safeAreaTop: proxy.safeAreaInsets.top)
+                        .background(isScrolled ? Color.white : Color.clear)
+                        .clipShape(RoundedRectangle(cornerRadius: .zero))
+                        .shadow(
+                            color: isScrolled ? Color.black.opacity(0.1) : Color.clear,
+                            radius: isScrolled ? 4 : 0,
+                            x: 0,
+                            y: isScrolled ? 2 : 0
+                        )
+                    
+                    if isSegmentSticky {
+                        segmentViewSticky
+                            .transition(.move(edge: .top).combined(with: .opacity))
+                    }
+                }
+                .animation(.easeInOut(duration: 0.2), value: isScrolled)
+                .animation(.easeInOut(duration: 0.2), value: isSegmentSticky)
             }
             .ignoresSafeArea()
             .toolbar(.hidden)
@@ -186,8 +199,9 @@ struct ClubDetailsView: View {
     // MARK: - Bottom part
     
     private var bottomView: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             clubNameAndChipsView
+            segmentView
         }
         .padding(.horizontal)
     }
@@ -233,8 +247,98 @@ struct ClubDetailsView: View {
             Text("161 members")
                 .font(Font.Typography.TextMd.regular)
                 .foregroundStyle(Color.Palette.blackHigh)
+            
+            chipsView
+            
+            AppButton(
+                title: "Create new event +",
+                model: .init(
+                    type: .secondary,
+                    contentSize: .fill
+                )
+            ) {
+                
+            }
         }
     }
+    
+    private var chipsView: some View {
+        HStack(spacing: 8) {
+            let array = ["test", "messi", "ronaldo", "neymar", "ronaldinho"]
+            FlowLayout(items: array) { item in
+                Text("#\(item.lowercased())")
+                    .font(Font.Typography.TextSm.regular)
+                    .lineLimit(1)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color.Palette.grayQuaternary)
+                    .clipShape(Capsule())
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var segmentView: some View {
+        CapsuleSegmentedPicker(
+            selection: Binding(
+                get: { selectedSegment },
+                set: { newValue in
+                    withAnimation(.easeInOut) {
+                        selectedSegment = newValue
+                    }
+                }
+            )
+        )
+        .padding(.top)
+        .background(Color.white)
+        .opacity(isSegmentSticky ? 0 : 1)
+        .background(
+            GeometryReader { geo in
+                Color.clear.onChange(of: geo.frame(in: .named("scroll")).minY) { newValue in
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        isSegmentSticky = newValue <= navBarHeight
+                    }
+                }
+            }
+        )
+    }
+    
+    @ViewBuilder
+    private var segmentViewSticky: some View {
+        CapsuleSegmentedPicker(
+            selection: Binding(
+                get: { selectedSegment },
+                set: { newValue in
+                    withAnimation(.easeInOut) {
+                        selectedSegment = newValue
+                    }
+                }
+            )
+        )
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(
+            Color.white
+                .shadow(
+                    color: Color.black.opacity(0.1),
+                    radius: 4,
+                    x: 0,
+                    y: 2
+                )
+        )
+        .mask(
+            Rectangle()
+                .padding(.bottom, -10)
+        )
+    }
+}
+
+enum SegmentTypes: String, CaseIterable, Identifiable {
+    case about = "About"
+    case events = "Events"
+    case members = "Members"
+    
+    var id: Self { self }
 }
 
 #Preview {

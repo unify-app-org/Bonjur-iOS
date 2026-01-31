@@ -15,6 +15,14 @@ public extension Array where Element == ProjectDescription.Configuration {
             .release(name: "Staging", xcconfig: "Config/Staging.xcconfig")
         ]
     }()
+    
+    static let withoutConfigFile: [ProjectDescription.Configuration] = {
+        [
+            .debug(name: "Debug"),
+            .release(name: "Release"),
+            .release(name: "Staging")
+        ]
+    }()
 }
 
 public extension Dictionary where Element == ProjectDescription.SettingsDictionary.Element {

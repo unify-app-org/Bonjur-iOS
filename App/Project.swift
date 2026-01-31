@@ -12,7 +12,7 @@ let appTarget: Target = .target(
     name: "App",
     destinations: [.iPhone, .iPad],
     product: .app,
-    bundleId: "com.bonjur.app",
+    bundleId: "$(BUNDLE_ID)",
     deploymentTargets: .iOS("16.0"),
     infoPlist: "App/Info.plist",
     sources: ["App/**/*.swift"],
@@ -23,7 +23,7 @@ let appTarget: Target = .target(
 
 let project = Project(
     name: Project.Projects.main,
-    organizationName: "Bonjur",
+    organizationName: Project.organizationName,
     options: .options(automaticSchemesOptions: .disabled),
     settings: .settings(base: .default, configurations: .default),
     targets: [appTarget],

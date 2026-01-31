@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.bonjur.app</string>
+	<string>$(BUNDLE_ID)</string>
 	<key>CFBundleName</key>
 	<string>$(APP_NAME)</string>
 	<key>Environment</key>

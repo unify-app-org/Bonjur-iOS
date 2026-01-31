@@ -66,6 +66,6 @@ let appPresentationModelTarget = Target.createFrameworkTarget(
 let project = Project(
     name: Project.Projects.core,
     options: .options(automaticSchemesOptions: .disabled),
-    settings: .settings(base: .default),
+    settings: .settings(base: .default, configurations: .withoutConfigFile),
     targets: frameworkTargets.map(\.target)
 )

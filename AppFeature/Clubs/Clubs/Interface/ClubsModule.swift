@@ -16,4 +16,7 @@ public protocol ClubsModule {
         inputData: ClubsModuleModel.CardInputData,
         onTap: @escaping (() -> Void)
     ) -> Any
+    
+    func makeClubsDetailsVC(clubId: Int) -> AnyObject
+    
 }

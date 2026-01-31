@@ -8,6 +8,7 @@
 import UIKit
 
 enum ClubDetailsRoute {
+    case backTapped
 }
 
 protocol ClubDetailsRouterProtocol {
@@ -20,5 +21,9 @@ final class ClubDetailsRouter: ClubDetailsRouterProtocol {
     
     @MainActor
     func navigate(to route: ClubDetailsRoute) {
+        switch route {
+        case .backTapped:
+            self.view?.navigationController?.popViewController(animated: true)
+        }
     }
 }

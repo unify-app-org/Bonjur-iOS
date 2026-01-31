@@ -43,4 +43,5 @@ final class ClubsViewState: UIFeatureState {
 
 enum ClubsAction: UIFeatureAction {
     case fetchData
+    case itemOnTap
 }

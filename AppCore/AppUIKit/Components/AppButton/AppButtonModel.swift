@@ -60,9 +60,9 @@ public extension AppButton {
             case .large:
                 return 16
             case .medium:
-                return 12
+                return 14
             case .small:
-                return 10
+                return 12
             }
         }
         
@@ -76,7 +76,14 @@ public extension AppButton {
         }
         
         var textFont: SwiftUICore.Font {
-            return Font.Typography.BodyTextMd.medium
+            switch size {
+            case .large:
+                return Font.Typography.BodyTextMd.medium
+            case .medium:
+                return Font.Typography.BodyTextSm.medium
+            case .small:
+                return Font.Typography.TextMd.medium
+            }
         }
         
         var foregroundColor: Color {

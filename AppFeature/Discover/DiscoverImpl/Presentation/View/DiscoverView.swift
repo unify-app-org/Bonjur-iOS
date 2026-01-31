@@ -134,7 +134,7 @@ struct DiscoverView: View {
                             if let view = clubsModule.makeCardView(
                                 inputData: item,
                                 onTap: {
-                                    
+                                    store.send(.clubItemOnTap)
                                 }
                             ) as? AnyView {
                                 view
@@ -269,7 +269,7 @@ struct DiscoverView: View {
                     store.send(.viewAllTapped(type))
                 } label: {
                     Text("view all")
-                        .font(Font.Typography.TextL.semiBold)
+                        .font(Font.Typography.TextL.regular)
                         .foregroundStyle(Color.Palette.black)
                         .underline()
                 }

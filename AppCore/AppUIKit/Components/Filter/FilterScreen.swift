@@ -31,7 +31,7 @@ struct FilterScreen: View {
             Button {
                 dismiss()
             } label: {
-                Image(uiImage: UIImage.Icons.arrowLeft01)
+                Image(uiImage: UIImage.Icons.xmark)
                     .foregroundStyle(Color.Palette.black)
             }
             Spacer()
@@ -86,7 +86,8 @@ struct FilterScreen: View {
                 title: "Remove",
                 model: .init(
                     type: .secondary,
-                    contentSize: .fill
+                    contentSize: .fill,
+                    size: .medium
                 )
             ) {
                 withAnimation {
@@ -98,7 +99,8 @@ struct FilterScreen: View {
             AppButton(
                 title: "Apply",
                 model: .init(
-                    contentSize: .fill
+                    contentSize: .fill,
+                    size: .medium
                 )
             ) {
                 withAnimation {

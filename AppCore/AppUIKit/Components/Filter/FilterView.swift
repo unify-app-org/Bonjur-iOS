@@ -161,6 +161,7 @@ public struct FilterView: View {
             HStack {
                 Image(uiImage: UIImage.Icons.filter04)
                 Text("Filter")
+                    .font(Font.Typography.TextL.regular)
                     .foregroundStyle(Color.Palette.black)
             }
             .padding(.horizontal, 12)
@@ -199,6 +200,7 @@ public struct FilterView: View {
             HStack {
                 Text(item.title)
                     .foregroundStyle(Color.Palette.black)
+                    .font(Font.Typography.TextL.regular)
                 Image(uiImage: UIImage.Icons.chevronDown02)
                     .rotationEffect(.degrees(viewModel.selectedItem?.id == item.id ? 180 : 0))
             }

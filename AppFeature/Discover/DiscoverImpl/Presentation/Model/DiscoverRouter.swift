@@ -8,11 +8,13 @@
 import UIKit
 import Events
 import Hangouts
+import Clubs
 
 enum DiscoverRoute {
     case viewAllClubs
     case viewAllEvents
     case viewAllHangouts
+    case clubsDetails(id: Int)
 }
 
 protocol DiscoverRouterProtocol {
@@ -25,17 +27,20 @@ final class DiscoverRouter: DiscoverRouterProtocol {
     private var delegate: DiscoverDelegate
     private var eventModule: EventsModule
     private var hangoutModule: HangoutsModule
+    private var clubModule: ClubsModule
 
     init(
         view: UIViewController? = nil,
         delegate: DiscoverDelegate = resolve(),
         eventModule: EventsModule = resolve(),
-        hangoutModule: HangoutsModule = resolve()
+        hangoutModule: HangoutsModule = resolve(),
+        clubModule: ClubsModule = resolve()
     ) {
         self.view = view
         self.delegate = delegate
         self.eventModule = eventModule
         self.hangoutModule = hangoutModule
+        self.clubModule = clubModule
     }
     
     @MainActor
@@ -51,6 +56,10 @@ final class DiscoverRouter: DiscoverRouterProtocol {
             let vc = hangoutModule.makeHangoutsList() as! UIViewController
             vc.hidesBottomBarWhenPushed = true
             view?.navigationController?.pushViewController(vc, animated: true)
+        case .clubsDetails(let clubId):
+            let vc = clubModule.makeClubsDetailsVC(clubId: clubId) as! UIViewController
+            vc.hidesBottomBarWhenPushed = true
+            self.view?.navigationController?.pushViewController(vc, animated: true)
         }
     }
 }

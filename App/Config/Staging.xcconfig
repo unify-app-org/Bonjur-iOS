@@ -11,3 +11,4 @@
 
 BASE_URL = https:/$()/api.bonjur.co
 ENVIRONMENT = STAGING
+APP_NAME = Unify

@@ -10,6 +10,7 @@ import AppFoundation
 final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
     
     struct Dependencies {
+        let useCase: ClubsUseCase
     }
     
     private let router: ClubDetailsRouterProtocol
@@ -29,9 +30,30 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
     }
     
     override func handle(action: ClubDetailsFeature.Action) {
+        switch action {
+        case .fetchData:
+            fetchData()
+        case .backTapped:
+            Task {
+                await router.navigate(to: .backTapped)
+            }
+        }
     }
     
     private func fetchData() {
-        
+        Task {
+            await fetchUIModel()
+        }
+    }
+    
+    private func fetchUIModel() async {
+        do {
+            let uiModel = try await dependencies.useCase.fetchClubDetails(
+                clubId: inputData.clubId
+            )
+            state.uiModel = uiModel
+        } catch {
+            
+        }
     }
 }

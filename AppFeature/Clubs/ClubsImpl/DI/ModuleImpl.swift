@@ -24,4 +24,12 @@ struct ClubsModuleImpl: ClubsModule {
             ClubCardView(model: .init(from: inputData), onTap: onTap)
         )
     }
+    
+    func makeClubsDetailsVC(clubId: Int) -> AnyObject {
+        ClubDetailsBuilder(
+            inputData: .init(
+                clubId: clubId
+            )
+        ).build()
+    }
 }

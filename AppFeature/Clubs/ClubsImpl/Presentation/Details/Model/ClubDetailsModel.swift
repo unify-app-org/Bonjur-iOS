@@ -6,10 +6,14 @@
 //
 
 import AppFoundation
+import SwiftUICore
+import Events
+import AppUIKit
 
 // MARK: - ClubDetails input
 
 struct ClubDetailsInputData {
+    let clubId: Int
 }
 
 // MARK: - Side effects
@@ -29,9 +33,32 @@ typealias ClubDetailsFeature = UIFeatureDefinition<
 // MARK: - View State
 
 final class ClubDetailsViewState: UIFeatureState {
+    
+    @Published var uiModel: ClubsDetailsModel.UIModel?
+    @Published var selectedSegment: SegmentTypes = .about
+    
+    enum SegmentTypes: String, CaseIterable, Identifiable {
+        case about = "About"
+        case events = "Events"
+        case members = "Members"
+        
+        var id: Self { self }
+    }
 }
 
 // MARK: - Feature Action
 
 enum ClubDetailsAction: UIFeatureAction {
+    case fetchData
+    case backTapped
+}
+
+// MARK: - PreferenceKey
+
+struct TabHeightPreferenceKey: PreferenceKey {
+    static var defaultValue: [ClubDetailsViewState.SegmentTypes: CGFloat] = [:]
+    
+    static func reduce(value: inout [ClubDetailsViewState.SegmentTypes: CGFloat], nextValue: () -> [ClubDetailsViewState.SegmentTypes: CGFloat]) {
+        value.merge(nextValue()) { _, new in new }
+    }
 }

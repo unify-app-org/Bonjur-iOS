@@ -62,7 +62,7 @@ let clubsTarget = Target.createFeatureModule(
     name: "Clubs",
     implConfig: .init(
         dependencies: [
-            
+            .AppFeature.Events,
         ]
     )
 ).add(to: &frameworkTargets)

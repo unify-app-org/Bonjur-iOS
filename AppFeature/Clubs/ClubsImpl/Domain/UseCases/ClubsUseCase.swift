@@ -10,6 +10,7 @@ import AppNetwork
 
 protocol ClubsUseCase {
     func fetchClubsData() async throws(APIError) -> [ClubCardView.Model]
+    func fetchClubDetails(clubId: Int) async throws(APIError) -> ClubsDetailsModel.UIModel
 }
 
 class ClubsUseCaseImpl: ClubsUseCase {
@@ -22,5 +23,11 @@ class ClubsUseCaseImpl: ClubsUseCase {
 
     func fetchClubsData() async throws(APIError) -> [ClubCardView.Model] {
         ClubCardView.Model.previewData
+    }
+    
+    func fetchClubDetails(
+        clubId: Int
+    ) async throws(APIError) -> ClubsDetailsModel.UIModel {
+        .mockData
     }
 }

@@ -21,6 +21,7 @@ public struct CategoriesChipsView: View {
             .padding(.vertical, 10)
             .background(model.backgroundColor)
             .clipShape(Capsule())
+            .font(Font.Typography.BodyTextSm.regular)
             .overlay(
                 Capsule()
                     .stroke(

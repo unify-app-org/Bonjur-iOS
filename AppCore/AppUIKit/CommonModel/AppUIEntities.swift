@@ -25,7 +25,7 @@ public struct AppUIEntities {
     
     // MARK: - Tags
 
-    public struct Tags: Identifiable {
+    public struct Tags: Identifiable, Hashable {
         public let uuid: UUID = UUID()
         public let id: Int
         public let type: String
@@ -161,5 +161,13 @@ public struct AppUIEntities {
         case events
         case clubs
         case hangOuts
+    }
+    
+    public enum UserActivityRole: String, CaseIterable {
+        case member = "Members"
+        case president = "President"
+        case visePresident = "Vise president"
+        case eventCreator = "Event creators"
+        case notJoined
     }
 }

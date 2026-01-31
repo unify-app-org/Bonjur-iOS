@@ -112,7 +112,7 @@ struct EventsCardView: View {
                 .clipShape(Capsule())
                 .overlay(
                     Capsule()
-                        .stroke(Color.Palette.blackHigh, lineWidth: 1)
+                        .stroke(Color.Palette.blackHigh, lineWidth: 0.5)
                 )
             
             Text(model.memberCountText)
@@ -124,7 +124,7 @@ struct EventsCardView: View {
                 .clipShape(Capsule())
                 .overlay(
                     Capsule()
-                        .stroke(Color.Palette.blackHigh, lineWidth: 1)
+                        .stroke(Color.Palette.blackHigh, lineWidth: 0.5)
                 )
             Spacer()
         }

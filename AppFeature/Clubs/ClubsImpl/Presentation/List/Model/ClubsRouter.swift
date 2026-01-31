@@ -8,6 +8,7 @@
 import UIKit
 
 enum ClubsRoute {
+    case showDetails(clubId: Int)
 }
 
 protocol ClubsRouterProtocol {
@@ -20,5 +21,11 @@ final class ClubsRouter: ClubsRouterProtocol {
     
     @MainActor
     func navigate(to route: ClubsRoute) {
+        switch route {
+        case .showDetails(let clubId):
+            let vc = ClubDetailsBuilder(inputData: .init(clubId: clubId)).build()
+            vc.hidesBottomBarWhenPushed = true
+            self.view?.navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }

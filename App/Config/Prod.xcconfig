@@ -10,3 +10,4 @@
 
 BASE_URL = https:/$()/api.bonjur.co
 ENVIRONMENT = PROD
+APP_NAME = Unify-prod

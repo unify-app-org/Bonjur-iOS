@@ -39,7 +39,7 @@ struct ClubsView: View {
                 VStack(spacing: 20) {
                     ForEach(clubs, id: \.uuid) { item in
                         ClubCardView(model: item) {
-                            
+                            store.send(.itemOnTap)
                         }
                     }
                 }

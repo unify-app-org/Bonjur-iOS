@@ -21,7 +21,7 @@ public struct CapsuleSegmentedPicker<
         HStack(spacing: 4) {
             ForEach(Array(T.allCases), id: \.self) { item in
                 Text(item.rawValue)
-                    .font(selection == item ? Font.Typography.TextL.bold : Font.Typography.TextL.medium)
+                    .font(selection == item ? Font.Typography.TextL.semiBold : Font.Typography.TextL.regular)
                     .foregroundStyle(selection == item ? Color.Palette.blackHigh : Color.Palette.blackDisabled)
                     .frame(maxWidth: .infinity)
                     .frame(height: 30)

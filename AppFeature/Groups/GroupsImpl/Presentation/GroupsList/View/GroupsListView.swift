@@ -113,7 +113,9 @@ struct GroupsListView: View {
                     ForEach(clubs, id: \.uuid) { club in
                         if let view = clubsModule.makeCardView(
                             inputData: club,
-                            onTap: { }
+                            onTap: {
+                                store.send(.clubItemTapped(id: club.id))
+                            }
                         ) as? AnyView {
                             view
                         }

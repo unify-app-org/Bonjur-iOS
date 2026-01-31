@@ -33,9 +33,9 @@ final class ClubsViewModel: UIFeatureViewModel<ClubsFeature> {
         switch action {
         case .fetchData:
             fetchData()
-        case .itemOnTap:
+        case .itemOnTap(let id):
             Task {
-                await router.navigate(to: .showDetails(clubId: 1))
+                await router.navigate(to: .showDetails(clubId: id))
             }
         }
     }

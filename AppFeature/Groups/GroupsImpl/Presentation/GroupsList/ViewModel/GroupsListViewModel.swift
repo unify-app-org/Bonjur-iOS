@@ -33,6 +33,10 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .clubItemTapped(let id):
+            Task {
+                await router.navigate(to: .clubDetail(id: id))
+            }
         }
     }
     

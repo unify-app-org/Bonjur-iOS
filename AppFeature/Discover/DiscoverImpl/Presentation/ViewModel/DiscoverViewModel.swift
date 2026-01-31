@@ -40,9 +40,9 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             fetchData()
         case .viewAllTapped(let activity):
             viewAllTapped(activity)
-        case .clubItemOnTap:
+        case .clubItemOnTap(let id):
             Task {
-                await router.navigate(to: .clubsDetails(id: 1))
+                await router.navigate(to: .clubsDetails(id: id))
             }
         }
     }

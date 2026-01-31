@@ -122,7 +122,7 @@ extension CommunityCardView.Model {
         ),
         .init(
             id: 1,
-            name: "Bonjur",
+            name: "Unify",
             subTitle: "Community",
             logoURL: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
             memberCount: 1675,

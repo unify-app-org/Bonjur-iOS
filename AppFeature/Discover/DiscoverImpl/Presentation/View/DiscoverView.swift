@@ -134,7 +134,7 @@ struct DiscoverView: View {
                             if let view = clubsModule.makeCardView(
                                 inputData: item,
                                 onTap: {
-                                    store.send(.clubItemOnTap)
+                                    store.send(.clubItemOnTap(id: item.id))
                                 }
                             ) as? AnyView {
                                 view

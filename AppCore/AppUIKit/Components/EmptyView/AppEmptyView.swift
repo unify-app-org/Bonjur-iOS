@@ -9,22 +9,24 @@ import SwiftUI
 
 public struct AppEmptyView: View {
     private let model: Model
-    private let compelition: (() -> Void)
+    private let completion: (() -> Void)
     
     public init(
         model: Model,
-        compelition: @escaping (() -> Void)
+        completion: @escaping (() -> Void)
     ) {
         self.model = model
-        self.compelition = compelition
+        self.completion = completion
     }
     
     public var body: some View {
         VStack(spacing: 12) {
-            Image(uiImage: model.icon)
-                .padding(12)
-                .background(Color.Palette.grayQuaternary)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
+            if let icon = model.icon {
+                Image(uiImage: icon)
+                    .padding(12)
+                    .background(Color.Palette.grayQuaternary)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+            }
             Text(model.text)
                 .font(Font.Typography.BodyTextSm.medium)
                 .frame(maxWidth: .infinity, alignment: .center)
@@ -37,7 +39,7 @@ public struct AppEmptyView: View {
                     size: .small
                 )
             ) {
-                compelition()
+                completion()
             }
             .padding(.horizontal, 40)
         }

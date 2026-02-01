@@ -59,5 +59,9 @@ public extension UIImage {
         public static let ellipsis02 = UIImage(resource: .ellipsis02)
         
         public static let penLine = UIImage(resource: .penLine)
+        
+        public static let fileAttachment = UIImage(resource: .fileAttachment)
+        
+        public static let trash = UIImage(resource: .trash)
     }
 }

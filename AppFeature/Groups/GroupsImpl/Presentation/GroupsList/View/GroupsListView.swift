@@ -138,8 +138,12 @@ struct GroupsListView: View {
                     ForEach(events, id: \.uuid) { event in
                         if let view = eventsModule.makeEventsCard(
                             model: event,
-                            onTap: { },
-                            onButtonTap: { }
+                            onTap: {
+                                store.send(.eventItemTapped(id: event.id))
+                            },
+                            onButtonTap: {
+                                
+                            }
                         ) as? AnyView {
                             view
                         }

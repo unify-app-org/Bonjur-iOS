@@ -31,4 +31,12 @@ struct EventsModuleImpl: EventsModule {
     func makeEventsList() -> AnyObject {
         EventsListBuilder(inputData: .init()).build()
     }
+    
+    func makeEventsDetails(eventId: String) -> AnyObject {
+        EventDetailsBuilder(
+            inputData: .init(
+                eventId: eventId
+            )
+        ).build()
+    }
 }

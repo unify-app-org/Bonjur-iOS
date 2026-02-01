@@ -33,6 +33,10 @@ final class EventsListViewModel: UIFeatureViewModel<EventsListFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .eventItemTapped(let id):
+            Task {
+                await router.navigate(to: .showDetails(id: id))
+            }
         }
     }
     
@@ -44,7 +48,7 @@ final class EventsListViewModel: UIFeatureViewModel<EventsListFeature> {
     
     private func getEventsData() async {
         do {
-            state.uiModel.events = try await dependencies.useCase.fetchEvenets()
+            state.uiModel.events = try await dependencies.useCase.fetchEvents()
         } catch {
             postEffect(.error(error))
         }

@@ -41,7 +41,7 @@ struct EventsListView: View {
                         EventsCardView(model: item) {
                             
                         } onTap: {
-                            
+                            store.send(.eventItemTapped(id: item.id))
                         }
                     }
                 }

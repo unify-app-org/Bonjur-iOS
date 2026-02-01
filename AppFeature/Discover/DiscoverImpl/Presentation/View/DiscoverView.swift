@@ -189,7 +189,7 @@ struct DiscoverView: View {
                             if let view = eventsModule.makeEventsCard(
                                 model: item,
                                 onTap: {
-                                    
+                                    store.send(.eventItemOnTap(id: item.id))
                                 },
                                 onButtonTap: {
                                     

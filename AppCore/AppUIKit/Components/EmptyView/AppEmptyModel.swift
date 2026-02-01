@@ -10,12 +10,12 @@ import UIKit
 public extension AppEmptyView {
     
     struct Model {
-        let icon: UIImage
+        let icon: UIImage?
         let text: String
         let buttonTitle: String
         
         public init(
-            icon: UIImage,
+            icon: UIImage?,
             text: String,
             buttonTitle: String
         ) {

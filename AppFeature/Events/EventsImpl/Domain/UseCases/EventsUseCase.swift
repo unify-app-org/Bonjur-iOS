@@ -9,7 +9,8 @@ import AppUIKit
 import AppNetwork
 
 protocol EventsUseCase {
-    func fetchEvenets() async throws(APIError) -> [EventsCardView.Model]
+    func fetchEvents() async throws(APIError) -> [EventsCardView.Model]
+    func fetchEventDetail(eventId: String) async throws(APIError) -> EventsDetailsModel.UIModel
 }
 
 class EventsUseCaseImpl: EventsUseCase {
@@ -20,7 +21,13 @@ class EventsUseCaseImpl: EventsUseCase {
         self.dataSource = dataSource
     }
 
-    func fetchEvenets() async throws(APIError) -> [EventsCardView.Model] {
+    func fetchEvents() async throws(APIError) -> [EventsCardView.Model] {
         EventsCardView.Model.previewMock
+    }
+    
+    func fetchEventDetail(
+        eventId: String
+    ) async throws(APIError) -> EventsDetailsModel.UIModel {
+        EventsDetailsModel.UIModel.mockData
     }
 }

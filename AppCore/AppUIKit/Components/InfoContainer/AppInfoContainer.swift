@@ -33,14 +33,11 @@ public struct AppInfoContainer<Content: View>: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color.Palette.grayTeritary, lineWidth: 0.5)
         )
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .shadow(
-                    color: Color.Palette.grayTeritary.opacity(0.18),
-                    radius: 4,
-                    x: 0,
-                    y: 6
-                )
+        .shadow(
+            color: Color.Palette.grayTeritary.opacity(0.18),
+            radius: 4,
+            x: 0,
+            y: 6
         )
     }
 }

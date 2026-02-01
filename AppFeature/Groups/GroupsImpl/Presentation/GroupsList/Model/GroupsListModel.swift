@@ -88,4 +88,5 @@ final class GroupsListViewState: UIFeatureState {
 enum GroupsListAction: UIFeatureAction {
     case fetchData
     case clubItemTapped(id: Int)
+    case eventItemTapped(id: String)
 }

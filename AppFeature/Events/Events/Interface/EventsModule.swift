@@ -17,4 +17,6 @@ public protocol EventsModule {
         onTap: @escaping (() -> Void),
         onButtonTap: @escaping (() -> Void)
     ) -> Any
+    
+    func makeEventsDetails(eventId: String) -> AnyObject
 }

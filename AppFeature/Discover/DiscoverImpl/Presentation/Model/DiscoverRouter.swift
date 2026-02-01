@@ -15,6 +15,7 @@ enum DiscoverRoute {
     case viewAllEvents
     case viewAllHangouts
     case clubsDetails(id: Int)
+    case eventsDetails(id: String)
 }
 
 protocol DiscoverRouterProtocol {
@@ -58,6 +59,10 @@ final class DiscoverRouter: DiscoverRouterProtocol {
             view?.navigationController?.pushViewController(vc, animated: true)
         case .clubsDetails(let clubId):
             let vc = clubModule.makeClubsDetailsVC(clubId: clubId) as! UIViewController
+            vc.hidesBottomBarWhenPushed = true
+            self.view?.navigationController?.pushViewController(vc, animated: true)
+        case .eventsDetails(let id):
+            let vc = eventModule.makeEventsDetails(eventId: id) as! UIViewController
             vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
         }

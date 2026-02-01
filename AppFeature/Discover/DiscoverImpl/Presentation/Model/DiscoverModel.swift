@@ -62,4 +62,5 @@ enum DiscoverAction: UIFeatureAction {
     case fetchData
     case viewAllTapped(AppUIEntities.ActivityType)
     case clubItemOnTap(id: Int)
+    case eventItemOnTap(id: String)
 }

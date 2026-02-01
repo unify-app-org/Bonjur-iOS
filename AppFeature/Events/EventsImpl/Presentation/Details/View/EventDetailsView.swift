@@ -1,32 +1,32 @@
 //
-//  ClubDetailsView.swift
-//  AppAuth
+//  EventDetailsView.swift
+//  EventsImpl
 //
-//  Created by Huseyn Hasanov on 29.01.26.
+//  Created by Huseyn Hasanov on 01.02.26.
 //
 
+import Clubs
 import SwiftUI
-import AppFoundation
 import AppUIKit
-import Events
+import AppFoundation
 
-struct ClubDetailsView: View {
-    @ObservedObject var store: StoreOf<ClubDetailsFeature>
+struct EventDetailsView: View {
+    @ObservedObject var store: StoreOf<EventDetailsFeature>
     
     @State private var isScrolled = false
     @State private var isNameVisible = true
     @State private var isSegmentSticky = false
     @State private var baseHeight: CGFloat = 164
     @State private var navBarHeight: CGFloat = 0
-    @State private var tabHeights: [ClubDetailsViewState.SegmentTypes: CGFloat] = [:]
+    @State private var tabHeights: [EventDetailsViewState.SegmentTypes: CGFloat] = [:]
     
-    private let eventsModule: EventsModule
+    private let clubsModule: ClubsModule
     
     init(
-        store: StoreOf<ClubDetailsFeature>,
-        eventsModule: EventsModule = resolve()
+        store: StoreOf<EventDetailsFeature>,
+        clubsModule: ClubsModule = resolve()
     ) {
-        self.eventsModule = eventsModule
+        self.clubsModule = clubsModule
         self.store = store
     }
     
@@ -56,7 +56,6 @@ struct ClubDetailsView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: .zero) {
                     stretchableHeader
-                    logoView
                     bottomView
                 }
             }
@@ -181,44 +180,6 @@ struct ClubDetailsView: View {
     
     // MARK: - Logo
     
-    private var logoView: some View {
-        HStack(alignment: .lastTextBaseline) {
-            clubLogo
-            Spacer()
-            Button {} label: {
-                Image(uiImage: UIImage.Icons.penLine)
-            }
-            .padding(.horizontal)
-        }
-        .padding(.top, -44)
-        .padding(.bottom, 16)
-    }
-    
-    private var clubLogo: some View {
-        CachedAsyncImage(url: store.state.uiModel?.logo) { image in
-            image.resizable().frame(width: 88, height: 88)
-        } placeholder: {
-            if let image = UIImage(systemName: "person") {
-                Image(uiImage: image)
-                    .resizable()
-                    .renderingMode(.template)
-                    .foregroundStyle(Color.Palette.blackMedium)
-                    .frame(width: 44, height: 44)
-            }
-        }
-        .frame(width: 88, height: 88)
-        .background(Color.Palette.grayQuaternary)
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(Color.Palette.grayTeritary.opacity(0.3), lineWidth: 3)
-        )
-        .padding(.horizontal, 16)
-        .overlay(alignment: .bottomTrailing) {
-            cameraButton
-        }
-    }
-    
     private var cameraButton: some View {
         Button {} label: {
             Image(uiImage: UIImage.Icons.camera)
@@ -247,26 +208,87 @@ struct ClubDetailsView: View {
     }
     
     private var clubInfoView: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 16) {
             clubNameText
             clubMetadata
             memberCount
-            chipsView
-            createEventButton
+            VStack(spacing: 8) {
+                chipsView
+                remindButton
+            }
+            attachmentsView
+        }
+        .padding(.top)
+    }
+    
+    private var attachmentsView: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            let attachments = store.state.uiModel?.attachments ?? []
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Attachments")
+                    .font(Font.Typography.HeadingXl.medium)
+                    .foregroundStyle(Color.Palette.black)
+                    .frame(alignment: .leading)
+                    .multilineTextAlignment(.leading)
+                if !attachments.isEmpty {
+                    Text("You can upload files up to 15 MB total for this event.")
+                        .font(Font.Typography.BodyTextSm.regular)
+                        .foregroundStyle(Color.Palette.blackMedium)
+                        .frame(alignment: .leading)
+                        .multilineTextAlignment(.leading)
+                }
+            }
+            if !attachments.isEmpty {
+                ForEach(attachments, id: \.uuid) { attachment in
+                    AttachmentItemView(model: attachment)
+                }
+                if !store.state.isFileUploadReachedMaxLimit {
+                    AppButton(
+                        title: "Add +",
+                        model: .init(
+                            type: .secondary,
+                            contentSize: .fill,
+                            size: .small,
+                        )
+                    ) {
+                        
+                    }
+                }
+            } else {
+                AppEmptyView(model:
+                        .init(
+                            icon: nil,
+                            text: "You can upload files up to 15 MB total for this event.",
+                            buttonTitle: "Add +"
+                        )
+                ) {
+                    
+                }
+            }
         }
     }
     
     private var clubNameText: some View {
-        Text(store.state.uiModel?.name ?? "")
-            .font(Font.Typography.TitleL.extraBold)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .onGeometryChange(for: CGFloat.self) {
-                $0.frame(in: .named("scroll")).minY
-            } action: { minY in
-                withAnimation {
-                    isNameVisible = minY > navBarHeight
+        HStack {
+            Text(store.state.uiModel?.name ?? "")
+                .font(Font.Typography.TitleL.extraBold)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .onGeometryChange(for: CGFloat.self) {
+                    $0.frame(in: .named("scroll")).minY
+                } action: { minY in
+                    withAnimation {
+                        isNameVisible = minY > navBarHeight
+                    }
                 }
+            
+            Spacer()
+            
+            Button {
+                
+            } label: {
+                Image(uiImage: UIImage.Icons.penLine)
             }
+        }
     }
     
     private var clubMetadata: some View {
@@ -318,11 +340,10 @@ struct ClubDetailsView: View {
         }
     }
     
-    private var createEventButton: some View {
+    private var remindButton: some View {
         AppButton(
-            title: "Create new event +",
+            title: "Reminder",
             model: .init(
-                type: .secondary,
                 contentSize: .fill,
                 size: .medium
             )
@@ -393,8 +414,7 @@ struct ClubDetailsView: View {
             )
         ) {
             tabContent(for: .about, content: infoTab)
-            tabContent(for: .events, content: eventsTab)
-            tabContent(for: .members, content: Text("Third Tab"))
+            tabContent(for: .members, content: Text("Second Tab"))
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .frame(height: tabHeights[store.state.selectedSegment] ?? 300)
@@ -405,7 +425,7 @@ struct ClubDetailsView: View {
     }
     
     private func tabContent<Content: View>(
-        for segment: ClubDetailsViewState.SegmentTypes,
+        for segment: EventDetailsViewState.SegmentTypes,
         content: Content
     ) -> some View {
         content
@@ -443,7 +463,7 @@ struct ClubDetailsView: View {
         .padding(.horizontal, 4)
     }
     
-    private func infoSubItem(_ subItem: ClubsDetailsModel.SubInfo) -> some View {
+    private func infoSubItem(_ subItem: EventsDetailsModel.SubInfo) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             if let title = subItem.title {
                 Text(title)
@@ -457,34 +477,6 @@ struct ClubDetailsView: View {
                     subItem.isLink ? Color.Palette.appBlue : Color.Palette.blackHigh
                 )
                 .fixedSize(horizontal: false, vertical: true)
-        }
-    }
-    
-    @ViewBuilder
-    private var eventsTab: some View {
-        let events = store.state.uiModel?.eventsData ?? []
-        if !events.isEmpty {
-            VStack(spacing: 20) {
-                ForEach(events, id: \.uuid) { item in
-                    if let view = eventsModule.makeEventsCard(
-                        model: item,
-                        onTap: {},
-                        onButtonTap: {}
-                    ) as? AnyView {
-                        view
-                    }
-                }
-            }
-            .padding(.vertical)
-        } else {
-            AppEmptyView(
-                model: .init(
-                    icon: UIImage.Icons.twoUsers,
-                    text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
-                    buttonTitle: "Create a club +"
-                )
-            ) {}
-            .padding()
         }
     }
 }

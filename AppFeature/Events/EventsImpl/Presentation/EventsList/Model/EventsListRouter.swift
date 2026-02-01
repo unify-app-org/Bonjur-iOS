@@ -8,6 +8,7 @@
 import UIKit
 
 enum EventsListRoute {
+    case showDetails(id: String)
 }
 
 protocol EventsListRouterProtocol {
@@ -20,5 +21,14 @@ final class EventsListRouter: EventsListRouterProtocol {
     
     @MainActor
     func navigate(to route: EventsListRoute) {
+        switch route {
+        case .showDetails(let id):
+            let vc = EventDetailsBuilder(
+                inputData: .init(
+                    eventId: id
+                )
+            ).build()
+            view?.navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }

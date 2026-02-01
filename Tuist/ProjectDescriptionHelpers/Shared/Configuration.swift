@@ -36,4 +36,16 @@ public extension Dictionary where Element == ProjectDescription.SettingsDictiona
             "DEFINES_MODULE": "YES"
         ]
     }()
+    
+    static let mainTargetBuildSettings: ProjectDescription.SettingsDictionary = {
+        [
+            "ENABLE_MODULE_VERIFIER": "YES",
+            "ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS": "YES",
+            "CLANG_ENABLE_MODULE_VERIFIER": "YES",
+            "CLANG_ENABLE_MODULE_VERIFIER_SUPPORTED_LANGUAGES": "Objective-C Objective-C++",
+            "CLANG_ENABLE_MODULES": "YES",
+            "DEFINES_MODULE": "YES",
+            "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon.${ENVIRONMENT}",
+        ]
+    }()
 }

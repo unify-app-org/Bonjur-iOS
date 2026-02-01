@@ -9,7 +9,6 @@
 // https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
 
 BASE_URL = https:/$()/test.api.unify.co
-ENVIRONMENT = TEST
+ENVIRONMENT = test
 APP_NAME = Unify-test
 BUNDLE_ID = com.unify.app.test
-ASSETCATALOG_COMPILER_APPICON_NAME = Appicon-Test

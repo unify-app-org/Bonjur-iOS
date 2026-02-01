@@ -1,5 +1,5 @@
 //
-//  AppEnviroment.swift
+//  AppEnvironment.swift
 //  AppCore
 //
 //  Created by Huseyn Hasanov on 24.11.25.
@@ -7,14 +7,14 @@
 
 import Foundation
 
-public struct AppEnviroment {
+public struct AppEnvironment {
     
-    public enum EnviromentType: String {
+    public enum EnvironmentType: String {
         case test, prod
     }
-    public static var current: EnviromentType {
+    public static var current: EnvironmentType {
         let rawValue = (Bundle.main.object(forInfoDictionaryKey: "Environment") as? String ?? "").lowercased()
-        return EnviromentType(rawValue: rawValue) ?? .prod
+        return EnvironmentType(rawValue: rawValue) ?? .prod
     }
     
     public static var baseURL: String {

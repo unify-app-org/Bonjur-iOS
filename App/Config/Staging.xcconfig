@@ -10,7 +10,6 @@
 // https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
 
 BASE_URL = https:/$()/api.unify.co
-ENVIRONMENT = STAGING
+ENVIRONMENT = staging
 APP_NAME = Unify-staging
 BUNDLE_ID = com.unify.app.staging
-ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-Staging

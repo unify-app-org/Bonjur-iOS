@@ -48,6 +48,10 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             Task {
                 await router.navigate(to: .eventsDetails(id: id))
             }
+        case .hangoutsItemOnTap(let id):
+            Task {
+                await router.navigate(to: .hangoutsDetails(id: id))
+            }
         }
     }
     

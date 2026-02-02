@@ -10,6 +10,7 @@ import AppNetwork
 
 protocol HangoutsUseCase {
     func fetchHangouts() async throws(APIError) -> [HangoutsCardView.Model]
+    func fetchDetailHangout(id: String) async throws(APIError) -> HangoutDetails.UIModel
 }
 
 class HangoutsUseCaseImpl: HangoutsUseCase {
@@ -22,5 +23,11 @@ class HangoutsUseCaseImpl: HangoutsUseCase {
 
     func fetchHangouts() async throws(APIError) -> [HangoutsCardView.Model] {
         HangoutsCardView.Model.previewMock
+    }
+    
+    func fetchDetailHangout(
+        id: String
+    ) async throws(APIError) -> HangoutDetails.UIModel {
+        HangoutDetails.UIModel.mockData
     }
 }

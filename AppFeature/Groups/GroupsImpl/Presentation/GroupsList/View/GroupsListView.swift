@@ -141,9 +141,7 @@ struct GroupsListView: View {
                             onTap: {
                                 store.send(.eventItemTapped(id: event.id))
                             },
-                            onButtonTap: {
-                                
-                            }
+                            onButtonTap: { }
                         ) as? AnyView {
                             view
                         }
@@ -166,7 +164,9 @@ struct GroupsListView: View {
                     ForEach(hangouts, id: \.uuid) { hangout in
                         if let view = hangoutsModule.makeHangoutsCard(
                             model: hangout,
-                            onTap: { },
+                            onTap: {
+                                store.send(.hangoutItemTapped(id: hangout.id))
+                            },
                             onButtonTap: { }
                         ) as? AnyView {
                             view

@@ -89,4 +89,5 @@ enum GroupsListAction: UIFeatureAction {
     case fetchData
     case clubItemTapped(id: Int)
     case eventItemTapped(id: String)
+    case hangoutItemTapped(id: String)
 }

@@ -30,4 +30,14 @@ struct HangoutsModuleImpl: HangoutsModule {
     func makeHangoutsList() -> AnyObject {
         HangoutListBuilder(inputData: .init()).build()
     }
+    
+    func makeHangoutDetails(
+        hangoutId: String
+    ) -> AnyObject {
+        HangoutDetailsBuilder(
+            inputData: .init(
+                hangoutId: hangoutId
+            )
+        ).build()
+    }
 }

@@ -43,4 +43,5 @@ final class HangoutListViewState: UIFeatureState {
 
 enum HangoutListAction: UIFeatureAction {
     case fetchData
+    case itemTapped(id: String)
 }

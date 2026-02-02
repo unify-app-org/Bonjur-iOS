@@ -225,7 +225,7 @@ struct DiscoverView: View {
                             if let view = hangoutsModule.makeHangoutsCard(
                                 model: item,
                                 onTap: {
-                                    
+                                    store.send(.hangoutsItemOnTap(id: item.id))
                                 },
                                 onButtonTap: {
                                     

@@ -8,6 +8,7 @@
 import UIKit
 
 enum HangoutListRoute {
+    case details(hangoutId: String)
 }
 
 protocol HangoutListRouterProtocol {
@@ -20,5 +21,14 @@ final class HangoutListRouter: HangoutListRouterProtocol {
     
     @MainActor
     func navigate(to route: HangoutListRoute) {
+        switch route {
+        case .details(let hangoutId):
+            let vc = HangoutDetailsBuilder(
+                inputData: .init(
+                    hangoutId: hangoutId
+                )
+            ).build()
+            view?.navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }

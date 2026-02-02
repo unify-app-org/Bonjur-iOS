@@ -41,7 +41,10 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
             Task {
                 await router.navigate(to: .eventDetail(id: id))
             }
-            
+        case .hangoutItemTapped(let id):
+            Task {
+                await router.navigate(to: .hangoutDetail(id: id))
+            }
         }
     }
     

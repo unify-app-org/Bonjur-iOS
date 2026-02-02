@@ -15,4 +15,6 @@ public protocol HangoutsModule {
         onTap: @escaping (() -> Void),
         onButtonTap: @escaping (() -> Void)
     ) -> Any
+    
+    func makeHangoutDetails(hangoutId: String) -> AnyObject
 }

@@ -33,6 +33,10 @@ final class HangoutListViewModel: UIFeatureViewModel<HangoutListFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .itemTapped(let id):
+            Task {
+                await router.navigate(to: .details(hangoutId: id))
+            }
         }
     }
     

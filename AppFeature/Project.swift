@@ -35,7 +35,8 @@ let communitiesTarget = Target.createFeatureModule(
     name: "Communities",
     implConfig: .init(
         dependencies: [
-            
+            .AppFeature.Clubs,
+            .AppFeature.Events
         ]
     )
 ).add(to: &frameworkTargets)

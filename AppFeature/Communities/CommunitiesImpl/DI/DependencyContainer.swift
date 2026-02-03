@@ -50,11 +50,15 @@ enum CommunitiesDependencyContainer {
     }
     
     private static func registerDataSource() {
-
+        register(CommunityDataSource.self) {
+            CommunityDataSourceImpl()
+        }
     }
     
     private static func registerUseCase() {
-
+        register(CommunityUseCase.self) {
+            CommunityUseCaseImpl()
+        }
     }
     
     private static func registerModule() {

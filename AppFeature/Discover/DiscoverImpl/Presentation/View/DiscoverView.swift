@@ -105,7 +105,7 @@ struct DiscoverView: View {
                         if let view = communitiesModule.makeCommunityCard(
                             inputData: item,
                             onTap: {
-                                
+                                store.send(.communityItemOnTap(id: item.id))
                             }
                         ) as? AnyView {
                             view

@@ -64,4 +64,5 @@ enum DiscoverAction: UIFeatureAction {
     case clubItemOnTap(id: Int)
     case eventItemOnTap(id: String)
     case hangoutsItemOnTap(id: String)
+    case communityItemOnTap(id: Int)
 }

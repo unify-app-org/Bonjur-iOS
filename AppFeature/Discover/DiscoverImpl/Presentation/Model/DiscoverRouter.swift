@@ -9,6 +9,7 @@ import UIKit
 import Events
 import Hangouts
 import Clubs
+import Communities
 
 enum DiscoverRoute {
     case viewAllClubs
@@ -17,6 +18,7 @@ enum DiscoverRoute {
     case clubsDetails(id: Int)
     case eventsDetails(id: String)
     case hangoutsDetails(id: String)
+    case communityDetails(id: Int)
 }
 
 protocol DiscoverRouterProtocol {
@@ -30,19 +32,22 @@ final class DiscoverRouter: DiscoverRouterProtocol {
     private var eventModule: EventsModule
     private var hangoutModule: HangoutsModule
     private var clubModule: ClubsModule
+    private var communityModule: CommunitiesModule
 
     init(
         view: UIViewController? = nil,
         delegate: DiscoverDelegate = resolve(),
         eventModule: EventsModule = resolve(),
         hangoutModule: HangoutsModule = resolve(),
-        clubModule: ClubsModule = resolve()
+        clubModule: ClubsModule = resolve(),
+        communityModule: CommunitiesModule = resolve()
     ) {
         self.view = view
         self.delegate = delegate
         self.eventModule = eventModule
         self.hangoutModule = hangoutModule
         self.clubModule = clubModule
+        self.communityModule = communityModule
     }
     
     @MainActor
@@ -68,6 +73,10 @@ final class DiscoverRouter: DiscoverRouterProtocol {
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .hangoutsDetails(let id):
             let vc = hangoutModule.makeHangoutDetails(hangoutId: id) as! UIViewController
+            vc.hidesBottomBarWhenPushed = true
+            self.view?.navigationController?.pushViewController(vc, animated: true)
+        case .communityDetails(let id):
+            let vc = communityModule.makeCommunityDetail(communityId: id) as! UIViewController
             vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
         }

@@ -52,6 +52,10 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             Task {
                 await router.navigate(to: .hangoutsDetails(id: id))
             }
+        case .communityItemOnTap(let id):
+            Task {
+                await router.navigate(to: .communityDetails(id: id))
+            }
         }
     }
     

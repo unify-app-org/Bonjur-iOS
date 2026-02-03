@@ -22,4 +22,14 @@ struct CommunitiesModuleImpl: CommunitiesModule {
             )
         )
     }
+    
+    func makeCommunityDetail(
+        communityId: Int
+    ) -> AnyObject {
+        CommunityDetailBuilder(
+            inputData: .init(
+                communityId: communityId
+            )
+        ).build()
+    }
 }

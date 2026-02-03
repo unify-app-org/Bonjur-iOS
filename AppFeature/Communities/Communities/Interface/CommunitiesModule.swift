@@ -12,4 +12,6 @@ public protocol CommunitiesModule {
         inputData: CommunitiesModuleModel.CardInputData,
         onTap: @escaping (() -> Void)
     ) -> Any
+    
+    func makeCommunityDetail(communityId: Int) -> AnyObject
 }

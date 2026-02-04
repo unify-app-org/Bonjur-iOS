@@ -54,7 +54,7 @@ extension HangoutDetails.UIModel {
         accessType: .private,
         tags: [
             .init(id: 1, type: "SPORT", title: "Messi"),
-            .init(id: 1, type: "SPORT", title: "Ronaldo lox"),
+            .init(id: 1, type: "SPORT", title: "Ronaldo"),
             .init(id: 1, type: "SPORT", title: "Ronaldinho"),
             .init(id: 1, type: "SPORT", title: "Basketball")
         ],

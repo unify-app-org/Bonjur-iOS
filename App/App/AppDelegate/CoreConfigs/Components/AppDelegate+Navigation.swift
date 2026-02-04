@@ -20,7 +20,9 @@ extension AppDelegate {
            .foregroundColor: UIColor(Color.Palette.blackHigh)
        ]
        appearance.largeTitleTextAttributes = [
-           .foregroundColor: UIColor(Color.Palette.blackHigh)
+           .foregroundColor: UIColor(Color.Palette.blackHigh),
+           .font: UIFont.systemFont(ofSize: 28, weight: .bold),
+           .baselineOffset: 8
        ]
        let navigationBarAppearance = UINavigationBar.appearance()
        navigationBarAppearance.standardAppearance = appearance

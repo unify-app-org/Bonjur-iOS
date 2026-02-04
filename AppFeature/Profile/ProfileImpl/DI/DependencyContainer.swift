@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Profile
 import DependecyInjection
 
 func resolve<T>(
@@ -49,15 +50,21 @@ enum ProfileDependencyContainer {
     }
     
     private static func registerDataSource() {
-
+        register(ProfileDataSource.self) {
+            ProfileDataSourceImpl()
+        }
     }
     
     private static func registerUseCase() {
-
+        register(ProfileUseCase.self) {
+            ProfileUseCaseImpl()
+        }
     }
     
     private static func registerModule() {
-
+        register(ProfileModule.self) {
+            ProfileModuleImpl()
+        }
     }
     
     // MARK: - Dependencies Managing

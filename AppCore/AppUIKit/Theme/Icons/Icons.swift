@@ -69,5 +69,11 @@ public extension UIImage {
         public static let user = UIImage(resource: .user)
         
         public static let email = UIImage(resource: .email)
+        
+        public static let globe01 = UIImage(resource: .globe01)
+        
+        public static let genderIcon = UIImage(resource: .genderIcon)
+        
+        public static let cakeBirthday = UIImage(resource: .cakeBirthday)
     }
 }

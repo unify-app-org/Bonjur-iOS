@@ -10,28 +10,35 @@ import AppUIKit
 
 struct UserCardView: View {
     
-    init() {
-        AppFonts()
+    let model: UserCardModel
+    let onTap: (() -> Void)
+    
+    init(
+        model: UserCardModel,
+        onTap: @escaping () -> Void
+    ) {
+        self.model = model
+        self.onTap = onTap
     }
     
     var body: some View {
         userCardView
             .modifier(
                 PressTapButtonModifier {
-                    
+                    onTap()
                 }
             )
     }
     
     @ViewBuilder
     private var userCardView: some View {
-        if true {
+        if let type = model.backgroundCover {
             CardBackgroundView(cardType: .club) {
                 userInfoView
                     .padding(.horizontal)
                     .padding(.top)
             }
-            .backgroundType(.primary)
+            .backgroundType(type)
             .cornerRadius(16)
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
@@ -68,7 +75,7 @@ struct UserCardView: View {
     
     @ViewBuilder
     private var userImage: some View {
-        let url = URL(string: "https://via.placeholder.com/150")
+        let url = model.imageUrl
         CachedAsyncImage(url: url) { image in
             image
                 .resizable()
@@ -86,26 +93,26 @@ struct UserCardView: View {
     
     private var nameAndSpecialtyView: some View {
         VStack(alignment: .leading) {
-            Text("Nihad Askerli")
+            Text(model.nameSurname)
                 .font(Font.Typography.HeadingXl.bold)
-                .foregroundStyle(Color.Palette.black)
+                .foregroundStyle(model.backgroundCover?.foregroundColor ?? Color.Palette.blackHigh)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
-            Text("Computer engineering")
+            Text(model.speciality)
                 .font(Font.Typography.TextMd.medium)
-                .foregroundStyle(Color.Palette.black)
+                .foregroundStyle(model.backgroundCover?.foregroundColor ?? Color.Palette.blackHigh)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
         }
     }
     
     private var communityBadgeView: some View {
-        Text("UFAZ")
+        Text(model.community)
             .font(Font.Typography.TextMd.bold)
-            .foregroundStyle(Color.Palette.black)
+            .foregroundStyle(Color.Palette.blackHigh)
             .padding(.vertical, 6)
             .padding(.horizontal, 16)
-            .background(Color.Palette.primary)
+            .background(model.backgroundCover.isNil ? Color.Palette.primary : Color.Palette.whiteMedium)
             .clipShape(Capsule())
             .overlay(
                 Capsule()
@@ -115,11 +122,11 @@ struct UserCardView: View {
     
     private var additionalInfoView: some View {
         HStack {
-            additionalInfoItems(title: "course", subTitle: "2nd year")
+            additionalInfoItems(title: "course", subTitle: model.course)
             Spacer()
-            additionalInfoItems(title: "degree", subTitle: "Master")
+            additionalInfoItems(title: "degree", subTitle: model.degree)
             Spacer()
-            additionalInfoItems(title: "entry", subTitle: "2025")
+            additionalInfoItems(title: "entry", subTitle: model.entryYear)
         }
     }
     
@@ -130,13 +137,13 @@ struct UserCardView: View {
         VStack {
             Text(title)
                 .font(Font.Typography.TextSm.regular)
-                .foregroundStyle(Color.Palette.blackMedium)
+                .foregroundStyle(model.backgroundCover?.foregroundColor ?? Color.Palette.blackHigh)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
                 
             Text(subTitle)
                 .font(Font.Typography.TextMd.medium)
-                .foregroundStyle(Color.Palette.black)
+                .foregroundStyle(model.backgroundCover?.foregroundColor ?? Color.Palette.blackHigh)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
         }
@@ -145,11 +152,15 @@ struct UserCardView: View {
     private var emailView: some View {
         VStack(spacing: 16) {
             Divider()
+                .background(model.backgroundCover?.foregroundColor ?? Color.Palette.blackHigh)
             
             HStack {
                 Image(uiImage: UIImage.Icons.email)
-                Text("nihad@gmail.com")
-                    .tint(Color.Palette.black)
+                    .renderingMode(.template)
+                    .foregroundStyle(model.backgroundCover?.foregroundColor ?? Color.Palette.blackHigh)
+                Text(model.email)
+                    .tint(model.backgroundCover?.foregroundColor ?? Color.Palette.blackHigh)
+                    .foregroundStyle(model.backgroundCover?.foregroundColor ?? Color.Palette.blackHigh)
                     .font(Font.Typography.TextSm.regular)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
@@ -157,7 +168,7 @@ struct UserCardView: View {
             .padding(.horizontal)
         }
         .padding(.bottom)
-        .background(Color.Palette.primary)
+        .background(model.backgroundCover?.bgColor)
         .padding(.horizontal, -16)
     }
 }
@@ -165,8 +176,13 @@ struct UserCardView: View {
 #Preview {
     ScrollView {
         VStack {
-            UserCardView()
-                .padding()
+            UserCardView(
+                model: UserCardModel.mock[1],
+                onTap: {
+                    
+                }
+            )
+            .padding()
         }
     }
 }

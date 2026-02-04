@@ -10,6 +10,7 @@ import AppFoundation
 final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
     
     struct Dependencies {
+        let useCase: ProfileUseCase
     }
     
     private let router: ProfileDetailRouterProtocol
@@ -29,9 +30,35 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
     }
     
     override func handle(action: ProfileDetailFeature.Action) {
+        switch action {
+        case .fetchData:
+            fetchData()
+        case .clubsItemTapped(let id):
+            Task {
+                await router.navigate(to: .clubsDetails(id: id))
+            }
+        case .eventsItemTapped(let id):
+            Task {
+                await router.navigate(to: .eventsDetails(id: id))
+            }
+        case .hangoutsItemTapped(let id):
+            Task {
+                await router.navigate(to: .hangoutsDetails(id: id))
+            }
+        }
     }
     
     private func fetchData() {
-        
+        Task {
+            await fetchUserData()
+        }
+    }
+    
+    private func fetchUserData() async {
+        do {
+            state.uiModel = try await dependencies.useCase.getProfileData()
+        } catch {
+            
+        }
     }
 }

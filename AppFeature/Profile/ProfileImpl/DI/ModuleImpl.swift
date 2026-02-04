@@ -9,4 +9,10 @@ import Foundation
 import Profile
 
 struct ProfileModuleImpl: ProfileModule {
+    
+    func makeProfileViewController() -> AnyObject {
+        ProfileDetailBuilder(
+            inputData: .init()
+        ).build()
+    }
 }

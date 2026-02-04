@@ -11,6 +11,7 @@ import DependecyInjection
 import Discover
 import Clubs
 import Groups
+import Profile
 
 // MARK: - AppTabBar builder
 
@@ -45,6 +46,9 @@ struct AppTabBarBuilder {
             ),
             groupsModule: dependencyContainer.resolve(
                 GroupsModule.self
+            ),
+            profileModule: dependencyContainer.resolve(
+                ProfileModule.self
             )
         )
         

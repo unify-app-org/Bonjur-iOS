@@ -63,5 +63,11 @@ public extension UIImage {
         public static let fileAttachment = UIImage(resource: .fileAttachment)
         
         public static let trash = UIImage(resource: .trash)
+        
+        public static let settings01 = UIImage(resource: .settings01)
+        
+        public static let user = UIImage(resource: .user)
+        
+        public static let email = UIImage(resource: .email)
     }
 }

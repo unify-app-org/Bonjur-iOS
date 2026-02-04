@@ -56,7 +56,7 @@ struct CommunityDetailView: View {
             VStack(spacing: .zero) {
                 stretchableHeader
                 logoView
-                bottomView
+                bottomView(proxy)
             }
         }
         .coordinateSpace(name: "scroll")
@@ -224,11 +224,11 @@ struct CommunityDetailView: View {
     
     // MARK: - Bottom Content
     
-    private var bottomView: some View {
+    private func bottomView(_ proxy: GeometryProxy) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             clubInfoView
             segmentView
-            tabView
+            tabView(proxy)
         }
         .padding(.horizontal)
     }
@@ -337,7 +337,7 @@ struct CommunityDetailView: View {
     // MARK: - Tabs
     
     @ViewBuilder
-    private var tabView: some View {
+    private func tabView(_ proxy: GeometryProxy) -> some View {
         TabView(
             selection: Binding(
                 get: { store.state.selectedSegment },
@@ -349,7 +349,7 @@ struct CommunityDetailView: View {
             )
         ) {
             tabContent(for: .about, content: infoTab)
-            tabContent(for: .clubs, content: clubsTab)
+            tabContent(for: .clubs, content: clubsTab(proxy))
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .frame(height: tabHeights[store.state.selectedSegment] ?? 300)
@@ -415,7 +415,7 @@ struct CommunityDetailView: View {
         }
     }
     
-    private var clubsTab: some View {
+    private func clubsTab(_ proxy: GeometryProxy) -> some View {
         VStack(spacing: 0) {
             let clubs = store.state.uiModel?.clubsData ?? []
             if !clubs.isEmpty {
@@ -434,7 +434,7 @@ struct CommunityDetailView: View {
             } else {
                 emptyView(
                     icon: UIImage.Icons.twoUsers,
-                    text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
+                    text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
                     buttonTitle: "Create a club +",
                     type: .clubs
                 )
@@ -442,6 +442,7 @@ struct CommunityDetailView: View {
             }
         }
         .padding(.top)
+        .padding(.bottom, proxy.safeAreaInsets.bottom)
     }
     
     private func emptyView(

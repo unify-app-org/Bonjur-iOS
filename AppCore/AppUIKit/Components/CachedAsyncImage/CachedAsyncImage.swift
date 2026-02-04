@@ -13,7 +13,7 @@ public struct CachedAsyncImage<Content: View, Placeholder: View>: View {
     let placeholder: () -> Placeholder
 
     @State private var image: UIImage?
-    @State private var opacity: Double = 0
+    @State private var isLoading = false
 
     public init(
         url: URL?,
@@ -23,50 +23,57 @@ public struct CachedAsyncImage<Content: View, Placeholder: View>: View {
         self.url = url
         self.content = content
         self.placeholder = placeholder
-        
-        if let url,
-           let cached = ImageCache.shared.object(forKey: url as NSURL) {
-            _image = State(initialValue: cached)
-        }
     }
 
     public var body: some View {
         Group {
             if let image {
                 content(Image(uiImage: image))
-                    .opacity(opacity)
             } else {
                 placeholder()
             }
         }
-        .task(id: url) {
-            await load()
+        .onAppear {
+            if image == nil && !isLoading {
+                Task {
+                    await load()
+                }
+            }
         }
     }
 
     private func load() async {
-        guard let url else { return }
+        guard let url, !isLoading else { return }
+        
+        isLoading = true
 
+        // Check cache first
         if let cached = ImageCache.shared.object(forKey: url as NSURL) {
+            await MainActor.run {
                 image = cached
-            withAnimation {
-                opacity = 1
+                isLoading = false
             }
             return
         }
 
+        // Load from network
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             if let uiImage = UIImage(data: data) {
                 ImageCache.shared.setObject(uiImage, forKey: url as NSURL)
                 await MainActor.run {
                     image = uiImage
-                    opacity = 0
-                    withAnimation {
-                        opacity = 1
-                    }
+                    isLoading = false
+                }
+            } else {
+                await MainActor.run {
+                    isLoading = false
                 }
             }
-        } catch {}
+        } catch {
+            await MainActor.run {
+                isLoading = false
+            }
+        }
     }
 }

@@ -79,6 +79,17 @@ let groupsTarget = Target.createFeatureModule(
     )
 ).add(to: &frameworkTargets)
 
+let profileTarget = Target.createFeatureModule(
+    name: "Profile",
+    implConfig: .init(
+        dependencies: [
+            .AppFeature.Clubs,
+            .AppFeature.Events,
+            .AppFeature.Hangouts
+        ]
+    )
+).add(to: &frameworkTargets)
+
 let project = Project(
     name: Project.Projects.features,
     options: .options(automaticSchemesOptions: .disabled),

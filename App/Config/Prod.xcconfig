@@ -8,5 +8,7 @@
 // Configuration settings file format documentation can be found at:
 // https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
 
-BASE_URL = https:/$()/api.bonjur.co
-ENVIRONMENT = PROD
+BASE_URL = https:/$()/api.unify.co
+ENVIRONMENT = prod
+APP_NAME = Unify
+BUNDLE_ID = com.unify.app

@@ -23,7 +23,7 @@ public extension Target {
             settings: interfaceConfig.settings?.withSwift6Enabled() ?? .settings(
                 base: ["SWIFT_VERSION": "5.10"]
             ),
-            dependencies: interfaceConfig.dependencies
+            dependencies: interfaceConfig.dependencies + [TargetDependency.AppCore.AppPresentationModel]
         )
 
         let defaultImplementationDependencies: [TargetDependency] = .CoreDependencies

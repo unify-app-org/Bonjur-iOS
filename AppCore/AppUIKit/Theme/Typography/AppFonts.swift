@@ -30,6 +30,7 @@ public enum Font {
     public enum Typography {
         
         // MARK: - TitleXL (44px)
+        /// font sizs 44px
         public enum TitleXl {
             public static var extraBold: SwiftUI.Font {
                 SwiftUI.Font.custom(
@@ -47,7 +48,15 @@ public enum Font {
         }
         
         // MARK: - TitleL (28px)
+        /// font sizs 28px
         public enum TitleL {
+            public static var extraBold: SwiftUI.Font {
+                SwiftUI.Font.custom(
+                    AppFonts.FontName.manropeExtraBold.rawValue,
+                    size: AppFonts.Tokens.FontSize.titleL
+                )
+            }
+            
             public static var bold: SwiftUI.Font {
                 SwiftUI.Font.custom(
                     AppFonts.FontName.manropeBold.rawValue,
@@ -78,7 +87,15 @@ public enum Font {
         }
         
         // MARK: - TitleMd (22px)
+        /// font sizs 22px
         public enum TitleMd {
+            public static var extraBold: SwiftUI.Font {
+                SwiftUI.Font.custom(
+                    AppFonts.FontName.manropeExtraBold.rawValue,
+                    size: AppFonts.Tokens.FontSize.titleMd
+                )
+            }
+            
             public static var bold: SwiftUI.Font {
                 SwiftUI.Font.custom(
                     AppFonts.FontName.manropeBold.rawValue,
@@ -108,7 +125,8 @@ public enum Font {
             }
         }
         
-        // MARK: - TitleSm (22px)
+        // MARK: - TitleSm (20px)
+        /// font sizs 20px
         public enum TitleSm {
             public static var bold: SwiftUI.Font {
                 SwiftUI.Font.custom(
@@ -140,6 +158,7 @@ public enum Font {
         }
         
         // MARK: - HeadingXl (18px)
+        /// font sizs 18px
         public enum HeadingXl {
             public static var bold: SwiftUI.Font {
                 SwiftUI.Font.custom(
@@ -171,6 +190,7 @@ public enum Font {
         }
         
         // MARK: - HeadingMd (17px)
+        /// font sizs 17px
         public enum HeadingMd {
             public static var bold: SwiftUI.Font {
                 SwiftUI.Font.custom(
@@ -202,6 +222,7 @@ public enum Font {
         }
         
         // MARK: - BodyTextMd (16px)
+        /// font sizs 16px
         public enum BodyTextMd {
             public static var bold: SwiftUI.Font {
                 SwiftUI.Font.custom(
@@ -232,7 +253,8 @@ public enum Font {
             }
         }
         
-        // MARK: - BodyTextSm (16px)
+        // MARK: - BodyTextSm (15px)
+        /// font sizs 15px
         public enum BodyTextSm {
             public static var bold: SwiftUI.Font {
                 SwiftUI.Font.custom(
@@ -264,6 +286,7 @@ public enum Font {
         }
         
         // MARK: - TextL (14px)
+        /// font sizs 14px
         public enum TextL {
             public static var bold: SwiftUI.Font {
                 SwiftUI.Font.custom(
@@ -295,6 +318,7 @@ public enum Font {
         }
         
         // MARK: - TextMd (13px)
+        /// font sizs 13px
         public enum TextMd {
             public static var bold: SwiftUI.Font {
                 SwiftUI.Font.custom(
@@ -326,6 +350,7 @@ public enum Font {
         }
         
         // MARK: - TextSm (12px)
+        /// font sizs 12px
         public enum TextSm {
             public static var bold: SwiftUI.Font {
                 SwiftUI.Font.custom(
@@ -357,6 +382,7 @@ public enum Font {
         }
         
         // MARK: - CaptionMd (11px)
+        /// font sizs 11px
         public enum CaptionMd {
             public static var medium: SwiftUI.Font {
                 SwiftUI.Font.custom(
@@ -374,6 +400,7 @@ public enum Font {
         }
         
         // MARK: - CaptionSm (10px)
+        /// font sizs 10px
         public enum CaptionSm {
             public static var medium: SwiftUI.Font {
                 SwiftUI.Font.custom(

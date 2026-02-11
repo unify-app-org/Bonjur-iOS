@@ -3,7 +3,7 @@
 //  App
 //
 //  Created by Huseyn Hasanov on 21.12.25.
-//  Copyright © 2025 Bonjur. All rights reserved.
+//  Copyright © 2025 Unify. All rights reserved.
 //
 
 import AppLocalization

@@ -9,7 +9,7 @@ import ProjectDescription
 
 public extension Scheme {
     static let prodScheme: Self = .scheme(
-        name: "Bonjur-Release",
+        name: "Unify-Release",
         shared: true,
         buildAction: .buildAction(
             targets: ["App"]
@@ -30,7 +30,7 @@ public extension Scheme {
     )
     
     static let testScheme: Self = .scheme(
-        name: "Bonjur-Test",
+        name: "Unify-Test",
         shared: true,
         buildAction: .buildAction(
             targets: ["App"]
@@ -51,7 +51,7 @@ public extension Scheme {
     )
 
     static let stagingScheme: Self = .scheme(
-        name: "Bonjur-Staging",
+        name: "Unify-Staging",
         shared: true,
         buildAction: .buildAction(
             targets: ["App"]

@@ -28,7 +28,7 @@ public extension Target {
         let target = createTarget(
             name: name,
             product: .unitTests,
-            bundleId: "com.ibamobile${BUNDLE_ID_SUFFIX}.\(name)",
+            bundleId: "com.unify${BUNDLE_ID_SUFFIX}.\(name)",
             deploymentTargets: deploymentTargets,
             infoPlist: infoPlist,
             sources: .sourceFilesList(

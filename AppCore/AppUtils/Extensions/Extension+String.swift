@@ -26,4 +26,9 @@ public extension String {
         let formatted = digitsOnly.replacingOccurrences(of: "(\\d{3})(\\d{2})(\\d{3})(\\d{2})(\\d{2})", with: "+$1 $2 $3 $4 $5", options: .regularExpression, range: nil)
         return formatted
     }
+    
+    var capitalizedFirstLetter: String {
+        guard let first = first else { return self }
+        return first.uppercased() + dropFirst()
+    }
 }

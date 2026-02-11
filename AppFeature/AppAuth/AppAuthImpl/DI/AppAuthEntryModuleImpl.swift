@@ -8,11 +8,28 @@
 import AppAuth
 import UIKit
 
-public final class AppAuthEntryModuleImpl: AppAuthEntryModule {
+protocol AuthDelegate {
+    func finishAuthentication()
+}
+
+public final class AppAuthEntryModuleImpl: AppAuthModule, AuthDelegate {
     
-    public init() {}
+    weak var delegate: AppAuthModuleDelegate?
+    
+    public init() { }
     
     public func buildRegister() -> UIViewController {
         RegisterBuilder().build(inputData: .init())
+    }
+    
+    public func buildOnBoarding(
+        _ delegate: AppAuthModuleDelegate?
+    ) -> UIViewController {
+        self.delegate = delegate
+        return OnboardingBuilder(inputData: .init()).build()
+    }
+    
+    func finishAuthentication() {
+        delegate?.appAuthModuleDidFinish()
     }
 }

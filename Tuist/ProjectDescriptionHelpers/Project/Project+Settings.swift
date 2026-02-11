@@ -8,9 +8,9 @@
 import ProjectDescription
 
 public extension Project {
-    static let projectName = "Bonjur"
-    static let organizationName = "Bonjur community group"
-    static let deploymentTarget = "15.0"
+    static let projectName = "Unify"
+    static let organizationName = "Unify community group"
+    static let deploymentTarget = "16.0"
 
     // TUIST_MARKETING_VERSION
     static let marketingVersion = Environment.marketingVersion.getString(default: "1.0.0")

@@ -12,7 +12,9 @@ let config = Config(
         compatibleXcodeVersions: .all,
         swiftVersion: nil,
         plugins: [],
-        generationOptions: .options(),
+        generationOptions: .options(
+            enforceExplicitDependencies: true
+        ),
         installOptions: .options()
     )
 )

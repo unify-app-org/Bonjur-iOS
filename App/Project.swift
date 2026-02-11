@@ -12,18 +12,18 @@ let appTarget: Target = .target(
     name: "App",
     destinations: [.iPhone, .iPad],
     product: .app,
-    bundleId: "com.bonjur.app",
-    deploymentTargets: .iOS("15.0"),
+    bundleId: "$(BUNDLE_ID)",
+    deploymentTargets: .iOS("16.0"),
     infoPlist: "App/Info.plist",
     sources: ["App/**/*.swift"],
     resources: ["App/Resources/**"],
     dependencies: TargetDependency.AllDependencies,
-    settings: .settings(configurations: .default)
+    settings: .settings(base: .mainTargetBuildSettings)
 )
 
 let project = Project(
     name: Project.Projects.main,
-    organizationName: "Bonjur",
+    organizationName: Project.organizationName,
     options: .options(automaticSchemesOptions: .disabled),
     settings: .settings(base: .default, configurations: .default),
     targets: [appTarget],

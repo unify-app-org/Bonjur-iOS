@@ -43,7 +43,10 @@ let appFoundationTarget = Target.createFrameworkTarget(
 ).add(to: &frameworkTargets)
     
 let appUIKitTarget = Target.createFrameworkTarget(
-    name: "AppUIKit"
+    name: "AppUIKit",
+    dependencies: [
+        .AppCore.AppUtils
+    ]
 ).add(to: &frameworkTargets)
 
 let appLocalizationTarget = Target.createFrameworkTarget(
@@ -53,9 +56,16 @@ let appLocalizationTarget = Target.createFrameworkTarget(
     ]
 ).add(to: &frameworkTargets)
 
+let appPresentationModelTarget = Target.createFrameworkTarget(
+    name: "AppPresentationModel",
+    dependencies: [
+        .AppCore.DependecyInjection
+    ]
+).add(to: &frameworkTargets)
+
 let project = Project(
     name: Project.Projects.core,
     options: .options(automaticSchemesOptions: .disabled),
-    settings: .settings(base: .default),
+    settings: .settings(base: .default, configurations: .withoutConfigFile),
     targets: frameworkTargets.map(\.target)
 )

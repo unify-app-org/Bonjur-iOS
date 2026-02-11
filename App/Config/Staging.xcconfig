@@ -3,11 +3,13 @@
 //  App
 //
 //  Created by Huseyn Hasanov on 01.12.25.
-//  Copyright © 2025 Bonjur. All rights reserved.
+//  Copyright © 2025 Unify. All rights reserved.
 //
 
 // Configuration settings file format documentation can be found at:
 // https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
 
-BASE_URL = https:/$()/api.bonjur.co
-ENVIRONMENT = STAGING
+BASE_URL = https:/$()/api.unify.co
+ENVIRONMENT = staging
+APP_NAME = Unify-staging
+BUNDLE_ID = com.unify.app.staging

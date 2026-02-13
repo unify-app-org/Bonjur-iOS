@@ -11,7 +11,7 @@ import Combine
 import Clubs
 import Hangouts
 import AppNetwork
-import SwiftUICore
+import SwiftUI
 
 // MARK: - GroupsList input
 

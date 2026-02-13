@@ -6,7 +6,7 @@
 //
 
 import AppFoundation
-import SwiftUICore
+import SwiftUI
 
 // MARK: - ProfileDetail input
 

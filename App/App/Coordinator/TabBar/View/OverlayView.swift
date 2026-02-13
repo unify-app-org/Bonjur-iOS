@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SwiftUICore
+import SwiftUI
 
 final class OverlayView: UIView {
     var highlightFrame: CGRect = .zero {

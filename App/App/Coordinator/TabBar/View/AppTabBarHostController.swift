@@ -8,7 +8,7 @@
 
 import UIKit
 import AppFoundation
-import SwiftUICore
+import SwiftUI
 import Discover
 import Clubs
 import Groups

@@ -8,7 +8,7 @@
 import Foundation
 import AppPresentationModel
 import Events
-import SwiftUICore
+import SwiftUI
 
 struct EventsModuleImpl: EventsModule {
     

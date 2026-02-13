@@ -7,7 +7,7 @@
 
 import Foundation
 import Hangouts
-import SwiftUICore
+import SwiftUI
 
 struct HangoutsModuleImpl: HangoutsModule {
     

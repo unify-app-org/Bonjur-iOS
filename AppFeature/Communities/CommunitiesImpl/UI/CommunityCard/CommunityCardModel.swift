@@ -5,7 +5,7 @@
 //  Created by Huseyn Hasanov on 16.01.26.
 //
 
-import SwiftUICore
+import SwiftUI
 import AppUIKit
 import Communities
 import AppPresentationModel

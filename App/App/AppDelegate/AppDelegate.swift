@@ -8,7 +8,7 @@
 import UIKit
 import DependecyInjection
 import AppUIKit
-import SwiftUICore
+import SwiftUI
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {

@@ -61,43 +61,6 @@ struct ClubCreateView: View {
         }
     }
     
-    private var fieldView: some View {
-        VStack(spacing: 16) {
-            Text("Fields marked with * are required.")
-                .font(Font.Typography.BodyTextMd.regular)
-                .foregroundStyle(Color.Palette.appBlue)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .multilineTextAlignment(.leading)
-                .padding(.horizontal, 16)
-            
-            ForEach(store.state.clubsCreateSchema, id: \.id) { schema in
-                FieldSchemaRouter(
-                    field: schema,
-                    text: Binding(
-                        get: { store.state.text(schema.id) },
-                        set: { store.state.setText(schema.id, $0) }
-                    ),
-                    tags: Binding(
-                        get: { store.state.tags(schema.id) },
-                        set: { store.state.setTags(schema.id, $0) }
-                    ),
-                    links: Binding(
-                        get: { store.state.links(schema.id) },
-                        set: { store.state.setLinks(schema.id, $0) }
-                    ),
-                    cover: Binding(
-                        get: { store.state.cover(schema.id) },
-                        set: { store.state.setColor(schema.id, $0) }
-                    ),
-                    radio: Binding(
-                        get: { store.state.radio(schema.id) },
-                        set: { store.state.setRadio(schema.id, $0) }
-                    )
-                )
-            }
-        }
-    }
-    
     private func navigationOverlay(safeAreaTop: CGFloat) -> some View {
         VStack(spacing: 0) {
             customNavigationBar(safeAreaTop: safeAreaTop)
@@ -162,7 +125,7 @@ struct ClubCreateView: View {
     
     private var headerContent: some View {
         CardBackgroundView(cardType: .club) {}
-            .backgroundType(store.state.values.cover)
+            .backgroundType(store.state.values.cover(.cover))
             .cornerRadius(.zero)
     }
     
@@ -228,5 +191,24 @@ struct ClubCreateView: View {
     
     // MARK: - Bottom Content
     
-    
+    private var fieldView: some View {
+        VStack(spacing: 16) {
+            Text("Fields marked with * are required.")
+                .font(Font.Typography.BodyTextMd.regular)
+                .foregroundStyle(Color.Palette.appBlue)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .multilineTextAlignment(.leading)
+                .padding(.horizontal, 16)
+            
+            ForEach(store.state.clubsCreateSchema) { field in
+                FieldSchemaRouter(
+                    field: field,
+                    values: Binding(
+                        get: { store.state.values },
+                        set: { store.state.values = $0 }
+                    )
+                )
+            }
+        }
+    }
 }

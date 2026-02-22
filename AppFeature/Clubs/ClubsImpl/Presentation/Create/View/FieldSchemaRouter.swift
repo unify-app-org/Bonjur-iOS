@@ -31,14 +31,8 @@ extension AppUIEntities.BackgroundType: Equatable {
 
 struct FieldSchemaRouter: View {
     let field: ClubsCreate.FieldSchema
+    @Binding var values: [ClubsCreate.FieldID: ClubsCreate.FieldValue]
 
-    // Each field type gets only the binding it actually needs
-    @Binding var text: String
-    @Binding var tags: [ClubsCreate.TagItem]
-    @Binding var links: [ClubsCreate.LinkItem]
-    @Binding var cover: AppUIEntities.BackgroundType
-    @Binding var radio: ClubsCreate.RadioType
-    
     var body: some View {
         switch field.type {
 
@@ -46,23 +40,26 @@ struct FieldSchemaRouter: View {
             CoverPickerField(
                 field: field,
                 item: item,
-                selected: cover,
-                onChange: { cover = $0 }
+                selected: values.cover(field.id),
+                onChange: { values[field.id] = .cover($0) }
             )
 
         case .radioGroup(let options):
             RadioGroupField(
                 field: field,
                 options: options,
-                selected: radio,
-                onChange: { radio = $0 }
+                selected: values.radio(field.id),
+                onChange: { values[field.id] = .radio($0) }
             )
 
         case .text(let placeholder):
             TextInputField(
                 field: field,
                 placeholder: placeholder,
-                value: $text
+                value: Binding(
+                    get: { values.text(field.id) },
+                    set: { values[field.id] = .text($0) }
+                )
             )
 
         case .textArea(let placeholder, let maxLength):
@@ -70,22 +67,74 @@ struct FieldSchemaRouter: View {
                 field: field,
                 placeholder: placeholder,
                 maxLength: maxLength,
-                value: $text
+                value: Binding(
+                    get: { values.text(field.id) },
+                    set: { values[field.id] = .text($0) }
+                )
             )
 
         case .chipInput(let placeholder):
             ChipInputField(
                 field: field,
                 placeholder: placeholder,
-                tags: $tags
+                tags: Binding(
+                    get: { values.tags(field.id) },
+                    set: { values[field.id] = .tags($0) }
+                )
             )
 
         case .linkInput(let placeholder):
             LinkInputField(
                 field: field,
                 placeholder: placeholder,
-                links: $links
+                links: Binding(
+                    get: { values.links(field.id) },
+                    set: { values[field.id] = .links($0) }
+                )
             )
+        }
+    }
+}
+
+// MARK: - Values Dictionary Extensions (get/set per type)
+
+extension Dictionary where Key == ClubsCreate.FieldID, Value == ClubsCreate.FieldValue {
+
+    func text(_ id: ClubsCreate.FieldID) -> String {
+        if case .text(let v) = self[id] { return v }
+        return ""
+    }
+
+    func tags(_ id: ClubsCreate.FieldID) -> [ClubsCreate.TagItem] {
+        if case .tags(let v) = self[id] { return v }
+        return []
+    }
+
+    func links(_ id: ClubsCreate.FieldID) -> [ClubsCreate.LinkItem] {
+        if case .links(let v) = self[id] { return v }
+        return []
+    }
+
+    func cover(_ id: ClubsCreate.FieldID) -> AppUIEntities.BackgroundType {
+        if case .cover(let v) = self[id] { return v }
+        return .primary
+    }
+
+    func radio(_ id: ClubsCreate.FieldID) -> ClubsCreate.RadioType {
+        if case .radio(let v) = self[id] { return v }
+        return .public
+    }
+
+    func isValid(for schema: [ClubsCreate.FieldSchema]) -> Bool {
+        schema.filter { $0.required }.allSatisfy { field in
+            switch field.type {
+            case .text, .textArea:
+                return !text(field.id).trimmingCharacters(in: .whitespaces).isEmpty
+            case .chipInput:
+                return !tags(field.id).isEmpty
+            default:
+                return true
+            }
         }
     }
 }

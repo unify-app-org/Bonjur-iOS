@@ -10,6 +10,8 @@ import AppFoundation
 
 final class AppTabBarViewModel: UIFeatureViewModel<AppTabBarFeature> {
     
+    var lastSelectedIndex: Int = 0
+    
     struct Dependencies {
     }
     

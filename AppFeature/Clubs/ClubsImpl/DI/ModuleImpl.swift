@@ -32,4 +32,11 @@ struct ClubsModuleImpl: ClubsModule {
             )
         ).build()
     }
+    
+    func makeCreateVC() -> AnyObject {
+        ClubCreateBuilder(
+            inputData: .init()
+        )
+        .build()
+    }
 }

@@ -19,4 +19,5 @@ public protocol ClubsModule {
     
     func makeClubsDetailsVC(clubId: Int) -> AnyObject
     
+    func makeCreateVC() -> AnyObject
 }

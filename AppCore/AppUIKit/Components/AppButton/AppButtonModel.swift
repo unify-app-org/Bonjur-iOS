@@ -75,7 +75,7 @@ public extension AppButton {
             )
         }
         
-        var textFont: SwiftUICore.Font {
+        var textFont: SwiftUI.Font {
             switch size {
             case .large:
                 return Font.Typography.BodyTextMd.medium

@@ -8,7 +8,7 @@
 
 import UIKit
 import AppFoundation
-import SwiftUICore
+import SwiftUI
 import Discover
 import Clubs
 import Groups
@@ -179,12 +179,21 @@ final class AppTabBarHostController: UITabBarController {
         animatePlusButtonToPlus()
         switch type {
         case .club:
-            break
+            let vc = clubsModule.makeCreateVC() as! UIViewController
+            pushOnSelectedTab(vc)
         case .event:
             break
         case .hangout:
             break
         }
+    }
+    
+    private func pushOnSelectedTab(_ vc: UIViewController) {
+        guard let nav = selectedViewController as? UINavigationController else {
+            return
+        }
+        vc.hidesBottomBarWhenPushed = true
+        nav.pushViewController(vc, animated: true)
     }
     
     @objc
@@ -288,52 +297,34 @@ final class AppTabBarHostController: UITabBarController {
         
         return vc
     }
-    
-    private func switchToTab(_ index: Int, animated: Bool = true) {
-        guard
-            let viewControllers,
-            index < viewControllers.count,
-            index != selectedIndex
-        else { return }
-        
-        if !animated {
-            selectedIndex = index
-            return
-        }
-        
-        let toIndex = index
-        
-        selectedIndex = toIndex
-        
-        UIView.transition(
-            with: view,
-            duration: 0.25,
-            options: [.transitionCrossDissolve, .allowAnimatedContent],
-            animations: nil,
-            completion: nil
-        )
-    }
 }
 
 extension AppTabBarHostController: UITabBarControllerDelegate {
     
     func tabBarController(
         _ tabBarController: UITabBarController,
+        didSelect viewController: UIViewController
+    ) {
+        guard let index = viewControllers?.firstIndex(of: viewController) else { return }
+        
+        if index == 2 {
+            selectedIndex = viewModel.lastSelectedIndex
+            plusTapped()
+        } else {
+            viewModel.lastSelectedIndex = index
+        }
+    }
+    
+    func tabBarController(
+        _ tabBarController: UITabBarController,
         shouldSelect viewController: UIViewController
     ) -> Bool {
 
-        guard
-            let fromVC = selectedViewController,
-            fromVC !== viewController
-        else { return false }
-
-        UIView.transition(
-            from: fromVC.view,
-            to: viewController.view,
-            duration: 0.25,
-            options: [.transitionCrossDissolve],
-            completion: nil
-        )
+        // Block center "+"
+        if viewController.tabBarItem.isEnabled == false {
+            plusTapped()
+            return false
+        }
 
         return true
     }
@@ -342,6 +333,6 @@ extension AppTabBarHostController: UITabBarControllerDelegate {
 extension AppTabBarHostController: DiscoverModuleDelegate {
     
     func viewAllClubs() {
-        switchToTab(1)
+        selectedIndex = 1
     }
 }

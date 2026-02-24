@@ -11,4 +11,4 @@
 BASE_URL = https:/$()/api.unify.co
 ENVIRONMENT = prod
 APP_NAME = Unify
-BUNDLE_ID = com.unify.app
+BUNDLE_ID = com.unify.app.prod

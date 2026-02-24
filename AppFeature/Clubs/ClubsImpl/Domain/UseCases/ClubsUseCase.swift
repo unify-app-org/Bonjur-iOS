@@ -11,6 +11,7 @@ import AppNetwork
 protocol ClubsUseCase {
     func fetchClubsData() async throws(APIError) -> [ClubCardView.Model]
     func fetchClubDetails(clubId: Int) async throws(APIError) -> ClubsDetailsModel.UIModel
+    func fetchCreateFields() async throws(APIError) -> [ClubsCreate.FieldSchema]
 }
 
 class ClubsUseCaseImpl: ClubsUseCase {
@@ -29,5 +30,9 @@ class ClubsUseCaseImpl: ClubsUseCase {
         clubId: Int
     ) async throws(APIError) -> ClubsDetailsModel.UIModel {
         .mockData
+    }
+    
+    func fetchCreateFields() async throws(APIError) -> [ClubsCreate.FieldSchema] {
+        try await dataSource.fetchCreate()
     }
 }

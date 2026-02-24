@@ -7,7 +7,7 @@
 
 import Foundation
 import Clubs
-import SwiftUICore
+import SwiftUI
 
 struct ClubsModuleImpl: ClubsModule {
     func makeClubsViewController() -> AnyObject {
@@ -31,5 +31,12 @@ struct ClubsModuleImpl: ClubsModule {
                 clubId: clubId
             )
         ).build()
+    }
+    
+    func makeCreateVC() -> AnyObject {
+        ClubCreateBuilder(
+            inputData: .init()
+        )
+        .build()
     }
 }

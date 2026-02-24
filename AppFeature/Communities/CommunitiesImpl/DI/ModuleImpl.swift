@@ -7,7 +7,7 @@
 
 import Foundation
 import Communities
-import SwiftUICore
+import SwiftUI
 
 struct CommunitiesModuleImpl: CommunitiesModule {
     

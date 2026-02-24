@@ -14,4 +14,13 @@ public extension View {
         hostingController.view.backgroundColor = .clear
         return hostingController.view
     }
+    
+    @ViewBuilder
+    func applyGlassIfAvailable() -> some View {
+        if #available(iOS 26.0, *) {
+            self.glassEffect()
+        } else {
+            self
+        }
+    }
 }

@@ -5,7 +5,7 @@
 //  Created by Huseyn Hasanov on 24.11.25.
 //
 
-import SwiftUICore
+import SwiftUI
 import UIKit
 
 public extension UIImage {

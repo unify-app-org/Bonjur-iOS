@@ -16,6 +16,7 @@ struct ClubDetailsView: View {
     @State private var isScrolled = false
     @State private var isNameVisible = true
     @State private var isSegmentSticky = false
+    
     @State private var baseHeight: CGFloat = 164
     @State private var navBarHeight: CGFloat = 0
     @State private var tabHeights: [ClubDetailsViewState.SegmentTypes: CGFloat] = [:]

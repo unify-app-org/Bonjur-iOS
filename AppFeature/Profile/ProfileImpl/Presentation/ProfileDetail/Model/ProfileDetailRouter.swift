@@ -59,8 +59,7 @@ final class ProfileDetailRouter: ProfileDetailRouterProtocol {
         case .studentCard(let inputData):
             let studentCardBuilder = StudentCardBuilder(inputData: inputData)
             let vc = studentCardBuilder.build()
-            
-            vc.hidesBottomBarWhenPushed = true
+            vc.modalPresentationStyle = .fullScreen
             self.view?.navigationController?.present(vc, animated: true)
         }
     }

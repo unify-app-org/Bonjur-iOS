@@ -35,17 +35,17 @@ final class StudentCardViewModel: UIFeatureViewModel<StudentCardFeature> {
     override func handle(action: StudentCardFeature.Action) {
         switch action{
         case .saveTapped:
-            
+            print(action)
         case .closeTapped:
-            
+            print(action)
         case .editTapped:
-            
+            print(action)
         case .coverSelected(_):
-            
+            print(action)
         case .cancelColorSelection:
-            
+            print(action)
         case .saveColorSelection:
-            
+            print(action)
         }
     }
     private func saveAndDismiss() {

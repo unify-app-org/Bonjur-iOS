@@ -26,9 +26,39 @@ final class StudentCardViewModel: UIFeatureViewModel<StudentCardFeature> {
         self.inputData = inputData
         self.dependencies = dependencies
         super.init(initialState: state)
+        
+        self.state.previewCard = inputData.userCardModel
+        self.state.savedCover = inputData.userCardModel.backgroundCover
+        self.state.selectedCover = inputData.userCardModel.backgroundCover
     }
     
     override func handle(action: StudentCardFeature.Action) {
+        switch action{
+        case .saveTapped:
+            
+        case .closeTapped:
+            
+        case .editTapped:
+            
+        case .coverSelected(_):
+            
+        case .cancelColorSelection:
+            
+        case .saveColorSelection:
+            
+        }
+    }
+    private func saveAndDismiss() {
+        // If onSave expects non-optional cover:
+        let cover = state.selectedCover ?? .primary
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            self.inputData.onSave(cover)
+            router.navigate(to: .dismiss)
+        }
+
+     
+        
     }
     
     private func fetchData() {

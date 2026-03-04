@@ -6,9 +6,7 @@
 //
 
 import UIKit
-
-enum StudentCardRoute {
-}
+enum StudentCardRoute { case dismiss }
 
 protocol StudentCardRouterProtocol {
     @MainActor
@@ -20,5 +18,9 @@ final class StudentCardRouter: StudentCardRouterProtocol {
     
     @MainActor
     func navigate(to route: StudentCardRoute) {
+        switch route {
+            case .dismiss:
+                view?.dismiss(animated: true) 
+            }
     }
 }

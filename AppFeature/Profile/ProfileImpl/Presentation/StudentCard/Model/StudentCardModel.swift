@@ -7,7 +7,7 @@
 
 import AppFoundation
 import AppUIKit
-
+import SwiftUI
 // MARK: - StudentCard input
 
 struct StudentCardInputData {
@@ -32,9 +32,27 @@ typealias StudentCardFeature = UIFeatureDefinition<
 // MARK: - View State
 
 final class StudentCardViewState: UIFeatureState {
+    // Card data shown in preview
+    @Published var previewCard: UserCardModel?
+    
+    // Current edited selection in this screen
+    @Published var selectedCover: AppUIEntities.BackgroundType?
+    
+    // Last committed value
+    @Published var savedCover: AppUIEntities.BackgroundType?
+    
+    // UI state
+    @Published var isChooseColorSheetPresented: Bool = false
+    @Published var isSaving: Bool = false
+    
+   // palette for picker
+    let availableCovers: [AppUIEntities.BackgroundType] = [
+           .primary, .secondary, .teritary, .color(.orange), .color(.red), .color(.pink)
+       ]
 }
 
 // MARK: - Feature Action
 
 enum StudentCardAction: UIFeatureAction {
+    case saveTapped,closeTapped,editTapped,coverSelected(AppUIEntities.BackgroundType),cancelColorSelection,saveColorSelection
 }

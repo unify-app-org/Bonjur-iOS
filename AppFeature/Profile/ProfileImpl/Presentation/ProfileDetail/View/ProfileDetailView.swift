@@ -111,7 +111,7 @@ struct ProfileDetailView: View {
     private var userCardView: some View {
         if let data = store.state.uiModel?.userCardModel {
             UserCardView(model: data) {
-                
+                store.send(.userCardTapped)
             }
         }
     }

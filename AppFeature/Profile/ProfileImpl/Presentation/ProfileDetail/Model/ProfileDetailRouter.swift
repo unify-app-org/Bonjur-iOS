@@ -14,6 +14,7 @@ enum ProfileDetailRoute {
     case clubsDetails(id: Int)
     case eventsDetails(id: String)
     case hangoutsDetails(id: String)
+    case studentCard(StudentCardInputData)
 }
 
 protocol ProfileDetailRouterProtocol {
@@ -55,6 +56,12 @@ final class ProfileDetailRouter: ProfileDetailRouterProtocol {
             let vc = hangoutModule.makeHangoutDetails(hangoutId: id) as! UIViewController
             vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
+        case .studentCard(let inputData):
+            let studentCardBuilder = StudentCardBuilder(inputData: inputData)
+            let vc = studentCardBuilder.build()
+            
+            vc.hidesBottomBarWhenPushed = true
+            self.view?.navigationController?.present(vc, animated: true)
         }
     }
 }

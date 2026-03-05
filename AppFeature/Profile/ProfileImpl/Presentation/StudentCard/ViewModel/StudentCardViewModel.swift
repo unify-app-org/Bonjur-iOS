@@ -29,7 +29,9 @@ final class StudentCardViewModel: UIFeatureViewModel<StudentCardFeature> {
     override func handle(action: StudentCardFeature.Action) {
         switch action {
         case .closeTapped:
+            let committedCover = state.savedCover
             Task { @MainActor in
+                inputData.onSave(committedCover)
                 router.navigate(to: .dismiss)
             }
 
@@ -83,9 +85,9 @@ final class StudentCardViewModel: UIFeatureViewModel<StudentCardFeature> {
             state.coverSheetDismissIntent = .none
         }
 
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            self.inputData.onSave(self.state.savedCover)
+        let committedCover = state.savedCover
+        Task { @MainActor in
+            inputData.onSave(committedCover)
         }
     }
 

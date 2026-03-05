@@ -45,7 +45,7 @@ struct ProfileDetailView: View {
             .enableSwipeBack()
         }
         .animation(.easeInOut, value: store.state.selectedSegment)
-        .onAppear {
+        .onFirstAppear {
             store.send(.fetchData)
         }
         .toolbar(.hidden)

@@ -43,24 +43,12 @@ struct StudentCardCoverPickerSheet: View {
     
            .presentationDetents([.height(260)])
            .presentationDragIndicator(.visible)
-           .sheetBackgroundWhiteCompatible()
        }
    
     
 
 }
 
-private extension View {
-    @ViewBuilder
-    func sheetBackgroundWhiteCompatible() -> some View {
-        if #available(iOS 16.4, *) {
-            self.presentationBackground(Color.Palette.white)
-        } else {
-            self.background(Color.Palette.white.ignoresSafeArea())
-        }
-        
-    }
-}
 #Preview {
     PreviewWrapper()
 }

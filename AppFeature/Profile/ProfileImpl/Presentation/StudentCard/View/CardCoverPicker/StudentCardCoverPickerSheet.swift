@@ -41,8 +41,6 @@ struct StudentCardCoverPickerSheet: View {
             .padding(.bottom, 8)
         }
     
-           .presentationDetents([.height(260)])
-           .presentationDragIndicator(.visible)
        }
    
     

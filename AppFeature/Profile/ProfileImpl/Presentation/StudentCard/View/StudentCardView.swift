@@ -34,23 +34,28 @@ struct StudentCardView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding(.horizontal, 16)
             .animation(.easeInOut(duration: 0.25), value: store.state.isChooseColorSheetPresented)
-            .sheet(
+            .appBottomSheetCaller(
                            isPresented: Binding(
                                get: { store.state.isChooseColorSheetPresented },
                                set: {
                                    if $0 {
                                        store.send(.setCoverSheetPresented(true))
-                                   } }
+                                   }
+                               }
                            ),
+                           detents: [.height(260)],
                            onDismiss: {
                                store.send(.coverSheetDismissed)
                            }
                        ) {
-                           StudentCardCoverPickerSheet(selected: Binding(
-                               get: { store.state.draftCover },
-                               set: { if self.store.state.isChooseColorSheetPresented{ store.send(.coverSelected($0)) }}
-                           ),onSave: {store.send(.saveColorSelection) },onCancel: {store.send(.cancelColorSelection) })
-                         
+                           StudentCardCoverPickerSheet(
+                               selected: Binding(
+                                   get: { store.state.draftCover },
+                                   set: {  if self.store.state.isChooseColorSheetPresented{ store.send(.coverSelected($0)) }}
+                               ),
+                               onSave: { store.send(.saveColorSelection) },
+                               onCancel: { store.send(.cancelColorSelection) }
+                           )
                        }
         }
         .background(

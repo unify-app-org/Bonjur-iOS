@@ -14,6 +14,7 @@ struct StudentCardCoverPicker: View {
     
     @Binding var selected: AppUIEntities.BackgroundType?
     @State private var hasCompletedInitialPositioning = false
+    @State private var isTapSelectionInProgress = false
     
     var body: some View {
         
@@ -55,11 +56,15 @@ struct StudentCardCoverPicker: View {
                                 }
                             )
                             .onTapGesture {
+                                isTapSelectionInProgress = true
                                 selected = cover
-                                
-                                
+
                                 withAnimation(.easeInOut) {
                                     proxy.scrollTo(index, anchor: .center)
+                                }
+
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                                    isTapSelectionInProgress = false
                                 }
                             }
                             
@@ -91,12 +96,13 @@ struct StudentCardCoverPicker: View {
         cover: AppUIEntities.BackgroundType?
     ) {
         guard hasCompletedInitialPositioning else { return }
+        guard !isTapSelectionInProgress else { return }
         
         let itemCenter = geo.frame(in: .global).midX
         let scrollCenter = outer.frame(in: .global).midX
         
-        if abs(itemCenter - scrollCenter) < 40 {
-            DispatchQueue.main.async {
+        if abs(itemCenter - scrollCenter) < 28 {
+            if !compareCovers(selected, cover){
                 selected = cover
             }
         }

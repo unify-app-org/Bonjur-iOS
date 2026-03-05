@@ -1,27 +1,17 @@
-//
-//  StudentCardModel.swift
-//  ProfileImpl
-//
-//  Created by aplle on 3/4/26.
-//
+// /Users/aplle/Desktop/Bonjur-iOS/AppFeature/Profile/ProfileImpl/Presentation/StudentCard/Model/StudentCardModel.swift
 
 import AppFoundation
 import AppUIKit
 import SwiftUI
-// MARK: - StudentCard input
 
 struct StudentCardInputData {
     let userCardModel: UserCardModel
     let onSave: @MainActor (AppUIEntities.BackgroundType?) -> Void
 }
 
-// MARK: - Side effects
-
 enum StudentCardSideEffect: UISideEffect {
     case loading(Bool)
 }
-
-// MARK: - Feature Definition
 
 typealias StudentCardFeature = UIFeatureDefinition<
     StudentCardViewState,
@@ -29,34 +19,46 @@ typealias StudentCardFeature = UIFeatureDefinition<
     StudentCardSideEffect
 >
 
-// MARK: - View State
-
 final class StudentCardViewState: UIFeatureState {
-    // Card data shown in preview
+    enum CoverSheetDismissIntent {
+        case none
+        case cancel
+        case save
+    }
+
     @Published var previewCard: UserCardModel?
-    
-    // Current edited selection in this screen
+
+    // Committed value
     @Published var selectedCover: AppUIEntities.BackgroundType?
-    
-    
-    // Last committed value
+
+    // Mirrored committed value
     @Published var savedCover: AppUIEntities.BackgroundType?
-    
-    // Last committed value
+
+    // Draft value while sheet is open
     @Published var draftCover: AppUIEntities.BackgroundType?
 
-    // UI state
     @Published var isChooseColorSheetPresented: Bool = false
+    @Published var coverSheetDismissIntent: CoverSheetDismissIntent = .none
     @Published var isSaving: Bool = false
-    
-    // palette for picker
+
     static let availableCovers: [AppUIEntities.BackgroundType?] = [
-     nil,.primary, .secondary, .teritary, .color(.orange), .color(.red), .color(.pink)
-        ]
+        nil,
+        .primary,
+        .secondary,
+        .teritary,
+        .color(.orange),
+        .color(.red),
+        .color(.pink)
+    ]
 }
 
-// MARK: - Feature Action
-
 enum StudentCardAction: UIFeatureAction {
-    case saveTapped,closeTapped,editTapped,coverSelected(AppUIEntities.BackgroundType?),cancelColorSelection,saveColorSelection
+    case saveTapped
+    case closeTapped
+    case editTapped
+    case setCoverSheetPresented(Bool)
+    case coverSelected(AppUIEntities.BackgroundType?)
+    case cancelColorSelection
+    case saveColorSelection
+    case coverSheetDismissed
 }

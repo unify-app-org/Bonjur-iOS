@@ -13,8 +13,7 @@ struct StudentCardCoverPicker: View {
     let covers = StudentCardViewState.availableCovers
     
     @Binding var selected: AppUIEntities.BackgroundType?
-    
-    @State private var centerX: CGFloat = 0
+    @State private var hasCompletedInitialPositioning = false
     
     var body: some View {
         
@@ -70,6 +69,14 @@ struct StudentCardCoverPicker: View {
                     .padding(.horizontal, outer.size.width / 2 - 70)
                     
                 }
+                .onAppear {
+                    guard !hasCompletedInitialPositioning else { return }
+                    let initialIndex = indexForCover(selected) ?? 0
+                    DispatchQueue.main.async {
+                        proxy.scrollTo(initialIndex, anchor: .center)
+                        hasCompletedInitialPositioning = true
+                    }
+                }
                
                 
             }
@@ -83,6 +90,7 @@ struct StudentCardCoverPicker: View {
         outer: GeometryProxy,
         cover: AppUIEntities.BackgroundType?
     ) {
+        guard hasCompletedInitialPositioning else { return }
         
         let itemCenter = geo.frame(in: .global).midX
         let scrollCenter = outer.frame(in: .global).midX
@@ -94,9 +102,14 @@ struct StudentCardCoverPicker: View {
         }
         
     }
-    func compareCovers(_ first:AppUIEntities.BackgroundType? ,_ second:AppUIEntities.BackgroundType?)->Bool{
-           first?.bgColor == second?.bgColor
-       }
+    
+    private func indexForCover(_ cover: AppUIEntities.BackgroundType?) -> Int? {
+        covers.firstIndex { compareCovers($0, cover) }
+    }
+    
+    func compareCovers(_ first: AppUIEntities.BackgroundType?, _ second: AppUIEntities.BackgroundType?) -> Bool {
+        first?.bgColor == second?.bgColor
+    }
 }
 struct CoverItemView: View {
     

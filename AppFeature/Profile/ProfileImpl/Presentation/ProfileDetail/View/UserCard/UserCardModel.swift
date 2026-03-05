@@ -57,3 +57,18 @@ extension UserCardModel {
         )
     ]
 }
+extension UserCardModel {
+    func withBackground(_ cover: AppUIEntities.BackgroundType?) -> Self {
+        .init(
+            backgroundCover: cover,
+            nameSurname: nameSurname,
+            speciality: speciality,
+            course: course,
+            community: community,
+            degree: degree,
+            entryYear: entryYear,
+            email: email,
+            imageUrl: imageUrl
+        )
+    }
+}

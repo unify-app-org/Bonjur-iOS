@@ -49,10 +49,10 @@ final class StudentCardViewState: UIFeatureState {
     @Published var isChooseColorSheetPresented: Bool = false
     @Published var isSaving: Bool = false
     
-   // palette for picker
-   static let availableCovers: [AppUIEntities.BackgroundType] = [
-           .primary, .secondary, .teritary, .color(.orange), .color(.red), .color(.pink)
-       ]
+    // palette for picker
+    static let availableCovers: [AppUIEntities.BackgroundType?] = [
+     nil,.primary, .secondary, .teritary, .color(.orange), .color(.red), .color(.pink)
+        ]
 }
 
 // MARK: - Feature Action

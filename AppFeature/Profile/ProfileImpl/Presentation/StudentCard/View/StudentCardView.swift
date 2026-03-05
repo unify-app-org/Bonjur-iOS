@@ -13,7 +13,7 @@ struct StudentCardView: View {
     @ObservedObject var store: StoreOf<StudentCardFeature>
   
     var selectedColor: Color {
-        store.state.selectedCover?.bgColor ?? Color.Palette.primary
+        store.state.selectedCover?.bgColor ?? Color.clear
     }
     var body: some View {
         GeometryReader { proxy in
@@ -32,6 +32,26 @@ struct StudentCardView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding(.horizontal, 16)
             .animation(.easeInOut(duration: 0.25), value: store.state.isChooseColorSheetPresented)
+            .sheet(isPresented: Binding(
+                get: { store.state.isChooseColorSheetPresented },
+                set: { if !$0 { store.send(.cancelColorSelection) } }
+            )) {
+                VStack(spacing: 16) {
+                   
+                    StudentCardCoverPicker(
+                        selected: Binding(
+                            get: { store.state.draftCover },
+                            set: { store.send(.coverSelected($0)) }
+                        )
+                    )
+                    HStack {
+                        Button("Cancel") { store.send(.cancelColorSelection) }
+                        Button("Save") { store.send(.saveColorSelection) }
+                    }
+                }
+                .presentationDetents([.height(260)])
+            }
+
         }
         .background(
             

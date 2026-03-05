@@ -42,13 +42,20 @@ final class StudentCardViewModel: UIFeatureViewModel<StudentCardFeature> {
                    }
         case .editTapped:
             
-            state.isChooseColorSheetPresented.toggle()
-        case .coverSelected(_):
-            print(action)
+            state.draftCover = state.selectedCover
+               state.isChooseColorSheetPresented = true
+
+        case .coverSelected(let cover):
+            state.draftCover = cover
         case .cancelColorSelection:
-            print(action)
+            state.isChooseColorSheetPresented = false
+                state.draftCover = state.selectedCover
         case .saveColorSelection:
-            print(action)
+            state.selectedCover = state.draftCover
+                if let card = state.previewCard {
+                    state.previewCard = card.withBackground(state.selectedCover)
+                }
+                state.isChooseColorSheetPresented = false
         }
     }
     private func saveAndDismiss() {

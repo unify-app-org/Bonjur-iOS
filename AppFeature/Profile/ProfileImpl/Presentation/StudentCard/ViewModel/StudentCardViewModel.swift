@@ -37,7 +37,7 @@ final class StudentCardViewModel: UIFeatureViewModel<StudentCardFeature> {
             }
 
         case .editTapped:
-            state.draftCover = state.selectedCover
+            state.draftCover = state.savedCover
             state.coverSheetDismissIntent = .none
             state.isChooseColorSheetPresented = true
             applyPreview(cover: state.draftCover)
@@ -51,8 +51,9 @@ final class StudentCardViewModel: UIFeatureViewModel<StudentCardFeature> {
 
         case .cancelColorSelection:
             state.coverSheetDismissIntent = .cancel
-            state.draftCover = state.selectedCover
-            applyPreview(cover: state.selectedCover)
+            state.draftCover = state.savedCover
+            state.selectedCover = state.savedCover
+            applyPreview(cover: state.savedCover)
             state.isChooseColorSheetPresented = false
 
         case .saveColorSelection:

@@ -144,6 +144,7 @@ struct CoverItemView: View {
             .overlay {
                 Text("Default")
                     .foregroundStyle(isSelected ? Color.primary : .secondary)
+                    .font(Font.Typography.BodyTextMd.regular)
             }
         }
         

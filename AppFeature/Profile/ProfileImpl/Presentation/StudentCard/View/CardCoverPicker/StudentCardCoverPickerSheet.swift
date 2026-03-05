@@ -1,0 +1,81 @@
+//
+//  StudentCardCoverPickerSheet.swift
+//  ProfileImpl
+//
+//  Created by aplle on 3/5/26.
+//
+
+import SwiftUI
+import AppUIKit
+struct StudentCardCoverPickerSheet: View {
+    @Binding var selected: AppUIEntities.BackgroundType?
+    var onSave:()->()
+    var onCancel:()->()
+    var body: some View {
+        VStack(spacing: 16){
+         
+            Text("Choose cover")
+                .frame(maxWidth: .infinity,alignment: .leading)
+                .font(Font.Typography.TitleMd.extraBold)
+                .padding(.horizontal,25)
+                .padding(.top,25)
+            StudentCardCoverPicker(
+                selected: $selected
+            )
+            HStack {
+                
+                AppButton(
+                    title: "Cancel",
+                    model: .init(type: .tertiary)
+                ) {
+                   onCancel()
+                }
+                AppButton(
+                    title: "Save",
+                    model: .init(contentSize: .fill)
+                ) {
+                    onSave()
+                }
+            }
+            .padding(.horizontal,25)
+            .padding(.bottom, 8)
+        }
+    
+           .presentationDetents([.height(260)])
+           .presentationDragIndicator(.visible)
+           .sheetBackgroundWhiteCompatible()
+       }
+   
+    
+
+}
+
+private extension View {
+    @ViewBuilder
+    func sheetBackgroundWhiteCompatible() -> some View {
+        if #available(iOS 16.4, *) {
+            self.presentationBackground(Color.Palette.white)
+        } else {
+            self.background(Color.Palette.white.ignoresSafeArea())
+        }
+        
+    }
+}
+#Preview {
+    PreviewWrapper()
+}
+
+private struct PreviewWrapper: View {
+    
+    @State var selected: AppUIEntities.BackgroundType? = nil
+    
+    var body: some View {
+        VStack{
+            
+        }
+        .sheet(isPresented: .constant(true)) {
+            StudentCardCoverPickerSheet(selected: $selected,onSave: { },onCancel: {})
+        }
+       
+    }
+}

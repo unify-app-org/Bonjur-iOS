@@ -6,6 +6,7 @@ import AppUIKit
 
 struct StudentCardView: View {
     @ObservedObject var store: StoreOf<StudentCardFeature>
+    @State private var sheetDragOffset: CGFloat = 0
 
     var displayedCover: AppUIEntities.BackgroundType? {
         store.state.isChooseColorSheetPresented ? store.state.draftCover : store.state.selectedCover
@@ -35,35 +36,23 @@ struct StudentCardView: View {
             .padding(.horizontal, 16)
             .animation(.easeInOut(duration: 0.25), value: store.state.isChooseColorSheetPresented)
             .sheet(
-                isPresented: Binding(
-                    get: { store.state.isChooseColorSheetPresented },
-                    set: {
-                        if $0 {
-                            store.send(.setCoverSheetPresented(true))
-                        }
-                    }
-                ),
-                onDismiss: {
-                    store.send(.coverSheetDismissed)
-                }
-            ) {
-                VStack(spacing: 16) {
-                    Text("Choose cover")
-
-                    StudentCardCoverPicker(
-                        selected: Binding(
-                            get: { store.state.draftCover },
-                            set: { store.send(.coverSelected($0)) }
-                        )
-                    )
-
-                    HStack {
-                        Button("Cancel") { store.send(.cancelColorSelection) }
-                        Button("Save") { store.send(.saveColorSelection) }
-                    }
-                }
-                .presentationDetents([.height(260)])
-            }
+                           isPresented: Binding(
+                               get: { store.state.isChooseColorSheetPresented },
+                               set: {
+                                   if $0 {
+                                       store.send(.setCoverSheetPresented(true))
+                                   } }
+                           ),
+                           onDismiss: {
+                               store.send(.coverSheetDismissed)
+                           }
+                       ) {
+                           StudentCardCoverPickerSheet(selected: Binding(
+                               get: { store.state.draftCover },
+                               set: { if store.state.isChooseColorSheetPresented{ store.send(.coverSelected($0)) }}
+                           ),onSave: {store.send(.saveColorSelection) },onCancel: {store.send(.cancelColorSelection) })
+                         
+                       }
         }
         .background(
             LinearGradient(
@@ -76,6 +65,11 @@ struct StudentCardView: View {
             )
             .ignoresSafeArea()
         )
+        .onChange(of: store.state.isChooseColorSheetPresented) { isPresented in
+            if !isPresented {
+                sheetDragOffset = 0
+            }
+        }
     }
 
     @ViewBuilder

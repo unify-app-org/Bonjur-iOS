@@ -23,14 +23,11 @@ final class StudentCardViewModel: UIFeatureViewModel<StudentCardFeature> {
 
         self.state.previewCard = inputData.userCardModel
         self.state.savedCover = inputData.userCardModel.backgroundCover
-        self.state.selectedCover = inputData.userCardModel.backgroundCover
+        self.state.draftCover = inputData.userCardModel.backgroundCover
     }
 
     override func handle(action: StudentCardFeature.Action) {
         switch action {
-        case .saveTapped:
-            break
-
         case .closeTapped:
             Task { @MainActor in
                 router.navigate(to: .dismiss)
@@ -52,7 +49,6 @@ final class StudentCardViewModel: UIFeatureViewModel<StudentCardFeature> {
         case .cancelColorSelection:
             state.coverSheetDismissIntent = .cancel
             state.draftCover = state.savedCover
-            state.selectedCover = state.savedCover
             applyPreview(cover: state.savedCover)
             state.isChooseColorSheetPresented = false
 
@@ -80,9 +76,8 @@ final class StudentCardViewModel: UIFeatureViewModel<StudentCardFeature> {
     }
 
     private func commitDraftCover(resetDismissIntent: Bool = true) {
-        state.selectedCover = state.draftCover
         state.savedCover = state.draftCover
-        applyPreview(cover: state.selectedCover)
+        applyPreview(cover: state.savedCover)
 
         if resetDismissIntent {
             state.coverSheetDismissIntent = .none
@@ -90,7 +85,7 @@ final class StudentCardViewModel: UIFeatureViewModel<StudentCardFeature> {
 
         Task { @MainActor [weak self] in
             guard let self else { return }
-            self.inputData.onSave(self.state.selectedCover)
+            self.inputData.onSave(self.state.savedCover)
         }
     }
 

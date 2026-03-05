@@ -28,9 +28,6 @@ final class StudentCardViewState: UIFeatureState {
 
     @Published var previewCard: UserCardModel?
 
-    // Committed value
-    @Published var selectedCover: AppUIEntities.BackgroundType?
-
     // Mirrored committed value
     @Published var savedCover: AppUIEntities.BackgroundType?
 
@@ -53,7 +50,6 @@ final class StudentCardViewState: UIFeatureState {
 }
 
 enum StudentCardAction: UIFeatureAction {
-    case saveTapped
     case closeTapped
     case editTapped
     case setCoverSheetPresented(Bool)

@@ -6,10 +6,9 @@ import AppUIKit
 
 struct StudentCardView: View {
     @ObservedObject var store: StoreOf<StudentCardFeature>
-    @State private var sheetDragOffset: CGFloat = 0
 
     var displayedCover: AppUIEntities.BackgroundType? {
-        store.state.isChooseColorSheetPresented ? store.state.draftCover : store.state.selectedCover
+        store.state.isChooseColorSheetPresented ? store.state.draftCover : store.state.savedCover
     }
 
     var selectedColor: Color {
@@ -49,7 +48,7 @@ struct StudentCardView: View {
                        ) {
                            StudentCardCoverPickerSheet(selected: Binding(
                                get: { store.state.draftCover },
-                               set: { if store.state.isChooseColorSheetPresented{ store.send(.coverSelected($0)) }}
+                               set: { if self.store.state.isChooseColorSheetPresented{ store.send(.coverSelected($0)) }}
                            ),onSave: {store.send(.saveColorSelection) },onCancel: {store.send(.cancelColorSelection) })
                          
                        }
@@ -65,11 +64,6 @@ struct StudentCardView: View {
             )
             .ignoresSafeArea()
         )
-        .onChange(of: store.state.isChooseColorSheetPresented) { isPresented in
-            if !isPresented {
-                sheetDragOffset = 0
-            }
-        }
     }
 
     @ViewBuilder

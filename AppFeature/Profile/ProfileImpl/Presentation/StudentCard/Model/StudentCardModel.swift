@@ -12,7 +12,7 @@ import SwiftUI
 
 struct StudentCardInputData {
     let userCardModel: UserCardModel
-    let onSave: @MainActor (AppUIEntities.BackgroundType) -> Void
+    let onSave: @MainActor (AppUIEntities.BackgroundType?) -> Void
 }
 
 // MARK: - Side effects
@@ -38,15 +38,19 @@ final class StudentCardViewState: UIFeatureState {
     // Current edited selection in this screen
     @Published var selectedCover: AppUIEntities.BackgroundType?
     
+    
     // Last committed value
     @Published var savedCover: AppUIEntities.BackgroundType?
     
+    // Last committed value
+    @Published var draftCover: AppUIEntities.BackgroundType?
+
     // UI state
     @Published var isChooseColorSheetPresented: Bool = false
     @Published var isSaving: Bool = false
     
    // palette for picker
-    let availableCovers: [AppUIEntities.BackgroundType] = [
+   static let availableCovers: [AppUIEntities.BackgroundType] = [
            .primary, .secondary, .teritary, .color(.orange), .color(.red), .color(.pink)
        ]
 }
@@ -54,5 +58,5 @@ final class StudentCardViewState: UIFeatureState {
 // MARK: - Feature Action
 
 enum StudentCardAction: UIFeatureAction {
-    case saveTapped,closeTapped,editTapped,coverSelected(AppUIEntities.BackgroundType),cancelColorSelection,saveColorSelection
+    case saveTapped,closeTapped,editTapped,coverSelected(AppUIEntities.BackgroundType?),cancelColorSelection,saveColorSelection
 }

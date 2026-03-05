@@ -74,7 +74,7 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
         }
     }
     
-    private func applyUserCardCover(_ backgroundType: AppUIEntities.BackgroundType) {
+    private func applyUserCardCover(_ backgroundType: AppUIEntities.BackgroundType?) {
         guard let currentUIModel = state.uiModel else {
             return
         }

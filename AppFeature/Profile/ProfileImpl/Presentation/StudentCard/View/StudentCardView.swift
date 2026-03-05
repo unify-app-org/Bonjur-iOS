@@ -19,16 +19,15 @@ struct StudentCardView: View {
         GeometryReader { proxy in
             VStack(spacing: 16) {
                 topBarView(safeAreaTop:0)
-
-                if store.state.isChooseColorSheetPresented {
-                    cardView
-                    Spacer()
-                } else {
-                    Spacer()
-                    cardView
-                    Spacer()
+                if !store.state.isChooseColorSheetPresented {
                     Spacer()
                 }
+                cardView
+                Spacer()
+                if !store.state.isChooseColorSheetPresented {
+                Spacer()
+                }
+                
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding(.horizontal, 16)

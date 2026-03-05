@@ -51,7 +51,7 @@ enum ProfileDetailAction: UIFeatureAction {
     case eventsItemTapped(String)
     case hangoutsItemTapped(String)
     case userCardTapped
-    case userCardCoverSaved(AppUIEntities.BackgroundType)
+    case userCardCoverSaved(AppUIEntities.BackgroundType?)
 }
 
 

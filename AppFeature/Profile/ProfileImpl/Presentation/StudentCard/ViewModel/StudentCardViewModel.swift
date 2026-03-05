@@ -37,9 +37,12 @@ final class StudentCardViewModel: UIFeatureViewModel<StudentCardFeature> {
         case .saveTapped:
             print(action)
         case .closeTapped:
-            print(action)
+            Task { @MainActor in
+                        router.navigate(to: .dismiss)
+                   }
         case .editTapped:
-            print(action)
+            
+            state.isChooseColorSheetPresented.toggle()
         case .coverSelected(_):
             print(action)
         case .cancelColorSelection:

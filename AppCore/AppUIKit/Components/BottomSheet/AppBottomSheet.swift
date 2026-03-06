@@ -7,9 +7,9 @@
 import SwiftUI
 
 public extension View {
-    func appBottomSheetCaller<SheetContent: View>(
+    func appSheet<SheetContent: View>(
         isPresented: Binding<Bool>,
-        detents: Set<PresentationDetent>,
+        detents: Set<PresentationDetent> = [.medium, .large],
         dragIndicator: Visibility = .visible,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping () -> SheetContent
@@ -18,7 +18,6 @@ public extension View {
             content()
                 .presentationDetents(detents)
                 .presentationDragIndicator(dragIndicator)
-               
         }
     }
 }

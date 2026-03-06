@@ -7,68 +7,107 @@ import AppUIKit
 struct StudentCardView: View {
     @ObservedObject var store: StoreOf<StudentCardFeature>
 
-    var displayedCover: AppUIEntities.BackgroundType? {
+    private var displayedCover: AppUIEntities.BackgroundType? {
         store.state.isChooseColorSheetPresented ? store.state.draftCover : store.state.savedCover
     }
 
-    var selectedColor: Color {
-        displayedCover?.bgColor ??  Color.Palette.white
+    private var selectedColor: Color {
+        displayedCover?.bgColor ?? Color.Palette.white
+    }
+
+    private var shouldShowCollapsedSpacing: Bool {
+        !store.state.isChooseColorSheetPresented
+    }
+
+    private var coverSheetDetents: Set<PresentationDetent> {
+        [.fraction(0.4)]
+    }
+
+    private var coverSheetBinding: Binding<Bool> {
+        Binding(
+            get: { store.state.isChooseColorSheetPresented },
+            set: {
+                if $0 {
+                    store.send(.setCoverSheetPresented(true))
+                }
+            }
+        )
+    }
+
+    private var draftCoverBinding: Binding<AppUIEntities.BackgroundType?> {
+        Binding(
+            get: { store.state.draftCover },
+            set: {
+                if store.state.isChooseColorSheetPresented {
+                    store.send(.coverSelected($0))
+                }
+            }
+        )
     }
 
     var body: some View {
-        GeometryReader { _ in
-            VStack(spacing: 16) {
-                topBarView(safeAreaTop: 0)
-
-                if !store.state.isChooseColorSheetPresented {
-                    Spacer()
-                }
-
-                cardView
-                Spacer()
-
-                if !store.state.isChooseColorSheetPresented {
-                    Spacer()
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .padding(.horizontal, 16)
-            .animation(.easeInOut(duration: 0.25), value: store.state.isChooseColorSheetPresented)
-            .appBottomSheetCaller(
-                           isPresented: Binding(
-                               get: { store.state.isChooseColorSheetPresented },
-                               set: {
-                                   if $0 {
-                                       store.send(.setCoverSheetPresented(true))
-                                   }
-                               }
-                           ),
-                           detents: [.height(260)],
-                           onDismiss: {
-                               store.send(.coverSheetDismissed)
-                           }
-                       ) {
-                           StudentCardCoverPickerSheet(
-                               selected: Binding(
-                                   get: { store.state.draftCover },
-                                   set: {  if self.store.state.isChooseColorSheetPresented{ store.send(.coverSelected($0)) }}
-                               ),
-                               onSave: { store.send(.saveColorSelection) },
-                               onCancel: { store.send(.cancelColorSelection) }
-                           )
-                       }
+        GeometryReader { geometry in
+            screenContent(safeAreaTop:0)
         }
-        .background(
-            LinearGradient(
-                colors: [
-                    selectedColor.opacity(0.5),
-                    Color.Palette.white
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+        .background(backgroundGradient)
+    }
+
+    private func screenContent(safeAreaTop: CGFloat) -> some View {
+        contentContainer(safeAreaTop: safeAreaTop)
+            .appSheet(
+                isPresented: coverSheetBinding,
+                detents: coverSheetDetents,
+                onDismiss: { store.send(.coverSheetDismissed) }
+            ) {
+                coverPickerSheet
+            }
+    }
+
+    private func contentContainer(safeAreaTop: CGFloat) -> some View {
+        VStack(spacing: 16) {
+            topBarView(safeAreaTop: safeAreaTop)
+            collapsedTopSpacer
+            cardView
+            Spacer()
+            collapsedBottomSpacer
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .padding(.horizontal, 16)
+        .animation(.easeInOut(duration: 0.25), value: store.state.isChooseColorSheetPresented)
+    }
+
+    @ViewBuilder
+    private var collapsedTopSpacer: some View {
+        if shouldShowCollapsedSpacing {
+            Spacer()
+        }
+    }
+
+    @ViewBuilder
+    private var collapsedBottomSpacer: some View {
+        if shouldShowCollapsedSpacing {
+            Spacer()
+        }
+    }
+
+    private var coverPickerSheet: some View {
+        StudentCardCoverPickerSheet(
+            selected: draftCoverBinding,
+            onSave: { store.send(.saveColorSelection) },
+            onCancel: { store.send(.cancelColorSelection) }
         )
+    }
+
+    private var backgroundGradient: some View {
+        LinearGradient(
+            colors: [
+                selectedColor.opacity(0.5),
+                Color.Palette.white
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        .ignoresSafeArea()
     }
 
     @ViewBuilder

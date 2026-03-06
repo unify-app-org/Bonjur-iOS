@@ -47,6 +47,51 @@ final class StudentCardViewState: UIFeatureState {
         .color(.red),
         .color(.pink)
     ]
+
+    var displayedCover: AppUIEntities.BackgroundType? {
+        isChooseColorSheetPresented ? draftCover : savedCover
+    }
+
+    var selectedColor: Color {
+        displayedCover?.bgColor ?? Color.Palette.white
+    }
+
+    var shouldShowCollapsedSpacing: Bool {
+        !isChooseColorSheetPresented
+    }
+
+    var coverSheetDetents: Set<PresentationDetent> {
+        [.fraction(0.4)]
+    }
+
+    func coverSheetBinding(
+        onSetCoverSheetPresented: @escaping (Bool) -> Void
+    ) -> Binding<Bool> {
+        Binding(
+            get: { [weak self] in
+                self?.isChooseColorSheetPresented ?? false
+            },
+            set: { isPresented in
+                if isPresented {
+                    onSetCoverSheetPresented(true)
+                }
+            }
+        )
+    }
+
+    func draftCoverBinding(
+        onCoverSelected: @escaping (AppUIEntities.BackgroundType?) -> Void
+    ) -> Binding<AppUIEntities.BackgroundType?> {
+        Binding(
+            get: { [weak self] in
+                self?.draftCover
+            },
+            set: { [weak self] cover in
+                guard let self, self.isChooseColorSheetPresented else { return }
+                onCoverSelected(cover)
+            }
+        )
+    }
 }
 
 enum StudentCardAction: UIFeatureAction {

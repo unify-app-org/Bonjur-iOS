@@ -7,44 +7,6 @@ import AppUIKit
 struct StudentCardView: View {
     @ObservedObject var store: StoreOf<StudentCardFeature>
 
-    private var displayedCover: AppUIEntities.BackgroundType? {
-        store.state.isChooseColorSheetPresented ? store.state.draftCover : store.state.savedCover
-    }
-
-    private var selectedColor: Color {
-        displayedCover?.bgColor ?? Color.Palette.white
-    }
-
-    private var shouldShowCollapsedSpacing: Bool {
-        !store.state.isChooseColorSheetPresented
-    }
-
-    private var coverSheetDetents: Set<PresentationDetent> {
-        [.fraction(0.4)]
-    }
-
-    private var coverSheetBinding: Binding<Bool> {
-        Binding(
-            get: { store.state.isChooseColorSheetPresented },
-            set: {
-                if $0 {
-                    store.send(.setCoverSheetPresented(true))
-                }
-            }
-        )
-    }
-
-    private var draftCoverBinding: Binding<AppUIEntities.BackgroundType?> {
-        Binding(
-            get: { store.state.draftCover },
-            set: {
-                if store.state.isChooseColorSheetPresented {
-                    store.send(.coverSelected($0))
-                }
-            }
-        )
-    }
-
     var body: some View {
         GeometryReader { geometry in
             screenContent(safeAreaTop:0)
@@ -55,8 +17,10 @@ struct StudentCardView: View {
     private func screenContent(safeAreaTop: CGFloat) -> some View {
         contentContainer(safeAreaTop: safeAreaTop)
             .appSheet(
-                isPresented: coverSheetBinding,
-                detents: coverSheetDetents,
+                isPresented: store.state.coverSheetBinding(
+                    onSetCoverSheetPresented: { store.send(.setCoverSheetPresented($0)) }
+                ),
+                detents: store.state.coverSheetDetents,
                 onDismiss: { store.send(.coverSheetDismissed) }
             ) {
                 coverPickerSheet
@@ -78,21 +42,23 @@ struct StudentCardView: View {
 
     @ViewBuilder
     private var collapsedTopSpacer: some View {
-        if shouldShowCollapsedSpacing {
+        if store.state.shouldShowCollapsedSpacing {
             Spacer()
         }
     }
 
     @ViewBuilder
     private var collapsedBottomSpacer: some View {
-        if shouldShowCollapsedSpacing {
+        if store.state.shouldShowCollapsedSpacing {
             Spacer()
         }
     }
 
     private var coverPickerSheet: some View {
         StudentCardCoverPickerSheet(
-            selected: draftCoverBinding,
+            selected: store.state.draftCoverBinding(
+                onCoverSelected: { store.send(.coverSelected($0)) }
+            ),
             onSave: { store.send(.saveColorSelection) },
             onCancel: { store.send(.cancelColorSelection) }
         )
@@ -101,7 +67,7 @@ struct StudentCardView: View {
     private var backgroundGradient: some View {
         LinearGradient(
             colors: [
-                selectedColor.opacity(0.5),
+                store.state.selectedColor.opacity(0.5),
                 Color.Palette.white
             ],
             startPoint: .top,

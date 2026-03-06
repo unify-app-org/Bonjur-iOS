@@ -45,7 +45,7 @@ extension UserCardModel {
             imageUrl: nil
         ),
         .init(
-            backgroundCover: .secondary,
+            backgroundCover: nil,
             nameSurname: "Huseyn Hasanov",
             speciality: "Oil-gas engineering",
             course: "1st year",

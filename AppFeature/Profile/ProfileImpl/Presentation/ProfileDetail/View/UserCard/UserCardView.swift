@@ -168,7 +168,7 @@ struct UserCardView: View {
             .padding(.horizontal)
         }
         .padding(.bottom)
-        .background(model.backgroundCover?.bgColor)
+        .background(model.backgroundCover?.bgColor ?? Color.Palette.primary)
         .padding(.horizontal, -16)
     }
 }

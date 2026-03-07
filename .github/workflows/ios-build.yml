@@ -12,23 +12,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Clean DerivedData
+      - name: Remove CI DerivedData
         run: rm -rf ./DerivedData
 
-      - name: Cache Swift Packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/Library/Developer/Xcode/DerivedData/SourcePackages
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-
+      - name: Generate project
+        run: make
 
       - name: Resolve Swift Packages
         run: |
           xcodebuild \
           -resolvePackageDependencies \
-          -scheme Bonjur
+          -scheme Unify-Test \
+          -derivedDataPath ./DerivedData
 
       - name: Build
         run: |

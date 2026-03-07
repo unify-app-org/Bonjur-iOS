@@ -13,7 +13,7 @@ public protocol EventsModule {
     func makeEventsList() -> AnyObject
 
     func makeEventsCard(
-        model: EventsModuleModel.CardInputData
+        model: EventsModuleModel.CardInputData,
         onTap: @escaping (() -> Void),
         onButtonTap: @escaping (() -> Void)
     ) -> Any

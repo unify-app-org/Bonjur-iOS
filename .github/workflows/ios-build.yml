@@ -1,0 +1,39 @@
+name: iOS CI
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Clean DerivedData
+        run: rm -rf ./DerivedData
+
+      - name: Cache Swift Packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData/SourcePackages
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Resolve Swift Packages
+        run: |
+          xcodebuild \
+          -resolvePackageDependencies \
+          -scheme Bonjur
+
+      - name: Build
+        run: |
+          xcodebuild \
+          -scheme Unify-Test \
+          -derivedDataPath ./DerivedData \
+          -destination 'platform=iOS Simulator,name=iPhone 16' \
+          clean build

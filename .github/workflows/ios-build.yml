@@ -24,6 +24,7 @@ jobs:
           -resolvePackageDependencies \
           -scheme Unify-Test \
           -derivedDataPath ./DerivedData
+          -onlyUsePackageVersionsFromResolvedFile
 
       - name: Build
         run: |
@@ -31,4 +32,5 @@ jobs:
           -scheme Unify-Test \
           -derivedDataPath ./DerivedData \
           -destination 'platform=iOS Simulator,name=iPhone 17' \
+          COMPILER_INDEX_STORE_ENABLE=NO \
           clean build

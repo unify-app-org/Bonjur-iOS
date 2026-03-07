@@ -1,0 +1,41 @@
+name: iOS CI
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Remove CI DerivedData
+        run: rm -rf ./DerivedData
+
+      - name: Install Tuist dependencies
+        run: tuist install
+
+      - name: Generate project
+        run: tuist generate --no-open --cache-profile none
+
+      - name: Verify workspace exists
+        run: |
+          find . -name "*.xcworkspace" -not -path "*/DerivedData/*"
+
+      - name: Resolve Swift Packages
+        run: |
+          xcodebuild \
+          -resolvePackageDependencies \
+          -scheme Unify-Test \
+          -derivedDataPath ./DerivedData \
+
+      - name: Build
+        run: |
+          xcodebuild \
+          -scheme Unify-Test \
+          -derivedDataPath ./DerivedData \
+          -destination 'platform=iOS Simulator,name=iPhone 17' \
+          clean build

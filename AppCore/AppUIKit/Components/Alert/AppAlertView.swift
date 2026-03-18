@@ -56,54 +56,130 @@ public struct AppAlertView: View {
     }
 
     private var actionsSection: some View {
-        HStack(spacing: 12) {
-            ForEach(alert.actions) { action in
-                actionView(for:action)
-            }
+           HStack(spacing: 12) {
+               ForEach(alert.actions) { action in
+                   AppButton(
+                       title: action.title,
+                       model: buttonModel(for: action.style)
+                   ) {
+                       action.handler(dismiss)
+                   }
+               }
+           }
+       }
+
+       private func buttonModel(for style: AppAlert.Action.Style) -> AppButton.Model {
+           switch style {
+           case .primary:
+               return .init(
+                   type: .primary,
+                   style: .hover,
+                   contentSize: .fill,
+                   size: .large
+               )
+           case .secondary:
+               return .init(
+                   type: .tertiary,
+                   contentSize: .fill,
+                   size: .large
+               )
+           case .destructive:
+               return .init(
+                type: .destructive,
+                contentSize: .fill,
+                size: .large
+            )
+           }
+       }
+
+}
+
+
+
+
+
+private struct AppAlertPreviewContainer: View {
+    let alert: AppAlert
+
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.2)
+                .ignoresSafeArea()
+
+            AppAlertView(
+                alert: alert,
+                dismiss: { }
+            )
         }
     }
+}
 
-    @ViewBuilder
-    private func actionView(for action: AppAlert.Action) -> some View {
-        switch action.style {
-        case .primary:
-            AppButton(
-                title: action.title,
-                model: .init(
-                    type: .primary,
-                    style: .hover,
-                    contentSize: .fill,
-                    size: .large
-                )
-            ) {
-                action.handler(dismiss)
+#Preview("Primary + Secondary") {
+    AppAlertPreviewContainer(
+        alert: .init(
+            config: .init(
+                title: "Join this club?",
+                subtitle: "You will get access to members, events, and club updates after joining."
+            ),
+            actions: {
+                AppAlert.Action(
+                    title: "Cancel",
+                    style: .secondary
+                ) { dismiss in
+                    dismiss()
+                }
+
+                AppAlert.Action(
+                    title: "Join",
+                    style: .primary
+                ) { dismiss in
+                    dismiss()
+                }
             }
+        )
+    )
+}
 
-        case .secondary:
-            AppButton(
-                title: action.title,
-                model: .init(
-                    type: .tertiary,
-                    style: .default,
-                    contentSize: .fill,
-                    size: .large
-                )
-            ) {
-                action.handler(dismiss)
+#Preview("Destructive + Primary") {
+    AppAlertPreviewContainer(
+        alert: .init(
+            config: .init(
+                title: "Are you sure you want to exit this club?",
+                subtitle: "If you leave this club, you will lose access to its events and members. You can join again only if the owner approves."
+            ),
+            actions: {
+                AppAlert.Action(
+                    title: "Exit club",
+                    style: .destructive
+                ) { dismiss in
+                    dismiss()
+                }
+
+                AppAlert.Action(
+                    title: "Cancel",
+                    style: .primary
+                ) { dismiss in
+                    dismiss()
+                }
             }
+        )
+    )
+}
 
-        case .destructive:
-            Button {
-                action.handler(dismiss)
-            } label: {
-                Text(action.title)
-                    .font(Font.Typography.BodyTextMd.medium)
-                    .foregroundStyle(Color.red)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
+#Preview("Title Only") {
+    AppAlertPreviewContainer(
+        alert: .init(
+            config: .init(
+                title: "Network error"
+            ),
+            actions: {
+                AppAlert.Action(
+                    title: "OK",
+                    style: .primary
+                ) { dismiss in
+                    dismiss()
+                }
             }
-            .buttonStyle(.plain)
-        }
-    }
-
+        )
+    )
 }

@@ -57,16 +57,18 @@ public extension AppAlert {
             case destructive
         }
 
-        public let id = UUID()
+        public let id: UUID
         public let title: String
         public let style: Style
         public let handler: Handler
 
         public init(
+            id: UUID = UUID(),
             title: String,
             style: Style,
             handler: @escaping Handler
         ) {
+            self.id = id
             self.title = title
             self.style = style
             self.handler = handler

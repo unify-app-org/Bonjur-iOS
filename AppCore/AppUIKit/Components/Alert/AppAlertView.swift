@@ -8,11 +8,11 @@
 
 import SwiftUI
 
-public struct AppAlertView: View {
+ struct AppAlertView: View {
     private let alert: AppAlert
     private let dismiss: () -> Void
 
-    public init(
+     init(
         alert: AppAlert,
         dismiss: @escaping () -> Void
     ) {
@@ -20,7 +20,7 @@ public struct AppAlertView: View {
         self.dismiss = dismiss
     }
 
-    public var body: some View {
+     var body: some View {
         VStack(spacing: 20) {
             textSection
             actionsSection
@@ -37,7 +37,7 @@ public struct AppAlertView: View {
        
     }
 
-    @ViewBuilder
+    
     private var textSection: some View {
         VStack(alignment:.leading, spacing: 12) {
             Text(alert.config.title)
@@ -92,94 +92,4 @@ public struct AppAlertView: View {
            }
        }
 
-}
-
-
-
-
-
-private struct AppAlertPreviewContainer: View {
-    let alert: AppAlert
-
-    var body: some View {
-        ZStack {
-            Color.black.opacity(0.2)
-                .ignoresSafeArea()
-
-            AppAlertView(
-                alert: alert,
-                dismiss: { }
-            )
-        }
-    }
-}
-
-#Preview("Primary + Secondary") {
-    AppAlertPreviewContainer(
-        alert: .init(
-            config: .init(
-                title: "Join this club?",
-                subtitle: "You will get access to members, events, and club updates after joining."
-            ),
-            actions: {
-                AppAlert.Action(
-                    title: "Cancel",
-                    style: .secondary
-                ) { dismiss in
-                    dismiss()
-                }
-
-                AppAlert.Action(
-                    title: "Join",
-                    style: .primary
-                ) { dismiss in
-                    dismiss()
-                }
-            }
-        )
-    )
-}
-
-#Preview("Destructive + Primary") {
-    AppAlertPreviewContainer(
-        alert: .init(
-            config: .init(
-                title: "Are you sure you want to exit this club?",
-                subtitle: "If you leave this club, you will lose access to its events and members. You can join again only if the owner approves."
-            ),
-            actions: {
-                AppAlert.Action(
-                    title: "Exit club",
-                    style: .destructive
-                ) { dismiss in
-                    dismiss()
-                }
-
-                AppAlert.Action(
-                    title: "Cancel",
-                    style: .primary
-                ) { dismiss in
-                    dismiss()
-                }
-            }
-        )
-    )
-}
-
-#Preview("Title Only") {
-    AppAlertPreviewContainer(
-        alert: .init(
-            config: .init(
-                title: "Network error"
-            ),
-            actions: {
-                AppAlert.Action(
-                    title: "OK",
-                    style: .primary
-                ) { dismiss in
-                    dismiss()
-                }
-            }
-        )
-    )
 }

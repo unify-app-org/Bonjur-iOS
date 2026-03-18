@@ -49,11 +49,11 @@ public extension AppButton {
                     return .Palette.black.opacity(0.05)
                 }
             case .destructive:
-                   if style == .default {
-                       return .clear
-                   } else {
-                       return .Palette.destructiveRed.opacity(0.12)
-                   }
+                if style == .default {
+                    return .clear
+                } else {
+                    return .Palette.destructiveRed.opacity(0.12)
+                }
             }
         }
         

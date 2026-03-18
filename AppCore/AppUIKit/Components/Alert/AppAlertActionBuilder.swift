@@ -8,7 +8,7 @@
 import Foundation
 
 @resultBuilder
-public enum AppAlertActionBuilder {
+ enum AppAlertActionBuilder {
     public static func buildBlock(_ components: AppAlert.Action...) -> [AppAlert.Action] {
         components
     }

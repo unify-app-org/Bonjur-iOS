@@ -54,6 +54,7 @@ public extension AppAlert {
         public enum Style {
             case primary
             case secondary
+            case destructive
         }
 
         public let id = UUID()

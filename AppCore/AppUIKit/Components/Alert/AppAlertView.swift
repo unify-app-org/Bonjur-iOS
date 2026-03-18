@@ -26,7 +26,7 @@ public struct AppAlertView: View {
             actionsSection
         }
         .padding(24)
-    
+        .frame(maxWidth: 360)
         .background(Color.Palette.white)
         .clipShape(RoundedRectangle(cornerRadius: 24))
         .overlay(
@@ -58,31 +58,52 @@ public struct AppAlertView: View {
     private var actionsSection: some View {
         HStack(spacing: 12) {
             ForEach(alert.actions) { action in
-                AppButton(
-                    title: action.title,
-                    model: buttonModel(for: action.style)
-                ) {
-                    action.handler(dismiss)
-                }
+                actionView(for:action)
             }
         }
     }
 
-    private func buttonModel(for style: AppAlert.Action.Style) -> AppButton.Model {
-        switch style {
+    @ViewBuilder
+    private func actionView(for action: AppAlert.Action) -> some View {
+        switch action.style {
         case .primary:
-            return .init(
-                type: .primary,
-                style: .hover,
-                contentSize: .fill,
-                size: .large
-            )
+            AppButton(
+                title: action.title,
+                model: .init(
+                    type: .primary,
+                    style: .hover,
+                    contentSize: .fill,
+                    size: .large
+                )
+            ) {
+                action.handler(dismiss)
+            }
+
         case .secondary:
-            return .init(
-                type: .tertiary,
-                contentSize: .fill,
-                size: .large,
-            )
+            AppButton(
+                title: action.title,
+                model: .init(
+                    type: .tertiary,
+                    style: .default,
+                    contentSize: .fill,
+                    size: .large
+                )
+            ) {
+                action.handler(dismiss)
+            }
+
+        case .destructive:
+            Button {
+                action.handler(dismiss)
+            } label: {
+                Text(action.title)
+                    .font(Font.Typography.BodyTextMd.medium)
+                    .foregroundStyle(Color.red)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+            }
+            .buttonStyle(.plain)
         }
     }
+
 }

@@ -41,6 +41,7 @@ enum AuthDependencyContainer {
         registerModule()
         registerHelpers()
         registerDataSource()
+        registerRepo()
         registerUseCase()
     }
     
@@ -52,6 +53,10 @@ enum AuthDependencyContainer {
     
     private static func registerDataSource() {
         register { AuthDataSourceImpl() as AuthDataSource }
+    }
+    
+    private static func registerRepo() {
+        register { AuthRepoImpl() as AuthRepo }
     }
     
     private static func registerUseCase() {

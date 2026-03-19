@@ -8,7 +8,7 @@
 import UIKit
 
 enum SignInRoute {
-    case signIn
+    case home
 }
 
 protocol SignInRouterProtocol {
@@ -31,7 +31,7 @@ final class SignInRouter: SignInRouterProtocol {
     @MainActor
     func navigate(to route: SignInRoute) {
         switch route {
-        case .signIn:
+        case .home:
             authDelegate.finishAuthentication()
         }
     }

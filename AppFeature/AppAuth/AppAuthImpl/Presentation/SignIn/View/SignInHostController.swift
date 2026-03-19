@@ -7,6 +7,7 @@
 
 import UIKit
 import AppFoundation
+import AppUIKit
 
 // MARK: - Controller
 
@@ -18,9 +19,9 @@ final class SignInHostController: UIFeatureController<
         switch effect {
         case .loading(let isLoading):
             if isLoading {
-                
+                AppLoadingUI.show()
             } else {
-                
+                AppLoadingUI.dismiss()
             }
         }
     }

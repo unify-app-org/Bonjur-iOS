@@ -8,9 +8,12 @@
 
 import SwiftUI
 
+import SwiftUI
+
 private struct AppAlertModifier: ViewModifier {
     @Binding private var isPresented: Bool
     private let alert: AppAlert
+    @State private var sourceID = UUID()
 
     init(
         isPresented: Binding<Bool>,
@@ -22,46 +25,23 @@ private struct AppAlertModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .accessibilityHidden(isPresented)
-            .overlay {
-                if isPresented {
-                    ZStack {
-                        Color.black.opacity(0.35)
-                            .ignoresSafeArea()
-                            .accessibilityHidden(true)
-                            .onTapGesture {
-                                handleBackgroundTap()
-                            }
-
-                        AppAlertView(
-                            alert: alert,
-                            dismiss: dismiss
-                        )
-                        .accessibilityElement(children: .contain)
-                        .accessibilityAddTraits(.isModal)
-                        .transition(.scale(scale: 0.96).combined(with: .opacity))
-                    }
-                    .frame(maxWidth: .infinity,maxHeight: .infinity)
+            .background(
+                AppAlertPresentationBridge(
+                    isPresented: $isPresented,
+                    alert: alert,
+                    sourceID: sourceID
+                )
+                .frame(width: 0, height: 0)
+            )
+            .onDisappear {
+                Task { @MainActor in
+                    AppAlertPresenter.dismiss(sourceID: sourceID)
                 }
             }
-            .animation(.easeInOut(duration: 0.15), value: isPresented)
-    }
-
-
-    private func dismiss() {
-        withAnimation {
-            isPresented = false
-        }
-    }
-
-    private func handleBackgroundTap() {
-        if let onBackgroundTap = alert.config.onBackgroundTap {
-            onBackgroundTap(dismiss)
-        } else {
-            dismiss()
-        }
     }
 }
+
+
 
 public extension View {
     func appAlert(
@@ -105,7 +85,7 @@ public extension View {
 
 #Preview("Primary + Secondary") {
     ZStack{
-        Color.white.ignoresSafeArea()
+       
     }
     .appAlert(isPresented: .constant(true), alert: .init(
         config: .init(
@@ -133,7 +113,7 @@ public extension View {
 
 #Preview("Destructive + Primary") {
     ZStack{
-        Color.white.ignoresSafeArea()
+        
     }
     .appAlert(isPresented: .constant(true), alert:.init(
         config: .init(
@@ -159,22 +139,11 @@ public extension View {
    
 }
 
-#Preview("Title Only") {
+#Preview("Error Alert") {
     ZStack{
-        Color.white.ignoresSafeArea()
+       
     }
-    .appAlert(isPresented: .constant(true), alert: .init(
-        config: .init(
-            title: "Network error"
-        ),
-        actions: {
-            AppAlert.Action(
-                title: "OK",
-                style: .primary
-            ) { dismiss in
-                dismiss()
-            }
-        }
-    ) )
+    .appErrorAlert(alert: .constant(.init(title: "Error", subtitle: "Something went wrong. Please try again.")))
+   
    
 }

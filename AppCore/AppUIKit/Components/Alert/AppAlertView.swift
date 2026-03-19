@@ -8,11 +8,11 @@
 
 import SwiftUI
 
- struct AppAlertView: View {
+struct AppAlertView: View {
     private let alert: AppAlert
     private let dismiss: () -> Void
 
-     init(
+    init(
         alert: AppAlert,
         dismiss: @escaping () -> Void
     ) {
@@ -20,7 +20,7 @@ import SwiftUI
         self.dismiss = dismiss
     }
 
-     var body: some View {
+    var body: some View {
         VStack(spacing: 20) {
             textSection
             actionsSection
@@ -33,11 +33,8 @@ import SwiftUI
             RoundedRectangle(cornerRadius: 24)
                 .stroke(Color.Palette.grayTeritary.opacity(0.4), lineWidth: 0.5)
         )
-        .padding(.horizontal, 24)
-       
     }
 
-    
     private var textSection: some View {
         VStack(alignment:.leading, spacing: 12) {
             Text(alert.config.title)
@@ -56,40 +53,40 @@ import SwiftUI
     }
 
     private var actionsSection: some View {
-           HStack(spacing: 12) {
-               ForEach(alert.actions) { action in
-                   AppButton(
-                       title: action.title,
-                       model: buttonModel(for: action.style)
-                   ) {
-                       action.handler(dismiss)
-                   }
-               }
-           }
-       }
+        HStack(spacing: 12) {
+            ForEach(alert.actions) { action in
+                AppButton(
+                    title: action.title,
+                    model: buttonModel(for: action.style)
+                ) {
+                    action.handler(dismiss)
+                }
+            }
+        }
+    }
 
-       private func buttonModel(for style: AppAlert.Action.Style) -> AppButton.Model {
-           switch style {
-           case .primary:
-               return .init(
-                   type: .primary,
-                   style: .hover,
-                   contentSize: .fill,
-                   size: .large
-               )
-           case .secondary:
-               return .init(
-                   type: .tertiary,
-                   contentSize: .fill,
-                   size: .large
-               )
-           case .destructive:
-               return .init(
+    private func buttonModel(for style: AppAlert.Action.Style) -> AppButton.Model {
+        switch style {
+        case .primary:
+            return .init(
+                type: .primary,
+                style: .hover,
+                contentSize: .fill,
+                size: .large
+            )
+        case .secondary:
+            return .init(
+                type: .tertiary,
+                contentSize: .fill,
+                size: .large
+            )
+        case .destructive:
+            return .init(
                 type: .destructive,
                 contentSize: .fill,
                 size: .large
             )
-           }
-       }
+        }
+    }
 
 }

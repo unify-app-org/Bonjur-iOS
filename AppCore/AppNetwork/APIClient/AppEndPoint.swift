@@ -20,7 +20,7 @@ public protocol AppEndPoint {
 
 public extension AppEndPoint {
     var headers: [String: String]? {
-        return ["Content-Type": "application/json"]
+        return [:]
     }
     
     var requiresAuth: Bool {

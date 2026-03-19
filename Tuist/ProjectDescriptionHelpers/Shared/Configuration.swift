@@ -46,6 +46,7 @@ public extension Dictionary where Element == ProjectDescription.SettingsDictiona
             "CLANG_ENABLE_MODULES": "YES",
             "DEFINES_MODULE": "YES",
             "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon.${ENVIRONMENT}",
+            "MARKETING_VERSION": "\(Project.marketingVersion)"
         ]
     }()
 }

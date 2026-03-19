@@ -75,6 +75,31 @@ public extension View {
             )
         )
     }
+    
+    func appErrorAlert(
+        alert: Binding<AppAlert.Config?>,
+        buttonTitle: String = "Got it"
+    ) -> some View {
+        modifier(
+            AppAlertModifier(
+                isPresented: Binding(
+                    get: { alert.wrappedValue != nil },
+                    set: { if !$0 { alert.wrappedValue = nil } }
+                ),
+                alert: .init(
+                    config: .init(
+                        title: alert.wrappedValue?.title ?? "",
+                        subtitle: alert.wrappedValue?.subtitle
+                    ),
+                    actions: [
+                        .init(title: buttonTitle, style: .primary) { _ in
+                            alert.wrappedValue = nil
+                        }
+                    ]
+                )
+            )
+        )
+    }
 }
 
 

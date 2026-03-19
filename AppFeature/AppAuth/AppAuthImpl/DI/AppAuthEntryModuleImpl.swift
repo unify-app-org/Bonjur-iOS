@@ -18,10 +18,6 @@ public final class AppAuthEntryModuleImpl: AppAuthModule, AuthDelegate {
     
     public init() { }
     
-    public func buildRegister() -> UIViewController {
-        RegisterBuilder().build(inputData: .init())
-    }
-    
     public func buildOnBoarding(
         _ delegate: AppAuthModuleDelegate?
     ) -> UIViewController {

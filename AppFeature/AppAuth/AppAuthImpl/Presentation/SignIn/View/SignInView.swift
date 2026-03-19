@@ -25,6 +25,7 @@ struct SignInView: View {
             ) {
                 store.send(.signIn)
             }
+            .disabled(!store.state.isValid)
         }
         .padding()
         .onAppear {
@@ -33,6 +34,9 @@ struct SignInView: View {
         .onTapGesture {
             UIApplication.shared.endEditing()
         }
+        .appErrorAlert(
+            alert: $store.state.error
+        )
     }
     
     private var txtfieldsView: some View {

@@ -13,7 +13,7 @@ let appTarget: Target = .target(
     destinations: [.iPhone, .iPad],
     product: .app,
     bundleId: "$(BUNDLE_ID)",
-    deploymentTargets: .iOS("16.0"),
+    deploymentTargets: .iOS(Project.deploymentTarget),
     infoPlist: "App/Info.plist",
     sources: ["App/**/*.swift"],
     resources: ["App/Resources/**"],

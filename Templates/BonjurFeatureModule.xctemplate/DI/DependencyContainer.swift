@@ -34,6 +34,7 @@ enum ___PACKAGENAME___DependencyContainer {
         registerModule()
         registerHelpers()
         registerDataSource()
+        registerRepo()
         registerUseCase()
     }
     
@@ -44,6 +45,10 @@ enum ___PACKAGENAME___DependencyContainer {
     }
     
     private static func registerDataSource() {
+
+    }
+    
+    private static func registerRepo() {
 
     }
     

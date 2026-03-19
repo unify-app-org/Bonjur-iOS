@@ -8,17 +8,20 @@
 import Foundation
 import AppStorage
 
-protocol TokenManager {
-    func saveAccessToken(_ token: String)
-    func getAccessToken() -> String?
+public protocol TokenManager {
+    func saveAccessToken(_ token: String) async
+    func getAccessToken() async -> String
     
-    func saveRefreshToken(_ token: String)
-    func getRefreshToken() -> String?
+    func saveRefreshToken(_ token: String) async
+    func getRefreshToken() async -> String
     
-    func clearTokens()
+    func saveUserId(_ token: String) async
+    func getUserId() async -> String
+    
+    func clearTokens() async
 }
 
-final class TokenManagerImpl: TokenManager {
+public final actor TokenManagerImpl: TokenManager {
     
     // MARK: - should change
     private let keychain: KeychainProtocol
@@ -29,27 +32,37 @@ final class TokenManagerImpl: TokenManager {
     
     // MARK: - Access Token
     
-    func saveAccessToken(_ token: String) {
+    public func saveAccessToken(_ token: String) async {
         keychain.saveString(key: .token, value: token)
     }
     
-    func getAccessToken() -> String? {
+    public func getAccessToken() async -> String {
         keychain.getString(key: .token)
     }
     
     // MARK: - Refresh Token
     
-    func saveRefreshToken(_ token: String) {
+    public func saveRefreshToken(_ token: String) async {
         keychain.saveString(key: .refreshToken, value: token)
     }
     
-    func getRefreshToken() -> String? {
+    public func getRefreshToken() async -> String {
         keychain.getString(key: .refreshToken)
+    }
+    
+    // MARK: - User Id
+    
+    public func saveUserId(_ token: String) async {
+        keychain.saveString(key: .userId, value: token)
+    }
+    
+    public func getUserId() async -> String {
+        keychain.getString(key: .userId)
     }
     
     // MARK: - Clear
     
-    func clearTokens() {
+    public func clearTokens() async {
         keychain.delete(.refreshToken, .token)
     }
 }

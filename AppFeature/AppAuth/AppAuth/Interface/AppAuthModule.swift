@@ -8,8 +8,6 @@
 import UIKit
 
 public protocol AppAuthModule {
-    func buildRegister() -> UIViewController
-    
     func buildOnBoarding(
         _ delegate: AppAuthModuleDelegate?
     ) -> UIViewController

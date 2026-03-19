@@ -25,6 +25,7 @@ struct AppAlertOverlayView: View {
                 alert: alert,
                 dismiss: dismiss
             )
+            .padding(.horizontal, 24)
           
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

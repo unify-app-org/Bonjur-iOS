@@ -53,6 +53,7 @@ public extension UIImage {
         public static let bell = UIImage(resource: .bell)
         
         public static let chevronDown02 = UIImage(resource: .chevronDown02)
+        public static let chevronRight = UIImage(systemName: "chevron.right") ?? UIImage()
         
         public static let filter04 = UIImage(resource: .filter04)
         

@@ -10,7 +10,27 @@ import Communities
 import SwiftUI
 
 struct CommunitiesModuleImpl: CommunitiesModule {
-    
+//    func makeMemberSelection(input: Communities.CommunitiesMemberModuleModel.MemberSelectionInput) -> AnyObject {
+//        
+//    }
+//    
+//    func makeMemberBrowse(input: Communities.CommunitiesMemberModuleModel.MemberBrowseInput) -> AnyObject {
+//        
+//    }
+//    
+//    func makeFacultyStudentListView(input: Communities.CommunitiesMemberModuleModel.FacultyStudentListViewInput) -> AnyObject {
+//        
+//    }
+//    
+//    func makeFacultyStudentListSelection(input: Communities.CommunitiesMemberModuleModel.FacultyStudentListSelectInput) -> AnyObject {
+//        
+//    }
+//    
+//    func makeClubMembers(input: Communities.CommunitiesMemberModuleModel.ClubMembersInput) -> AnyObject {
+//        
+//    }
+//    
+//    
     func makeCommunityCard(
         inputData: CommunitiesModuleModel.CardInputData,
         onTap: @escaping () -> Void

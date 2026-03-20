@@ -10,7 +10,6 @@ import SwiftUI
 private struct AppAlertModifier: ViewModifier {
     @Binding private var isPresented: Bool
     private let alert: AppAlert
-    @State private var sourceID = UUID()
 
     init(
         isPresented: Binding<Bool>,
@@ -25,14 +24,13 @@ private struct AppAlertModifier: ViewModifier {
             .background(
                 AppAlertPresentationBridge(
                     isPresented: $isPresented,
-                    alert: alert,
-                    sourceID: sourceID
+                    alert: alert
                 )
                 .frame(width: 0, height: 0)
             )
             .onDisappear {
                 Task { @MainActor in
-                    AppAlertPresenter.dismiss(sourceID: sourceID)
+                    AppAlertPresenter.dismiss()
                 }
             }
     }

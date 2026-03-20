@@ -12,7 +12,6 @@ import UIKit
 struct AppAlertPresentationBridge: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
     let alert: AppAlert
-    let sourceID: UUID
 
     func makeUIViewController(context: Context) -> UIViewController {
         UIViewController()
@@ -21,13 +20,12 @@ struct AppAlertPresentationBridge: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
         if isPresented {
             AppAlertPresenter.present(
-                alert,
-                sourceID: sourceID
+                alert
             ) {
                 isPresented = false
             }
         } else {
-            AppAlertPresenter.dismiss(sourceID: sourceID)
+            AppAlertPresenter.dismiss()
         }
     }
 }

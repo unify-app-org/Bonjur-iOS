@@ -23,7 +23,8 @@ struct SignInBuilder {
             router: router,
             inputData: inputData,
             dependencies: .init(
-                useCase: resolve()
+                useCase: resolve(),
+                userDefaults: resolve()
             )
         )
         

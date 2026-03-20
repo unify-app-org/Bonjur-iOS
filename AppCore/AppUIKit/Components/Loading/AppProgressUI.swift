@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 public final class AppLoadingUI {
 
@@ -97,7 +98,7 @@ private final class AppLoadingViewController: UIViewController {
     }
 
     private func setupIndicator() {
-        activityIndicator.color = .label
+        activityIndicator.color = UIColor(.Palette.border)
         activityIndicator.style = .large
         activityIndicator.startAnimating()
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false

@@ -6,11 +6,13 @@
 //
 
 import AppFoundation
+import AppStorage
 
 final class SignInViewModel: UIFeatureViewModel<SignInFeature> {
     
     struct Dependencies {
         let useCase: AuthUsecases
+        let userDefaults: UserDefaultsProtocol
     }
     
     private let router: SignInRouterProtocol
@@ -51,12 +53,18 @@ final class SignInViewModel: UIFeatureViewModel<SignInFeature> {
         }
         do {
             try await dependencies.useCase.login(email: state.email, password: state.password)
-            await router.navigate(to: .home)
+            await handleSignIn()
         } catch {
             state.error = .init(
                 title: error.localizedDescription,
                 subtitle: error.detail
             )
         }
+    }
+    
+    @MainActor
+    private func handleSignIn() {
+        dependencies.userDefaults.set(true, forKey: .isAuthenticated)
+        router.navigate(to: .home)
     }
 }

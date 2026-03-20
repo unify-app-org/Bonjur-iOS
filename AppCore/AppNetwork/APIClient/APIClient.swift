@@ -10,13 +10,24 @@ import AppUtils
 import AppLocalization
 
 public protocol APIClientProtocol {
+    var activityDelegate: NetworkActivityDelegate? { get set }
+    
     func request<T: Decodable>(_ endpoint: AppEndPoint) async throws(APIError) -> T
     func requestRawData(_ endpoint: AppEndPoint) async throws(APIError) -> Data
+}
+
+public protocol NetworkActivityDelegate: AnyObject {
+    func refreshDidStart()
+    func refreshDidFinish()
+    
+    func refreshFailure()
 }
 
 final class APIClient: APIClientProtocol {
     
     // MARK: - Properties
+    
+    weak var activityDelegate: NetworkActivityDelegate?
     
     private let baseURL: String
     private let session: URLSession
@@ -223,12 +234,17 @@ final class APIClient: APIClientProtocol {
     // MARK: - Token Refresh
     
     private func refreshTokenIfNeeded() async throws {
+        activityDelegate?.refreshDidStart()
+        
+        defer {
+            activityDelegate?.refreshDidFinish()
+        }
+        
         let refreshToken = await tokenManager.getRefreshToken()
         
         let body = RefreshTokenRequest(
             refreshToken: refreshToken
         )
-        
         let refreshEndpoint = RefreshEndpoint.refresh(body)
         
         do {
@@ -245,6 +261,7 @@ final class APIClient: APIClientProtocol {
                 errorBody: nil
             )
             await tokenManager.clearTokens()
+            activityDelegate?.refreshFailure()
             throw error
         }
     }

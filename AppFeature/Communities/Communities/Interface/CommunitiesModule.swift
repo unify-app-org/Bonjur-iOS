@@ -18,11 +18,11 @@ public protocol CommunitiesModule {
 //    func makeMemberSelection(
 //        input: CommunitiesMemberModuleModel.MemberSelectionInput
 //    ) -> AnyObject
-//
-//    func makeMemberBrowse(
-//        input: CommunitiesMemberModuleModel.MemberBrowseInput
-//    ) -> AnyObject
-//
+
+    func makeMemberBrowse(
+        input: CommunitiesMemberModuleModel.MemberBrowseInput
+    ) -> AnyObject
+
 //    func makeFacultyStudentListView(
 //        input: CommunitiesMemberModuleModel.FacultyStudentListViewInput
 //    ) -> AnyObject

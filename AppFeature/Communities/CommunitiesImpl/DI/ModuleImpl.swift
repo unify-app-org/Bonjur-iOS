@@ -14,10 +14,19 @@ struct CommunitiesModuleImpl: CommunitiesModule {
 //        
 //    }
 //    
-//    func makeMemberBrowse(input: Communities.CommunitiesMemberModuleModel.MemberBrowseInput) -> AnyObject {
-//        
-//    }
-//    
+    func makeMemberBrowse(
+        input: CommunitiesMemberModuleModel.MemberBrowseInput
+    ) -> AnyObject {
+        MemberBrowseBuilder(
+            inputData: .init(
+                title: input.title,
+                faculties: input.faculties,
+                onFacultyTapped: input.onFacultyTapped
+            )
+        ).build()
+    }
+
+    
 //    func makeFacultyStudentListView(input: Communities.CommunitiesMemberModuleModel.FacultyStudentListViewInput) -> AnyObject {
 //        
 //    }

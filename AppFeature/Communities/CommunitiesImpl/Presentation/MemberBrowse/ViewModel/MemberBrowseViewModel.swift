@@ -39,9 +39,8 @@ final class MemberBrowseViewModel: UIFeatureViewModel<MemberBrowseFeature> {
     }
     
     private func fetchData() {
-   
-            state.title = inputData.title
-            state.faculties = inputData.faculties
-        
+        state.title = inputData.title
+        state.sectionTitle = inputData.sectionTitle
+        state.faculties = inputData.faculties
     }
 }

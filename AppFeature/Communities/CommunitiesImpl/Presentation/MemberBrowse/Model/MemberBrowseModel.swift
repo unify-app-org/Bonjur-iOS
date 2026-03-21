@@ -7,12 +7,14 @@
 
 import AppFoundation
 import Communities
+import SwiftUI
 
 
 // MARK: - MemberBrowse input
 
 struct MemberBrowseInputData {
     let title: String
+    let sectionTitle: String
     let faculties: [CommunitiesMemberModuleModel.FacultyRowModel]
     let onFacultyTapped: (CommunitiesMemberModuleModel.FacultyRowModel) -> Void
 }
@@ -32,8 +34,9 @@ typealias MemberBrowseFeature = UIFeatureDefinition<
 
 // MARK: - View State
 final class MemberBrowseViewState: UIFeatureState {
-    var title: String = ""
-    var faculties: [CommunitiesMemberModuleModel.FacultyRowModel] = []
+    @Published var title: String = ""
+    @Published var sectionTitle: String = ""
+    @Published var faculties: [CommunitiesMemberModuleModel.FacultyRowModel] = []
 }
 
 

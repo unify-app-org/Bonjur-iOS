@@ -54,12 +54,39 @@ public extension CommunitiesMemberModuleModel {
         public let capacityLimit: Int?
         public let onNext: ([MemberCellModel]) -> Void
         public let onSkip: () -> Void
+
+        public init(
+            title: String,
+            sections: [MemberListSection],
+            capacityLimit: Int? = nil,
+            onNext: @escaping ([MemberCellModel]) -> Void,
+            onSkip: @escaping () -> Void
+        ) {
+            self.title = title
+            self.sections = sections
+            self.capacityLimit = capacityLimit
+            self.onNext = onNext
+            self.onSkip = onSkip
+        }
     }
 
     struct MemberBrowseInput {
         public let title: String
+        public let sectionTitle: String
         public let faculties: [FacultyRowModel]
         public let onFacultyTapped: (FacultyRowModel) -> Void
+
+        public init(
+            title: String,
+            sectionTitle: String = "Faculty",
+            faculties: [FacultyRowModel],
+            onFacultyTapped: @escaping (FacultyRowModel) -> Void
+        ) {
+            self.title = title
+            self.sectionTitle = sectionTitle
+            self.faculties = faculties
+            self.onFacultyTapped = onFacultyTapped
+        }
     }
 
     struct FacultyStudentListViewInput {
@@ -67,6 +94,18 @@ public extension CommunitiesMemberModuleModel {
         public let facultyOptions: [String]
         public let sections: [MemberListSection]
         public let onMemberTapped: (MemberCellModel) -> Void
+
+        public init(
+            title: String,
+            facultyOptions: [String],
+            sections: [MemberListSection],
+            onMemberTapped: @escaping (MemberCellModel) -> Void
+        ) {
+            self.title = title
+            self.facultyOptions = facultyOptions
+            self.sections = sections
+            self.onMemberTapped = onMemberTapped
+        }
     }
 
     struct FacultyStudentListSelectInput {
@@ -76,6 +115,22 @@ public extension CommunitiesMemberModuleModel {
         public let capacityLimit: Int?
         public let onSelectionConfirmed: ([MemberCellModel]) -> Void
         public let onSkip: () -> Void
+
+        public init(
+            title: String,
+            facultyOptions: [String],
+            sections: [MemberListSection],
+            capacityLimit: Int? = nil,
+            onSelectionConfirmed: @escaping ([MemberCellModel]) -> Void,
+            onSkip: @escaping () -> Void
+        ) {
+            self.title = title
+            self.facultyOptions = facultyOptions
+            self.sections = sections
+            self.capacityLimit = capacityLimit
+            self.onSelectionConfirmed = onSelectionConfirmed
+            self.onSkip = onSkip
+        }
     }
 
     struct ClubMembersInput {
@@ -84,5 +139,19 @@ public extension CommunitiesMemberModuleModel {
         public let members: [MemberCellModel]
         public let onOptionsTapped: (MemberCellModel) -> Void
         public let onJoinTapped: (() -> Void)?
+
+        public init(
+            owner: MemberCellModel,
+            president: MemberCellModel? = nil,
+            members: [MemberCellModel],
+            onOptionsTapped: @escaping (MemberCellModel) -> Void,
+            onJoinTapped: (() -> Void)? = nil
+        ) {
+            self.owner = owner
+            self.president = president
+            self.members = members
+            self.onOptionsTapped = onOptionsTapped
+            self.onJoinTapped = onJoinTapped
+        }
     }
 }

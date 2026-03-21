@@ -20,6 +20,7 @@ struct CommunitiesModuleImpl: CommunitiesModule {
         MemberBrowseBuilder(
             inputData: .init(
                 title: input.title,
+                sectionTitle: input.sectionTitle,
                 faculties: input.faculties,
                 onFacultyTapped: input.onFacultyTapped
             )

@@ -50,27 +50,16 @@ struct MemberBrowseView: View {
     }
     @ViewBuilder
     func facultyButton(_ faculty: CommunitiesMemberModuleModel.FacultyRowModel)->some View{
-        Button {
-            store.send(.facultyTapped(faculty))
-        } label: {
-            HStack(spacing: 12) {
-                Text(faculty.label)
-                    .font(Font.Typography.BodyTextSm.bold)
-                    .foregroundStyle(Color.Palette.black)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                Image(uiImage: UIImage.Icons.chevronRight)
-                    .foregroundStyle(Color.Palette.graySecondary)
-            }
-            .padding(20)
-            .background(Color.Palette.white)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.Palette.grayTeritary.opacity(0.3), lineWidth: 0.4)
-            )
-        }
-        .buttonStyle(.plain)
+        FacultyRowView(
+                   data: .init(
+                       faculty: faculty,
+                       accessory: .disclosure
+                   ),
+                   onTap: {
+                       store.send(.facultyTapped(faculty))
+                   }
+               )
+       
     }
 }
 

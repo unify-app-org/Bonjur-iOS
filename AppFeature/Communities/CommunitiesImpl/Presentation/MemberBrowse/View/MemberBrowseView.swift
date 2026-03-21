@@ -19,10 +19,14 @@ struct MemberBrowseView: View {
                 headerView
                 VStack(alignment: .leading, spacing: 16) {
                    facultyTextView
-                    
-                    LazyVStack(spacing: 12) {
-                        ForEach(store.state.faculties, id: \.id) { faculty in
-                            facultyButton(faculty)
+
+                    if store.state.faculties.isEmpty {
+                        emptyStateView
+                    } else {
+                        LazyVStack(spacing: 12) {
+                            ForEach(store.state.faculties, id: \.id) { faculty in
+                                facultyButton(faculty)
+                            }
                         }
                     }
                 }
@@ -48,6 +52,13 @@ struct MemberBrowseView: View {
             .foregroundStyle(Color.Palette.black)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
+    var emptyStateView: some View {
+        Text("No faculties found")
+            .font(Font.Typography.HeadingMd.regular)
+            .foregroundStyle(Color.Palette.blackMedium)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 40)
+    }
     @ViewBuilder
     func facultyButton(_ faculty: CommunitiesMemberModuleModel.FacultyRowModel)->some View{
         FacultyRowView(
@@ -69,6 +80,12 @@ struct MemberBrowseView: View {
     }
 }
 
+#Preview("Empty State") {
+    NavigationStack {
+        MemberBrowseView(store: emptyPreviewViewModel.store)
+    }
+}
+
 private var previewViewModel: MemberBrowseViewModel {
     let state = MemberBrowseViewState()
     state.title = "All member"
@@ -81,6 +98,25 @@ private var previewViewModel: MemberBrowseViewModel {
         .init(id: "5", label: "2003 - Master"),
         .init(id: "6", label: "2003 - Doctoral")
     ]
+
+    return MemberBrowseViewModel(
+        state: state,
+        router: PreviewMemberBrowseRouter(),
+        inputData: .init(
+            title: state.title,
+            sectionTitle: state.sectionTitle,
+            faculties: state.faculties,
+            onFacultyTapped: { _ in }
+        ),
+        dependencies: .init()
+    )
+}
+
+private var emptyPreviewViewModel: MemberBrowseViewModel {
+    let state = MemberBrowseViewState()
+    state.title = "All member"
+    state.sectionTitle = "Faculty"
+    state.faculties = []
 
     return MemberBrowseViewModel(
         state: state,

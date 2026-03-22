@@ -107,7 +107,6 @@ public extension CommunitiesMemberModuleModel {
 
     struct FacultyStudentListSelectInput {
         public let title: String
-        public let facultyOptions: [String]
         public let sections: [MemberListSection]
         public let capacityLimit: Int?
         public let onSelectionConfirmed: ([MemberCellModel]) -> Void
@@ -115,14 +114,12 @@ public extension CommunitiesMemberModuleModel {
 
         public init(
             title: String,
-            facultyOptions: [String],
             sections: [MemberListSection],
             capacityLimit: Int? = nil,
             onSelectionConfirmed: @escaping ([MemberCellModel]) -> Void,
             onSkip: @escaping () -> Void
         ) {
             self.title = title
-            self.facultyOptions = facultyOptions
             self.sections = sections
             self.capacityLimit = capacityLimit
             self.onSelectionConfirmed = onSelectionConfirmed

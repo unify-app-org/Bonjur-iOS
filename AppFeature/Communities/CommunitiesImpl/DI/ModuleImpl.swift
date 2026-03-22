@@ -40,10 +40,20 @@ struct CommunitiesModuleImpl: CommunitiesModule {
         ).build()
     }
 
-//    
-//    func makeFacultyStudentListSelection(input: Communities.CommunitiesMemberModuleModel.FacultyStudentListSelectInput) -> AnyObject {
-//        
-//    }
+    func makeFacultyStudentListSelection(
+        input: CommunitiesMemberModuleModel.FacultyStudentListSelectInput
+    ) -> AnyObject {
+        FacultyStudentSelectListBuilder(
+            inputData: .init(
+                title: input.title,
+                sections: input.sections,
+                capacityLimit: input.capacityLimit,
+                onSelectionConfirmed: input.onSelectionConfirmed,
+                onSkip: input.onSkip
+            )
+        ).build()
+    }
+
 //    
 //    func makeClubMembers(input: Communities.CommunitiesMemberModuleModel.ClubMembersInput) -> AnyObject {
 //        

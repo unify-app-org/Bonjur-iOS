@@ -7,6 +7,7 @@
 
 import UIKit
 import AppFoundation
+import AppUIKit
 
 // MARK: - Controller
 
@@ -18,12 +19,28 @@ final class FacultyStudentSelectListHostController: UIFeatureController<
         switch effect {
         case .loading(let isLoading):
             if isLoading {
-                
             } else {
-                
             }
         case .capacityLimitReached(overflowCount: let overflowCount):
-            break
+            showOverflowAlert(overflowCount: overflowCount)
+        }
+    }
+
+    private func showOverflowAlert(overflowCount: Int) {
+        AppAlertPresenter.present(
+            .init(
+                config: .init(
+                    title: "Capacity limit reached",
+                    subtitle: "Remove \(overflowCount) member\(overflowCount == 1 ? "" : "s") to continue."
+                ),
+                actions: {
+                    AppAlert.Action(title: "Got it", style: .primary) { dismiss in
+                        dismiss()
+                    }
+                }
+            )
+        ) {
+            AppAlertPresenter.dismiss()
         }
     }
 }

@@ -16,18 +16,18 @@ struct FacultyStudentListView: View {
     var body: some View {
         VStack(spacing: 16) {
             headerView
-            facultyChooserView
             SearchView(text: searchTextBinding)
+                .padding(.horizontal, 16)
 
-            MemberListView(
-                sections: store.state.sections,
-                onRowTap: { store.send(.memberTapped($0)) },
-                onAccessoryTap: { store.send(.accessoryTapped($0)) },
-                onSelectGroupTap: { store.send(.groupTapped($0)) }
-            )
-
-            if store.state.isSelectionMode {
-                actionButtonsView
+            if store.state.filteredSections.isEmpty{
+                emptySearchStateView
+            } else {
+                MemberListView(
+                    sections: store.state.filteredSections,
+                    onRowTap: { store.send(.memberTapped($0)) },
+                    onAccessoryTap: { _ in },
+                    onSelectGroupTap: { _ in }
+                )
             }
         }
         .padding(.top, 16)
@@ -35,13 +35,24 @@ struct FacultyStudentListView: View {
         .onAppear {
             store.send(.onAppear)
         }
+        
     }
 
     private var searchTextBinding: Binding<String> {
         Binding(
             get: { store.state.searchText },
-            set: { store.send(.searchChanged($0)) }
+            set: {
+                store.send(.searchChanged($0))
+            }
         )
+    }
+
+    private var emptySearchStateView: some View {
+        Text("No students found")
+            .font(Font.Typography.BodyTextSm.regular)
+            .foregroundStyle(Color.Palette.blackMedium)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .padding(.top, 40)
     }
 
     private var headerView: some View {
@@ -51,92 +62,20 @@ struct FacultyStudentListView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 16)
     }
-
-    private var facultyChooserView: some View {
-        Button {
-            store.send(.facultyChanged(store.state.selectedFaculty))
-        } label: {
-            HStack(spacing: 12) {
-                Text(store.state.selectedFaculty.isEmpty ? "Choose faculty" : store.state.selectedFaculty)
-                    .font(Font.Typography.BodyTextSm.bold)
-                    .foregroundStyle(
-                        store.state.selectedFaculty.isEmpty
-                        ? Color.Palette.grayPrimary
-                        : Color.Palette.black
-                    )
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                Image(uiImage: UIImage.Icons.chevronDown02)
-                    .foregroundStyle(Color.Palette.graySecondary)
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
-            .background(Color.Palette.grayQuaternary)
-            .clipShape(Capsule())
-            .overlay(
-                Capsule()
-                    .stroke(Color.Palette.grayTeritary.opacity(0.3), lineWidth: 0.4)
-            )
-        }
-        .buttonStyle(.plain)
-        .padding(.horizontal, 16)
-    }
-
-    private var actionButtonsView: some View {
-        HStack(spacing: 12) {
-            Button {
-                store.send(.skipTapped)
-            } label: {
-                Text("Skip")
-                    .font(Font.Typography.BodyTextMd.medium)
-                    .foregroundStyle(Color.Palette.black)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .buttonStyle(.plain)
-
-            AppButton(
-                title: "Continue",
-                model: .init(contentSize: .fill)
-            ) {
-                store.send(.continueTapped)
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 8)
-    }
 }
 
-#Preview("Browse Mode") {
+#Preview {
     NavigationStack {
         FacultyStudentListView(store: browsePreviewViewModel.store)
-    }
-}
-
-#Preview("Selection Mode") {
-    NavigationStack {
-        FacultyStudentListView(store: selectionPreviewViewModel.store)
     }
 }
 
 private var browsePreviewViewModel: PreviewFacultyStudentListViewModel {
     let state = FacultyStudentListViewState()
     state.title = "Students - 2002"
-    state.facultyOptions = ["Computer engineering", "Chemistry"]
-    state.selectedFaculty = "Choose faculty"
     state.searchText = ""
-    state.isSelectionMode = false
     state.sections = previewBrowseSections
-    return PreviewFacultyStudentListViewModel(state: state)
-}
-
-private var selectionPreviewViewModel: PreviewFacultyStudentListViewModel {
-    let state = FacultyStudentListViewState()
-    state.title = "Students - 2002"
-    state.facultyOptions = ["Computer engineering", "Chemistry"]
-    state.selectedFaculty = "Choose faculty"
-    state.searchText = ""
-    state.isSelectionMode = true
-    state.sections = previewSelectableSections
+    state.filteredSections = previewBrowseSections
     return PreviewFacultyStudentListViewModel(state: state)
 }
 
@@ -184,32 +123,6 @@ private let previewBrowseSections: [MemberListSectionViewData] = [
         ],
         showsSelectGroup: false,
         isGroupSelected: false
-    )
-]
-
-private let previewSelectableSections: [MemberListSectionViewData] = [
-    .init(
-        id: "select-ce",
-        title: "Computer engineering",
-        memberCountText: "28 student",
-        rows: [
-            .selectable(from: studentPreviewMembers[0], isSelected: true),
-            .selectable(from: studentPreviewMembers[1], isSelected: false),
-            .selectable(from: studentPreviewMembers[2], isSelected: true)
-        ],
-        showsSelectGroup: true,
-        isGroupSelected: false
-    ),
-    .init(
-        id: "select-chem",
-        title: "Chemistry",
-        memberCountText: "20 student",
-        rows: [
-            .selectable(from: studentPreviewMembers[0], isSelected: false),
-            .selectable(from: studentPreviewMembers[2], isSelected: false)
-        ],
-        showsSelectGroup: true,
-        isGroupSelected: true
     )
 ]
 

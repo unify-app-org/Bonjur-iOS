@@ -70,11 +70,11 @@ struct MemberCellView: View {
                 .padding(10)
                 .foregroundStyle(Color.Palette.blackMedium)
         }
-        .frame(width: 44, height: 44)
+        .frame(width: 40, height: 40)
         .background(Color.Palette.grayQuaternary)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 14)
                 .stroke(Color.Palette.grayTeritary.opacity(0.7), lineWidth: 0.4)
         )
     }
@@ -87,8 +87,8 @@ struct MemberCellView: View {
 
         case .disclosure:
             Image(uiImage: UIImage.Icons.chevronRight)
+                .renderingMode(.template)
                 .foregroundStyle(Color.Palette.graySecondary)
-                
 
         case .checkbox(let isSelected):
             Image(uiImage: isSelected ? .Icons.selectedCheckBox :.Icons.notSelectedCheckBox)
@@ -101,6 +101,7 @@ struct MemberCellView: View {
         case .optionsMenu:
             Button(action: { onAccessoryTap?() }) {
                 Image(uiImage: UIImage.Icons.ellipsis02)
+                    .renderingMode(.template)
                     .foregroundStyle(Color.Palette.graySecondary)
             }
             .buttonStyle(.plain)

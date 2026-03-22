@@ -27,9 +27,9 @@ public protocol CommunitiesModule {
         input: CommunitiesMemberModuleModel.FacultyStudentListViewInput
     ) -> AnyObject
 
-//    func makeFacultyStudentListSelection(
-//        input: CommunitiesMemberModuleModel.FacultyStudentListSelectInput
-//    ) -> AnyObject
+    func makeFacultyStudentListSelection(
+        input: CommunitiesMemberModuleModel.FacultyStudentListSelectInput
+    ) -> AnyObject
 
 //    func makeClubMembers(
 //        input: CommunitiesMemberModuleModel.ClubMembersInput

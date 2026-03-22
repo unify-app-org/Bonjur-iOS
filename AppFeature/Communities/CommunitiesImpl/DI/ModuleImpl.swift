@@ -28,9 +28,19 @@ struct CommunitiesModuleImpl: CommunitiesModule {
     }
 
     
-//    func makeFacultyStudentListView(input: Communities.CommunitiesMemberModuleModel.FacultyStudentListViewInput) -> AnyObject {
-//        
-//    }
+    func makeFacultyStudentListView(
+        input: CommunitiesMemberModuleModel.FacultyStudentListViewInput
+    ) -> AnyObject {
+        FacultyStudentListBuilder(
+            inputData: .init(
+                title: input.title,
+                facultyOptions: input.facultyOptions,
+                sections: input.sections,
+                onMemberTapped: input.onMemberTapped
+            )
+        ).build()
+    }
+
 //    
 //    func makeFacultyStudentListSelection(input: Communities.CommunitiesMemberModuleModel.FacultyStudentListSelectInput) -> AnyObject {
 //        

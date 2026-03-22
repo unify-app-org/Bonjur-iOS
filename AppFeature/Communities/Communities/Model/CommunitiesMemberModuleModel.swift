@@ -91,18 +91,15 @@ public extension CommunitiesMemberModuleModel {
 
     struct FacultyStudentListViewInput {
         public let title: String
-        public let facultyOptions: [String]
         public let sections: [MemberListSection]
         public let onMemberTapped: (MemberCellModel) -> Void
 
         public init(
             title: String,
-            facultyOptions: [String],
             sections: [MemberListSection],
             onMemberTapped: @escaping (MemberCellModel) -> Void
         ) {
             self.title = title
-            self.facultyOptions = facultyOptions
             self.sections = sections
             self.onMemberTapped = onMemberTapped
         }

@@ -24,6 +24,7 @@ struct FacultyRowView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 Image(uiImage: UIImage.Icons.chevronRight)
+                    .renderingMode(.template)
                     .foregroundStyle(Color.Palette.graySecondary)
             }
             .padding(20)
@@ -86,7 +87,7 @@ struct FacultyRowView: View {
                 onTap: {}
             )
         }
-        .padding()
+       
     }
 }
 

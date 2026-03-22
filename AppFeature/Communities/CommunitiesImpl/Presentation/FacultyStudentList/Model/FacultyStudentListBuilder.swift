@@ -21,7 +21,7 @@ struct FacultyStudentListBuilder {
         let viewModel = FacultyStudentListViewModel(
             state: .init(),
             router: router,
-            inputData: inputData, selectInputData: nil,
+            inputData: inputData,
             dependencies: .init()
         )
         

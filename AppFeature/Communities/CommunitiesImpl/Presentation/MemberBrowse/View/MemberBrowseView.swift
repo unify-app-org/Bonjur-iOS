@@ -34,7 +34,7 @@ struct MemberBrowseView: View {
             }
             .padding(16)
         }
-        .background(Color.Palette.grayQuaternary.opacity(0.2))
+        .background(Color.Palette.grayQuaternary.opacity(0.3))
       
         .onAppear {
             store.send(.onAppear)

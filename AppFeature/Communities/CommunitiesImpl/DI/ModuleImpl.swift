@@ -34,7 +34,6 @@ struct CommunitiesModuleImpl: CommunitiesModule {
         FacultyStudentListBuilder(
             inputData: .init(
                 title: input.title,
-                facultyOptions: input.facultyOptions,
                 sections: input.sections,
                 onMemberTapped: input.onMemberTapped
             )

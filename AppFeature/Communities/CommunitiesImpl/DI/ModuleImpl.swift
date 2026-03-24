@@ -10,10 +10,21 @@ import Communities
 import SwiftUI
 
 struct CommunitiesModuleImpl: CommunitiesModule {
-//    func makeMemberSelection(input: Communities.CommunitiesMemberModuleModel.MemberSelectionInput) -> AnyObject {
-//        
-//    }
-//    
+    
+    func makeMemberSelection(
+        input: CommunitiesMemberModuleModel.MemberSelectionInput
+    ) -> AnyObject {
+        MemberSelectionBuilder(
+            inputData: .init(
+                title: input.title,
+                sections: input.sections,
+                capacityLimit: input.capacityLimit,
+                onNext: input.onNext,
+                onSkip: input.onSkip
+            )
+        ).build()
+    }
+
     func makeMemberBrowse(
         input: CommunitiesMemberModuleModel.MemberBrowseInput
     ) -> AnyObject {

@@ -15,9 +15,9 @@ public protocol CommunitiesModule {
     
     func makeCommunityDetail(communityId: Int) -> AnyObject
     
-//    func makeMemberSelection(
-//        input: CommunitiesMemberModuleModel.MemberSelectionInput
-//    ) -> AnyObject
+    func makeMemberSelection(
+        input: CommunitiesMemberModuleModel.MemberSelectionInput
+    ) -> AnyObject
 
     func makeMemberBrowse(
         input: CommunitiesMemberModuleModel.MemberBrowseInput

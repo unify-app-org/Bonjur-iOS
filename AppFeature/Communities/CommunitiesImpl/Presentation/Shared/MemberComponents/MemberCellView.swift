@@ -14,15 +14,7 @@ struct MemberCellView: View {
     let onAccessoryTap: (() -> Void)?
 
     var body: some View {
-        Button(action: { onTap?() }) {
-            HStack(spacing: 12) {
-                avatarView
-
-                textStack
-                Spacer()
-
-                accessoryView
-            }
+        rowContent
             .padding(14)
             .background(Color.Palette.white)
             .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -30,9 +22,39 @@ struct MemberCellView: View {
                 RoundedRectangle(cornerRadius: 16)
                     .stroke(Color.Palette.grayTeritary.opacity(0.7), lineWidth: 0.4)
             )
-        }
-        .buttonStyle(.plain)
     }
+
+    @ViewBuilder
+    private var rowContent: some View {
+        switch data.accessory {
+        case .optionsMenu:
+            HStack(spacing: 12) {
+                Button(action: { onTap?();print("Tap") }) {
+                    HStack(spacing: 12) {
+                        avatarView
+                        textStack
+                        Spacer(minLength: 0)
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+
+                optionsButton
+            }
+
+        default:
+            Button(action: { onTap?() }) {
+                HStack(spacing: 12) {
+                    avatarView
+                    textStack
+                    Spacer()
+                    accessoryView
+                }
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
     private var textStack:some View{
         VStack(alignment: .leading, spacing: showsSubtitle ? 4 : 0) {
            
@@ -79,6 +101,15 @@ struct MemberCellView: View {
         )
     }
 
+    private var optionsButton: some View {
+        Button(action: { onAccessoryTap?();print("Tap opt") }) {
+            Image(uiImage: UIImage.Icons.ellipsis02)
+                .renderingMode(.template)
+                .foregroundStyle(Color.Palette.graySecondary)
+        }
+        .buttonStyle(.plain)
+    }
+
     @ViewBuilder
     private var accessoryView: some View {
         switch data.accessory {
@@ -99,12 +130,7 @@ struct MemberCellView: View {
         
 
         case .optionsMenu:
-            Button(action: { onAccessoryTap?() }) {
-                Image(uiImage: UIImage.Icons.ellipsis02)
-                    .renderingMode(.template)
-                    .foregroundStyle(Color.Palette.graySecondary)
-            }
-            .buttonStyle(.plain)
+            optionsButton
         }
     }
 }

@@ -17,6 +17,7 @@ struct CommunitiesModuleImpl: CommunitiesModule {
         MemberSelectionBuilder(
             inputData: .init(
                 title: input.title,
+                sectionTitle: input.sectionTitle,
                 sections: input.sections,
                 capacityLimit: input.capacityLimit,
                 onNext: input.onNext,

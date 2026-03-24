@@ -50,6 +50,7 @@ public enum CommunitiesMemberModuleModel {
 public extension CommunitiesMemberModuleModel {
     struct MemberSelectionInput {
         public let title: String
+        public let sectionTitle: String
         public let sections: [MemberListSection]
         public let capacityLimit: Int?
         public let onNext: ([MemberCellModel]) -> Void
@@ -57,12 +58,14 @@ public extension CommunitiesMemberModuleModel {
 
         public init(
             title: String,
+            sectionTitle: String = "Faculty",
             sections: [MemberListSection],
             capacityLimit: Int? = nil,
             onNext: @escaping ([MemberCellModel]) -> Void,
             onSkip: @escaping () -> Void
         ) {
             self.title = title
+            self.sectionTitle = sectionTitle
             self.sections = sections
             self.capacityLimit = capacityLimit
             self.onNext = onNext

@@ -6,7 +6,6 @@
 //
 
 import AppFoundation
-import AppFoundation
 import Communities
 
 final class MemberSelectionViewModel: UIFeatureViewModel<MemberSelectionFeature> {
@@ -55,6 +54,7 @@ final class MemberSelectionViewModel: UIFeatureViewModel<MemberSelectionFeature>
 
     private func fetchData() {
         state.title = inputData.title
+        state.sectionTitle = inputData.sectionTitle
         sourceSections = inputData.sections.enumerated().map { index, section in
             SourceSection(
                 id: "section-\(index)",

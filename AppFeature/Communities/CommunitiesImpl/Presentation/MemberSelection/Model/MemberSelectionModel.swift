@@ -13,6 +13,7 @@ import SwiftUI
 
 struct MemberSelectionInputData {
     let title: String
+    let sectionTitle: String
     let sections: [CommunitiesMemberModuleModel.MemberListSection]
     let capacityLimit: Int?
     let onNext: ([CommunitiesMemberModuleModel.MemberCellModel]) -> Void
@@ -38,6 +39,7 @@ typealias MemberSelectionFeature = UIFeatureDefinition<
 
 final class MemberSelectionViewState: UIFeatureState {
     @Published var title: String = ""
+    @Published var sectionTitle: String = ""
     @Published var rows: [FacultyRowViewData] = []
     @Published var selectedSectionIDs: Set<String> = []
 }

@@ -13,12 +13,21 @@ struct MemberSelectionView: View {
     @ObservedObject var store: StoreOf<MemberSelectionFeature>
 
     var body: some View {
-        VStack(spacing: 16) {
-            headerView
-
-            facultyScrollView
-        }
-        .padding(.top, 16)
+        
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 24) {
+                    headerView
+                    VStack(alignment: .leading, spacing: 16) {
+                        facultyTextView
+                        if store.state.rows.isEmpty {
+                            emptyStateView
+                        } else {
+                            facultyScrollView
+                        }
+                    }
+                }
+                .padding(16)
+            }
         .background(Color.Palette.grayQuaternary.opacity(0.3))
         .safeAreaInset(edge: .bottom) {
             actionBar
@@ -33,7 +42,7 @@ struct MemberSelectionView: View {
         }
     }
     private var facultyScrollView: some View {
-        ScrollView(showsIndicators: false) {
+    
             LazyVStack(spacing: 12) {
                 ForEach(store.state.rows) { row in
                     FacultyRowView(
@@ -45,16 +54,27 @@ struct MemberSelectionView: View {
                 }
             }
             .padding(.horizontal, 16)
-        }
+        
     }
-    private var headerView: some View {
+    var headerView:some View{
         Text(store.state.title)
             .font(Font.Typography.TitleL.extraBold)
             .foregroundStyle(Color.Palette.black)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 16)
     }
-
+    var facultyTextView:some View{
+        Text(store.state.sectionTitle)
+            .font(Font.Typography.HeadingXl.medium)
+            .foregroundStyle(Color.Palette.black)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+    var emptyStateView: some View {
+        Text("No faculties found")
+            .font(Font.Typography.HeadingMd.regular)
+            .foregroundStyle(Color.Palette.blackMedium)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 40)
+    }
     private var actionBar: some View {
         HStack(spacing: 12) {
             AppButton(
@@ -66,7 +86,7 @@ struct MemberSelectionView: View {
                 )
                 
             ) {
-                store.send(.nextTapped)
+                store.send(.skipTapped)
             }
           
 
@@ -95,6 +115,7 @@ struct MemberSelectionView: View {
 private var defaultPreviewViewModel: PreviewMemberSelectionViewModel {
     let state = MemberSelectionViewState()
     state.title = "Add members"
+    state.sectionTitle = "Faculty"
     state.rows = [
         .init(id: "1", title: "2002 - Bachelor", accessory: .selectable(isSelected: false)),
         .init(id: "2", title: "2002 - Master", accessory: .selectable(isSelected: false)),
@@ -108,6 +129,7 @@ private var defaultPreviewViewModel: PreviewMemberSelectionViewModel {
 private var selectedPreviewViewModel: PreviewMemberSelectionViewModel {
     let state = MemberSelectionViewState()
     state.title = "Add members"
+    state.sectionTitle = "Faculty"
     state.rows = [
         .init(id: "1", title: "2002 - Bachelor", accessory: .selectable(isSelected: false)),
         .init(id: "2", title: "2002 - Master", accessory: .selectable(isSelected: false)),

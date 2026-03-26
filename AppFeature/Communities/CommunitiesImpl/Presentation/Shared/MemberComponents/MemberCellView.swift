@@ -86,7 +86,8 @@ struct MemberCellView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fill)
         } placeholder: {
-            Image(systemName: "person.fill")
+            Image(uiImage: .Icons.userIcon)
+                .renderingMode(.template)
                 .resizable()
                 .scaledToFit()
                 .padding(10)
@@ -118,8 +119,10 @@ struct MemberCellView: View {
 
         case .disclosure:
             Image(uiImage: UIImage.Icons.chevronRight)
-                .renderingMode(.template)
-                .foregroundStyle(Color.Palette.graySecondary)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 24,height: 24)
+               
 
         case .checkbox(let isSelected):
             Image(uiImage: isSelected ? .Icons.selectedCheckBox :.Icons.notSelectedCheckBox)

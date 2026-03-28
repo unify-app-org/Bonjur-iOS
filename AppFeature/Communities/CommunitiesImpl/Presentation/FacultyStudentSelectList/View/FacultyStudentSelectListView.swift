@@ -30,7 +30,8 @@ struct FacultyStudentSelectListView: View {
                         sections: store.state.filteredSections,
                         onRowTap: { store.send(.memberTapped($0)) },
                         onAccessoryTap: { _ in },
-                        onSelectGroupTap: { store.send(.groupTapped($0)) }
+                        onSelectGroupTap: { store.send(.groupTapped($0)) },
+                        showsScrollView: false
                     )
                 }
                 

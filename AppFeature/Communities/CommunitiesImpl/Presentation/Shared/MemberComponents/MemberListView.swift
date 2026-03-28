@@ -15,34 +15,59 @@ struct MemberListView: View {
     let onRowTap: (MemberCellViewData) -> Void
     let onAccessoryTap: (MemberCellViewData) -> Void
     let onSelectGroupTap: (MemberListSectionViewData) -> Void
+    let showsScrollView: Bool
+
+    init(
+        sections: [MemberListSectionViewData],
+        onRowTap: @escaping (MemberCellViewData) -> Void,
+        onAccessoryTap: @escaping (MemberCellViewData) -> Void,
+        onSelectGroupTap: @escaping (MemberListSectionViewData) -> Void,
+        showsScrollView: Bool = true
+    ) {
+        self.sections = sections
+        self.onRowTap = onRowTap
+        self.onAccessoryTap = onAccessoryTap
+        self.onSelectGroupTap = onSelectGroupTap
+        self.showsScrollView = showsScrollView
+    }
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            LazyVStack(spacing: 20) {
-                ForEach(sections) { section in
-                    VStack(alignment: .leading, spacing: 12) {
-                        MemberSectionHeaderView(
-                            title: section.title,
-                            memberCountText: section.memberCountText,
-                            showsSelectGroup: section.showsSelectGroup,
-                            isGroupSelected: section.isGroupSelected,
-                            onSelectGroupTap: { onSelectGroupTap(section) }
-                        )
+        Group {
+            if showsScrollView {
+                ScrollView(showsIndicators: false) {
+                    content
+                }
+            } else {
+                content
+            }
+        }
+    }
 
-                        VStack(spacing: 10) {
-                            ForEach(section.rows) { row in
-                                MemberCellView(
-                                    data: row,
-                                    onTap: { onRowTap(row) },
-                                    onAccessoryTap: { onAccessoryTap(row) }
-                                )
-                            }
+    private var content: some View {
+        LazyVStack(spacing: 20) {
+            ForEach(sections) { section in
+                VStack(alignment: .leading, spacing: 12) {
+                    MemberSectionHeaderView(
+                        title: section.title,
+                        memberCountText: section.memberCountText,
+                        showsSelectGroup: section.showsSelectGroup,
+                        isGroupSelected: section.isGroupSelected,
+                        onSelectGroupTap: { onSelectGroupTap(section) }
+                    )
+
+                    VStack(spacing: 10) {
+                        ForEach(section.rows) { row in
+                            MemberCellView(
+                                data: row,
+                                onTap: { onRowTap(row) },
+                                onAccessoryTap: { onAccessoryTap(row) }
+                            )
                         }
                     }
                 }
             }
-            .padding(16)
         }
+        .padding(16)
     }
 }
 

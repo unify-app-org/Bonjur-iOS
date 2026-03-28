@@ -27,7 +27,8 @@ struct FacultyStudentListView: View {
                         sections: store.state.filteredSections,
                         onRowTap: { store.send(.memberTapped($0)) },
                         onAccessoryTap: { _ in },
-                        onSelectGroupTap: { _ in }
+                        onSelectGroupTap: { _ in },
+                        showsScrollView: false
                     )
                 }
             }

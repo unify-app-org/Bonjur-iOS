@@ -37,7 +37,7 @@ final class ProfileSettingsViewState: UIFeatureState {
 // MARK: - Feature Action
 
 enum ProfileSettingsAction: UIFeatureAction {
-    case viewDidLoad
+    case fetchData
     case didTapBack
     case didTapLanguage
     case didTapHelpCenter

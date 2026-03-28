@@ -32,7 +32,7 @@ struct ProfileSettingsView: View {
         .navigationTitle("Settings")
         .toolbar(.visible)
         .onAppear {
-            store.send(.viewDidLoad)
+            store.send(.fetchData)
         }
         .padding(.top, -10)
     }

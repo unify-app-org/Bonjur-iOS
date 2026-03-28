@@ -31,8 +31,8 @@ final class ProfileSettingsViewModel: UIFeatureViewModel<ProfileSettingsFeature>
     
     override func handle(action: ProfileSettingsFeature.Action) {
         switch action {
-        case .viewDidLoad:
-            setupSections()
+        case .fetchData:
+            fetchData()
         case .didTapBack:
             Task { @MainActor in router.navigate(to: .back) }
         case .didTapLanguage:
@@ -51,7 +51,7 @@ final class ProfileSettingsViewModel: UIFeatureViewModel<ProfileSettingsFeature>
     }
     
     
-    private func setupSections() {
+    private func fetchData() {
         state.sections = [
             .init(
                 title: nil,
@@ -113,10 +113,5 @@ final class ProfileSettingsViewModel: UIFeatureViewModel<ProfileSettingsFeature>
                 ]
             )
         ]
-    }
-
-    
-    private func fetchData() {
-        
     }
 }

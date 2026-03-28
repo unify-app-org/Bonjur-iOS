@@ -23,9 +23,8 @@ extension MemberCellViewData {
     }
 
     static func options(
-        from member: CommunitiesMemberModuleModel.MemberCellModel,
-        roleTitle: String? = nil
+        from member: CommunitiesMemberModuleModel.MemberCellModel
     ) -> Self {
-        .init(member: member, accessory: .optionsMenu, roleTitle: roleTitle)
+        .init(member: member, accessory: .optionsMenu)
     }
 }

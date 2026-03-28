@@ -50,6 +50,7 @@ final class FacultyStudentListViewModel: UIFeatureViewModel<FacultyStudentListFe
             .browse(id: "section-\(index)", section: section)
         }
         state.filteredSections = state.sections
+        updateContentState()
     }
 
     private func applySearch() {
@@ -59,6 +60,7 @@ final class FacultyStudentListViewModel: UIFeatureViewModel<FacultyStudentListFe
 
         guard !query.isEmpty else {
             state.filteredSections = state.sections
+            updateContentState()
             return
         }
 
@@ -81,5 +83,19 @@ final class FacultyStudentListViewModel: UIFeatureViewModel<FacultyStudentListFe
                 )
             )
         }
+        updateContentState()
+    }
+
+    private func updateContentState() {
+        if !state.filteredSections.isEmpty {
+            state.contentState = .list
+            return
+        }
+
+        let hasActiveSearch = !state.searchText
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .isEmpty
+
+        state.contentState = hasActiveSearch ? .noSearchResults : .empty
     }
 }

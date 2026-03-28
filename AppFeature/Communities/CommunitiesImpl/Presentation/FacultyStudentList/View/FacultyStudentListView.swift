@@ -20,9 +20,8 @@ struct FacultyStudentListView: View {
                     .padding(.horizontal, 16)
                     .padding(.top,16)
                 
-                if store.state.filteredSections.isEmpty{
-                    emptySearchStateView
-                } else {
+                switch store.state.contentState {
+                case .list:
                     MemberListView(
                         sections: store.state.filteredSections,
                         onRowTap: { store.send(.memberTapped($0)) },
@@ -30,6 +29,12 @@ struct FacultyStudentListView: View {
                         onSelectGroupTap: { _ in },
                         showsScrollView: false
                     )
+
+                case .empty:
+                    emptyStateView
+
+                case .noSearchResults:
+                    emptySearchResultsView
                 }
             }
         }
@@ -52,7 +57,15 @@ struct FacultyStudentListView: View {
         )
     }
 
-    private var emptySearchStateView: some View {
+    private var emptyStateView: some View {
+        Text("No students available")
+            .font(Font.Typography.BodyTextSm.regular)
+            .foregroundStyle(Color.Palette.blackMedium)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .padding(.top, 40)
+    }
+
+    private var emptySearchResultsView: some View {
         Text("No students found")
             .font(Font.Typography.BodyTextSm.regular)
             .foregroundStyle(Color.Palette.blackMedium)
@@ -75,6 +88,7 @@ private var browsePreviewViewModel: PreviewFacultyStudentListViewModel {
     state.searchText = ""
     state.sections = previewBrowseSections
     state.filteredSections = previewBrowseSections
+    state.contentState = .list
     return PreviewFacultyStudentListViewModel(state: state)
 }
 

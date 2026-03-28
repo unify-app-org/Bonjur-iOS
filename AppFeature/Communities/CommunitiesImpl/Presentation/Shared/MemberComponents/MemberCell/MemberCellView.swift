@@ -29,7 +29,7 @@ struct MemberCellView: View {
         switch data.accessory {
         case .optionsMenu:
             HStack(spacing: 12) {
-                Button(action: { onTap?();print("Tap") }) {
+                Button(action: { onTap?() }) {
                     HStack(spacing: 12) {
                         avatarView
                         textStack
@@ -103,7 +103,7 @@ struct MemberCellView: View {
     }
 
     private var optionsButton: some View {
-        Button(action: { onAccessoryTap?();print("Tap opt") }) {
+        Button(action: { onAccessoryTap?()}) {
             Image(uiImage: UIImage.Icons.ellipsis02)
                 .renderingMode(.template)
                 .foregroundStyle(Color.Palette.graySecondary)
@@ -193,8 +193,7 @@ struct MemberCellView: View {
                         avatarURL:.init(string: "https://i.pinimg.com/736x/d7/60/93/d76093672c8baa3b56665ec29922b6c1.jpg"),
                         subtitle: "Bachelor, Computer engineering, 2017"
                     ),
-                    accessory: .optionsMenu,
-                    roleTitle: "President"
+                    accessory: .optionsMenu
                 ),
                 onTap: {},
                 onAccessoryTap: {}

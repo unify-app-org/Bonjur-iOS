@@ -191,7 +191,7 @@ private let clubMembersPreviewSections: [MemberListSectionViewData] = [
         title: "Owner",
         memberCountText: nil,
         rows: [
-            .init(member: previewMembers[0], accessory: .none, roleTitle: "Owner")
+            .init(member: previewMembers[0], accessory: .none)
         ],
         showsSelectGroup: false,
         isGroupSelected: false
@@ -201,7 +201,7 @@ private let clubMembersPreviewSections: [MemberListSectionViewData] = [
         title: "President",
         memberCountText: nil,
         rows: [
-            .init(member: previewMembers[1], accessory: .optionsMenu, roleTitle: "President")
+            .init(member: previewMembers[1], accessory: .optionsMenu)
         ],
         showsSelectGroup: false,
         isGroupSelected: false

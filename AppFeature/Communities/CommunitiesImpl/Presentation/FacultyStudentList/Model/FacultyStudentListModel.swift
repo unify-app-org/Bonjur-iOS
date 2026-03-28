@@ -30,6 +30,12 @@ typealias FacultyStudentListFeature = UIFeatureDefinition<
     FacultyStudentListSideEffect
 >
 
+enum FacultyStudentListContentState {
+    case list
+    case empty
+    case noSearchResults
+}
+
 // MARK: - View State
 
 final class FacultyStudentListViewState: UIFeatureState {
@@ -37,6 +43,7 @@ final class FacultyStudentListViewState: UIFeatureState {
     @Published var sections: [MemberListSectionViewData] = []
     @Published var filteredSections: [MemberListSectionViewData] = []
     @Published var searchText: String = ""
+    @Published var contentState: FacultyStudentListContentState = .empty
 }
 
 // MARK: - Feature Action

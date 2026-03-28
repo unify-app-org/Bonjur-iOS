@@ -16,7 +16,16 @@ struct FacultyBrowseInputData {
     let title: String
     let sectionTitle: String
     let faculties: [CommunitiesMemberModuleModel.FacultyRowModel]
-    let onFacultyTapped: (CommunitiesMemberModuleModel.FacultyRowModel) -> Void
+    let mode: FacultyBrowseMode
+}
+
+enum FacultyBrowseMode {
+    case preloadedStudentList(
+        onMemberTapped: (CommunitiesMemberModuleModel.MemberCellModel) -> Void
+    )
+    case callback(
+        onFacultyTapped: (CommunitiesMemberModuleModel.FacultyRowModel) -> Void
+    )
 }
 // MARK: - Side effects
 

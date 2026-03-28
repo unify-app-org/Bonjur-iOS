@@ -31,7 +31,7 @@ extension FacultyRowViewData {
     ) {
         self.init(
             id: faculty.id,
-            title: faculty.label,
+            title: faculty.title,
             accessory: accessory
         )
     }

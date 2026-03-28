@@ -37,11 +37,32 @@ public enum CommunitiesMemberModuleModel {
 
     public struct FacultyRowModel: Hashable, Sendable {
         public let id: String
-        public let label: String
+        public let title: String
+        public let studentListTitle: String?
+        public let sections: [MemberListSection]
 
-        public init(id: String, label: String) {
+        public init(
+            id: String,
+            title: String,
+            studentListTitle: String? = nil,
+            sections: [MemberListSection]
+        ) {
             self.id = id
-            self.label = label
+            self.title = title
+            self.studentListTitle = studentListTitle
+            self.sections = sections
+        }
+
+        public init(
+            id: String,
+            title: String
+        ) {
+            self.init(
+                id: id,
+                title: title,
+                studentListTitle: nil,
+                sections: []
+            )
         }
     }
 }
@@ -74,6 +95,25 @@ public extension CommunitiesMemberModuleModel {
     }
 
     struct FacultyBrowseInput {
+        public let title: String
+        public let sectionTitle: String
+        public let faculties: [FacultyRowModel]
+        public let onMemberTapped: (MemberCellModel) -> Void
+
+        public init(
+            title: String,
+            sectionTitle: String = "Faculty",
+            faculties: [FacultyRowModel],
+            onMemberTapped: @escaping (MemberCellModel) -> Void
+        ) {
+            self.title = title
+            self.sectionTitle = sectionTitle
+            self.faculties = faculties
+            self.onMemberTapped = onMemberTapped
+        }
+    }
+
+    struct FacultyBrowseSelectionInput {
         public let title: String
         public let sectionTitle: String
         public let faculties: [FacultyRowModel]

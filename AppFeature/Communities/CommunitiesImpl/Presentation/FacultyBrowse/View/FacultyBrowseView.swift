@@ -85,25 +85,27 @@ private let previewViewModel: FacultyBrowseViewModel = {
     state.title = "All member"
     state.sectionTitle = "Faculty"
     state.faculties = [
-        .init(id: "1", label: "2002 - Bachelor"),
-        .init(id: "2", label: "2002 - Master"),
-        .init(id: "3", label: "2002 - Doctoral"),
-        .init(id: "4", label: "2003 - Bachelor"),
-        .init(id: "5", label: "2003 - Master"),
-        .init(id: "6", label: "2003 - Doctoral")
+        .init(id: "1", title: "2002 - Bachelor", sections: previewFacultySections),
+        .init(id: "2", title: "2002 - Master", sections: previewFacultySections),
+        .init(id: "3", title: "2002 - Doctoral", sections: previewFacultySections),
+        .init(id: "4", title: "2003 - Bachelor", sections: previewFacultySections),
+        .init(id: "5", title: "2003 - Master", sections: previewFacultySections),
+        .init(id: "6", title: "2003 - Doctoral", sections: previewFacultySections)
     ]
     
-    return FacultyBrowseViewModel(
-        state: state,
-        router: PreviewFacultyBrowseRouter(),
-        inputData: .init(
-            title: state.title,
-            sectionTitle: state.sectionTitle,
-            faculties: state.faculties,
-            onFacultyTapped: { _ in }
-        ),
-        dependencies: .init()
-    )
+        return FacultyBrowseViewModel(
+            state: state,
+            router: PreviewFacultyBrowseRouter(),
+            inputData: .init(
+                title: state.title,
+                sectionTitle: state.sectionTitle,
+                faculties: state.faculties,
+                mode: .preloadedStudentList(
+                    onMemberTapped: { _ in }
+                )
+            ),
+            dependencies: .init()
+        )
 }()
 
 private let emptyPreviewViewModel: FacultyBrowseViewModel = {
@@ -112,18 +114,59 @@ private let emptyPreviewViewModel: FacultyBrowseViewModel = {
     state.sectionTitle = "Faculty"
     state.faculties = []
     
-    return FacultyBrowseViewModel(
-        state: state,
-        router: PreviewFacultyBrowseRouter(),
-        inputData: .init(
-            title: state.title,
-            sectionTitle: state.sectionTitle,
-            faculties: state.faculties,
-            onFacultyTapped: { _ in }
-        ),
-        dependencies: .init()
-    )
+        return FacultyBrowseViewModel(
+            state: state,
+            router: PreviewFacultyBrowseRouter(),
+            inputData: .init(
+                title: state.title,
+                sectionTitle: state.sectionTitle,
+                faculties: state.faculties,
+                mode: .preloadedStudentList(
+                    onMemberTapped: { _ in }
+                )
+            ),
+            dependencies: .init()
+        )
 }()
+
+private let previewFacultyMembers: [CommunitiesMemberModuleModel.MemberCellModel] = [
+    .init(
+        id: "member-1",
+        name: "Nihad Asgarli",
+        avatarURL: URL(string: "https://i.pinimg.com/736x/76/f7/d5/76f7d5c6bb02d8d142dd359b534e326e.jpg"),
+        subtitle: "Bachelor, Computer engineering, 2017"
+    ),
+    .init(
+        id: "member-2",
+        name: "Huseyn Hasanov",
+        avatarURL: URL(string: "https://i.pinimg.com/736x/ae/9e/cb/ae9ecb29d446fdf6679ee4bfd28280af.jpg"),
+        subtitle: "Bachelor, Computer engineering, 2017"
+    ),
+    .init(
+        id: "member-3",
+        name: "Durdana Hasanova",
+        avatarURL: URL(string: "https://i.pinimg.com/736x/98/31/0d/98310da7fa99a746b088721b25903d4b.jpg"),
+        subtitle: "Bachelor, Chemistry, 2017"
+    )
+]
+
+private let previewFacultySections: [CommunitiesMemberModuleModel.MemberListSection] = [
+    .init(
+        title: "Computer engineering",
+        memberCount: 28,
+        members: [
+            previewFacultyMembers[0],
+            previewFacultyMembers[1]
+        ]
+    ),
+    .init(
+        title: "Chemistry",
+        memberCount: 20,
+        members: [
+            previewFacultyMembers[2]
+        ]
+    )
+]
 
 private final class PreviewFacultyBrowseRouter: FacultyBrowseRouterProtocol {
     @MainActor

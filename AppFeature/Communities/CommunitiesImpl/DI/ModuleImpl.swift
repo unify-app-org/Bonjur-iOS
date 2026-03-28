@@ -34,7 +34,24 @@ struct CommunitiesModuleImpl: CommunitiesModule {
                 title: input.title,
                 sectionTitle: input.sectionTitle,
                 faculties: input.faculties,
-                onFacultyTapped: input.onFacultyTapped
+                mode: .preloadedStudentList(
+                    onMemberTapped: input.onMemberTapped
+                )
+            )
+        ).build()
+    }
+
+    func makeFacultyBrowse(
+        input: CommunitiesMemberModuleModel.FacultyBrowseSelectionInput
+    ) -> AnyObject {
+        FacultyBrowseBuilder(
+            inputData: .init(
+                title: input.title,
+                sectionTitle: input.sectionTitle,
+                faculties: input.faculties,
+                mode: .callback(
+                    onFacultyTapped: input.onFacultyTapped
+                )
             )
         ).build()
     }

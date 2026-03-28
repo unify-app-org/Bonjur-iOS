@@ -6,6 +6,7 @@
 //
 
 import AppFoundation
+import Communities
 
 final class FacultyBrowseViewModel: UIFeatureViewModel<FacultyBrowseFeature> {
     
@@ -30,13 +31,32 @@ final class FacultyBrowseViewModel: UIFeatureViewModel<FacultyBrowseFeature> {
     
     override func handle(action: FacultyBrowseFeature.Action) {
         switch action {
-            case .onAppear:
-                fetchData()
-
-            case .facultyTapped(let faculty):
-                inputData.onFacultyTapped(faculty)
-            }
+        case .onAppear:
+            fetchData()
+            
+        case .facultyTapped(let faculty):
+            handleFacultyTap(faculty: faculty)
+        }
     }
+    
+    
+    private func handleFacultyTap(faculty: CommunitiesMemberModuleModel.FacultyRowModel){
+        switch inputData.mode {
+        case .preloadedStudentList(let onMemberTapped):
+            let studentListInput = CommunitiesMemberModuleModel.FacultyStudentListViewInput(
+                title: faculty.studentListTitle ?? faculty.title,
+                sections: faculty.sections,
+                onMemberTapped: onMemberTapped
+            )
+            Task {
+                await router.navigate(to: .facultyStudentList(studentListInput))
+            }
+            
+        case .callback(let onFacultyTapped):
+            onFacultyTapped(faculty)
+        }
+    }
+    
     
     private func fetchData() {
         state.title = inputData.title

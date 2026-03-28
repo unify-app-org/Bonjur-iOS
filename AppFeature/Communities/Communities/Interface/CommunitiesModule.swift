@@ -44,13 +44,26 @@ public protocol CommunitiesModule {
 
     /// Builds the view-only faculty browse screen.
     ///
-    /// Use this screen to show rows such as "2002 - Bachelor" and let the caller decide what to
-    /// do when a faculty row is tapped.
+    /// Use this screen to show rows such as "2002 - Bachelor". When a row is tapped, the screen
+    /// pushes the student-list screen for that faculty and forwards tapped members back through the
+    /// provided callback.
     ///
-    /// - Parameter input: Screen configuration and faculty tap callback.
+    /// - Parameter input: Screen configuration, faculty rows with student-list data, and member tap callback.
     /// - Returns: A view controller-like object that can be pushed or presented by the caller.
     func makeFacultyBrowse(
         input: CommunitiesMemberModuleModel.FacultyBrowseInput
+    ) -> AnyObject
+
+    /// Builds the faculty browse screen in callback-only mode.
+    ///
+    /// Use this when the caller only has basic faculty rows at first and wants to decide what to
+    /// do after a faculty is tapped, such as fetching the student list and pushing the next screen
+    /// manually.
+    ///
+    /// - Parameter input: Screen configuration, faculty rows, and faculty tap callback.
+    /// - Returns: A view controller-like object that can be pushed or presented by the caller.
+    func makeFacultyBrowse(
+        input: CommunitiesMemberModuleModel.FacultyBrowseSelectionInput
     ) -> AnyObject
 
     /// Builds the view-only student list screen for a selected faculty or year.

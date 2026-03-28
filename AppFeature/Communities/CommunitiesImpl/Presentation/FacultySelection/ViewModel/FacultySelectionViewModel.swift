@@ -1,5 +1,5 @@
 //
-//  MemberSelectionViewModel.swift
+//  FacultySelectionViewModel.swift
 //  CommunitiesImpl
 //
 //  Created by aplle on 3/23/26.
@@ -8,7 +8,7 @@
 import AppFoundation
 import Communities
 
-final class MemberSelectionViewModel: UIFeatureViewModel<MemberSelectionFeature> {
+final class FacultySelectionViewModel: UIFeatureViewModel<FacultySelectionFeature> {
 
     struct Dependencies {
     }
@@ -19,15 +19,15 @@ final class MemberSelectionViewModel: UIFeatureViewModel<MemberSelectionFeature>
         let members: [CommunitiesMemberModuleModel.MemberCellModel]
     }
 
-    private let router: MemberSelectionRouterProtocol
-    private let inputData: MemberSelectionInputData
+    private let router: FacultySelectionRouterProtocol
+    private let inputData: FacultySelectionInputData
     private let dependencies: Dependencies
     private var sourceSections: [SourceSection] = []
 
     init(
-        state: MemberSelectionFeature.State,
-        router: MemberSelectionRouterProtocol,
-        inputData: MemberSelectionInputData,
+        state: FacultySelectionFeature.State,
+        router: FacultySelectionRouterProtocol,
+        inputData: FacultySelectionInputData,
         dependencies: Dependencies
     ) {
         self.router = router
@@ -36,7 +36,7 @@ final class MemberSelectionViewModel: UIFeatureViewModel<MemberSelectionFeature>
         super.init(initialState: state)
     }
 
-    override func handle(action: MemberSelectionFeature.Action) {
+    override func handle(action: FacultySelectionFeature.Action) {
         switch action {
         case .onAppear:
             fetchData()

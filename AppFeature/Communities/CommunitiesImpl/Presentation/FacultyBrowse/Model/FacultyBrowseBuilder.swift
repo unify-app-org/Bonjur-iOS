@@ -1,5 +1,5 @@
 //
-//  MemberBrowseBuilder.swift
+//  FacultyBrowseBuilder.swift
 //  CommunitiesImpl
 //
 //  Created by aplle on 3/21/26.
@@ -7,28 +7,28 @@
 
 import UIKit
 
-// MARK: - MemberBrowse builder
+// MARK: - FacultyBrowse builder
 
-struct MemberBrowseBuilder {
-    private let inputData: MemberBrowseInputData
+struct FacultyBrowseBuilder {
+    private let inputData: FacultyBrowseInputData
     
-    init(inputData: MemberBrowseInputData) {
+    init(inputData: FacultyBrowseInputData) {
         self.inputData = inputData
     }
     
     func build() -> UIViewController {
-        let router = MemberBrowseRouter()
-        let viewModel = MemberBrowseViewModel(
+        let router = FacultyBrowseRouter()
+        let viewModel = FacultyBrowseViewModel(
             state: .init(),
             router: router,
             inputData: inputData,
             dependencies: .init()
         )
         
-        let controller = MemberBrowseHostController(
+        let controller = FacultyBrowseHostController(
             viewModel: viewModel
         ) { store in
-            MemberBrowseView(store: store)
+            FacultyBrowseView(store: store)
         }
         
         router.view = controller

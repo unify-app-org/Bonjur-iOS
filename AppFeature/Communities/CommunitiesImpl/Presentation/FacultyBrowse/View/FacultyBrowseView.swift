@@ -1,5 +1,5 @@
 //
-//  MemberBrowseView.swift
+//  FacultyBrowseView.swift
 //  CommunitiesImpl
 //
 //  Created by aplle on 3/21/26.
@@ -10,13 +10,12 @@ import AppFoundation
 import AppUIKit
 import Communities
 
-struct MemberBrowseView: View {
-    @ObservedObject var store: StoreOf<MemberBrowseFeature>
+struct FacultyBrowseView: View {
+    @ObservedObject var store: StoreOf<FacultyBrowseFeature>
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 24) {
-                headerView
+           
                 VStack(alignment: .leading, spacing: 16) {
                    facultyTextView
 
@@ -30,12 +29,10 @@ struct MemberBrowseView: View {
                         }
                     }
                 }
-               
-            }
-            .padding(16)
+               .padding(16)
         }
         .background(Color.Palette.grayQuaternary.opacity(0.3))
-      
+        .navigationTitle(store.state.title)
         .onAppear {
             store.send(.onAppear)
         }
@@ -46,12 +43,7 @@ struct MemberBrowseView: View {
             .foregroundStyle(Color.Palette.black)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
-    var headerView:some View{
-        Text(store.state.title)
-            .font(Font.Typography.TitleL.extraBold)
-            .foregroundStyle(Color.Palette.black)
-            .frame(maxWidth: .infinity, alignment: .leading)
-    }
+   
     var emptyStateView: some View {
         Text("No faculties found")
             .font(Font.Typography.HeadingMd.regular)
@@ -76,18 +68,18 @@ struct MemberBrowseView: View {
 
 #Preview {
     NavigationStack {
-        MemberBrowseView(store: previewViewModel.store)
+        FacultyBrowseView(store: previewViewModel.store)
     }
 }
 
 #Preview("Empty State") {
     NavigationStack {
-        MemberBrowseView(store: emptyPreviewViewModel.store)
+        FacultyBrowseView(store: emptyPreviewViewModel.store)
     }
 }
 
-private var previewViewModel: MemberBrowseViewModel {
-    let state = MemberBrowseViewState()
+private var previewViewModel: FacultyBrowseViewModel {
+    let state = FacultyBrowseViewState()
     state.title = "All member"
     state.sectionTitle = "Faculty"
     state.faculties = [
@@ -99,9 +91,9 @@ private var previewViewModel: MemberBrowseViewModel {
         .init(id: "6", label: "2003 - Doctoral")
     ]
 
-    return MemberBrowseViewModel(
+    return FacultyBrowseViewModel(
         state: state,
-        router: PreviewMemberBrowseRouter(),
+        router: PreviewFacultyBrowseRouter(),
         inputData: .init(
             title: state.title,
             sectionTitle: state.sectionTitle,
@@ -112,15 +104,15 @@ private var previewViewModel: MemberBrowseViewModel {
     )
 }
 
-private var emptyPreviewViewModel: MemberBrowseViewModel {
-    let state = MemberBrowseViewState()
+private var emptyPreviewViewModel: FacultyBrowseViewModel {
+    let state = FacultyBrowseViewState()
     state.title = "All member"
     state.sectionTitle = "Faculty"
     state.faculties = []
 
-    return MemberBrowseViewModel(
+    return FacultyBrowseViewModel(
         state: state,
-        router: PreviewMemberBrowseRouter(),
+        router: PreviewFacultyBrowseRouter(),
         inputData: .init(
             title: state.title,
             sectionTitle: state.sectionTitle,
@@ -131,8 +123,8 @@ private var emptyPreviewViewModel: MemberBrowseViewModel {
     )
 }
 
-private final class PreviewMemberBrowseRouter: MemberBrowseRouterProtocol {
+private final class PreviewFacultyBrowseRouter: FacultyBrowseRouterProtocol {
     @MainActor
-    func navigate(to route: MemberBrowseRoute) {
+    func navigate(to route: FacultyBrowseRoute) {
     }
 }

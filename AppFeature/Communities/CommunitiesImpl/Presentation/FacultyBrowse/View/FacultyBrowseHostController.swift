@@ -1,5 +1,5 @@
 //
-//  MemberBrowseHostController.swift
+//  FacultyBrowseHostController.swift
 //  CommunitiesImpl
 //
 //  Created by aplle on 3/21/26.
@@ -10,11 +10,11 @@ import AppFoundation
 
 // MARK: - Controller
 
-final class MemberBrowseHostController: UIFeatureController<
-    MemberBrowseFeature,
-    MemberBrowseView
+final class FacultyBrowseHostController: UIFeatureController<
+    FacultyBrowseFeature,
+    FacultyBrowseView
 > {
-    override func handleEffect(_ effect: MemberBrowseSideEffect) {
+    override func handleEffect(_ effect: FacultyBrowseSideEffect) {
         switch effect {
         case .loading(let isLoading):
             if isLoading {

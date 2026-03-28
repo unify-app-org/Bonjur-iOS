@@ -15,26 +15,30 @@ struct FacultyStudentListView: View {
     
     var body: some View {
         VStack(spacing: 16) {
-            headerView
-            SearchView(text: searchTextBinding)
-                .padding(.horizontal, 16)
-
-            if store.state.filteredSections.isEmpty{
-                emptySearchStateView
-            } else {
-                MemberListView(
-                    sections: store.state.filteredSections,
-                    onRowTap: { store.send(.memberTapped($0)) },
-                    onAccessoryTap: { _ in },
-                    onSelectGroupTap: { _ in }
-                )
+            ScrollView{
+                SearchView(text: searchTextBinding)
+                    .padding(.horizontal, 16)
+                    .padding(.top,16)
+                
+                if store.state.filteredSections.isEmpty{
+                    emptySearchStateView
+                } else {
+                    MemberListView(
+                        sections: store.state.filteredSections,
+                        onRowTap: { store.send(.memberTapped($0)) },
+                        onAccessoryTap: { _ in },
+                        onSelectGroupTap: { _ in }
+                    )
+                }
             }
         }
-        .padding(.top, 16)
+       
         .background(Color.Palette.grayQuaternary.opacity(0.2))
+        .navigationTitle(store.state.title)
         .onAppear {
             store.send(.onAppear)
         }
+        
         
     }
 
@@ -55,13 +59,7 @@ struct FacultyStudentListView: View {
             .padding(.top, 40)
     }
 
-    private var headerView: some View {
-        Text(store.state.title)
-            .font(Font.Typography.TitleL.extraBold)
-            .foregroundStyle(Color.Palette.black)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 16)
-    }
+   
 }
 
 #Preview {

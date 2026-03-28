@@ -48,7 +48,7 @@ public enum CommunitiesMemberModuleModel {
 
 
 public extension CommunitiesMemberModuleModel {
-    struct MemberSelectionInput {
+    struct FacultySelectionInput {
         public let title: String
         public let sectionTitle: String
         public let sections: [MemberListSection]
@@ -73,7 +73,7 @@ public extension CommunitiesMemberModuleModel {
         }
     }
 
-    struct MemberBrowseInput {
+    struct FacultyBrowseInput {
         public let title: String
         public let sectionTitle: String
         public let faculties: [FacultyRowModel]

@@ -1,5 +1,5 @@
 //
-//  MemberSelectionHostController.swift
+//  FacultySelectionHostController.swift
 //  CommunitiesImpl
 //
 //  Created by aplle on 3/23/26.
@@ -10,11 +10,11 @@ import UIKit
 import AppFoundation
 import AppUIKit
 
-final class MemberSelectionHostController: UIFeatureController<
-    MemberSelectionFeature,
-    MemberSelectionView
+final class FacultySelectionHostController: UIFeatureController<
+    FacultySelectionFeature,
+    FacultySelectionView
 > {
-    override func handleEffect(_ effect: MemberSelectionSideEffect) {
+    override func handleEffect(_ effect: FacultySelectionSideEffect) {
         switch effect {
         case .loading:
             break

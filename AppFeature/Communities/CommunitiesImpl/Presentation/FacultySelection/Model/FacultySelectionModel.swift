@@ -1,5 +1,5 @@
 //
-//  MemberSelectionModel.swift
+//  FacultySelectionModel.swift
 //  CommunitiesImpl
 //
 //  Created by aplle on 3/23/26.
@@ -9,9 +9,9 @@ import AppFoundation
 import Communities
 import SwiftUI
 
-// MARK: - MemberSelection input
+// MARK: - FacultySelection input
 
-struct MemberSelectionInputData {
+struct FacultySelectionInputData {
     let title: String
     let sectionTitle: String
     let sections: [CommunitiesMemberModuleModel.MemberListSection]
@@ -22,22 +22,22 @@ struct MemberSelectionInputData {
 
 // MARK: - Side effects
 
-enum MemberSelectionSideEffect: UISideEffect {
+enum FacultySelectionSideEffect: UISideEffect {
     case loading(Bool)
     case capacityLimitReached(overflowCount: Int)
 }
 
 // MARK: - Feature Definition
 
-typealias MemberSelectionFeature = UIFeatureDefinition<
-    MemberSelectionViewState,
-    MemberSelectionAction,
-    MemberSelectionSideEffect
+typealias FacultySelectionFeature = UIFeatureDefinition<
+    FacultySelectionViewState,
+    FacultySelectionAction,
+    FacultySelectionSideEffect
 >
 
 // MARK: - View State
 
-final class MemberSelectionViewState: UIFeatureState {
+final class FacultySelectionViewState: UIFeatureState {
     @Published var title: String = ""
     @Published var sectionTitle: String = ""
     @Published var rows: [FacultyRowViewData] = []
@@ -46,7 +46,7 @@ final class MemberSelectionViewState: UIFeatureState {
 
 // MARK: - Feature Action
 
-enum MemberSelectionAction: UIFeatureAction {
+enum FacultySelectionAction: UIFeatureAction {
     case onAppear
     case rowTapped(FacultyRowViewData)
     case nextTapped

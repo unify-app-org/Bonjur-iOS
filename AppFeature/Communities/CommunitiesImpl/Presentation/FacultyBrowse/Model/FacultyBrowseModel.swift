@@ -1,5 +1,5 @@
 //
-//  MemberBrowseModel.swift
+//  FacultyBrowseModel.swift
 //  CommunitiesImpl
 //
 //  Created by aplle on 3/21/26.
@@ -10,9 +10,9 @@ import Communities
 import SwiftUI
 
 
-// MARK: - MemberBrowse input
+// MARK: - FacultyBrowse input
 
-struct MemberBrowseInputData {
+struct FacultyBrowseInputData {
     let title: String
     let sectionTitle: String
     let faculties: [CommunitiesMemberModuleModel.FacultyRowModel]
@@ -20,20 +20,20 @@ struct MemberBrowseInputData {
 }
 // MARK: - Side effects
 
-enum MemberBrowseSideEffect: UISideEffect {
+enum FacultyBrowseSideEffect: UISideEffect {
     case loading(Bool)
 }
 
 // MARK: - Feature Definition
 
-typealias MemberBrowseFeature = UIFeatureDefinition<
-    MemberBrowseViewState,
-    MemberBrowseAction,
-    MemberBrowseSideEffect
+typealias FacultyBrowseFeature = UIFeatureDefinition<
+    FacultyBrowseViewState,
+    FacultyBrowseAction,
+    FacultyBrowseSideEffect
 >
 
 // MARK: - View State
-final class MemberBrowseViewState: UIFeatureState {
+final class FacultyBrowseViewState: UIFeatureState {
     @Published var title: String = ""
     @Published var sectionTitle: String = ""
     @Published var faculties: [CommunitiesMemberModuleModel.FacultyRowModel] = []
@@ -41,7 +41,7 @@ final class MemberBrowseViewState: UIFeatureState {
 
 
 // MARK: - Feature Action
-enum MemberBrowseAction: UIFeatureAction {
+enum FacultyBrowseAction: UIFeatureAction {
     case onAppear
     case facultyTapped(CommunitiesMemberModuleModel.FacultyRowModel)
 }

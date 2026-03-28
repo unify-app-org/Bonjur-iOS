@@ -1,5 +1,5 @@
 //
-//  MemberSelectionBuilder.swift
+//  FacultySelectionBuilder.swift
 //  CommunitiesImpl
 //
 //  Created by aplle on 3/23/26.
@@ -7,28 +7,28 @@
 
 import UIKit
 
-// MARK: - MemberSelection builder
+// MARK: - FacultySelection builder
 
-struct MemberSelectionBuilder {
-    private let inputData: MemberSelectionInputData
+struct FacultySelectionBuilder {
+    private let inputData: FacultySelectionInputData
     
-    init(inputData: MemberSelectionInputData) {
+    init(inputData: FacultySelectionInputData) {
         self.inputData = inputData
     }
     
     func build() -> UIViewController {
-        let router = MemberSelectionRouter()
-        let viewModel = MemberSelectionViewModel(
+        let router = FacultySelectionRouter()
+        let viewModel = FacultySelectionViewModel(
             state: .init(),
             router: router,
             inputData: inputData,
             dependencies: .init()
         )
         
-        let controller = MemberSelectionHostController(
+        let controller = FacultySelectionHostController(
             viewModel: viewModel
         ) { store in
-            MemberSelectionView(store: store)
+            FacultySelectionView(store: store)
         }
         
         router.view = controller

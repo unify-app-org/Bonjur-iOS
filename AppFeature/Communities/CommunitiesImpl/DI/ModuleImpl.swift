@@ -11,10 +11,10 @@ import SwiftUI
 
 struct CommunitiesModuleImpl: CommunitiesModule {
     
-    func makeMemberSelection(
-        input: CommunitiesMemberModuleModel.MemberSelectionInput
+    func makeFacultySelection(
+        input: CommunitiesMemberModuleModel.FacultySelectionInput
     ) -> AnyObject {
-        MemberSelectionBuilder(
+        FacultySelectionBuilder(
             inputData: .init(
                 title: input.title,
                 sectionTitle: input.sectionTitle,
@@ -26,10 +26,10 @@ struct CommunitiesModuleImpl: CommunitiesModule {
         ).build()
     }
 
-    func makeMemberBrowse(
-        input: CommunitiesMemberModuleModel.MemberBrowseInput
+    func makeFacultyBrowse(
+        input: CommunitiesMemberModuleModel.FacultyBrowseInput
     ) -> AnyObject {
-        MemberBrowseBuilder(
+        FacultyBrowseBuilder(
             inputData: .init(
                 title: input.title,
                 sectionTitle: input.sectionTitle,

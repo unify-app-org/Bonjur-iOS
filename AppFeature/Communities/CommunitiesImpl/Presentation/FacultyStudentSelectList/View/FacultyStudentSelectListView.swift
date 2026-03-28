@@ -13,30 +13,36 @@ struct FacultyStudentSelectListView: View {
     @ObservedObject var store: StoreOf<FacultyStudentSelectListFeature>
 
     var body: some View {
-        VStack(spacing: 16) {
-            headerView
-
-            SearchView(text: searchTextBinding)
-                .padding(.horizontal, 16)
-
-            selectAllView
-                .padding(.horizontal, 16)
-
-            if store.state.filteredSections.isEmpty, !store.state.searchText.isEmpty {
-                emptySearchStateView
-            } else {
-                MemberListView(
-                    sections: store.state.filteredSections,
-                    onRowTap: { store.send(.memberTapped($0)) },
-                    onAccessoryTap: { _ in },
-                    onSelectGroupTap: { store.send(.groupTapped($0)) }
-                )
+        ScrollView{
+            VStack(spacing: 16) {
+                
+                
+                SearchView(text: searchTextBinding)
+                    .padding([.horizontal,.top], 16)
+                
+                selectAllView
+                    .padding(.horizontal, 16)
+                
+                if store.state.filteredSections.isEmpty, !store.state.searchText.isEmpty {
+                    emptySearchStateView
+                } else {
+                    MemberListView(
+                        sections: store.state.filteredSections,
+                        onRowTap: { store.send(.memberTapped($0)) },
+                        onAccessoryTap: { _ in },
+                        onSelectGroupTap: { store.send(.groupTapped($0)) }
+                    )
+                }
+                
+                
+             
             }
-
+        }
+        .safeAreaInset(edge: .bottom) {
             continueButton
         }
-        .padding(.top, 16)
         .background(Color.Palette.grayQuaternary.opacity(0.2))
+        .navigationTitle(store.state.title)
         .onAppear {
             store.send(.onAppear)
         }
@@ -49,14 +55,7 @@ struct FacultyStudentSelectListView: View {
         )
     }
 
-    private var headerView: some View {
-        Text(store.state.title)
-            .font(Font.Typography.TitleL.extraBold)
-            .foregroundStyle(Color.Palette.black)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 16)
-    }
-
+   
     private var selectAllView: some View {
         Button {
             store.send(.selectAllTapped)
@@ -75,7 +74,7 @@ struct FacultyStudentSelectListView: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
-            .background(Color.Palette.white)
+            .background(Color.Palette.grayQuaternary)
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
@@ -100,8 +99,12 @@ struct FacultyStudentSelectListView: View {
         ) {
             store.send(.continueTapped)
         }
+       
         .padding(.horizontal, 16)
-        .padding(.bottom, 8)
+        .padding(.top, 8)
+      
+        .background(Color.Palette.grayQuaternary.opacity(0.3))
+        .background(Color.Palette.white)
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  MemberBrowseViewModel.swift
+//  FacultyBrowseViewModel.swift
 //  CommunitiesImpl
 //
 //  Created by aplle on 3/21/26.
@@ -7,20 +7,20 @@
 
 import AppFoundation
 
-final class MemberBrowseViewModel: UIFeatureViewModel<MemberBrowseFeature> {
+final class FacultyBrowseViewModel: UIFeatureViewModel<FacultyBrowseFeature> {
     
     struct Dependencies {
     }
     
-    private let router: MemberBrowseRouterProtocol
-    private let inputData: MemberBrowseInputData
-    private let dependencies: MemberBrowseViewModel.Dependencies
+    private let router: FacultyBrowseRouterProtocol
+    private let inputData: FacultyBrowseInputData
+    private let dependencies: FacultyBrowseViewModel.Dependencies
     
     init(
-        state: MemberBrowseFeature.State,
-        router: MemberBrowseRouterProtocol,
-        inputData: MemberBrowseInputData,
-        dependencies: MemberBrowseViewModel.Dependencies
+        state: FacultyBrowseFeature.State,
+        router: FacultyBrowseRouterProtocol,
+        inputData: FacultyBrowseInputData,
+        dependencies: FacultyBrowseViewModel.Dependencies
     ) {
         self.router = router
         self.inputData = inputData
@@ -28,7 +28,7 @@ final class MemberBrowseViewModel: UIFeatureViewModel<MemberBrowseFeature> {
         super.init(initialState: state)
     }
     
-    override func handle(action: MemberBrowseFeature.Action) {
+    override func handle(action: FacultyBrowseFeature.Action) {
         switch action {
             case .onAppear:
                 fetchData()

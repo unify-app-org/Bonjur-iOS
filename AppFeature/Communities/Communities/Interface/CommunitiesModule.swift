@@ -38,8 +38,8 @@ public protocol CommunitiesModule {
     ///
     /// - Parameter input: Screen configuration, source sections, and completion callbacks.
     /// - Returns: A view controller-like object that can be pushed or presented by the caller.
-    func makeMemberSelection(
-        input: CommunitiesMemberModuleModel.MemberSelectionInput
+    func makeFacultySelection(
+        input: CommunitiesMemberModuleModel.FacultySelectionInput
     ) -> AnyObject
 
     /// Builds the view-only faculty browse screen.
@@ -49,8 +49,8 @@ public protocol CommunitiesModule {
     ///
     /// - Parameter input: Screen configuration and faculty tap callback.
     /// - Returns: A view controller-like object that can be pushed or presented by the caller.
-    func makeMemberBrowse(
-        input: CommunitiesMemberModuleModel.MemberBrowseInput
+    func makeFacultyBrowse(
+        input: CommunitiesMemberModuleModel.FacultyBrowseInput
     ) -> AnyObject
 
     /// Builds the view-only student list screen for a selected faculty or year.

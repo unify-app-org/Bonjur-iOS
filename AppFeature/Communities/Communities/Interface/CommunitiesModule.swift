@@ -31,8 +31,8 @@ public protocol CommunitiesModule {
         input: CommunitiesMemberModuleModel.FacultyStudentListSelectInput
     ) -> AnyObject
 
-//    func makeClubMembers(
-//        input: CommunitiesMemberModuleModel.ClubMembersInput
-//    ) -> AnyObject
+    func makeClubMembers(
+        input: CommunitiesMemberModuleModel.ClubMembersInput
+    ) -> Any
 
 }

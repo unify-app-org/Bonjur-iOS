@@ -135,20 +135,20 @@ public extension CommunitiesMemberModuleModel {
         public let president: MemberCellModel?
         public let members: [MemberCellModel]
         public let onOptionsTapped: (MemberCellModel) -> Void
-        public let onJoinTapped: (() -> Void)?
+        public let onMemberTapped: (MemberCellModel) -> Void
 
         public init(
             owner: MemberCellModel,
             president: MemberCellModel? = nil,
             members: [MemberCellModel],
             onOptionsTapped: @escaping (MemberCellModel) -> Void,
-            onJoinTapped: (() -> Void)? = nil
+            onMemberTapped:@escaping (MemberCellModel) -> Void
         ) {
             self.owner = owner
             self.president = president
             self.members = members
             self.onOptionsTapped = onOptionsTapped
-            self.onJoinTapped = onJoinTapped
+            self.onMemberTapped = onMemberTapped
         }
     }
 }

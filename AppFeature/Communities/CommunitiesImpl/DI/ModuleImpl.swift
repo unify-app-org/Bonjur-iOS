@@ -66,12 +66,24 @@ struct CommunitiesModuleImpl: CommunitiesModule {
         ).build()
     }
 
-//    
-//    func makeClubMembers(input: Communities.CommunitiesMemberModuleModel.ClubMembersInput) -> AnyObject {
-//        
-//    }
-//    
-//    
+    func makeClubMembers(
+        input: CommunitiesMemberModuleModel.ClubMembersInput
+    ) -> Any {
+        AnyView(
+            MemberListView(
+                sections: .clubMembers(from: input),
+                onRowTap: { row in
+                    input.onMemberTapped(row.member)
+                },
+                onAccessoryTap: { row in
+                    input.onOptionsTapped(row.member)
+                },
+                onSelectGroupTap: { _ in }
+            )
+        )
+    }
+    
+    
     func makeCommunityCard(
         inputData: CommunitiesModuleModel.CardInputData,
         onTap: @escaping () -> Void

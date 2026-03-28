@@ -12,17 +12,17 @@ import AppUIKit
 struct FacultyRowView: View {
     let data: FacultyRowViewData
     let onTap: (() -> Void)?
-
+    
     var body: some View {
         Button(action: { onTap?() }) {
             HStack(spacing: 12) {
                 leadingAccessoryView
-
+                
                 Text(data.title)
                     .font(Font.Typography.BodyTextSm.bold)
                     .foregroundStyle(Color.Palette.black)
                     .frame(maxWidth: .infinity, alignment: .leading)
-
+                
                 Image(uiImage: UIImage.Icons.chevronRight)
                     .renderingMode(.template)
                     .foregroundStyle(Color.Palette.graySecondary)
@@ -37,13 +37,13 @@ struct FacultyRowView: View {
         }
         .buttonStyle(.plain)
     }
-
+    
     @ViewBuilder
     private var leadingAccessoryView: some View {
         switch data.accessory {
         case .disclosure:
             EmptyView()
-
+            
         case .selectable(let isSelected):
             Image(uiImage: isSelected ? .Icons.selectedCheckBox : .Icons.notSelectedCheckBox)
                 .resizable()
@@ -77,7 +77,7 @@ struct FacultyRowView: View {
                 ),
                 onTap: {}
             )
-
+            
             FacultyRowView(
                 data: .init(
                     id: "2",
@@ -87,7 +87,7 @@ struct FacultyRowView: View {
                 onTap: {}
             )
         }
-       
+        
     }
 }
 
@@ -97,7 +97,7 @@ private func previewContainer<Content: View>(
     ZStack {
         Color(.systemGroupedBackground)
             .ignoresSafeArea()
-
+        
         content()
             .padding()
     }

@@ -12,48 +12,48 @@ import Communities
 
 struct FacultySelectionView: View {
     @ObservedObject var store: StoreOf<FacultySelectionFeature>
-
+    
     var body: some View {
         
-            ScrollView(showsIndicators: false) {
-             
-                    VStack(alignment: .leading, spacing: 16) {
-                        facultyTextView
-                        if store.state.rows.isEmpty {
-                            emptyStateView
-                        } else {
-                            facultyScrollView
-                        }
-                    }
-                
-                .padding(16)
+        ScrollView(showsIndicators: false) {
+            
+            VStack(alignment: .leading, spacing: 16) {
+                facultyTextView
+                if store.state.rows.isEmpty {
+                    emptyStateView
+                } else {
+                    facultyScrollView
+                }
             }
+            
+            .padding(16)
+        }
         .background(Color.Palette.grayQuaternary.opacity(0.3))
         .navigationTitle(store.state.title)
         .safeAreaInset(edge: .bottom) {
             actionBar
-             
+            
         }
         .onAppear {
             store.send(.onAppear)
         }
     }
     private var facultyScrollView: some View {
-    
-            LazyVStack(spacing: 12) {
-                ForEach(store.state.rows) { row in
-                    FacultyRowView(
-                        data: row,
-                        onTap: {
-                            store.send(.rowTapped(row))
-                        }
-                    )
-                }
+        
+        LazyVStack(spacing: 12) {
+            ForEach(store.state.rows) { row in
+                FacultyRowView(
+                    data: row,
+                    onTap: {
+                        store.send(.rowTapped(row))
+                    }
+                )
             }
-           
+        }
+        
         
     }
-   
+    
     var facultyTextView:some View{
         Text(store.state.sectionTitle)
             .font(Font.Typography.HeadingXl.medium)
@@ -80,8 +80,8 @@ struct FacultySelectionView: View {
             ) {
                 store.send(.skipTapped)
             }
-          
-
+            
+            
             AppButton(
                 title: "Next",
                 model: .init(contentSize: .fill)
@@ -96,6 +96,8 @@ struct FacultySelectionView: View {
         .background(Color.Palette.white)
     }
 }
+
+// MARK: - Preview
 #Preview("Default") {
     NavigationStack {
         FacultySelectionView(store: defaultPreviewViewModel.store)

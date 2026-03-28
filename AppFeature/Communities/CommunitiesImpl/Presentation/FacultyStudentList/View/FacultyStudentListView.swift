@@ -29,16 +29,16 @@ struct FacultyStudentListView: View {
                         onSelectGroupTap: { _ in },
                         showsScrollView: false
                     )
-
+                    
                 case .empty:
                     emptyStateView
-
+                    
                 case .noSearchResults:
                     emptySearchResultsView
                 }
             }
         }
-       
+        
         .background(Color.Palette.grayQuaternary.opacity(0.2))
         .navigationTitle(store.state.title)
         .onAppear {
@@ -47,7 +47,7 @@ struct FacultyStudentListView: View {
         
         
     }
-
+    
     private var searchTextBinding: Binding<String> {
         Binding(
             get: { store.state.searchText },
@@ -56,7 +56,7 @@ struct FacultyStudentListView: View {
             }
         )
     }
-
+    
     private var emptyStateView: some View {
         Text("No students available")
             .font(Font.Typography.BodyTextSm.regular)
@@ -64,7 +64,7 @@ struct FacultyStudentListView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding(.top, 40)
     }
-
+    
     private var emptySearchResultsView: some View {
         Text("No students found")
             .font(Font.Typography.BodyTextSm.regular)
@@ -72,9 +72,11 @@ struct FacultyStudentListView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding(.top, 40)
     }
-
-   
+    
+    
 }
+
+// MARK: - Preview
 
 #Preview {
     NavigationStack {

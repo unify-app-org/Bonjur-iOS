@@ -9,21 +9,21 @@ import AppFoundation
 import Communities
 
 final class FacultySelectionViewModel: UIFeatureViewModel<FacultySelectionFeature> {
-
+    
     struct Dependencies {
     }
-
+    
     private struct SourceSection {
         let id: String
         let title: String
         let members: [CommunitiesMemberModuleModel.MemberCellModel]
     }
-
+    
     private let router: FacultySelectionRouterProtocol
     private let inputData: FacultySelectionInputData
     private let dependencies: Dependencies
     private var sourceSections: [SourceSection] = []
-
+    
     init(
         state: FacultySelectionFeature.State,
         router: FacultySelectionRouterProtocol,
@@ -35,23 +35,23 @@ final class FacultySelectionViewModel: UIFeatureViewModel<FacultySelectionFeatur
         self.dependencies = dependencies
         super.init(initialState: state)
     }
-
+    
     override func handle(action: FacultySelectionFeature.Action) {
         switch action {
         case .onAppear:
             fetchData()
-
+            
         case .rowTapped(let row):
             toggleSelection(for: row.id)
-
+            
         case .nextTapped:
             continueSelection()
-
+            
         case .skipTapped:
             inputData.onSkip()
         }
     }
-
+    
     private func fetchData() {
         state.title = inputData.title
         state.sectionTitle = inputData.sectionTitle
@@ -64,7 +64,7 @@ final class FacultySelectionViewModel: UIFeatureViewModel<FacultySelectionFeatur
         }
         rebuildRows()
     }
-
+    
     private func rebuildRows() {
         state.rows = sourceSections.map { section in
             FacultyRowViewData(
@@ -76,7 +76,7 @@ final class FacultySelectionViewModel: UIFeatureViewModel<FacultySelectionFeatur
             )
         }
     }
-
+    
     private func toggleSelection(for id: String) {
         if state.selectedSectionIDs.contains(id) {
             state.selectedSectionIDs.remove(id)
@@ -85,17 +85,17 @@ final class FacultySelectionViewModel: UIFeatureViewModel<FacultySelectionFeatur
         }
         rebuildRows()
     }
-
+    
     private func continueSelection() {
         let selectedMembers = sourceSections
             .filter { state.selectedSectionIDs.contains($0.id) }
             .flatMap(\.members)
-
+        
         if let limit = inputData.capacityLimit, selectedMembers.count > limit {
             postEffect(.capacityLimitReached(overflowCount: selectedMembers.count - limit))
             return
         }
-
+        
         inputData.onNext(selectedMembers)
     }
 }

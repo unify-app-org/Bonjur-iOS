@@ -41,38 +41,38 @@ final class FacultyStudentListViewModel: UIFeatureViewModel<FacultyStudentListFe
             inputData.onMemberTapped(row.member)
         }
     }
-
+    
     private func fetchData() {
         let input = inputData
         state.title = input.title
         sourceSections = input.sections
         state.sections = input.sections.enumerated().map { index, section in
-            .browse(id: "section-\(index)", section: section)
+                .browse(id: "section-\(index)", section: section)
         }
         applySearch()
     }
-
+    
     private func applySearch() {
         let query = state.searchText
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .lowercased()
-
+        
         guard !query.isEmpty else {
             state.filteredSections = state.sections
             updateContentState()
             return
         }
-
+        
         state.filteredSections = sourceSections.enumerated().compactMap { index, section in
             let filteredMembers = section.members.filter { member in
                 member.name.lowercased().contains(query)
                 || member.subtitle.lowercased().contains(query)
             }
-
+            
             guard !filteredMembers.isEmpty else {
                 return nil
             }
-
+            
             return .browse(
                 id: "section-\(index)",
                 section: .init(
@@ -84,17 +84,17 @@ final class FacultyStudentListViewModel: UIFeatureViewModel<FacultyStudentListFe
         }
         updateContentState()
     }
-
+    
     private func updateContentState() {
         if !state.filteredSections.isEmpty {
             state.contentState = .list
             return
         }
-
+        
         let hasActiveSearch = !state.searchText
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .isEmpty
-
+        
         state.contentState = hasActiveSearch ? .noSearchResults : .empty
     }
 }

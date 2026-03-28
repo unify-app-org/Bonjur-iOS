@@ -12,7 +12,7 @@ struct MemberCellView: View {
     let data: MemberCellViewData
     let onTap: (() -> Void)?
     let onAccessoryTap: (() -> Void)?
-
+    
     var body: some View {
         rowContent
             .padding(14)
@@ -23,7 +23,7 @@ struct MemberCellView: View {
                     .stroke(Color.Palette.grayTeritary.opacity(0.7), lineWidth: 0.4)
             )
     }
-
+    
     @ViewBuilder
     private var rowContent: some View {
         switch data.accessory {
@@ -38,10 +38,10 @@ struct MemberCellView: View {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-
+                
                 optionsButton
             }
-
+            
         default:
             Button(action: { onTap?() }) {
                 HStack(spacing: 12) {
@@ -54,14 +54,14 @@ struct MemberCellView: View {
             .buttonStyle(.plain)
         }
     }
-
+    
     private var textStack:some View{
         VStack(alignment: .leading, spacing: showsSubtitle ? 4 : 0) {
-           
+            
             Text(data.member.name)
                 .font(Font.Typography.BodyTextMd.bold)
                 .frame(maxWidth: .infinity, alignment: .leading)
-
+            
             if showsSubtitle {
                 Text(data.member.subtitle)
                     .font(Font.Typography.TextMd.bold)
@@ -69,17 +69,17 @@ struct MemberCellView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-
+        
     }
-
+    
     private var showsSubtitle: Bool {
         if case .optionsMenu = data.accessory {
             return !data.member.subtitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         }
         return false
     }
-
-   
+    
+    
     private var avatarView: some View {
         CachedAsyncImage(url: data.member.avatarURL) { image in
             image
@@ -101,7 +101,7 @@ struct MemberCellView: View {
                 .stroke(Color.Palette.grayTeritary.opacity(0.7), lineWidth: 0.4)
         )
     }
-
+    
     private var optionsButton: some View {
         Button(action: { onAccessoryTap?()}) {
             Image(uiImage: UIImage.Icons.ellipsis02)
@@ -110,28 +110,28 @@ struct MemberCellView: View {
         }
         .buttonStyle(.plain)
     }
-
+    
     @ViewBuilder
     private var accessoryView: some View {
         switch data.accessory {
         case .none:
             EmptyView()
-
+            
         case .disclosure:
             Image(uiImage: UIImage.Icons.chevronRight)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 24,height: 24)
-               
-
+            
+            
         case .checkbox(let isSelected):
             Image(uiImage: isSelected ? .Icons.selectedCheckBox :.Icons.notSelectedCheckBox)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 18,height: 18)
-               
-        
-
+            
+            
+            
         case .optionsMenu:
             optionsButton
         }
@@ -139,7 +139,7 @@ struct MemberCellView: View {
 }
 
 
-
+// MARK: - Preview
 #Preview("All States") {
     previewContainer {
         VStack(spacing: 12) {
@@ -156,7 +156,7 @@ struct MemberCellView: View {
                 onTap: {},
                 onAccessoryTap: nil
             )
-
+            
             MemberCellView(
                 data: .init(
                     member: .init(
@@ -170,7 +170,7 @@ struct MemberCellView: View {
                 onTap: {},
                 onAccessoryTap: {}
             )
-
+            
             MemberCellView(
                 data: .init(
                     member: .init(
@@ -184,7 +184,7 @@ struct MemberCellView: View {
                 onTap: {},
                 onAccessoryTap: {}
             )
-
+            
             MemberCellView(
                 data: .init(
                     member: .init(
@@ -208,7 +208,7 @@ private func previewContainer<Content: View>(
     ZStack {
         Color(.systemGroupedBackground)
             .ignoresSafeArea()
-
+        
         content()
             .padding()
     }

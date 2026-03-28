@@ -16,7 +16,7 @@ struct MemberListView: View {
     let onAccessoryTap: (MemberCellViewData) -> Void
     let onSelectGroupTap: (MemberListSectionViewData) -> Void
     let showsScrollView: Bool
-
+    
     init(
         sections: [MemberListSectionViewData],
         onRowTap: @escaping (MemberCellViewData) -> Void,
@@ -30,7 +30,7 @@ struct MemberListView: View {
         self.onSelectGroupTap = onSelectGroupTap
         self.showsScrollView = showsScrollView
     }
-
+    
     var body: some View {
         Group {
             if showsScrollView {
@@ -42,7 +42,7 @@ struct MemberListView: View {
             }
         }
     }
-
+    
     private var content: some View {
         LazyVStack(spacing: 20) {
             ForEach(sections) { section in
@@ -54,7 +54,7 @@ struct MemberListView: View {
                         isGroupSelected: section.isGroupSelected,
                         onSelectGroupTap: { onSelectGroupTap(section) }
                     )
-
+                    
                     VStack(spacing: 10) {
                         ForEach(section.rows) { row in
                             MemberCellView(
@@ -72,7 +72,7 @@ struct MemberListView: View {
 }
 
 
-
+// MARK: - Preview
 
 
 #Preview("Browse List") {
@@ -225,7 +225,7 @@ private func previewContainer<Content: View>(
     ZStack {
         Color(.systemGroupedBackground)
             .ignoresSafeArea()
-
+        
         content()
     }
 }

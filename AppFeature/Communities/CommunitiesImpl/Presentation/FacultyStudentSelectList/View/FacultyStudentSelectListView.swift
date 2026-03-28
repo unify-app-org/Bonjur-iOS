@@ -11,7 +11,7 @@ import Communities
 
 struct FacultyStudentSelectListView: View {
     @ObservedObject var store: StoreOf<FacultyStudentSelectListFeature>
-
+    
     var body: some View {
         ScrollView{
             VStack(spacing: 16) {
@@ -36,7 +36,7 @@ struct FacultyStudentSelectListView: View {
                 }
                 
                 
-             
+                
             }
         }
         .safeAreaInset(edge: .bottom) {
@@ -48,15 +48,15 @@ struct FacultyStudentSelectListView: View {
             store.send(.onAppear)
         }
     }
-
+    
     private var searchTextBinding: Binding<String> {
         Binding(
             get: { store.state.searchText },
             set: { store.send(.searchChanged($0)) }
         )
     }
-
-   
+    
+    
     private var selectAllView: some View {
         Button {
             store.send(.selectAllTapped)
@@ -66,11 +66,11 @@ struct FacultyStudentSelectListView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 18, height: 18)
-
+                
                 Text("select all member")
                     .font(Font.Typography.BodyTextSm.medium)
                     .foregroundStyle(Color.Palette.grayPrimary)
-
+                
                 Spacer()
             }
             .padding(.horizontal, 16)
@@ -84,7 +84,7 @@ struct FacultyStudentSelectListView: View {
         }
         .buttonStyle(.plain)
     }
-
+    
     private var emptySearchStateView: some View {
         Text("No students found")
             .font(Font.Typography.BodyTextSm.regular)
@@ -92,7 +92,7 @@ struct FacultyStudentSelectListView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding(.top, 40)
     }
-
+    
     private var continueButton: some View {
         AppButton(
             title: "Continue",
@@ -100,10 +100,10 @@ struct FacultyStudentSelectListView: View {
         ) {
             store.send(.continueTapped)
         }
-       
+        
         .padding(.horizontal, 16)
         .padding(.top, 8)
-      
+        
         .background(Color.Palette.grayQuaternary.opacity(0.3))
         .background(Color.Palette.white)
     }
@@ -117,7 +117,7 @@ struct FacultyStudentSelectListView: View {
 
 
 
-
+// MARK: - Preview
 
 #Preview("Default") {
     NavigationStack {

@@ -12,24 +12,24 @@ import Communities
 
 struct FacultyBrowseView: View {
     @ObservedObject var store: StoreOf<FacultyBrowseFeature>
-
+    
     var body: some View {
         ScrollView(showsIndicators: false) {
-           
-                VStack(alignment: .leading, spacing: 16) {
-                   facultyTextView
-
-                    if store.state.faculties.isEmpty {
-                        emptyStateView
-                    } else {
-                        LazyVStack(spacing: 12) {
-                            ForEach(store.state.faculties, id: \.id) { faculty in
-                                facultyButton(faculty)
-                            }
+            
+            VStack(alignment: .leading, spacing: 16) {
+                facultyTextView
+                
+                if store.state.faculties.isEmpty {
+                    emptyStateView
+                } else {
+                    LazyVStack(spacing: 12) {
+                        ForEach(store.state.faculties, id: \.id) { faculty in
+                            facultyButton(faculty)
                         }
                     }
                 }
-               .padding(16)
+            }
+            .padding(16)
         }
         .background(Color.Palette.grayQuaternary.opacity(0.3))
         .navigationTitle(store.state.title)
@@ -43,7 +43,7 @@ struct FacultyBrowseView: View {
             .foregroundStyle(Color.Palette.black)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
-   
+    
     var emptyStateView: some View {
         Text("No faculties found")
             .font(Font.Typography.HeadingMd.regular)
@@ -54,17 +54,19 @@ struct FacultyBrowseView: View {
     @ViewBuilder
     func facultyButton(_ faculty: CommunitiesMemberModuleModel.FacultyRowModel)->some View{
         FacultyRowView(
-                   data: .init(
-                       faculty: faculty,
-                       accessory: .disclosure
-                   ),
-                   onTap: {
-                       store.send(.facultyTapped(faculty))
-                   }
-               )
-       
+            data: .init(
+                faculty: faculty,
+                accessory: .disclosure
+            ),
+            onTap: {
+                store.send(.facultyTapped(faculty))
+            }
+        )
+        
     }
 }
+
+// MARK: - Preview
 
 #Preview {
     NavigationStack {
@@ -90,7 +92,7 @@ private let previewViewModel: FacultyBrowseViewModel = {
         .init(id: "5", label: "2003 - Master"),
         .init(id: "6", label: "2003 - Doctoral")
     ]
-
+    
     return FacultyBrowseViewModel(
         state: state,
         router: PreviewFacultyBrowseRouter(),
@@ -109,7 +111,7 @@ private let emptyPreviewViewModel: FacultyBrowseViewModel = {
     state.title = "All member"
     state.sectionTitle = "Faculty"
     state.faculties = []
-
+    
     return FacultyBrowseViewModel(
         state: state,
         router: PreviewFacultyBrowseRouter(),

@@ -125,36 +125,9 @@ struct FacultyStudentSelectListView: View {
     }
 }
 
-#Preview("All Selected") {
-    NavigationStack {
-        FacultyStudentSelectListView(store: allSelectedPreviewViewModel.store)
-    }
-}
-
 private let defaultPreviewViewModel: FacultyStudentSelectListViewModel = {
     FacultyStudentSelectListViewModel(
         state: .init(),
-        router: PreviewFacultyStudentSelectListRouter(),
-        inputData: .init(
-            title: "Students - 2002",
-            sections: previewSelectableInputSections,
-            capacityLimit: nil,
-            onSelectionConfirmed: { _ in }
-        ),
-        dependencies: .init()
-    )
-}()
-
-private let allSelectedPreviewViewModel: FacultyStudentSelectListViewModel = {
-    let state = FacultyStudentSelectListViewState()
-    state.selectedIDs = Set(
-        previewSelectableInputSections
-            .flatMap(\.members)
-            .map(\.id)
-    )
-
-    return FacultyStudentSelectListViewModel(
-        state: state,
         router: PreviewFacultyStudentSelectListRouter(),
         inputData: .init(
             title: "Students - 2002",

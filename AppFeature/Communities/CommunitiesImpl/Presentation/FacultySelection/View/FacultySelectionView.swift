@@ -8,6 +8,7 @@
 import SwiftUI
 import AppFoundation
 import AppUIKit
+import Communities
 
 struct FacultySelectionView: View {
     @ObservedObject var store: StoreOf<FacultySelectionFeature>
@@ -101,88 +102,96 @@ struct FacultySelectionView: View {
     }
 }
 
-#Preview("Selected") {
-    NavigationStack {
-        FacultySelectionView(store: selectedPreviewViewModel.store)
-    }
-}
 
-private let defaultPreviewViewModel: PreviewFacultySelectionViewModel = {
-    PreviewFacultySelectionViewModel(
-        title: "Add members",
-        sectionTitle: "Faculty",
-        rows: previewFacultyRows,
-        selectedIDs: []
+private let defaultPreviewViewModel: FacultySelectionViewModel = {
+    FacultySelectionViewModel(
+        state: .init(),
+        router: PreviewFacultySelectionRouter(),
+        inputData: .init(
+            title: "Add members",
+            sectionTitle: "Faculty",
+            sections: previewFacultySections,
+            capacityLimit: nil,
+            onNext: { _ in },
+            onSkip: {}
+        ),
+        dependencies: .init()
     )
 }()
 
-private let selectedPreviewViewModel: PreviewFacultySelectionViewModel = {
-    PreviewFacultySelectionViewModel(
-        title: "Add members",
-        sectionTitle: "Faculty",
-        rows: previewFacultyRows,
-        selectedIDs: ["1", "3", "5"]
+
+
+private let previewFacultySections: [CommunitiesMemberModuleModel.MemberListSection] = [
+    .init(
+        title: "2002 - Bachelor",
+        members: [
+            .init(
+                id: "member-1",
+                name: "Nihad Asgarli",
+                avatarURL: URL(string: "https://i.pinimg.com/736x/76/f7/d5/76f7d5c6bb02d8d142dd359b534e326e.jpg"),
+                subtitle: "Bachelor, Computer engineering, 2017"
+            )
+        ]
+    ),
+    .init(
+        title: "2002 - Master",
+        members: [
+            .init(
+                id: "member-2",
+                name: "Huseyn Hasanov",
+                avatarURL: URL(string: "https://i.pinimg.com/736x/ae/9e/cb/ae9ecb29d446fdf6679ee4bfd28280af.jpg"),
+                subtitle: "Master, Computer engineering, 2017"
+            )
+        ]
+    ),
+    .init(
+        title: "2002 - Doctoral",
+        members: [
+            .init(
+                id: "member-3",
+                name: "Durdana Hasanova",
+                avatarURL: URL(string: "https://i.pinimg.com/736x/98/31/0d/98310da7fa99a746b088721b25903d4b.jpg"),
+                subtitle: "Doctoral, Computer engineering, 2017"
+            )
+        ]
+    ),
+    .init(
+        title: "2003 - Bachelor",
+        members: [
+            .init(
+                id: "member-4",
+                name: "Nihad Asgarli",
+                avatarURL: URL(string: "https://i.pinimg.com/736x/76/f7/d5/76f7d5c6bb02d8d142dd359b534e326e.jpg"),
+                subtitle: "Bachelor, Chemistry, 2017"
+            )
+        ]
+    ),
+    .init(
+        title: "2003 - Master",
+        members: [
+            .init(
+                id: "member-5",
+                name: "Huseyn Hasanov",
+                avatarURL: URL(string: "https://i.pinimg.com/736x/ae/9e/cb/ae9ecb29d446fdf6679ee4bfd28280af.jpg"),
+                subtitle: "Master, Chemistry, 2017"
+            )
+        ]
+    ),
+    .init(
+        title: "2003 - Doctoral",
+        members: [
+            .init(
+                id: "member-6",
+                name: "Durdana Hasanova",
+                avatarURL: URL(string: "https://i.pinimg.com/736x/98/31/0d/98310da7fa99a746b088721b25903d4b.jpg"),
+                subtitle: "Doctoral, Chemistry, 2017"
+            )
+        ]
     )
-}()
-
-private struct PreviewFacultySelectionRow: Identifiable {
-    let id: String
-    let title: String
-}
-
-private let previewFacultyRows: [PreviewFacultySelectionRow] = [
-    .init(id: "1", title: "2002 - Bachelor"),
-    .init(id: "2", title: "2002 - Master"),
-    .init(id: "3", title: "2002 - Doctoral"),
-    .init(id: "4", title: "2003 - Bachelor"),
-    .init(id: "5", title: "2003 - Master"),
-    .init(id: "6", title: "2003 - Doctoral")
 ]
 
-private final class PreviewFacultySelectionViewModel: UIFeatureViewModel<FacultySelectionFeature> {
-    private let sourceRows: [PreviewFacultySelectionRow]
-
-    init(
-        title: String,
-        sectionTitle: String,
-        rows: [PreviewFacultySelectionRow],
-        selectedIDs: Set<String>
-    ) {
-        self.sourceRows = rows
-
-        let state = FacultySelectionViewState()
-        state.title = title
-        state.sectionTitle = sectionTitle
-        state.selectedSectionIDs = selectedIDs
-
-        super.init(initialState: state)
-        rebuildRows()
-    }
-
-    override func handle(action: FacultySelectionAction) {
-        switch action {
-        case .rowTapped(let row):
-            if state.selectedSectionIDs.contains(row.id) {
-                state.selectedSectionIDs.remove(row.id)
-            } else {
-                state.selectedSectionIDs.insert(row.id)
-            }
-            rebuildRows()
-
-        case .onAppear, .nextTapped, .skipTapped:
-            break
-        }
-    }
-
-    private func rebuildRows() {
-        state.rows = sourceRows.map { row in
-            FacultyRowViewData(
-                id: row.id,
-                title: row.title,
-                accessory: .selectable(
-                    isSelected: state.selectedSectionIDs.contains(row.id)
-                )
-            )
-        }
+private final class PreviewFacultySelectionRouter: FacultySelectionRouterProtocol {
+    @MainActor
+    func navigate(to route: FacultySelectionRoute) {
     }
 }

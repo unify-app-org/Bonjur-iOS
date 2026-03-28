@@ -75,5 +75,16 @@ public extension UIImage {
         public static let genderIcon = UIImage(resource: .genderIcon)
         
         public static let cakeBirthday = UIImage(resource: .cakeBirthday)
+        
+        public static let logout = UIImage(resource: .logout)
+        
+        public static let chevronright = UIImage(resource: .chevronright)
+        
+        public static let chatQuestion = UIImage(resource: .chatQuestion)
+        
+        public static let mobilePhone = UIImage(resource: .mobilePhone)
+
+
+        
     }
 }

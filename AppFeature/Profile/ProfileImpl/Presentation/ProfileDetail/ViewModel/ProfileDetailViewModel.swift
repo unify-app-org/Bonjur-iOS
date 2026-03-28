@@ -45,6 +45,10 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
             Task {
                 await router.navigate(to: .hangoutsDetails(id: id))
             }
+        case .settingsTapped:
+            Task {
+                await router.navigate(to: .settings)
+            }
         }
     }
     

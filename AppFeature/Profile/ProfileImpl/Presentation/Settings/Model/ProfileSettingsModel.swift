@@ -6,6 +6,7 @@
 //
 
 import AppFoundation
+import Combine
 
 // MARK: - ProfileSettings input
 
@@ -29,16 +30,19 @@ typealias ProfileSettingsFeature = UIFeatureDefinition<
 // MARK: - View State
 
 final class ProfileSettingsViewState: UIFeatureState {
-    
+    @Published var notificationsEnabled: Bool = true
+    @Published var sections: [SettingsSection] = []
 }
 
 // MARK: - Feature Action
 
 enum ProfileSettingsAction: UIFeatureAction {
+    case viewDidLoad
     case didTapBack
     case didTapLanguage
     case didTapHelpCenter
     case didTapTerms
     case didTapDeleteAccount
     case didTapLogOut
+    case didToggleNotification(Bool)
 }

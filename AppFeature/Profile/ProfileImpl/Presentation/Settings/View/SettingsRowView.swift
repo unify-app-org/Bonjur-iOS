@@ -28,13 +28,19 @@ struct SettingsSection: Identifiable {
 
 struct SettingsRowView: View {
     let item: SettingsModel
-    @Binding var switchOn: Bool
+    let onToggle: ((Bool) -> Void)?
+    @State private var isOn: Bool
+    
+    init(item: SettingsModel, isOn: Bool = false, onToggle: ((Bool) -> Void)? = nil) {
+        self.item = item
+        self._isOn = State(initialValue: isOn)
+        self.onToggle = onToggle
+    }
     
     var body: some View {
         HStack {
             HStack(spacing: 16) {
                 Image(uiImage: item.icon.withRenderingMode(.alwaysTemplate))
-                    .resizable()
                     .frame(width: 24, height: 24)
                     .foregroundStyle(item.isDestructive ? .red : .black)
                     .padding()
@@ -51,12 +57,17 @@ struct SettingsRowView: View {
         }
     }
     
-    
     @ViewBuilder
     private var trailingView: some View {
         if item.isSwitch {
-            Toggle("", isOn: $switchOn)
-                .labelsHidden()
+            Toggle("", isOn: Binding(
+                get: { isOn },
+                set: { newValue in
+                    isOn = newValue
+                    onToggle?(newValue)
+                }
+            ))
+            .labelsHidden()
         } else if let version = item.versionText {
             Text(version)
                 .font(.subheadline)
@@ -64,10 +75,5 @@ struct SettingsRowView: View {
         } else {
             Image(uiImage: UIImage.Icons.chevronright)
         }
-
     }
-
-    
 }
-
-

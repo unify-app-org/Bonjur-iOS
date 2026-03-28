@@ -28,7 +28,6 @@ final class ProfileSettingsRouter: ProfileSettingsRouterProtocol {
     func navigate(to route: ProfileSettingsRoute) {
         switch route {
         case .back:
-//            view?.navigationController?.popViewController(animated: true)
             print("")
         case .language:
             print("")

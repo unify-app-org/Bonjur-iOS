@@ -7,20 +7,33 @@
 
 import Foundation
 import AppUtils
+import AppLocalization
 
 public protocol APIClientProtocol {
+    var activityDelegate: NetworkActivityDelegate? { get set }
+    
     func request<T: Decodable>(_ endpoint: AppEndPoint) async throws(APIError) -> T
     func requestRawData(_ endpoint: AppEndPoint) async throws(APIError) -> Data
+}
+
+public protocol NetworkActivityDelegate: AnyObject {
+    func refreshDidStart()
+    func refreshDidFinish()
+    
+    func refreshFailure()
 }
 
 final class APIClient: APIClientProtocol {
     
     // MARK: - Properties
     
+    weak var activityDelegate: NetworkActivityDelegate?
+    
     private let baseURL: String
     private let session: URLSession
     private let logger: NetworkLogger
     private let tokenManager: TokenManager
+    private let localization: AppLocalizationProtocol
     
     // MARK: - Init
     
@@ -28,12 +41,14 @@ final class APIClient: APIClientProtocol {
         baseURL: String = AppEnvironment.baseURL,
         session: URLSession = .shared,
         tokenManager: TokenManager = resolve(),
-        logger: NetworkLogger = resolve()
+        logger: NetworkLogger = resolve(),
+        localization: AppLocalizationProtocol = resolve()
     ) {
         self.baseURL = baseURL
         self.session = session
         self.tokenManager = tokenManager
         self.logger = logger
+        self.localization = localization
     }
     
     // MARK: - Request with Auto-Decoding (BaseResponse Wrapper)
@@ -43,10 +58,17 @@ final class APIClient: APIClientProtocol {
         do {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            let response = try decoder.decode(BaseResponse<T>.self, from: data)
-            return response.data
+            let response = try decoder.decode(T.self, from: data)
+            return response
         } catch {
-            throw APIError.decodingError(error)
+            let error = APIError.decodingError(error)
+            logger.logError(
+                error,
+                url: nil,
+                statusCode: nil,
+                errorBody: nil
+            )
+            throw error
         }
     }
     
@@ -77,27 +99,34 @@ final class APIClient: APIClientProtocol {
         var request = URLRequest(url: url)
         request.httpMethod = endpoint.method.rawValue
         
-        let defaultHeaders = endpoint.headers ?? ["Content-Type": "application/json"]
+        let defaultHeaders = endpoint.headers ?? [:]
         defaultHeaders.forEach { key, value in
             request.setValue(value, forHTTPHeaderField: key)
         }
         
         if endpoint.requiresAuth {
-            if let token = tokenManager.getAccessToken() {
+            let token = await tokenManager.getAccessToken()
                 request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-            }
         }
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(localization.currentLanguage, forHTTPHeaderField: "Accept-Language")
         
         var bodyData: Data?
         if let body = endpoint.body {
             do {
                 let encoder = JSONEncoder()
-                encoder.keyEncodingStrategy = .convertToSnakeCase
                 bodyData = try encoder.encode(body)
                 
                 request.httpBody = bodyData
             } catch {
-                throw APIError.decodingError(error)
+                let error = APIError.decodingError(error)
+                logger.logError(
+                    error,
+                    url: nil,
+                    statusCode: nil,
+                    errorBody: nil
+                )
+                throw error
             }
         }
         
@@ -205,24 +234,35 @@ final class APIClient: APIClientProtocol {
     // MARK: - Token Refresh
     
     private func refreshTokenIfNeeded() async throws {
-        guard let refreshToken = tokenManager.getRefreshToken() else {
-            throw APIError.unauthorized
+        activityDelegate?.refreshDidStart()
+        
+        defer {
+            activityDelegate?.refreshDidFinish()
         }
+        
+        let refreshToken = await tokenManager.getRefreshToken()
         
         let body = RefreshTokenRequest(
             refreshToken: refreshToken
         )
-        
         let refreshEndpoint = RefreshEndpoint.refresh(body)
         
         do {
             let newTokens: RefreshTokenResponse = try await request(refreshEndpoint)
             
-            tokenManager.saveAccessToken(newTokens.accessToken)
-            tokenManager.saveRefreshToken(newTokens.refreshToken)
+            await tokenManager.saveAccessToken(newTokens.accessToken)
+            await tokenManager.saveRefreshToken(newTokens.refreshToken)
         } catch {
-            tokenManager.clearTokens()
-            throw APIError.unauthorized
+            let error = APIError.unauthorized
+            logger.logError(
+                error,
+                url: nil,
+                statusCode: nil,
+                errorBody: nil
+            )
+            await tokenManager.clearTokens()
+            activityDelegate?.refreshFailure()
+            throw error
         }
     }
 }

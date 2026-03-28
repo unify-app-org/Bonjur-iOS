@@ -45,7 +45,7 @@ struct ProfileDetailView: View {
             .enableSwipeBack()
         }
         .animation(.easeInOut, value: store.state.selectedSegment)
-        .onAppear {
+        .onFirstAppear {
             store.send(.fetchData)
         }
         .toolbar(.hidden)
@@ -111,7 +111,7 @@ struct ProfileDetailView: View {
     private var userCardView: some View {
         if let data = store.state.uiModel?.userCardModel {
             UserCardView(model: data) {
-                
+                store.send(.userCardTapped)
             }
         }
     }

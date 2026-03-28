@@ -217,6 +217,7 @@
 		<string>___PACKAGENAME___Impl/Helpers/TempHelper.swift</string>
 		<string>___PACKAGENAME___Impl/Presentation/TempScreen.swift</string>
 		<string>___PACKAGENAME___Impl/Data/DataSources/TempDataSource.swift</string>
+		<string>___PACKAGENAME___Impl/Data/Repo/TempRepo.swift</string>
 		<string>___PACKAGENAME___Impl/Data/DTOs/TempDTO.swift</string>
 		<string>___PACKAGENAME___Impl/Data/EndPoint/TemEndPoint.swift</string>
 		<string>___PACKAGENAME___Impl/Domain/Models/TemModel.swift</string>

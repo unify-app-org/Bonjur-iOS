@@ -6,10 +6,13 @@
 //
 
 import AppFoundation
+import AppStorage
 
 final class SignInViewModel: UIFeatureViewModel<SignInFeature> {
     
     struct Dependencies {
+        let useCase: AuthUsecases
+        let userDefaults: UserDefaultsProtocol
     }
     
     private let router: SignInRouterProtocol
@@ -34,12 +37,34 @@ final class SignInViewModel: UIFeatureViewModel<SignInFeature> {
             fetchData()
         case .signIn:
             Task {
-                await router.navigate(to: .signIn)
+                await signIn()
             }
         }
     }
     
     private func fetchData() {
         
+    }
+    
+    private func signIn() async {
+        postEffect(.loading(true))
+        defer {
+            postEffect(.loading(false))
+        }
+        do {
+            try await dependencies.useCase.login(email: state.email, password: state.password)
+            await handleSignIn()
+        } catch {
+            state.error = .init(
+                title: error.localizedDescription,
+                subtitle: error.detail
+            )
+        }
+    }
+    
+    @MainActor
+    private func handleSignIn() {
+        dependencies.userDefaults.set(true, forKey: .isAuthenticated)
+        router.navigate(to: .home)
     }
 }

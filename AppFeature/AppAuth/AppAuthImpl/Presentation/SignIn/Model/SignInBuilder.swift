@@ -22,7 +22,10 @@ struct SignInBuilder {
             state: .init(),
             router: router,
             inputData: inputData,
-            dependencies: .init()
+            dependencies: .init(
+                useCase: resolve(),
+                userDefaults: resolve()
+            )
         )
         
         let controller = SignInHostController(

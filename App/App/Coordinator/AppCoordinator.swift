@@ -9,6 +9,8 @@ import UIKit
 import AppAuth
 import DependecyInjection
 import AppStorage
+import AppNetwork
+import AppUIKit
 
 final class AppCoordinator {
     private let window: UIWindow
@@ -27,6 +29,11 @@ final class AppCoordinator {
     func start() {
 //        userDefaults.set(false, forKey: .isAuthenticated)
         let isAuthenticated = userDefaults.bool(forKey: .isAuthenticated)
+        
+        var apiClient: APIClientProtocol = dependencyContainer.resolve(
+            APIClientProtocol.self
+        )
+        apiClient.activityDelegate = self
         
         if isAuthenticated {
             showTabBar()
@@ -57,6 +64,21 @@ final class AppCoordinator {
             animations: nil
         )
         window.makeKeyAndVisible()
+    }
+}
+
+extension AppCoordinator: NetworkActivityDelegate {
+    
+    func refreshDidStart() {
+        AppLoadingUI.show()
+    }
+    
+    func refreshDidFinish() {
+        AppLoadingUI.show()
+    }
+    
+    func refreshFailure() {
+        showRegisterVC()
     }
 }
 

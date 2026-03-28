@@ -8,11 +8,9 @@
 import AppNetwork
 import UIKit
 import AppUIKit
+import AppStorage
 
 protocol AuthUsecases {
-    func register(
-        body: RegisterRequest
-    ) async throws(APIError) -> RegisterModel
     
     func onboarding() -> [OnboardingUIModel]
     
@@ -25,24 +23,19 @@ protocol AuthUsecases {
     func genders() -> [SelectableListItemView.Model]
     
     func interests() -> [AuthInterestsModel]
+    
+    func login(
+        email: String,
+        password: String?
+    ) async throws(APIError)
 }
 
 final class AuthUsecasesImpl: AuthUsecases {
     
-    private let dataSource: AuthDataSource
+    private let repo: AuthRepo
     
-    init(dataSource: AuthDataSource = resolve()) {
-        self.dataSource = dataSource
-    }
-    
-    func register(
-        body: RegisterRequest
-    ) async throws(APIError) -> RegisterModel {
-        let data = try await dataSource.register(body: body)
-        return RegisterModel(
-            token: data.token,
-            refreshToken: data.refreshToken
-        )
+    init(repo: AuthRepo = resolve()) {
+        self.repo = repo
     }
     
     func onboarding() -> [OnboardingUIModel] {
@@ -244,5 +237,12 @@ final class AuthUsecasesImpl: AuthUsecases {
             )
             
         ]
+    }
+    
+    func login(
+        email: String,
+        password: String?
+    ) async throws(APIError) {
+        try await repo.login(email: email, password: password)
     }
 }

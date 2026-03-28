@@ -15,7 +15,7 @@ enum RefreshEndpoint: AppEndPoint {
     var path: String {
         switch self {
         case .refresh:
-            "auth/refresh"
+            "/api/as/v1/auth/refresh"
         }
     }
     

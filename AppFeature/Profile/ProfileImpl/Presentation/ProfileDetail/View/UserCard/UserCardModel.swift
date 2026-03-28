@@ -45,7 +45,7 @@ extension UserCardModel {
             imageUrl: nil
         ),
         .init(
-            backgroundCover: .secondary,
+            backgroundCover: nil,
             nameSurname: "Huseyn Hasanov",
             speciality: "Oil-gas engineering",
             course: "1st year",
@@ -56,4 +56,19 @@ extension UserCardModel {
             imageUrl: nil
         )
     ]
+}
+extension UserCardModel {
+    func withBackground(_ cover: AppUIEntities.BackgroundType?) -> Self {
+        .init(
+            backgroundCover: cover,
+            nameSurname: nameSurname,
+            speciality: speciality,
+            course: course,
+            community: community,
+            degree: degree,
+            entryYear: entryYear,
+            email: email,
+            imageUrl: imageUrl
+        )
+    }
 }

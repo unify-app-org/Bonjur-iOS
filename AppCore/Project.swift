@@ -29,7 +29,8 @@ let appNetworkTarget = Target.createFrameworkTarget(
     name: "AppNetwork",
     dependencies: [
         .AppCore.AppStorage,
-        .AppCore.AppUtils
+        .AppCore.AppUtils,
+        .AppCore.AppLocalization
     ]
 ).add(to: &frameworkTargets)
     

@@ -48,6 +48,12 @@ public extension AppButton {
                 } else {
                     return .Palette.black.opacity(0.05)
                 }
+            case .destructive:
+                if style == .default {
+                    return .clear
+                } else {
+                    return .Palette.destructiveRed.opacity(0.12)
+                }
             }
         }
         
@@ -87,9 +93,13 @@ public extension AppButton {
         }
         
         var foregroundColor: Color {
-            return Color.Palette.black
+            switch type {
+            case .destructive:
+                return .Palette.destructiveRed
+            default:
+                return Color.Palette.black
+            }
         }
-        
         var borderColor: Color {
             if style == .default {
                 return Color.Palette.blackHigh
@@ -123,6 +133,7 @@ public extension AppButton {
         case primary
         case secondary
         case tertiary
+        case destructive
     }
     
     enum ButtonStyle {

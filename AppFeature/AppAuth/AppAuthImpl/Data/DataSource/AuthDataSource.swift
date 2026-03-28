@@ -8,17 +8,16 @@ import Foundation
 import AppNetwork
 
 protocol AuthDataSource {
-    func register(
-        body: RegisterRequest
-    ) async throws(APIError) -> RegisterResponse
+    func login(
+        body: AuthDTOModel.LoginRequest
+    ) async throws(APIError) -> AuthDTOModel.LoginResponse
 }
 
 final class AuthDataSourceImpl: NetworkService<AuthEnpoints>, AuthDataSource {
     
-    func register(
-        body: RegisterRequest
-    ) async throws(APIError) -> RegisterResponse {
-        try await fetch(endPoint: .register(body))
+    func login(
+        body: AuthDTOModel.LoginRequest
+    ) async throws(APIError) -> AuthDTOModel.LoginResponse {
+        try await fetch(endPoint: .login(body))
     }
-    
 }

@@ -8,17 +8,12 @@
 import Foundation
 
 public struct NetworkError: Decodable, LocalizedError {
-    public let status: String
-    public let message: String
-    public let detail: String?
-    public let errors: [String: [String]]?
-    
-    enum CodingKeys: String, CodingKey {
-        case status
-        case message
-        case detail
-        case errors
-    }
+    let status: String?
+    let message: String?
+    let detail: String?
+    let path: String?
+    let error: String?
+    let errors: [String: [String]]?
     
     public var errorDescription: String? {
         return message
@@ -47,13 +42,32 @@ public enum APIError: Error {
         case .decodingError(let error):
             return "Failed to decode: \(error.localizedDescription)"
         case .error(let networkError):
-            return networkError.message
+            return networkError.errorDescription ?? ""
         case .unauthorized:
             return "Unauthorized. Please login again."
         case .networkError(let error):
             return error.localizedDescription
         case .unknown:
             return "An unknown error occurred"
+        }
+    }
+    
+    public var detail: String? {
+        switch self {
+        case .invalidURL:
+            nil
+        case .noData:
+            nil
+        case .decodingError(let error):
+            nil
+        case .error(let networkError):
+            networkError.failureReason
+        case .unauthorized:
+            nil
+        case .networkError(let error):
+            nil
+        case .unknown:
+            nil
         }
     }
 }

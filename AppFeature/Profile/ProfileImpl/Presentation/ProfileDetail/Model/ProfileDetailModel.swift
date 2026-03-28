@@ -7,6 +7,7 @@
 
 import AppFoundation
 import SwiftUI
+import AppUIKit
 
 // MARK: - ProfileDetail input
 
@@ -50,6 +51,8 @@ enum ProfileDetailAction: UIFeatureAction {
     case eventsItemTapped(String)
     case hangoutsItemTapped(String)
     case settingsTapped
+    case userCardTapped
+    case userCardCoverSaved(AppUIEntities.BackgroundType?)
 }
 
 

@@ -15,7 +15,6 @@ struct FacultyStudentSelectListInputData {
     let sections: [CommunitiesMemberModuleModel.MemberListSection]
     let capacityLimit: Int?
     let onSelectionConfirmed: ([CommunitiesMemberModuleModel.MemberCellModel]) -> Void
-    let onSkip: () -> Void
 }
 
 // MARK: - Side effects
@@ -53,5 +52,4 @@ enum FacultyStudentSelectListAction: UIFeatureAction {
     case memberTapped(MemberCellViewData)
     case groupTapped(MemberListSectionViewData)
     case continueTapped
-    case skipTapped
 }

@@ -113,20 +113,17 @@ public extension CommunitiesMemberModuleModel {
         public let sections: [MemberListSection]
         public let capacityLimit: Int?
         public let onSelectionConfirmed: ([MemberCellModel]) -> Void
-        public let onSkip: () -> Void
 
         public init(
             title: String,
             sections: [MemberListSection],
             capacityLimit: Int? = nil,
-            onSelectionConfirmed: @escaping ([MemberCellModel]) -> Void,
-            onSkip: @escaping () -> Void
+            onSelectionConfirmed: @escaping ([MemberCellModel]) -> Void
         ) {
             self.title = title
             self.sections = sections
             self.capacityLimit = capacityLimit
             self.onSelectionConfirmed = onSelectionConfirmed
-            self.onSkip = onSkip
         }
     }
 

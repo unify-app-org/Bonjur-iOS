@@ -82,15 +82,18 @@ struct FacultyStudentListView: View {
     }
 }
 
-private var browsePreviewViewModel: PreviewFacultyStudentListViewModel {
-    let state = FacultyStudentListViewState()
-    state.title = "Students - 2002"
-    state.searchText = ""
-    state.sections = previewBrowseSections
-    state.filteredSections = previewBrowseSections
-    state.contentState = .list
-    return PreviewFacultyStudentListViewModel(state: state)
-}
+private let browsePreviewViewModel: FacultyStudentListViewModel = {
+    FacultyStudentListViewModel(
+        state: .init(),
+        router: PreviewFacultyStudentListRouter(),
+        inputData: .init(
+            title: "Students - 2002",
+            sections: previewBrowseInputSections,
+            onMemberTapped: { _ in }
+        ),
+        dependencies: .init()
+    )
+}()
 
 private let studentPreviewMembers: [CommunitiesMemberModuleModel.MemberCellModel] = [
     .init(
@@ -113,37 +116,28 @@ private let studentPreviewMembers: [CommunitiesMemberModuleModel.MemberCellModel
     )
 ]
 
-private let previewBrowseSections: [MemberListSectionViewData] = [
+private let previewBrowseInputSections: [CommunitiesMemberModuleModel.MemberListSection] = [
     .init(
-        id: "browse-ce",
         title: "Computer engineering",
-        memberCountText: "28 student",
-        rows: [
-            .disclosure(from: studentPreviewMembers[0]),
-            .disclosure(from: studentPreviewMembers[1]),
-            .disclosure(from: studentPreviewMembers[2])
-        ],
-        showsSelectGroup: false,
-        isGroupSelected: false
+        memberCount: 28,
+        members: [
+            studentPreviewMembers[0],
+            studentPreviewMembers[1],
+            studentPreviewMembers[2]
+        ]
     ),
     .init(
-        id: "browse-chem",
         title: "Chemistry",
-        memberCountText: "20 student",
-        rows: [
-            .disclosure(from: studentPreviewMembers[1]),
-            .disclosure(from: studentPreviewMembers[2])
-        ],
-        showsSelectGroup: false,
-        isGroupSelected: false
+        memberCount: 20,
+        members: [
+            studentPreviewMembers[1],
+            studentPreviewMembers[2]
+        ]
     )
 ]
 
-private final class PreviewFacultyStudentListViewModel: UIFeatureViewModel<FacultyStudentListFeature> {
-    init(state: FacultyStudentListViewState) {
-        super.init(initialState: state)
-    }
-
-    override func handle(action: FacultyStudentListAction) {
+private final class PreviewFacultyStudentListRouter: FacultyStudentListRouterProtocol {
+    @MainActor
+    func navigate(to route: FacultyStudentListRoute) {
     }
 }

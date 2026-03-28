@@ -78,7 +78,7 @@ struct FacultyBrowseView: View {
     }
 }
 
-private var previewViewModel: FacultyBrowseViewModel {
+private let previewViewModel: FacultyBrowseViewModel = {
     let state = FacultyBrowseViewState()
     state.title = "All member"
     state.sectionTitle = "Faculty"
@@ -102,9 +102,9 @@ private var previewViewModel: FacultyBrowseViewModel {
         ),
         dependencies: .init()
     )
-}
+}()
 
-private var emptyPreviewViewModel: FacultyBrowseViewModel {
+private let emptyPreviewViewModel: FacultyBrowseViewModel = {
     let state = FacultyBrowseViewState()
     state.title = "All member"
     state.sectionTitle = "Faculty"
@@ -121,7 +121,7 @@ private var emptyPreviewViewModel: FacultyBrowseViewModel {
         ),
         dependencies: .init()
     )
-}
+}()
 
 private final class PreviewFacultyBrowseRouter: FacultyBrowseRouterProtocol {
     @MainActor

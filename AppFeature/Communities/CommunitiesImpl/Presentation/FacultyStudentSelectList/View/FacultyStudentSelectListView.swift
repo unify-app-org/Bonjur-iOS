@@ -131,31 +131,40 @@ struct FacultyStudentSelectListView: View {
     }
 }
 
-private var defaultPreviewViewModel: PreviewFacultyStudentSelectListViewModel {
-    let state = FacultyStudentSelectListViewState()
-    state.title = "Students - 2002"
-    state.searchText = ""
-    state.sections = previewSelectableSections
-    state.filteredSections = previewSelectableSections
-    state.selectedIDs = []
-    state.isAllSelected = false
-    return PreviewFacultyStudentSelectListViewModel(state: state)
-}
+private let defaultPreviewViewModel: FacultyStudentSelectListViewModel = {
+    FacultyStudentSelectListViewModel(
+        state: .init(),
+        router: PreviewFacultyStudentSelectListRouter(),
+        inputData: .init(
+            title: "Students - 2002",
+            sections: previewSelectableInputSections,
+            capacityLimit: nil,
+            onSelectionConfirmed: { _ in }
+        ),
+        dependencies: .init()
+    )
+}()
 
-private var allSelectedPreviewViewModel: PreviewFacultyStudentSelectListViewModel {
+private let allSelectedPreviewViewModel: FacultyStudentSelectListViewModel = {
     let state = FacultyStudentSelectListViewState()
-    state.title = "Students - 2002"
-    state.searchText = ""
-    state.sections = previewAllSelectedSections
-    state.filteredSections = previewAllSelectedSections
     state.selectedIDs = Set(
-        previewAllSelectedSections
-            .flatMap(\.rows)
+        previewSelectableInputSections
+            .flatMap(\.members)
             .map(\.id)
     )
-    state.isAllSelected = true
-    return PreviewFacultyStudentSelectListViewModel(state: state)
-}
+
+    return FacultyStudentSelectListViewModel(
+        state: state,
+        router: PreviewFacultyStudentSelectListRouter(),
+        inputData: .init(
+            title: "Students - 2002",
+            sections: previewSelectableInputSections,
+            capacityLimit: nil,
+            onSelectionConfirmed: { _ in }
+        ),
+        dependencies: .init()
+    )
+}()
 
 private let studentPreviewMembers: [CommunitiesMemberModuleModel.MemberCellModel] = [
     .init(
@@ -175,78 +184,48 @@ private let studentPreviewMembers: [CommunitiesMemberModuleModel.MemberCellModel
         name: "Durdana Hasanova",
         avatarURL: URL(string: "https://i.pinimg.com/736x/98/31/0d/98310da7fa99a746b088721b25903d4b.jpg"),
         subtitle: "Bachelor, Computer engineering, 2017"
-    )
-]
-
-private let previewSelectableSections: [MemberListSectionViewData] = [
-    .init(
-        id: "select-ce",
-        title: "Computer engineering",
-        memberCountText: nil,
-        rows: [
-            .selectable(from: studentPreviewMembers[0], isSelected: false),
-            .selectable(from: studentPreviewMembers[1], isSelected: false),
-            .selectable(from: studentPreviewMembers[2], isSelected: false),
-            .selectable(from: studentPreviewMembers[0], isSelected: false),
-            .selectable(from: studentPreviewMembers[0], isSelected: false),
-            .selectable(from: studentPreviewMembers[1], isSelected: false),
-            .selectable(from: studentPreviewMembers[1], isSelected: false),
-            .selectable(from: studentPreviewMembers[2], isSelected: false)
-        ],
-        showsSelectGroup: true,
-        isGroupSelected: false
     ),
     .init(
-        id: "select-chem",
-        title: "Chemistry",
-        memberCountText: nil,
-        rows: [
-            .selectable(from: studentPreviewMembers[0], isSelected: false),
-            .selectable(from: studentPreviewMembers[1], isSelected: false),
-            .selectable(from: studentPreviewMembers[2], isSelected: false),
-            .selectable(from: studentPreviewMembers[0], isSelected: false),
-            .selectable(from: studentPreviewMembers[0], isSelected: false),
-            .selectable(from: studentPreviewMembers[1], isSelected: false),
-            .selectable(from: studentPreviewMembers[2], isSelected: false)
-        ],
-        showsSelectGroup: true,
-        isGroupSelected: false
-    )
-]
-
-private let previewAllSelectedSections: [MemberListSectionViewData] = [
-    .init(
-        id: "all-ce",
-        title: "Computer engineering",
-        memberCountText: nil,
-        rows: [
-            .selectable(from: studentPreviewMembers[0], isSelected: true),
-            .selectable(from: studentPreviewMembers[1], isSelected: true),
-            .selectable(from: studentPreviewMembers[2], isSelected: true),
-            .selectable(from: studentPreviewMembers[0], isSelected: true)
-        ],
-        showsSelectGroup: true,
-        isGroupSelected: true
+        id: "4",
+        name: "Nihad Asgarli",
+        avatarURL: URL(string: "https://i.pinimg.com/736x/76/f7/d5/76f7d5c6bb02d8d142dd359b534e326e.jpg"),
+        subtitle: "Bachelor, Chemistry, 2017"
     ),
     .init(
-        id: "all-chem",
-        title: "Chemistry",
-        memberCountText: nil,
-        rows: [
-            .selectable(from: studentPreviewMembers[0], isSelected: true),
-            .selectable(from: studentPreviewMembers[1], isSelected: true),
-            .selectable(from: studentPreviewMembers[2], isSelected: true)
-        ],
-        showsSelectGroup: true,
-        isGroupSelected: true
+        id: "5",
+        name: "Huseyn Hasanov",
+        avatarURL: URL(string: "https://i.pinimg.com/736x/ae/9e/cb/ae9ecb29d446fdf6679ee4bfd28280af.jpg"),
+        subtitle: "Bachelor, Chemistry, 2017"
+    ),
+    .init(
+        id: "6",
+        name: "Durdana Hasanova",
+        avatarURL: URL(string: "https://i.pinimg.com/736x/98/31/0d/98310da7fa99a746b088721b25903d4b.jpg"),
+        subtitle: "Bachelor, Chemistry, 2017"
     )
 ]
 
-private final class PreviewFacultyStudentSelectListViewModel: UIFeatureViewModel<FacultyStudentSelectListFeature> {
-    init(state: FacultyStudentSelectListViewState) {
-        super.init(initialState: state)
-    }
+private let previewSelectableInputSections: [CommunitiesMemberModuleModel.MemberListSection] = [
+    .init(
+        title: "Computer engineering",
+        members: [
+            studentPreviewMembers[0],
+            studentPreviewMembers[1],
+            studentPreviewMembers[2]
+        ]
+    ),
+    .init(
+        title: "Chemistry",
+        members: [
+            studentPreviewMembers[3],
+            studentPreviewMembers[4],
+            studentPreviewMembers[5]
+        ]
+    )
+]
 
-    override func handle(action: FacultyStudentSelectListAction) {
+private final class PreviewFacultyStudentSelectListRouter: FacultyStudentSelectListRouterProtocol {
+    @MainActor
+    func navigate(to route: FacultyStudentSelectListRoute) {
     }
 }

@@ -49,8 +49,7 @@ final class FacultyStudentListViewModel: UIFeatureViewModel<FacultyStudentListFe
         state.sections = input.sections.enumerated().map { index, section in
             .browse(id: "section-\(index)", section: section)
         }
-        state.filteredSections = state.sections
-        updateContentState()
+        applySearch()
     }
 
     private func applySearch() {

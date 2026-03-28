@@ -51,9 +51,6 @@ final class FacultyStudentSelectListViewModel: UIFeatureViewModel<FacultyStudent
 
             case .continueTapped:
                 continueSelection()
-
-            case .skipTapped:
-                inputData.onSkip()
             }
         }
 

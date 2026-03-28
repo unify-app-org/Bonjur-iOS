@@ -107,45 +107,82 @@ struct FacultySelectionView: View {
     }
 }
 
-private var defaultPreviewViewModel: PreviewFacultySelectionViewModel {
-    let state = FacultySelectionViewState()
-    state.title = "Add members"
-    state.sectionTitle = "Faculty"
-    state.rows = [
-        .init(id: "1", title: "2002 - Bachelor", accessory: .selectable(isSelected: false)),
-        .init(id: "2", title: "2002 - Master", accessory: .selectable(isSelected: false)),
-        .init(id: "3", title: "2003 - Bachelor", accessory: .selectable(isSelected: false)),
-        .init(id: "4", title: "2003 - Master", accessory: .selectable(isSelected: false))
-    ]
-    state.selectedSectionIDs = []
-    return PreviewFacultySelectionViewModel(state: state)
+private let defaultPreviewViewModel: PreviewFacultySelectionViewModel = {
+    PreviewFacultySelectionViewModel(
+        title: "Add members",
+        sectionTitle: "Faculty",
+        rows: previewFacultyRows,
+        selectedIDs: []
+    )
+}()
+
+private let selectedPreviewViewModel: PreviewFacultySelectionViewModel = {
+    PreviewFacultySelectionViewModel(
+        title: "Add members",
+        sectionTitle: "Faculty",
+        rows: previewFacultyRows,
+        selectedIDs: ["1", "3", "5"]
+    )
+}()
+
+private struct PreviewFacultySelectionRow: Identifiable {
+    let id: String
+    let title: String
 }
 
-private var selectedPreviewViewModel: PreviewFacultySelectionViewModel {
-    let state = FacultySelectionViewState()
-    state.title = "Add members"
-    state.sectionTitle = "Faculty"
-    state.rows = [
-        .init(id: "1", title: "2002 - Bachelor", accessory: .selectable(isSelected: false)),
-        .init(id: "2", title: "2002 - Master", accessory: .selectable(isSelected: false)),
-        .init(id: "3", title: "2003 - Bachelor", accessory: .selectable(isSelected: true)),
-        .init(id: "4", title: "2003 - Master", accessory: .selectable(isSelected: false)),  .init(id: "5", title: "2002 - Bachelor", accessory: .selectable(isSelected: true)),
-        .init(id: "6", title: "2002 - Master", accessory: .selectable(isSelected: false)),
-        .init(id: "7", title: "2003 - Bachelor", accessory: .selectable(isSelected: true)),
-        .init(id: "8", title: "2003 - Master", accessory: .selectable(isSelected: false)),  .init(id: "9", title: "2002 - Bachelor", accessory: .selectable(isSelected: true)),
-        .init(id: "10", title: "2002 - Master", accessory: .selectable(isSelected: false)),
-        .init(id: "11", title: "2003 - Bachelor", accessory: .selectable(isSelected: true)),
-        .init(id: "12", title: "2003 - Master", accessory: .selectable(isSelected: false))
-    ]
-    state.selectedSectionIDs = ["1", "3"]
-    return PreviewFacultySelectionViewModel(state: state)
-}
+private let previewFacultyRows: [PreviewFacultySelectionRow] = [
+    .init(id: "1", title: "2002 - Bachelor"),
+    .init(id: "2", title: "2002 - Master"),
+    .init(id: "3", title: "2002 - Doctoral"),
+    .init(id: "4", title: "2003 - Bachelor"),
+    .init(id: "5", title: "2003 - Master"),
+    .init(id: "6", title: "2003 - Doctoral")
+]
 
 private final class PreviewFacultySelectionViewModel: UIFeatureViewModel<FacultySelectionFeature> {
-    init(state: FacultySelectionViewState) {
+    private let sourceRows: [PreviewFacultySelectionRow]
+
+    init(
+        title: String,
+        sectionTitle: String,
+        rows: [PreviewFacultySelectionRow],
+        selectedIDs: Set<String>
+    ) {
+        self.sourceRows = rows
+
+        let state = FacultySelectionViewState()
+        state.title = title
+        state.sectionTitle = sectionTitle
+        state.selectedSectionIDs = selectedIDs
+
         super.init(initialState: state)
+        rebuildRows()
     }
 
     override func handle(action: FacultySelectionAction) {
+        switch action {
+        case .rowTapped(let row):
+            if state.selectedSectionIDs.contains(row.id) {
+                state.selectedSectionIDs.remove(row.id)
+            } else {
+                state.selectedSectionIDs.insert(row.id)
+            }
+            rebuildRows()
+
+        case .onAppear, .nextTapped, .skipTapped:
+            break
+        }
+    }
+
+    private func rebuildRows() {
+        state.rows = sourceRows.map { row in
+            FacultyRowViewData(
+                id: row.id,
+                title: row.title,
+                accessory: .selectable(
+                    isSelected: state.selectedSectionIDs.contains(row.id)
+                )
+            )
+        }
     }
 }

@@ -60,8 +60,7 @@ struct CommunitiesModuleImpl: CommunitiesModule {
                 title: input.title,
                 sections: input.sections,
                 capacityLimit: input.capacityLimit,
-                onSelectionConfirmed: input.onSelectionConfirmed,
-                onSkip: input.onSkip
+                onSelectionConfirmed: input.onSelectionConfirmed
             )
         ).build()
     }

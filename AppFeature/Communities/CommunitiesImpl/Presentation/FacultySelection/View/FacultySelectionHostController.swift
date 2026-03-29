@@ -5,10 +5,11 @@
 //  Created by aplle on 3/23/26.
 //
 
-// MARK: - Controller
 import UIKit
 import AppFoundation
 import AppUIKit
+
+// MARK: - Controller
 
 final class FacultySelectionHostController: UIFeatureController<
     FacultySelectionFeature,
@@ -19,21 +20,25 @@ final class FacultySelectionHostController: UIFeatureController<
         case .loading:
             break
 
-        case .capacityLimitReached(let overflowCount):
-            showOverflowAlert(overflowCount: overflowCount)
+        case .showAlert(let title, let subtitle):
+            showAlert(title: title, subtitle: subtitle)
         }
     }
 
-    private func showOverflowAlert(overflowCount: Int) {
+    private func showAlert(
+        title: String,
+        subtitle: String,
+        buttonTitle: String = "Got it"
+    ) {
         AppAlertPresenter.present(
             .init(
                 config: .init(
-                    title: "Capacity limit reached",
-                    subtitle: "Remove \(overflowCount) member\(overflowCount == 1 ? "" : "s") to continue."
+                    title: title,
+                    subtitle: subtitle
                 ),
                 actions: {
                     AppAlert.Action(
-                        title: "Got it",
+                        title: buttonTitle,
                         style: .primary
                     ) { dismiss in
                         dismiss()

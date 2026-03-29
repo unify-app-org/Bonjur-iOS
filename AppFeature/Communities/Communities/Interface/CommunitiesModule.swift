@@ -22,6 +22,7 @@ public protocol CommunitiesModule {
         onTap: @escaping (() -> Void)
     ) -> Any
     
+    
     /// Builds the standalone community detail screen.
     ///
     /// Use this when the caller wants the full community detail flow owned by the Communities
@@ -31,6 +32,7 @@ public protocol CommunitiesModule {
     /// - Returns: A view controller-like object that can be pushed or presented by the caller.
     func makeCommunityDetail(communityId: Int) -> AnyObject
     
+    
     /// Builds the faculty selection screen used by the add-members flow.
     ///
     /// This screen lets the user drill into a faculty, select members inside its student list,
@@ -38,10 +40,11 @@ public protocol CommunitiesModule {
     ///
     /// - Parameter input: Screen configuration, faculty rows with embedded student-list data, and completion callbacks.
     /// - Returns: A view controller-like object that can be pushed or presented by the caller.
-    func makeFacultySelection(
+    func makeFacultyMembersSelection(
         input: CommunitiesMemberModuleModel.FacultySelectionMembersInput
     ) -> AnyObject
 
+    
     /// Builds the faculty selection screen in callback-only mode.
     ///
     /// Use this when the caller only has faculty rows and wants the screen to return the selected
@@ -49,10 +52,11 @@ public protocol CommunitiesModule {
     ///
     /// - Parameter input: Screen configuration, faculty rows, and completion callbacks.
     /// - Returns: A view controller-like object that can be pushed or presented by the caller.
-    func makeFacultySelection(
+    func makeFacultiesSelection(
         input: CommunitiesMemberModuleModel.FacultySelectionFacultiesInput
     ) -> AnyObject
 
+    
     /// Builds the view-only faculty browse screen.
     ///
     /// Use this screen to show rows such as "2002 - Bachelor". When a row is tapped, the screen
@@ -61,10 +65,11 @@ public protocol CommunitiesModule {
     ///
     /// - Parameter input: Screen configuration, faculty rows with student-list data, and member tap callback.
     /// - Returns: A view controller-like object that can be pushed or presented by the caller.
-    func makeFacultyBrowse(
+    func makeFacultyStudentsBrowse(
         input: CommunitiesMemberModuleModel.FacultyBrowseStudentsInput
     ) -> AnyObject
 
+    
     /// Builds the faculty browse screen in callback-only mode.
     ///
     /// Use this when the caller only has basic faculty rows at first and wants to decide what to
@@ -73,10 +78,11 @@ public protocol CommunitiesModule {
     ///
     /// - Parameter input: Screen configuration, faculty rows, and faculty tap callback.
     /// - Returns: A view controller-like object that can be pushed or presented by the caller.
-    func makeFacultyBrowse(
+    func makeFacultiesBrowse(
         input: CommunitiesMemberModuleModel.FacultyBrowseFacultiesInput
     ) -> AnyObject
 
+    
     /// Builds the view-only student list screen for a selected faculty or year.
     ///
     /// This screen displays grouped members and forwards member taps back to the caller without
@@ -88,6 +94,7 @@ public protocol CommunitiesModule {
         input: CommunitiesMemberModuleModel.FacultyStudentListViewInput
     ) -> AnyObject
 
+    
     /// Builds the selectable student list screen for a selected faculty or year.
     ///
     /// This screen handles member selection, search, and group selection, then returns the
@@ -99,6 +106,7 @@ public protocol CommunitiesModule {
         input: CommunitiesMemberModuleModel.FacultyStudentListSelectInput
     ) -> AnyObject
 
+    
     /// Builds a lightweight members list view for club member sections.
     ///
     /// Use this when you only need grouped owner, president, and member rows backed by the shared
@@ -106,7 +114,7 @@ public protocol CommunitiesModule {
     ///
     /// - Parameter input: Member content and callbacks for row taps and options taps.
     /// - Returns: A type-erased SwiftUI view containing the grouped members list.
-    func makeClubMembers(
+    func makeMembersListView(
         input: CommunitiesMemberModuleModel.ClubMembersInput
     ) -> Any
 

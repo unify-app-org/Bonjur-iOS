@@ -37,6 +37,8 @@ struct FacultyBrowseView: View {
             store.send(.onAppear)
         }
     }
+
+    
     var facultyTextView:some View{
         Text(store.state.sectionTitle)
             .font(Font.Typography.HeadingXl.medium)
@@ -51,6 +53,7 @@ struct FacultyBrowseView: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 40)
     }
+    
     @ViewBuilder
     func facultyButton(_ faculty: CommunitiesMemberModuleModel.FacultyRowModel)->some View{
         FacultyRowView(
@@ -65,6 +68,7 @@ struct FacultyBrowseView: View {
         )
         
     }
+    
 }
 
 // MARK: - Preview

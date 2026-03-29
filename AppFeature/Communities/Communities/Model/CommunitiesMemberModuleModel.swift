@@ -5,7 +5,6 @@
 //  Created by aplle on 3/20/26.
 //
 
-
 import Foundation
 
 public enum CommunitiesMemberModuleModel {
@@ -66,7 +65,6 @@ public enum CommunitiesMemberModuleModel {
         }
     }
 }
-
 
 public extension CommunitiesMemberModuleModel {
     struct FacultySelectionMembersInput {
@@ -201,7 +199,7 @@ public extension CommunitiesMemberModuleModel {
             president: MemberCellModel? = nil,
             members: [MemberCellModel],
             onOptionsTapped: @escaping (MemberCellModel) -> Void,
-            onMemberTapped:@escaping (MemberCellModel) -> Void
+            onMemberTapped: @escaping (MemberCellModel) -> Void
         ) {
             self.owner = owner
             self.president = president

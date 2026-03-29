@@ -15,7 +15,7 @@ extension MemberListSectionViewData {
         .init(
             id: id,
             title: section.title,
-            memberCountText: section.memberCount.map { "\($0) students" },
+            memberCountText: section.memberCount.map { "\($0) student\($0 == 1 ? "" : "s")" },
             rows: section.members.map(MemberCellViewData.disclosure(from:)),
             showsSelectGroup: false,
             isGroupSelected: false

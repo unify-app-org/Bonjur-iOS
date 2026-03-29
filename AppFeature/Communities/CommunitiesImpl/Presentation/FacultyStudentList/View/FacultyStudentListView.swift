@@ -44,8 +44,6 @@ struct FacultyStudentListView: View {
         .onAppear {
             store.send(.onAppear)
         }
-        
-        
     }
     
     private var searchTextBinding: Binding<String> {

@@ -16,17 +16,9 @@ struct FacultyBrowseInputData {
     let title: String
     let sectionTitle: String
     let faculties: [CommunitiesMemberModuleModel.FacultyRowModel]
-    let mode: FacultyBrowseMode
+    let mode: FacultyBrowseViewState.BrowseMode
 }
 
-enum FacultyBrowseMode {
-    case preloadedStudentList(
-        onMemberTapped: (CommunitiesMemberModuleModel.MemberCellModel) -> Void
-    )
-    case callback(
-        onFacultyTapped: (CommunitiesMemberModuleModel.FacultyRowModel) -> Void
-    )
-}
 // MARK: - Side effects
 
 enum FacultyBrowseSideEffect: UISideEffect {
@@ -43,6 +35,15 @@ typealias FacultyBrowseFeature = UIFeatureDefinition<
 
 // MARK: - View State
 final class FacultyBrowseViewState: UIFeatureState {
+    
+    enum BrowseMode {
+        case preloadedStudentList(
+            onMemberTapped: (CommunitiesMemberModuleModel.MemberCellModel) -> Void
+        )
+        case callback(
+            onFacultyTapped: (CommunitiesMemberModuleModel.FacultyRowModel) -> Void
+        )
+    }
     @Published var title: String = ""
     @Published var sectionTitle: String = ""
     @Published var faculties: [CommunitiesMemberModuleModel.FacultyRowModel] = []

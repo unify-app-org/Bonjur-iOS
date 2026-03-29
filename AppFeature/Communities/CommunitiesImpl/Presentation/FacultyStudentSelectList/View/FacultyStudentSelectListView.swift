@@ -34,9 +34,6 @@ struct FacultyStudentSelectListView: View {
                         showsScrollView: false
                     )
                 }
-                
-                
-                
             }
         }
         .background(Color.Palette.grayQuaternary.opacity(0.2))
@@ -90,14 +87,6 @@ struct FacultyStudentSelectListView: View {
             .padding(.top, 40)
     }
 }
-
-
-
-
-
-
-
-
 
 // MARK: - Preview
 

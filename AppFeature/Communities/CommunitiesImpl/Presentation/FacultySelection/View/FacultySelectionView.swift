@@ -53,23 +53,23 @@ struct FacultySelectionView: View {
                 )
             }
         }
-        
-        
     }
     
-    var facultyTextView:some View{
+   private var facultyTextView:some View{
         Text(store.state.sectionTitle)
             .font(Font.Typography.HeadingXl.medium)
             .foregroundStyle(Color.Palette.black)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
-    var emptyStateView: some View {
+    
+    private var emptyStateView: some View {
         Text("No faculties found")
             .font(Font.Typography.HeadingMd.regular)
             .foregroundStyle(Color.Palette.blackMedium)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 40)
     }
+    
     private var actionBar: some View {
         HStack(spacing: 12) {
             AppButton(

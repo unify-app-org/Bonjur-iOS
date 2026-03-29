@@ -19,21 +19,14 @@ protocol FacultySelectionRouterProtocol {
 
 final class FacultySelectionRouter: FacultySelectionRouterProtocol {
     weak var view: UIViewController?
-    private let communitiesModule: CommunitiesModule
-
-    init(
-        view: UIViewController? = nil,
-        communitiesModule: CommunitiesModule = resolve()
-    ) {
-        self.view = view
-        self.communitiesModule = communitiesModule
-    }
     
     @MainActor
     func navigate(to route: FacultySelectionRoute) {
         switch route {
         case .facultyStudentSelection(let input):
-            let vc = communitiesModule.makeFacultyStudentListSelection(input: input) as! UIViewController
+            let vc = FacultyStudentSelectListBuilder(
+                inputData: .init(title: input.title, sections: input.sections, initiallySelectedMembers: input.initiallySelectedMembers, onSelectionConfirmed: input.onSelectionConfirmed)
+            ).build()
             view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

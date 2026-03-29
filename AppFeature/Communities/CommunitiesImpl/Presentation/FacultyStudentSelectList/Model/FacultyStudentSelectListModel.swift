@@ -8,6 +8,7 @@
 import AppFoundation
 import Communities
 import SwiftUI
+
 // MARK: - FacultyStudentSelectList input
 
 struct FacultyStudentSelectListInputData {

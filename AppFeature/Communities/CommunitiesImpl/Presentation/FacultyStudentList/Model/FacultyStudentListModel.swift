@@ -6,14 +6,17 @@
 //
 
 import AppFoundation
-import Communities
 import Combine
+import Communities
+
 // MARK: - FacultyStudentList input
 
 struct FacultyStudentListInputData {
     let title: String
     let sections: [CommunitiesMemberModuleModel.MemberListSection]
     let onMemberTapped: (CommunitiesMemberModuleModel.MemberCellModel) -> Void
+
+   
 }
 
 // MARK: - Side effects
@@ -29,6 +32,8 @@ typealias FacultyStudentListFeature = UIFeatureDefinition<
     FacultyStudentListAction,
     FacultyStudentListSideEffect
 >
+
+// MARK: - Content State
 
 enum FacultyStudentListContentState {
     case list

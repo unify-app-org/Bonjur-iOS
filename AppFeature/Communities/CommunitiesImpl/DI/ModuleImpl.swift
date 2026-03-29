@@ -1,4 +1,4 @@
-// 
+//
 //  ModuleImpl.swift
 //  Communities
 //
@@ -10,8 +10,7 @@ import Communities
 import SwiftUI
 
 struct CommunitiesModuleImpl: CommunitiesModule {
-    
-    func makeFacultySelection(
+    func makeFacultyMembersSelection(
         input: CommunitiesMemberModuleModel.FacultySelectionMembersInput
     ) -> AnyObject {
         FacultySelectionBuilder(
@@ -28,7 +27,7 @@ struct CommunitiesModuleImpl: CommunitiesModule {
         ).build()
     }
 
-    func makeFacultySelection(
+    func makeFacultiesSelection(
         input: CommunitiesMemberModuleModel.FacultySelectionFacultiesInput
     ) -> AnyObject {
         FacultySelectionBuilder(
@@ -44,7 +43,7 @@ struct CommunitiesModuleImpl: CommunitiesModule {
         ).build()
     }
 
-    func makeFacultyBrowse(
+    func makeFacultyStudentsBrowse(
         input: CommunitiesMemberModuleModel.FacultyBrowseStudentsInput
     ) -> AnyObject {
         FacultyBrowseBuilder(
@@ -59,7 +58,7 @@ struct CommunitiesModuleImpl: CommunitiesModule {
         ).build()
     }
 
-    func makeFacultyBrowse(
+    func makeFacultiesBrowse(
         input: CommunitiesMemberModuleModel.FacultyBrowseFacultiesInput
     ) -> AnyObject {
         FacultyBrowseBuilder(
@@ -74,7 +73,6 @@ struct CommunitiesModuleImpl: CommunitiesModule {
         ).build()
     }
 
-    
     func makeFacultyStudentListView(
         input: CommunitiesMemberModuleModel.FacultyStudentListViewInput
     ) -> AnyObject {
@@ -100,7 +98,7 @@ struct CommunitiesModuleImpl: CommunitiesModule {
         ).build()
     }
 
-    func makeClubMembers(
+    func makeMembersListView(
         input: CommunitiesMemberModuleModel.ClubMembersInput
     ) -> Any {
         AnyView(
@@ -116,8 +114,7 @@ struct CommunitiesModuleImpl: CommunitiesModule {
             )
         )
     }
-    
-    
+
     func makeCommunityCard(
         inputData: CommunitiesModuleModel.CardInputData,
         onTap: @escaping () -> Void
@@ -129,7 +126,7 @@ struct CommunitiesModuleImpl: CommunitiesModule {
             )
         )
     }
-    
+
     func makeCommunityDetail(
         communityId: Int
     ) -> AnyObject {

@@ -14,27 +14,15 @@ import SwiftUI
 struct FacultySelectionInputData {
     let title: String
     let sectionTitle: String
-    let mode: FacultySelectionMode
+    let mode: FacultySelectionViewState.SelectionMode
     let onSkip: () -> Void
-}
-
-enum FacultySelectionMode {
-    case preloadedMembers(
-        faculties: [CommunitiesMemberModuleModel.FacultyRowModel],
-        capacityLimit: Int?,
-        onNext: ([CommunitiesMemberModuleModel.MemberCellModel]) -> Void
-    )
-    case callback(
-        faculties: [CommunitiesMemberModuleModel.FacultyRowModel],
-        onNext: ([CommunitiesMemberModuleModel.FacultyRowModel]) -> Void
-    )
 }
 
 // MARK: - Side effects
 
 enum FacultySelectionSideEffect: UISideEffect {
     case loading(Bool)
-    case capacityLimitReached(overflowCount: Int)
+    case showAlert(title: String, subtitle: String)
 }
 
 // MARK: - Feature Definition
@@ -52,6 +40,18 @@ final class FacultySelectionViewState: UIFeatureState {
     @Published var sectionTitle: String = ""
     @Published var rows: [FacultyRowViewData] = []
     @Published var selectedSectionIDs: Set<String> = []
+
+    enum SelectionMode {
+        case preloadedMembers(
+            faculties: [CommunitiesMemberModuleModel.FacultyRowModel],
+            capacityLimit: Int?,
+            onNext: ([CommunitiesMemberModuleModel.MemberCellModel]) -> Void
+        )
+        case callback(
+            faculties: [CommunitiesMemberModuleModel.FacultyRowModel],
+            onNext: ([CommunitiesMemberModuleModel.FacultyRowModel]) -> Void
+        )
+    }
 }
 
 // MARK: - Feature Action

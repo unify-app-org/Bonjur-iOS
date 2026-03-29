@@ -19,21 +19,14 @@ protocol FacultyBrowseRouterProtocol {
 
 final class FacultyBrowseRouter: FacultyBrowseRouterProtocol {
     weak var view: UIViewController?
-    private let communitiesModule: CommunitiesModule
-
-    init(
-        view: UIViewController? = nil,
-        communitiesModule: CommunitiesModule = resolve()
-    ) {
-        self.view = view
-        self.communitiesModule = communitiesModule
-    }
     
     @MainActor
     func navigate(to route: FacultyBrowseRoute) {
         switch route {
         case .facultyStudentList(let input):
-            let vc = communitiesModule.makeFacultyStudentListView(input: input) as! UIViewController
+            let vc = FacultyStudentListBuilder(
+                inputData: .init(title: input.title, sections: input.sections, onMemberTapped: input.onMemberTapped)
+            ).build()
             view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

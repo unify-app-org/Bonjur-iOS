@@ -13,7 +13,7 @@ import SwiftUI
 struct FacultyStudentSelectListInputData {
     let title: String
     let sections: [CommunitiesMemberModuleModel.MemberListSection]
-    let capacityLimit: Int?
+    let initiallySelectedMembers: [CommunitiesMemberModuleModel.MemberCellModel]
     let onSelectionConfirmed: ([CommunitiesMemberModuleModel.MemberCellModel]) -> Void
 }
 
@@ -21,7 +21,6 @@ struct FacultyStudentSelectListInputData {
 
 enum FacultyStudentSelectListSideEffect: UISideEffect {
     case loading(Bool)
-    case capacityLimitReached(overflowCount: Int)
 }
 
 // MARK: - Feature Definition
@@ -51,5 +50,5 @@ enum FacultyStudentSelectListAction: UIFeatureAction {
     case selectAllTapped
     case memberTapped(MemberCellViewData)
     case groupTapped(MemberListSectionViewData)
-    case continueTapped
+    case didPop
 }

@@ -11,15 +11,18 @@ import Communities
 struct FacultyRowViewData: Identifiable, Hashable {
     let id: String
     let title: String
+    let subtitle: String?
     let accessory: FacultyRowAccessory
 
     init(
         id: String,
         title: String,
+        subtitle: String? = nil,
         accessory: FacultyRowAccessory
     ) {
         self.id = id
         self.title = title
+        self.subtitle = subtitle
         self.accessory = accessory
     }
 }

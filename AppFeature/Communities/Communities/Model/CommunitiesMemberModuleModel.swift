@@ -69,10 +69,10 @@ public enum CommunitiesMemberModuleModel {
 
 
 public extension CommunitiesMemberModuleModel {
-    struct FacultySelectionInput {
+    struct FacultySelectionMembersInput {
         public let title: String
         public let sectionTitle: String
-        public let sections: [MemberListSection]
+        public let faculties: [FacultyRowModel]
         public let capacityLimit: Int?
         public let onNext: ([MemberCellModel]) -> Void
         public let onSkip: () -> Void
@@ -80,21 +80,43 @@ public extension CommunitiesMemberModuleModel {
         public init(
             title: String,
             sectionTitle: String = "Faculty",
-            sections: [MemberListSection],
+            faculties: [FacultyRowModel],
             capacityLimit: Int? = nil,
             onNext: @escaping ([MemberCellModel]) -> Void,
             onSkip: @escaping () -> Void
         ) {
             self.title = title
             self.sectionTitle = sectionTitle
-            self.sections = sections
+            self.faculties = faculties
             self.capacityLimit = capacityLimit
             self.onNext = onNext
             self.onSkip = onSkip
         }
     }
 
-    struct FacultyBrowseInput {
+    struct FacultySelectionFacultiesInput {
+        public let title: String
+        public let sectionTitle: String
+        public let faculties: [FacultyRowModel]
+        public let onNext: ([FacultyRowModel]) -> Void
+        public let onSkip: () -> Void
+
+        public init(
+            title: String,
+            sectionTitle: String = "Faculty",
+            faculties: [FacultyRowModel],
+            onNext: @escaping ([FacultyRowModel]) -> Void,
+            onSkip: @escaping () -> Void
+        ) {
+            self.title = title
+            self.sectionTitle = sectionTitle
+            self.faculties = faculties
+            self.onNext = onNext
+            self.onSkip = onSkip
+        }
+    }
+
+    struct FacultyBrowseStudentsInput {
         public let title: String
         public let sectionTitle: String
         public let faculties: [FacultyRowModel]
@@ -113,7 +135,7 @@ public extension CommunitiesMemberModuleModel {
         }
     }
 
-    struct FacultyBrowseSelectionInput {
+    struct FacultyBrowseFacultiesInput {
         public let title: String
         public let sectionTitle: String
         public let faculties: [FacultyRowModel]
@@ -151,18 +173,18 @@ public extension CommunitiesMemberModuleModel {
     struct FacultyStudentListSelectInput {
         public let title: String
         public let sections: [MemberListSection]
-        public let capacityLimit: Int?
+        public let initiallySelectedMembers: [MemberCellModel]
         public let onSelectionConfirmed: ([MemberCellModel]) -> Void
 
         public init(
             title: String,
             sections: [MemberListSection],
-            capacityLimit: Int? = nil,
+            initiallySelectedMembers: [MemberCellModel] = [],
             onSelectionConfirmed: @escaping ([MemberCellModel]) -> Void
         ) {
             self.title = title
             self.sections = sections
-            self.capacityLimit = capacityLimit
+            self.initiallySelectedMembers = initiallySelectedMembers
             self.onSelectionConfirmed = onSelectionConfirmed
         }
     }

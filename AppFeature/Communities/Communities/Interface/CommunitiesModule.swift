@@ -33,13 +33,24 @@ public protocol CommunitiesModule {
     
     /// Builds the faculty selection screen used by the add-members flow.
     ///
-    /// This screen lets the user select faculty or year groups and returns the flattened member
-    /// list through the provided callbacks.
+    /// This screen lets the user drill into a faculty, select members inside its student list,
+    /// and returns the flattened selected member list through the provided callbacks.
     ///
-    /// - Parameter input: Screen configuration, source sections, and completion callbacks.
+    /// - Parameter input: Screen configuration, faculty rows with embedded student-list data, and completion callbacks.
     /// - Returns: A view controller-like object that can be pushed or presented by the caller.
     func makeFacultySelection(
-        input: CommunitiesMemberModuleModel.FacultySelectionInput
+        input: CommunitiesMemberModuleModel.FacultySelectionMembersInput
+    ) -> AnyObject
+
+    /// Builds the faculty selection screen in callback-only mode.
+    ///
+    /// Use this when the caller only has faculty rows and wants the screen to return the selected
+    /// faculties on Next, without requiring preloaded member lists or capacity validation.
+    ///
+    /// - Parameter input: Screen configuration, faculty rows, and completion callbacks.
+    /// - Returns: A view controller-like object that can be pushed or presented by the caller.
+    func makeFacultySelection(
+        input: CommunitiesMemberModuleModel.FacultySelectionFacultiesInput
     ) -> AnyObject
 
     /// Builds the view-only faculty browse screen.
@@ -51,7 +62,7 @@ public protocol CommunitiesModule {
     /// - Parameter input: Screen configuration, faculty rows with student-list data, and member tap callback.
     /// - Returns: A view controller-like object that can be pushed or presented by the caller.
     func makeFacultyBrowse(
-        input: CommunitiesMemberModuleModel.FacultyBrowseInput
+        input: CommunitiesMemberModuleModel.FacultyBrowseStudentsInput
     ) -> AnyObject
 
     /// Builds the faculty browse screen in callback-only mode.
@@ -63,7 +74,7 @@ public protocol CommunitiesModule {
     /// - Parameter input: Screen configuration, faculty rows, and faculty tap callback.
     /// - Returns: A view controller-like object that can be pushed or presented by the caller.
     func makeFacultyBrowse(
-        input: CommunitiesMemberModuleModel.FacultyBrowseSelectionInput
+        input: CommunitiesMemberModuleModel.FacultyBrowseFacultiesInput
     ) -> AnyObject
 
     /// Builds the view-only student list screen for a selected faculty or year.
@@ -79,8 +90,8 @@ public protocol CommunitiesModule {
 
     /// Builds the selectable student list screen for a selected faculty or year.
     ///
-    /// This screen handles member selection, search, group selection, and capacity-limit
-    /// validation, then returns the selected members through callbacks.
+    /// This screen handles member selection, search, and group selection, then returns the
+    /// currently selected members when the screen is popped.
     ///
     /// - Parameter input: Screen configuration, grouped members, and completion callbacks.
     /// - Returns: A view controller-like object that can be pushed or presented by the caller.

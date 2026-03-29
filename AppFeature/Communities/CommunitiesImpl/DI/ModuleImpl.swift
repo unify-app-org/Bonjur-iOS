@@ -12,22 +12,40 @@ import SwiftUI
 struct CommunitiesModuleImpl: CommunitiesModule {
     
     func makeFacultySelection(
-        input: CommunitiesMemberModuleModel.FacultySelectionInput
+        input: CommunitiesMemberModuleModel.FacultySelectionMembersInput
     ) -> AnyObject {
         FacultySelectionBuilder(
             inputData: .init(
                 title: input.title,
                 sectionTitle: input.sectionTitle,
-                sections: input.sections,
-                capacityLimit: input.capacityLimit,
-                onNext: input.onNext,
+                mode: .preloadedMembers(
+                    faculties: input.faculties,
+                    capacityLimit: input.capacityLimit,
+                    onNext: input.onNext
+                ),
+                onSkip: input.onSkip
+            )
+        ).build()
+    }
+
+    func makeFacultySelection(
+        input: CommunitiesMemberModuleModel.FacultySelectionFacultiesInput
+    ) -> AnyObject {
+        FacultySelectionBuilder(
+            inputData: .init(
+                title: input.title,
+                sectionTitle: input.sectionTitle,
+                mode: .callback(
+                    faculties: input.faculties,
+                    onNext: input.onNext
+                ),
                 onSkip: input.onSkip
             )
         ).build()
     }
 
     func makeFacultyBrowse(
-        input: CommunitiesMemberModuleModel.FacultyBrowseInput
+        input: CommunitiesMemberModuleModel.FacultyBrowseStudentsInput
     ) -> AnyObject {
         FacultyBrowseBuilder(
             inputData: .init(
@@ -42,7 +60,7 @@ struct CommunitiesModuleImpl: CommunitiesModule {
     }
 
     func makeFacultyBrowse(
-        input: CommunitiesMemberModuleModel.FacultyBrowseSelectionInput
+        input: CommunitiesMemberModuleModel.FacultyBrowseFacultiesInput
     ) -> AnyObject {
         FacultyBrowseBuilder(
             inputData: .init(
@@ -76,7 +94,7 @@ struct CommunitiesModuleImpl: CommunitiesModule {
             inputData: .init(
                 title: input.title,
                 sections: input.sections,
-                capacityLimit: input.capacityLimit,
+                initiallySelectedMembers: input.initiallySelectedMembers,
                 onSelectionConfirmed: input.onSelectionConfirmed
             )
         ).build()

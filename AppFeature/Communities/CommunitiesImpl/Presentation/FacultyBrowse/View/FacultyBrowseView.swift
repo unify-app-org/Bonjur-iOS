@@ -60,7 +60,8 @@ struct FacultyBrowseView: View {
             ),
             onTap: {
                 store.send(.facultyTapped(faculty))
-            }
+            },
+            onAccessoryTap: nil
         )
         
     }

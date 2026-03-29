@@ -8,7 +8,6 @@
 import AppFoundation
 import Communities
 
-
 final class FacultyStudentSelectListViewModel: UIFeatureViewModel<FacultyStudentSelectListFeature> {
     
     struct Dependencies {
@@ -49,14 +48,15 @@ final class FacultyStudentSelectListViewModel: UIFeatureViewModel<FacultyStudent
         case .groupTapped(let section):
             toggleGroup(section)
             
-        case .continueTapped:
-            continueSelection()
+        case .didPop:
+            notifySelection()
         }
     }
     
     private func fetchData() {
         state.title = inputData.title
         sourceSections = inputData.sections
+        state.selectedIDs = Set(inputData.initiallySelectedMembers.map(\.id))
         rebuildSections()
     }
     
@@ -67,13 +67,15 @@ final class FacultyStudentSelectListViewModel: UIFeatureViewModel<FacultyStudent
         
         let visibleSections = sourceSections.enumerated().compactMap { index, section -> MemberListSectionViewData? in
             let members = query.isEmpty
-            ? section.members
-            : section.members.filter {
-                $0.name.lowercased().contains(query)
-                || $0.subtitle.lowercased().contains(query)
-            }
+                ? section.members
+                : section.members.filter {
+                    $0.name.lowercased().contains(query)
+                    || $0.subtitle.lowercased().contains(query)
+                }
             
-            guard !members.isEmpty else { return nil }
+            guard !members.isEmpty else {
+                return nil
+            }
             
             let memberIDs = Set(members.map(\.id))
             let isGroupSelected = memberIDs.isSubset(of: state.selectedIDs)
@@ -137,15 +139,10 @@ final class FacultyStudentSelectListViewModel: UIFeatureViewModel<FacultyStudent
         rebuildSections()
     }
     
-    private func continueSelection() {
+    private func notifySelection() {
         let selectedMembers = sourceSections
             .flatMap(\.members)
             .filter { state.selectedIDs.contains($0.id) }
-        
-        if let limit = inputData.capacityLimit, selectedMembers.count > limit {
-            postEffect(.capacityLimitReached(overflowCount: selectedMembers.count - limit))
-            return
-        }
         
         inputData.onSelectionConfirmed(selectedMembers)
     }

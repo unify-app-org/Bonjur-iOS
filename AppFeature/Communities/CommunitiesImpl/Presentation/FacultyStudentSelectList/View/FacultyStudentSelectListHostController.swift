@@ -7,7 +7,6 @@
 
 import UIKit
 import AppFoundation
-import AppUIKit
 
 // MARK: - Controller
 
@@ -15,32 +14,18 @@ final class FacultyStudentSelectListHostController: UIFeatureController<
     FacultyStudentSelectListFeature,
     FacultyStudentSelectListView
 > {
-    override func handleEffect(_ effect: FacultyStudentSelectListSideEffect) {
-        switch effect {
-        case .loading(let isLoading):
-            if isLoading {
-            } else {
-            }
-        case .capacityLimitReached(overflowCount: let overflowCount):
-            showOverflowAlert(overflowCount: overflowCount)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        if isMovingFromParent {
+            store.send(.didPop)
         }
     }
 
-    private func showOverflowAlert(overflowCount: Int) {
-        AppAlertPresenter.present(
-            .init(
-                config: .init(
-                    title: "Capacity limit reached",
-                    subtitle: "Remove \(overflowCount) member\(overflowCount == 1 ? "" : "s") to continue."
-                ),
-                actions: {
-                    AppAlert.Action(title: "Got it", style: .primary) { dismiss in
-                        dismiss()
-                    }
-                }
-            )
-        ) {
-            AppAlertPresenter.dismiss()
+    override func handleEffect(_ effect: FacultyStudentSelectListSideEffect) {
+        switch effect {
+        case .loading:
+            break
         }
     }
 }

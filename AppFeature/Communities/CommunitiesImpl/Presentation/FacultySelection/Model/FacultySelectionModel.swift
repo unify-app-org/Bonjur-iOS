@@ -14,10 +14,20 @@ import SwiftUI
 struct FacultySelectionInputData {
     let title: String
     let sectionTitle: String
-    let sections: [CommunitiesMemberModuleModel.MemberListSection]
-    let capacityLimit: Int?
-    let onNext: ([CommunitiesMemberModuleModel.MemberCellModel]) -> Void
+    let mode: FacultySelectionMode
     let onSkip: () -> Void
+}
+
+enum FacultySelectionMode {
+    case preloadedMembers(
+        faculties: [CommunitiesMemberModuleModel.FacultyRowModel],
+        capacityLimit: Int?,
+        onNext: ([CommunitiesMemberModuleModel.MemberCellModel]) -> Void
+    )
+    case callback(
+        faculties: [CommunitiesMemberModuleModel.FacultyRowModel],
+        onNext: ([CommunitiesMemberModuleModel.FacultyRowModel]) -> Void
+    )
 }
 
 // MARK: - Side effects
@@ -49,6 +59,7 @@ final class FacultySelectionViewState: UIFeatureState {
 enum FacultySelectionAction: UIFeatureAction {
     case onAppear
     case rowTapped(FacultyRowViewData)
+    case accessoryTapped(FacultyRowViewData)
     case nextTapped
     case skipTapped
 }

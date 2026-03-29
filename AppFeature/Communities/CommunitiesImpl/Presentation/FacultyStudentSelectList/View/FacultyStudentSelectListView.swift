@@ -39,9 +39,6 @@ struct FacultyStudentSelectListView: View {
                 
             }
         }
-        .safeAreaInset(edge: .bottom) {
-            continueButton
-        }
         .background(Color.Palette.grayQuaternary.opacity(0.2))
         .navigationTitle(store.state.title)
         .onAppear {
@@ -92,21 +89,6 @@ struct FacultyStudentSelectListView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding(.top, 40)
     }
-    
-    private var continueButton: some View {
-        AppButton(
-            title: "Continue",
-            model: .init(contentSize: .fill)
-        ) {
-            store.send(.continueTapped)
-        }
-        
-        .padding(.horizontal, 16)
-        .padding(.top, 8)
-        
-        .background(Color.Palette.grayQuaternary.opacity(0.3))
-        .background(Color.Palette.white)
-    }
 }
 
 
@@ -132,7 +114,7 @@ private let defaultPreviewViewModel: FacultyStudentSelectListViewModel = {
         inputData: .init(
             title: "Students - 2002",
             sections: previewSelectableInputSections,
-            capacityLimit: nil,
+            initiallySelectedMembers: [],
             onSelectionConfirmed: { _ in }
         ),
         dependencies: .init()

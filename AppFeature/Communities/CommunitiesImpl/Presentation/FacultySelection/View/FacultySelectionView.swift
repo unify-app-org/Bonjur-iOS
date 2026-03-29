@@ -46,6 +46,9 @@ struct FacultySelectionView: View {
                     data: row,
                     onTap: {
                         store.send(.rowTapped(row))
+                    },
+                    onAccessoryTap: {
+                        store.send(.accessoryTapped(row))
                     }
                 )
             }
@@ -112,9 +115,11 @@ private let defaultPreviewViewModel: FacultySelectionViewModel = {
         inputData: .init(
             title: "Add members",
             sectionTitle: "Faculty",
-            sections: previewFacultySections,
-            capacityLimit: nil,
-            onNext: { _ in },
+            mode: .preloadedMembers(
+                faculties: previewFaculties,
+                capacityLimit: nil,
+                onNext: { _ in }
+            ),
             onSkip: {}
         ),
         dependencies: .init()
@@ -125,7 +130,7 @@ private let defaultPreviewViewModel: FacultySelectionViewModel = {
 
 private let previewFacultySections: [CommunitiesMemberModuleModel.MemberListSection] = [
     .init(
-        title: "2002 - Bachelor",
+        title: "Computer engineering",
         members: [
             .init(
                 id: "member-1",
@@ -136,7 +141,7 @@ private let previewFacultySections: [CommunitiesMemberModuleModel.MemberListSect
         ]
     ),
     .init(
-        title: "2002 - Master",
+        title: "Chemistry",
         members: [
             .init(
                 id: "member-2",
@@ -145,50 +150,33 @@ private let previewFacultySections: [CommunitiesMemberModuleModel.MemberListSect
                 subtitle: "Master, Computer engineering, 2017"
             )
         ]
+    )
+]
+
+private let previewFaculties: [CommunitiesMemberModuleModel.FacultyRowModel] = [
+    .init(
+        id: "faculty-1",
+        title: "2002 - Bachelor",
+        studentListTitle: "Students - 2002",
+        sections: previewFacultySections
     ),
     .init(
+        id: "faculty-2",
+        title: "2002 - Master",
+        studentListTitle: "Students - 2002",
+        sections: previewFacultySections
+    ),
+    .init(
+        id: "faculty-3",
         title: "2002 - Doctoral",
-        members: [
-            .init(
-                id: "member-3",
-                name: "Durdana Hasanova",
-                avatarURL: URL(string: "https://i.pinimg.com/736x/98/31/0d/98310da7fa99a746b088721b25903d4b.jpg"),
-                subtitle: "Doctoral, Computer engineering, 2017"
-            )
-        ]
+        studentListTitle: "Students - 2002",
+        sections: previewFacultySections
     ),
     .init(
+        id: "faculty-4",
         title: "2003 - Bachelor",
-        members: [
-            .init(
-                id: "member-4",
-                name: "Nihad Asgarli",
-                avatarURL: URL(string: "https://i.pinimg.com/736x/76/f7/d5/76f7d5c6bb02d8d142dd359b534e326e.jpg"),
-                subtitle: "Bachelor, Chemistry, 2017"
-            )
-        ]
-    ),
-    .init(
-        title: "2003 - Master",
-        members: [
-            .init(
-                id: "member-5",
-                name: "Huseyn Hasanov",
-                avatarURL: URL(string: "https://i.pinimg.com/736x/ae/9e/cb/ae9ecb29d446fdf6679ee4bfd28280af.jpg"),
-                subtitle: "Master, Chemistry, 2017"
-            )
-        ]
-    ),
-    .init(
-        title: "2003 - Doctoral",
-        members: [
-            .init(
-                id: "member-6",
-                name: "Durdana Hasanova",
-                avatarURL: URL(string: "https://i.pinimg.com/736x/98/31/0d/98310da7fa99a746b088721b25903d4b.jpg"),
-                subtitle: "Doctoral, Chemistry, 2017"
-            )
-        ]
+        studentListTitle: "Students - 2003",
+        sections: previewFacultySections
     )
 ]
 

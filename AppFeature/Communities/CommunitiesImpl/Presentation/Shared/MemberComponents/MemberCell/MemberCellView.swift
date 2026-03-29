@@ -50,6 +50,7 @@ struct MemberCellView: View {
                     Spacer()
                     accessoryView
                 }
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
         }

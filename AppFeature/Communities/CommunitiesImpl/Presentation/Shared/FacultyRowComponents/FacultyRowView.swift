@@ -38,6 +38,7 @@ struct FacultyRowView: View {
                         .renderingMode(.template)
                         .foregroundStyle(Color.Palette.graySecondary)
                 }
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
         }

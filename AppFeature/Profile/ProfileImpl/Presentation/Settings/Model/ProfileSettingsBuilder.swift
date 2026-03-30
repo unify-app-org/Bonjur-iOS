@@ -22,7 +22,9 @@ struct ProfileSettingsBuilder {
             state: .init(),
             router: router,
             inputData: inputData,
-            dependencies: .init()
+            dependencies: .init(
+                useCase: resolve()
+            )
         )
         
         let controller = ProfileSettingsHostController(

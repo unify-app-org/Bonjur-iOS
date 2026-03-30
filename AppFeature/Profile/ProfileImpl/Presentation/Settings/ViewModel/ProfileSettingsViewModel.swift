@@ -11,12 +11,11 @@ import UIKit
 final class ProfileSettingsViewModel: UIFeatureViewModel<ProfileSettingsFeature> {
     
     struct Dependencies {
-        var useCase: ProfileSettingsUseCaseProtocol = ProfileSettingsUseCase()
+        var useCase: ProfileUseCase
     }
     
     private let router: ProfileSettingsRouterProtocol
     private let inputData: ProfileSettingsInputData
-//    private let dependencies: ProfileSettingsViewModel.Dependencies
     private let dependencies: Dependencies
     
     init(

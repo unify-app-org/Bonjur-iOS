@@ -83,8 +83,6 @@ public extension UIImage {
         public static let chatQuestion = UIImage(resource: .chatQuestion)
         
         public static let mobilePhone = UIImage(resource: .mobilePhone)
-
-
         
     }
 }

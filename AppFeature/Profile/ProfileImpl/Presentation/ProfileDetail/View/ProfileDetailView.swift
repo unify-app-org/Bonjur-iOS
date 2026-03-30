@@ -92,7 +92,7 @@ struct ProfileDetailView: View {
             Spacer()
             
             Button {
-                
+                store.send(.settingsTapped)
             } label: {
                 Image(uiImage: UIImage.Icons.settings01)
             }

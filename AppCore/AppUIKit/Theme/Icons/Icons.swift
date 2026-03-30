@@ -54,7 +54,7 @@ public extension UIImage {
         
         public static let chevronDown02 = UIImage(resource: .chevronDown02)
         
-        public static let chevronRight = UIImage(resource: .chevronRight02)
+     
         
         public static let filter04 = UIImage(resource: .filter04)
         

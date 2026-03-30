@@ -28,17 +28,17 @@ final class ProfileSettingsRouter: ProfileSettingsRouterProtocol {
     func navigate(to route: ProfileSettingsRoute) {
         switch route {
         case .back:
-            print("")
+            break
         case .language:
-            print("")
+            break
         case .helpCenter:
-            print("")
+            break
         case .termsAndConditions:
-            print("")
+            break
         case .deleteAccount:
-            print("")
+            break
         case .logout:
-            print("")
+            break
         }
     }
 }

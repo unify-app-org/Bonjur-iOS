@@ -78,7 +78,7 @@ public extension UIImage {
         
         public static let logout = UIImage(resource: .logout)
         
-        public static let chevronright = UIImage(resource: .chevronright)
+        public static let chevronRight = UIImage(resource: .chevronRight)
         
         public static let chatQuestion = UIImage(resource: .chatQuestion)
         

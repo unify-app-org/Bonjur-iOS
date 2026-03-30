@@ -40,13 +40,9 @@ final class FacultySelectionHostController: UIFeatureController<
                     AppAlert.Action(
                         title: buttonTitle,
                         style: .primary
-                    ) { dismiss in
-                        dismiss()
-                    }
+                    )
                 }
             )
-        ) {
-            AppAlertPresenter.dismiss()
-        }
+        )
     }
 }

@@ -67,9 +67,7 @@ public extension View {
                         subtitle: alert.wrappedValue?.subtitle
                     ),
                     actions: [
-                        .init(title: buttonTitle, style: .primary) { _ in
-                            alert.wrappedValue = nil
-                        }
+                        .init(title: buttonTitle, style: .primary)
                     ]
                 )
             )
@@ -91,16 +89,12 @@ public extension View {
             AppAlert.Action(
                 title: "Cancel",
                 style: .secondary
-            ) { dismiss in
-                dismiss()
-            }
+            )
 
             AppAlert.Action(
                 title: "Join",
                 style: .primary
-            ) { dismiss in
-                dismiss()
-            }
+            )
         }
     ) )
    
@@ -119,16 +113,12 @@ public extension View {
             AppAlert.Action(
                 title: "Exit club",
                 style: .destructive
-            ) { dismiss in
-                dismiss()
-            }
+            )
 
             AppAlert.Action(
                 title: "Cancel",
                 style: .primary
-            ) { dismiss in
-                dismiss()
-            }
+            )
         }
     ) )
    

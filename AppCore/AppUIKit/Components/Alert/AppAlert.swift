@@ -31,7 +31,7 @@ public struct AppAlert {
 
 public extension AppAlert {
     struct Config {
-        public typealias BackgroundTapHandler = (@escaping () -> Void) -> Void
+        public typealias BackgroundTapHandler = () -> Void
 
         public let title: String
         public let subtitle: String?
@@ -49,7 +49,7 @@ public extension AppAlert {
     }
 
     struct Action: Identifiable {
-        public typealias Handler = (@escaping () -> Void) -> Void
+        public typealias Handler = () -> Void
 
         public enum Style {
             case primary
@@ -66,7 +66,7 @@ public extension AppAlert {
             id: UUID = UUID(),
             title: String,
             style: Style,
-            handler: @escaping Handler
+            handler: @escaping Handler = {}
         ) {
             self.id = id
             self.title = title

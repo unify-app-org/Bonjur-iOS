@@ -9,9 +9,18 @@ public enum AppAlertPresenter {
 
     public static func present(
         _ alert: AppAlert,
-        onDismiss: @escaping () -> Void
+        onDismiss: (() -> Void)? = nil
     ) {
-        let rootView = AppAlertOverlayView(alert: alert, dismiss: onDismiss)
+        let dismiss: (((() -> Void)?) -> Void) = { completion in
+            AppAlertPresenter.dismiss()
+            onDismiss?()
+            completion?()
+        }
+
+        let rootView = AppAlertOverlayView(
+            alert: alert,
+            dismiss: dismiss
+        )
 
         if let hostingController {
             hostingController.rootView = rootView

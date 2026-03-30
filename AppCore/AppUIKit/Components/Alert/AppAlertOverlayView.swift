@@ -10,7 +10,7 @@ import SwiftUI
 
 struct AppAlertOverlayView: View {
     let alert: AppAlert
-    let dismiss: () -> Void
+    let dismiss: (((() -> Void)?) -> Void)
 
     var body: some View {
         ZStack {
@@ -35,10 +35,6 @@ struct AppAlertOverlayView: View {
     }
 
     private func handleBackgroundTap() {
-        if let onBackgroundTap = alert.config.onBackgroundTap {
-            onBackgroundTap(dismiss)
-        } else {
-            dismiss()
-        }
+        dismiss(alert.config.onBackgroundTap)
     }
 }

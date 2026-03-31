@@ -55,7 +55,7 @@ let hangoutsTarget = Target.createFeatureModule(
     name: "Hangouts",
     implConfig: .init(
         dependencies: [
-            
+            .AppFeature.Communities
         ]
     )
 ).add(to: &frameworkTargets)

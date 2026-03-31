@@ -8,6 +8,7 @@
 import SwiftUI
 import AppFoundation
 import AppUIKit
+import Communities
 
 struct HangoutDetailsView: View {
     @ObservedObject var store: StoreOf<HangoutDetailsFeature>
@@ -18,6 +19,16 @@ struct HangoutDetailsView: View {
     @State private var baseHeight: CGFloat = 164
     @State private var navBarHeight: CGFloat = 0
     @State private var tabHeights: [HangoutDetailsViewState.SegmentTypes: CGFloat] = [:]
+    
+    private let communitiesModule: CommunitiesModule
+
+    init(
+        store: StoreOf<HangoutDetailsFeature>,
+        communitiesModule: CommunitiesModule = resolve()
+    ) {
+        self.communitiesModule = communitiesModule
+        self.store = store
+    }
     
     var body: some View {
         GeometryReader { proxy in
@@ -329,7 +340,7 @@ struct HangoutDetailsView: View {
             )
         ) {
             tabContent(for: .about, content: infoTab)
-            tabContent(for: .members, content: Text("Second Tab"))
+            tabContent(for: .members, content: membersTab)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .frame(height: tabHeights[store.state.selectedSegment] ?? 300)
@@ -392,6 +403,22 @@ struct HangoutDetailsView: View {
                     subItem.isLink ? Color.Palette.appBlue : Color.Palette.blackHigh
                 )
                 .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    @ViewBuilder
+    private var membersTab: some View {
+        if let membersData = store.state.uiModel?.membersData,
+           let view = communitiesModule.makeMembersListView(
+               input: .init(
+                   data: membersData,
+                   onOptionsTapped: { _ in },
+                   onMemberTapped: { _ in }
+               )
+           ) as? AnyView {
+            view
+        } else {
+            EmptyView()
         }
     }
 }

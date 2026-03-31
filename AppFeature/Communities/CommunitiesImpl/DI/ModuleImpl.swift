@@ -1,4 +1,4 @@
-// 
+//
 //  ModuleImpl.swift
 //  Communities
 //
@@ -10,7 +10,113 @@ import Communities
 import SwiftUI
 
 struct CommunitiesModuleImpl: CommunitiesModule {
-    
+    func makeFacultyMembersSelection(
+        input: CommunitiesMemberModuleModel.FacultySelectionMembersInput
+    ) -> AnyObject {
+        FacultySelectionBuilder(
+            inputData: .init(
+                title: input.title,
+                sectionTitle: input.sectionTitle,
+                mode: .preloadedMembers(
+                    faculties: input.faculties,
+                    capacityLimit: input.capacityLimit,
+                    onNext: input.onNext
+                ),
+                onSkip: input.onSkip
+            )
+        ).build()
+    }
+
+    func makeFacultiesSelection(
+        input: CommunitiesMemberModuleModel.FacultySelectionFacultiesInput
+    ) -> AnyObject {
+        FacultySelectionBuilder(
+            inputData: .init(
+                title: input.title,
+                sectionTitle: input.sectionTitle,
+                mode: .callback(
+                    faculties: input.faculties,
+                    onNext: input.onNext
+                ),
+                onSkip: input.onSkip
+            )
+        ).build()
+    }
+
+    func makeFacultyStudentsBrowse(
+        input: CommunitiesMemberModuleModel.FacultyBrowseStudentsInput
+    ) -> AnyObject {
+        FacultyBrowseBuilder(
+            inputData: .init(
+                title: input.title,
+                sectionTitle: input.sectionTitle,
+                faculties: input.faculties,
+                mode: .preloadedStudentList(
+                    onMemberTapped: input.onMemberTapped
+                )
+            )
+        ).build()
+    }
+
+    func makeFacultiesBrowse(
+        input: CommunitiesMemberModuleModel.FacultyBrowseFacultiesInput
+    ) -> AnyObject {
+        FacultyBrowseBuilder(
+            inputData: .init(
+                title: input.title,
+                sectionTitle: input.sectionTitle,
+                faculties: input.faculties,
+                mode: .callback(
+                    onFacultyTapped: input.onFacultyTapped
+                )
+            )
+        ).build()
+    }
+
+    func makeFacultyStudentListView(
+        input: CommunitiesMemberModuleModel.FacultyStudentListViewInput
+    ) -> AnyObject {
+        FacultyStudentListBuilder(
+            inputData: .init(
+                title: input.title,
+                sections: input.sections,
+                onMemberTapped: input.onMemberTapped
+            )
+        ).build()
+    }
+
+    func makeFacultyStudentListSelection(
+        input: CommunitiesMemberModuleModel.FacultyStudentListSelectInput
+    ) -> AnyObject {
+        FacultyStudentSelectListBuilder(
+            inputData: .init(
+                title: input.title,
+                sections: input.sections,
+                initiallySelectedMembers: input.initiallySelectedMembers,
+                onSelectionConfirmed: input.onSelectionConfirmed
+            )
+        ).build()
+    }
+
+    func makeMembersListView(
+        input: CommunitiesMemberModuleModel.ClubMembersInput
+    ) -> Any {
+        AnyView(
+            MemberListView(
+                sections: .clubMembers(from: input),
+                onRowTap: { row in
+                    input.onMemberTapped(row.member)
+                },
+                onAccessoryTap: { row in
+                    input.onOptionsTapped(row.member)
+                },
+                onSelectGroupTap: { _ in },
+                showsScrollView: false,
+                horizontalPadding: false
+            )
+        )
+    }
+
     func makeCommunityCard(
         inputData: CommunitiesModuleModel.CardInputData,
         onTap: @escaping () -> Void
@@ -22,7 +128,7 @@ struct CommunitiesModuleImpl: CommunitiesModule {
             )
         )
     }
-    
+
     func makeCommunityDetail(
         communityId: Int
     ) -> AnyObject {

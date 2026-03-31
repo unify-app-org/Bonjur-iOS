@@ -10,11 +10,11 @@ import SwiftUI
 
 struct AppAlertView: View {
     private let alert: AppAlert
-    private let dismiss: () -> Void
+    private let dismiss: (((() -> Void)?) -> Void)
 
     init(
         alert: AppAlert,
-        dismiss: @escaping () -> Void
+        dismiss: @escaping (((() -> Void)?) -> Void)
     ) {
         self.alert = alert
         self.dismiss = dismiss
@@ -59,7 +59,7 @@ struct AppAlertView: View {
                     title: action.title,
                     model: buttonModel(for: action.style)
                 ) {
-                    action.handler(dismiss)
+                    dismiss(action.handler)
                 }
             }
         }

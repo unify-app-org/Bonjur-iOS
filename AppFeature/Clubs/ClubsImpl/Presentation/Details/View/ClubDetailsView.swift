@@ -9,6 +9,7 @@ import SwiftUI
 import AppFoundation
 import AppUIKit
 import Events
+import Communities
 
 struct ClubDetailsView: View {
     @ObservedObject var store: StoreOf<ClubDetailsFeature>
@@ -22,12 +23,15 @@ struct ClubDetailsView: View {
     @State private var tabHeights: [ClubDetailsViewState.SegmentTypes: CGFloat] = [:]
     
     private let eventsModule: EventsModule
+    private let communitiesModule: CommunitiesModule
     
     init(
         store: StoreOf<ClubDetailsFeature>,
-        eventsModule: EventsModule = resolve()
+        eventsModule: EventsModule = resolve(),
+        communitiesModule: CommunitiesModule = resolve()
     ) {
         self.eventsModule = eventsModule
+        self.communitiesModule = communitiesModule
         self.store = store
     }
     
@@ -395,7 +399,7 @@ struct ClubDetailsView: View {
         ) {
             tabContent(for: .about, content: infoTab)
             tabContent(for: .events, content: eventsTab)
-            tabContent(for: .members, content: Text("Third Tab"))
+            tabContent(for: .members, content: membersTab)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .frame(height: tabHeights[store.state.selectedSegment] ?? 300)
@@ -486,6 +490,22 @@ struct ClubDetailsView: View {
                 )
             ) {}
             .padding()
+        }
+    }
+
+    @ViewBuilder
+    private var membersTab: some View {
+        if let clubMembers = store.state.uiModel?.clubMembers,
+           let view = communitiesModule.makeMembersListView(
+               input: .init(
+                   data: clubMembers,
+                   onOptionsTapped: { _ in },
+                   onMemberTapped: { _ in }
+               )
+           ) as? AnyView {
+            view
+        } else {
+            EmptyView()
         }
     }
 }

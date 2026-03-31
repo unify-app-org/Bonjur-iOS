@@ -2,16 +2,25 @@ import SwiftUI
 import UIKit
 
 @MainActor
-enum AppAlertPresenter {
+public enum AppAlertPresenter {
 
     private static var overlayWindow: UIWindow?
     private static var hostingController: UIHostingController<AppAlertOverlayView>?
 
-    static func present(
+    public static func present(
         _ alert: AppAlert,
-        onDismiss: @escaping () -> Void
+        onDismiss: (() -> Void)? = nil
     ) {
-        let rootView = AppAlertOverlayView(alert: alert, dismiss: onDismiss)
+        let dismiss: (((() -> Void)?) -> Void) = { completion in
+            AppAlertPresenter.dismiss()
+            onDismiss?()
+            completion?()
+        }
+
+        let rootView = AppAlertOverlayView(
+            alert: alert,
+            dismiss: dismiss
+        )
 
         if let hostingController {
             hostingController.rootView = rootView
@@ -27,7 +36,7 @@ enum AppAlertPresenter {
         hostingController = vc
     }
 
-    static func dismiss() {
+    public static func dismiss() {
         hostingController = nil
         overlayWindow?.isHidden = true
         overlayWindow?.rootViewController = nil

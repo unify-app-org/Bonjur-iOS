@@ -495,8 +495,14 @@ struct ClubDetailsView: View {
 
     @ViewBuilder
     private var membersTab: some View {
-        if let input = store.state.clubMembersInput,
-           let view = communitiesModule.makeMembersListView(input: input) as? AnyView {
+        if let clubMembers = store.state.uiModel?.clubMembers,
+           let view = communitiesModule.makeMembersListView(
+               input: .init(
+                   from: clubMembers,
+                   onOptionsTapped: { _ in },
+                   onMemberTapped: { _ in }
+               )
+           ) as? AnyView {
             view
         } else {
             EmptyView()

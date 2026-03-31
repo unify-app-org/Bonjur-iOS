@@ -110,7 +110,9 @@ struct CommunitiesModuleImpl: CommunitiesModule {
                 onAccessoryTap: { row in
                     input.onOptionsTapped(row.member)
                 },
-                onSelectGroupTap: { _ in }
+                onSelectGroupTap: { _ in },
+                showsScrollView: false,
+                horizontalPadding: false
             )
         )
     }

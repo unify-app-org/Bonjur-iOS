@@ -6,6 +6,7 @@
 //
 
 import AppFoundation
+import Communities
 
 final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
     
@@ -51,9 +52,14 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
             let uiModel = try await dependencies.useCase.fetchClubDetails(
                 clubId: inputData.clubId
             )
-            state.uiModel = uiModel
+            applyUIModel(uiModel)
         } catch {
             
         }
+    }
+
+    private func applyUIModel(_ uiModel: ClubsDetailsModel.UIModel) {
+        state.uiModel = uiModel
+        state.clubMembersInput = .init(from: uiModel.clubMembers)
     }
 }

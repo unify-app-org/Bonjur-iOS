@@ -9,6 +9,7 @@ import AppFoundation
 import SwiftUI
 import Events
 import AppUIKit
+import Communities
 
 // MARK: - ClubDetails input
 
@@ -35,6 +36,7 @@ typealias ClubDetailsFeature = UIFeatureDefinition<
 final class ClubDetailsViewState: UIFeatureState {
     
     @Published var uiModel: ClubsDetailsModel.UIModel?
+    @Published var clubMembersInput: CommunitiesMemberModuleModel.ClubMembersInput?
     @Published var selectedSegment: SegmentTypes = .about
     
     enum SegmentTypes: String, CaseIterable, Identifiable {

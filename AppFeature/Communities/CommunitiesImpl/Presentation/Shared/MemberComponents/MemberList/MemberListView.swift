@@ -16,19 +16,22 @@ struct MemberListView: View {
     let onAccessoryTap: (MemberCellViewData) -> Void
     let onSelectGroupTap: (MemberListSectionViewData) -> Void
     let showsScrollView: Bool
+    let horizontalPadding: Bool
     
     init(
         sections: [MemberListSectionViewData],
         onRowTap: @escaping (MemberCellViewData) -> Void,
         onAccessoryTap: @escaping (MemberCellViewData) -> Void,
         onSelectGroupTap: @escaping (MemberListSectionViewData) -> Void,
-        showsScrollView: Bool = true
+        showsScrollView: Bool = true,
+        horizontalPadding: Bool = true
     ) {
         self.sections = sections
         self.onRowTap = onRowTap
         self.onAccessoryTap = onAccessoryTap
         self.onSelectGroupTap = onSelectGroupTap
         self.showsScrollView = showsScrollView
+        self.horizontalPadding = horizontalPadding
     }
     
     var body: some View {
@@ -67,7 +70,8 @@ struct MemberListView: View {
                 }
             }
         }
-        .padding(16)
+        .padding(.vertical,16)
+        .padding(.horizontal,horizontalPadding ? 16:0)
     }
 }
 

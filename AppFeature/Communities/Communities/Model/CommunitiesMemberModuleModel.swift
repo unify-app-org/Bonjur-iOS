@@ -34,6 +34,22 @@ public enum CommunitiesMemberModuleModel {
         }
     }
 
+    public struct GroupedMembersData: Hashable, Sendable {
+        public let owner: MemberCellModel
+        public let president: MemberCellModel?
+        public let members: [MemberCellModel]
+
+        public init(
+            owner: MemberCellModel,
+            president: MemberCellModel? = nil,
+            members: [MemberCellModel]
+        ) {
+            self.owner = owner
+            self.president = president
+            self.members = members
+        }
+    }
+
     public struct FacultyRowModel: Hashable, Sendable {
         public let id: String
         public let title: String
@@ -206,6 +222,20 @@ public extension CommunitiesMemberModuleModel {
             self.members = members
             self.onOptionsTapped = onOptionsTapped
             self.onMemberTapped = onMemberTapped
+        }
+
+        public init(
+            data: GroupedMembersData,
+            onOptionsTapped: @escaping (MemberCellModel) -> Void,
+            onMemberTapped: @escaping (MemberCellModel) -> Void
+        ) {
+            self.init(
+                owner: data.owner,
+                president: data.president,
+                members: data.members,
+                onOptionsTapped: onOptionsTapped,
+                onMemberTapped: onMemberTapped
+            )
         }
     }
 }

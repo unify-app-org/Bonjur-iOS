@@ -489,7 +489,7 @@ struct EventDetailsView: View {
         if let membersData = store.state.uiModel?.membersData,
            let view = communitiesModule.makeMembersListView(
                input: .init(
-                   from: membersData,
+                   data: membersData,
                    onOptionsTapped: { _ in },
                    onMemberTapped: { _ in }
                )

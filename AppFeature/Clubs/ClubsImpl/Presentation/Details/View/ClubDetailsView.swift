@@ -498,7 +498,7 @@ struct ClubDetailsView: View {
         if let clubMembers = store.state.uiModel?.clubMembers,
            let view = communitiesModule.makeMembersListView(
                input: .init(
-                   from: clubMembers,
+                   data: clubMembers,
                    onOptionsTapped: { _ in },
                    onMemberTapped: { _ in }
                )

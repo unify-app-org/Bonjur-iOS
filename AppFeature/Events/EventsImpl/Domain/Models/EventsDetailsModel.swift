@@ -7,21 +7,9 @@
 
 import Foundation
 import AppUIKit
+import Communities
 
 enum EventsDetailsModel {
-    struct Member {
-        let id: String
-        let name: String
-        let avatarURL: URL?
-        let subtitle: String
-    }
-
-    struct MembersData {
-        let owner: Member
-        let president: Member?
-        let members: [Member]
-    }
-    
     struct UIModel {
         let name: String
         let communityName: String
@@ -33,7 +21,7 @@ enum EventsDetailsModel {
         let tags: [AppUIEntities.Tags]
         let infoData: [Info]
         let attachments: [AttachmentItemView.Model]
-        let membersData: MembersData
+        let membersData: CommunitiesMemberModuleModel.GroupedMembersData
     }
     
     struct Info: Identifiable {
@@ -132,7 +120,7 @@ extension EventsDetailsModel.UIModel {
     )
 }
 
-private extension EventsDetailsModel.MembersData {
+private extension CommunitiesMemberModuleModel.GroupedMembersData {
     static let mockData: Self = .init(
         owner: .init(
             id: "owner-1",

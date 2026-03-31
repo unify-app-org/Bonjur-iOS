@@ -6,23 +6,11 @@
 //
 
 import AppUIKit
+import Communities
 import Events
 import Foundation
 
 struct ClubsDetailsModel {
-    struct Member {
-        let id: String
-        let name: String
-        let avatarURL: URL?
-        let subtitle: String
-    }
-
-    struct ClubMembers {
-        let owner: Member
-        let president: Member?
-        let members: [Member]
-    }
-    
     struct UIModel {
         let name: String
         let communityName: String
@@ -35,7 +23,7 @@ struct ClubsDetailsModel {
         let tags: [AppUIEntities.Tags]
         let infoData: [Info]
         let eventsData: [EventsModuleModel.CardInputData]
-        let clubMembers: ClubMembers
+        let clubMembers: CommunitiesMemberModuleModel.GroupedMembersData
     }
     
     struct Info: Identifiable {
@@ -134,7 +122,7 @@ extension ClubsDetailsModel.UIModel {
     )
 }
 
-private extension ClubsDetailsModel.ClubMembers {
+private extension CommunitiesMemberModuleModel.GroupedMembersData {
     static let mockData: Self = .init(
         owner: .init(
             id: "owner-1",

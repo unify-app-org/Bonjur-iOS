@@ -20,8 +20,7 @@ struct StudentCardView: View {
                 isPresented: store.state.coverSheetBinding(
                     onSetCoverSheetPresented: { store.send(.setCoverSheetPresented($0)) }
                 ),
-                detents: store.state.coverSheetDetents,
-                onDismiss: { store.send(.coverSheetDismissed) }
+                detents: store.state.coverSheetDetents
             ) {
                 coverPickerSheet
             }

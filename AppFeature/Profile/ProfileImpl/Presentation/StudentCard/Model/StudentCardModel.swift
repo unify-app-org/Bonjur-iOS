@@ -20,12 +20,6 @@ typealias StudentCardFeature = UIFeatureDefinition<
 >
 
 final class StudentCardViewState: UIFeatureState {
-    enum CoverSheetDismissIntent {
-        case none
-        case cancel
-        case save
-    }
-
     @Published var previewCard: UserCardModel?
 
     // Mirrored committed value
@@ -35,7 +29,6 @@ final class StudentCardViewState: UIFeatureState {
     @Published var draftCover: AppUIEntities.BackgroundType?
 
     @Published var isChooseColorSheetPresented: Bool = false
-    @Published var coverSheetDismissIntent: CoverSheetDismissIntent = .none
     @Published var isSaving: Bool = false
 
     static let availableCovers: [AppUIEntities.BackgroundType?] = [
@@ -72,9 +65,7 @@ final class StudentCardViewState: UIFeatureState {
                 self?.isChooseColorSheetPresented ?? false
             },
             set: { isPresented in
-                if isPresented {
-                    onSetCoverSheetPresented(true)
-                }
+                onSetCoverSheetPresented(isPresented)
             }
         )
     }
@@ -101,5 +92,4 @@ enum StudentCardAction: UIFeatureAction {
     case coverSelected(AppUIEntities.BackgroundType?)
     case cancelColorSelection
     case saveColorSelection
-    case coverSheetDismissed
 }

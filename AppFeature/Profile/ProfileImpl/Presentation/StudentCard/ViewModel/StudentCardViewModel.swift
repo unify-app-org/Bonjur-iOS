@@ -35,7 +35,7 @@ final class StudentCardViewModel: UIFeatureViewModel<StudentCardFeature> {
             handleEditTapped()
 
         case .setCoverSheetPresented(let isPresented):
-            state.isChooseColorSheetPresented = isPresented
+            handleSetCoverSheetPresented(isPresented)
 
         case .coverSelected(let cover):
             handleCoverSelected(cover)
@@ -45,25 +45,27 @@ final class StudentCardViewModel: UIFeatureViewModel<StudentCardFeature> {
 
         case .saveColorSelection:
             handleSaveColorSelection()
-
-        case .coverSheetDismissed:
-            handleCoverSheetDismissed()
         }
     }
 
     private func handleCloseTapped() {
-        let committedCover = state.savedCover
         Task { @MainActor in
-            inputData.onSave(committedCover)
             router.navigate(to: .dismiss)
         }
     }
 
     private func handleEditTapped() {
         state.draftCover = state.savedCover
-        state.coverSheetDismissIntent = .none
         state.isChooseColorSheetPresented = true
         applyPreview(cover: state.draftCover)
+    }
+
+    private func handleSetCoverSheetPresented(_ isPresented: Bool) {
+        state.isChooseColorSheetPresented = isPresented
+
+        guard !isPresented else { return }
+
+        resetDraftToSavedCover()
     }
 
     private func handleCoverSelected(_ cover: AppUIEntities.BackgroundType?) {
@@ -72,43 +74,28 @@ final class StudentCardViewModel: UIFeatureViewModel<StudentCardFeature> {
     }
 
     private func handleCancelColorSelection() {
-        state.coverSheetDismissIntent = .cancel
-        state.draftCover = state.savedCover
-        applyPreview(cover: state.savedCover)
+        resetDraftToSavedCover()
         state.isChooseColorSheetPresented = false
     }
 
     private func handleSaveColorSelection() {
-        state.coverSheetDismissIntent = .save
-        commitDraftCover(resetDismissIntent: false)
+        commitDraftCover()
         state.isChooseColorSheetPresented = false
     }
 
-    private func handleCoverSheetDismissed() {
-        state.isChooseColorSheetPresented = false
-
-        switch state.coverSheetDismissIntent {
-        case .cancel:
-            state.coverSheetDismissIntent = .none
-        case .save:
-            state.coverSheetDismissIntent = .none
-        case .none:
-            commitDraftCover()
-        }
-    }
-
-    private func commitDraftCover(resetDismissIntent: Bool = true) {
+    private func commitDraftCover() {
         state.savedCover = state.draftCover
         applyPreview(cover: state.savedCover)
-
-        if resetDismissIntent {
-            state.coverSheetDismissIntent = .none
-        }
 
         let committedCover = state.savedCover
         Task { @MainActor in
             inputData.onSave(committedCover)
         }
+    }
+
+    private func resetDraftToSavedCover() {
+        state.draftCover = state.savedCover
+        applyPreview(cover: state.savedCover)
     }
 
     private func applyPreview(cover: AppUIEntities.BackgroundType?) {

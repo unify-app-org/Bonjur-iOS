@@ -14,6 +14,11 @@ final class ProfileDetailHostController: UIFeatureController<
     ProfileDetailFeature,
     ProfileDetailView
 > {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
     override func handleEffect(_ effect: ProfileDetailSideEffect) {
         switch effect {
         case .loading(let isLoading):

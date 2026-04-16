@@ -14,6 +14,7 @@ final class ClubDetailsHostController: UIFeatureController<
     ClubDetailsFeature,
     ClubDetailsView
 > {
+
     override func handleEffect(_ effect: ClubDetailsSideEffect) {
         switch effect {
         case .loading(let isLoading):

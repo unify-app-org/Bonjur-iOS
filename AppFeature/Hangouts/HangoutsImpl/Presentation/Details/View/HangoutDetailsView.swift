@@ -13,11 +13,9 @@ import Communities
 struct HangoutDetailsView: View {
     @ObservedObject var store: StoreOf<HangoutDetailsFeature>
     
-    @State private var isScrolled = false
     @State private var isNameVisible = true
+    @State private var isScrolled = false
     @State private var isSegmentSticky = false
-    @State private var baseHeight: CGFloat = 164
-    @State private var navBarHeight: CGFloat = 0
     @State private var tabHeights: [HangoutDetailsViewState.SegmentTypes: CGFloat] = [:]
     
     private let communitiesModule: CommunitiesModule
@@ -31,153 +29,65 @@ struct HangoutDetailsView: View {
     }
     
     var body: some View {
-        GeometryReader { proxy in
-            ZStack(alignment: .top) {
-                mainScrollView(proxy)
-                navigationOverlay(safeAreaTop: proxy.safeAreaInsets.top)
-            }
-            .ignoresSafeArea()
-            .toolbar(.hidden)
-            .enableSwipeBack()
-            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { newValue in
-                baseHeight = proxy.safeAreaInsets.top + 28
-            }
-        }
-        .animation(.easeInOut, value: store.state.selectedSegment)
-        .onAppear {
-            store.send(.fetchData)
-        }
-    }
-    
-    // MARK: - Main Components
-    
-    private func mainScrollView(_ proxy: GeometryProxy) -> some View {
-        VStack {
-            ScrollView(showsIndicators: false) {
-                stretchableHeader
-                bottomView
-            }
-            .coordinateSpace(name: "scroll")
-            
-            AppButton(
-                title: "Join",
-                model: .init(
-                    contentSize: .fill
-                )
-            ) {
-                
-            }
-            .padding(.bottom, proxy.safeAreaInsets.bottom)
-            .padding(.horizontal)
-        }
-    }
-    
-    // MARK: - Header
-    
-    private var stretchableHeader: some View {
-        GeometryReader { geo in
-            let minY = geo.frame(in: .named("scroll")).minY
-            let pullDown = max(minY, 0)
-            let height = baseHeight + pullDown
-            let scale = 1 + (pullDown / 350)
-
-            Color.white
-                .frame(height: height)
-                .scaleEffect(scale, anchor: .center)
-                .clipped()
-                .offset(y: minY > 0 ? -minY : 0)
-                .onChange(of: minY) { newValue in
-                    withAnimation {
-                        isScrolled = newValue < -30
+        ZStack(alignment: .top) {
+            VStack {
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: .zero) {
+                        Color.white.frame(height: 28)
+                        bottomView
                     }
                 }
-        }
-        .frame(height: baseHeight)
-    }
-    
-    private func navigationOverlay(safeAreaTop: CGFloat) -> some View {
-        VStack(spacing: 0) {
-            customNavigationBar(safeAreaTop: safeAreaTop)
-                .background(isScrolled ? Color.white : Color.clear)
-                .clipShape(RoundedRectangle(cornerRadius: .zero))
-                .shadow(
-                    color: isScrolled ? Color.black.opacity(0.1) : Color.clear,
-                    radius: isScrolled ? 4 : 0,
-                    x: 0,
-                    y: isScrolled ? 2 : 0
-                )
+                .coordinateSpace(name: "scroll")
+                
+                AppButton(
+                    title: "Join",
+                    model: .init(
+                        contentSize: .fill
+                    )
+                ) {
+                    
+                }
+                .padding(.horizontal)
+            }
             
             if isSegmentSticky {
                 segmentViewSticky
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
-        .animation(.easeInOut(duration: 0.2), value: isScrolled)
-        .animation(.easeInOut(duration: 0.2), value: isSegmentSticky)
-    }
-    
-    // MARK: - Navigation Bar
-    
-    private func customNavigationBar(safeAreaTop: CGFloat) -> some View {
-        HStack {
-            Button { store.send(.backTapped) } label: {
-                navigationBarButton(uiImage: UIImage.Icons.arrowLeft01)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar(.visible)
+        .enableSwipeBack()
+        .toolbarBackground(isScrolled ? .automatic : .hidden, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Image(uiImage: UIImage.Icons.arrowLeft01)
+                    .onTapGesture {
+                        store.send(.backTapped)
+                    }
             }
-            
-            Spacer()
-            
-            Button {} label: {
-                navigationBarButton(uiImage: UIImage.Icons.ellipsis02)
+            ToolbarItem(placement: .principal) {
+                if !isNameVisible {
+                    Text(store.state.uiModel?.name ?? "")
+                        .font(Font.Typography.HeadingXl.bold)
+                        .lineLimit(1)
+                }
             }
-            
+            ToolbarItem(placement: .topBarTrailing) {
+                Image(uiImage: UIImage.Icons.ellipsis02)
+            }
             if !isScrolled {
-                Button {} label: {
-                    navigationBarButton(uiImage: UIImage.Icons.penLine)
+                ToolbarItem(placement: .topBarTrailing) {
+                    Image(uiImage: UIImage.Icons.penLine)
+                        .padding(.leading)
                 }
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.top, safeAreaTop - 5)
-        .overlay(navBarTitleOverlay(safeAreaTop: safeAreaTop))
-        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { newValue in
-            navBarHeight = newValue - 20
-        }
-    }
-    
-    private func navBarTitleOverlay(safeAreaTop: CGFloat) -> some View {
-        Group {
-            if !isNameVisible {
-                Text(store.state.uiModel?.name ?? "")
-                    .font(Font.Typography.HeadingXl.bold)
-                    .lineLimit(1)
-                    .padding(.horizontal, 80)
-                    .padding(.top, safeAreaTop - 16)
-            }
-        }
-    }
-    
-    private func navigationBarButton(uiImage: UIImage) -> some View {
-        Image(uiImage: uiImage)
-            .padding(4)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .padding(.bottom, 16)
-    }
-    
-    // MARK: - Logo
-    
-    private var cameraButton: some View {
-        Button {} label: {
-            Image(uiImage: UIImage.Icons.camera)
-                .resizable()
-                .renderingMode(.template)
-                .frame(width: 18, height: 18)
-                .foregroundStyle(Color.Palette.blackMedium)
-                .padding(7)
-                .background(Color.Palette.grayQuaternary)
-                .clipShape(Circle())
-                .overlay(
-                    Circle().stroke(Color.Palette.whiteHigh, lineWidth: 2)
-                )
+        .animation(.easeInOut, value: store.state.selectedSegment)
+        .animation(.easeInOut(duration: 0.2), value: isSegmentSticky)
+        .onAppear {
+            store.send(.fetchData)
         }
     }
     
@@ -199,7 +109,6 @@ struct HangoutDetailsView: View {
             memberCount
             chipsView
         }
-        .padding(.top)
     }
     
     private var clubNameText: some View {
@@ -210,8 +119,11 @@ struct HangoutDetailsView: View {
                 .onGeometryChange(for: CGFloat.self) {
                     $0.frame(in: .named("scroll")).minY
                 } action: { minY in
-                    withAnimation {
-                        isNameVisible = minY > navBarHeight
+                    var transaction = Transaction(animation: .easeInOut(duration: 0.2))
+                    transaction.disablesAnimations = false
+                    withTransaction(transaction) {
+                        isNameVisible = minY > 0
+                        isScrolled = minY <= 0
                     }
                 }
         }
@@ -288,7 +200,7 @@ struct HangoutDetailsView: View {
                 $0.frame(in: .named("scroll")).minY
             } action: { minY in
                 withAnimation(.easeInOut(duration: 0.2)) {
-                    isSegmentSticky = minY <= navBarHeight
+                    isSegmentSticky = minY <= 0
                 }
             }
     }
@@ -297,16 +209,7 @@ struct HangoutDetailsView: View {
     private var segmentViewSticky: some View {
         segmentPicker
             .padding(.horizontal, 16)
-            .padding(.bottom, 8)
-            .background(
-                Color.white
-                    .shadow(
-                        color: Color.black.opacity(0.1),
-                        radius: 4,
-                        x: 0,
-                        y: 2
-                    )
-            )
+            .padding(.vertical, 4)
             .mask(
                 Rectangle().padding(.bottom, -10)
             )

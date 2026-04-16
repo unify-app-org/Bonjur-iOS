@@ -71,3 +71,31 @@ public extension BackButtonToolbarItem where Content == Image {
         }
     }
 }
+
+// MARK: - Toolbar Item Background
+
+private struct ToolbarItemBackgroundModifier: ViewModifier {
+    let isScrolled: Bool
+    let action: () -> Void
+    
+    func body(content: Content) -> some View {
+        Button {
+            action()
+        } label: {
+            if #available(iOS 26.0, *) {
+                content
+            } else {
+                content
+                    .padding(8)
+                    .background(isScrolled ? Color.Palette.grayQuaternary : Color.Palette.whiteMedium)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+        }
+    }
+}
+
+public extension View {
+    func toolbarItemBackground(isScrolled: Bool = true, action: @escaping () -> Void) -> some View {
+        modifier(ToolbarItemBackgroundModifier(isScrolled: isScrolled, action: action))
+    }
+}

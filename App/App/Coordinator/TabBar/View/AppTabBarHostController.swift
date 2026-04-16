@@ -263,8 +263,9 @@ final class AppTabBarHostController: UITabBarController {
         tabBar.tintColor = UIColor(Color.Palette.blackHigh)
         
         let appearance = UITabBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .white
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundEffect = UIBlurEffect(style: .systemThinMaterial)
+        appearance.backgroundColor = UIColor.white.withAlphaComponent(0.3)
         appearance.shadowColor = .clear
         
         tabBar.standardAppearance = appearance

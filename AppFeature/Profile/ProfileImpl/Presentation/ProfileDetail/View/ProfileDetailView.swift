@@ -208,7 +208,7 @@ struct ProfileDetailView: View {
     private var segmentViewSticky: some View {
         segmentPicker
             .padding(.horizontal, 16)
-            .padding(.bottom, 8)
+            .padding(.vertical, 4)
             .background(
                 Color.white
                     .shadow(

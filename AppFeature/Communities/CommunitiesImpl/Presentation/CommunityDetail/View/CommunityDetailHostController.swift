@@ -14,6 +14,7 @@ final class CommunityDetailHostController: UIFeatureController<
     CommunityDetailFeature,
     CommunityDetailView
 > {
+
     override func handleEffect(_ effect: CommunityDetailSideEffect) {
         switch effect {
         case .loading(let isLoading):

@@ -17,7 +17,6 @@ struct CommunityDetailView: View {
     @State private var isNameVisible = true
     @State private var isSegmentSticky = false
     @State private var baseHeight: CGFloat = 164
-    @State private var navBarHeight: CGFloat = 0
     @State private var tabHeights: [CommunityDetailViewState.SegmentTypes: CGFloat] = [:]
     
     private let clubsModule: ClubsModule
@@ -31,19 +30,56 @@ struct CommunityDetailView: View {
     }
     
     var body: some View {
-        GeometryReader { proxy in
-            ZStack(alignment: .top) {
-                mainScrollView(proxy)
-                navigationOverlay(safeAreaTop: proxy.safeAreaInsets.top)
+        ZStack(alignment: .top) {
+            mainScrollView
+                .ignoresSafeArea(edges: .top)
+            
+            if isSegmentSticky {
+                segmentViewSticky
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
-            .ignoresSafeArea()
-            .toolbar(.hidden)
-            .enableSwipeBack()
-            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { newValue in
-                baseHeight = newValue / 4.5
+        }
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { newValue in
+            baseHeight = newValue / 4
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .enableSwipeBack()
+        .toolbar(.visible)
+        .toolbarBackground(isScrolled ? .automatic : .hidden, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Image(uiImage: UIImage.Icons.arrowLeft01)
+                    .toolbarItemBackground(
+                        isScrolled: isScrolled
+                    ) {
+                        store.send(.backTapped)
+                    }
+            }
+            ToolbarItem(placement: .principal) {
+                if !isNameVisible {
+                    Text(store.state.uiModel?.name ?? "")
+                        .font(Font.Typography.HeadingXl.bold)
+                        .lineLimit(1)
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Image(uiImage: UIImage.Icons.ellipsis02)
+                    .toolbarItemBackground(
+                        isScrolled: isScrolled
+                    ) { }
+            }
+            if !isScrolled {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Image(uiImage: UIImage.Icons.camera)
+                        .toolbarItemBackground(
+                            isScrolled: isScrolled
+                        ) { }
+                }
             }
         }
         .animation(.easeInOut, value: store.state.selectedSegment)
+        .animation(.easeInOut(duration: 0.2), value: isSegmentSticky)
         .onAppear {
             store.send(.fetchData)
         }
@@ -51,86 +87,15 @@ struct CommunityDetailView: View {
     
     // MARK: - Main Components
     
-    private func mainScrollView(_ proxy: GeometryProxy) -> some View {
+    private var mainScrollView: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: .zero) {
                 stretchableHeader
                 logoView
-                bottomView(proxy)
+                bottomView
             }
         }
         .coordinateSpace(name: "scroll")
-    }
-    
-    private func navigationOverlay(safeAreaTop: CGFloat) -> some View {
-        VStack(spacing: 0) {
-            customNavigationBar(safeAreaTop: safeAreaTop)
-                .background(isScrolled ? Color.white : Color.clear)
-                .clipShape(RoundedRectangle(cornerRadius: .zero))
-                .shadow(
-                    color: isScrolled ? Color.black.opacity(0.1) : Color.clear,
-                    radius: isScrolled ? 4 : 0,
-                    x: 0,
-                    y: isScrolled ? 2 : 0
-                )
-            
-            if isSegmentSticky {
-                segmentViewSticky
-                    .transition(.move(edge: .top).combined(with: .opacity))
-            }
-        }
-        .animation(.easeInOut(duration: 0.2), value: isScrolled)
-        .animation(.easeInOut(duration: 0.2), value: isSegmentSticky)
-    }
-    
-    // MARK: - Navigation Bar
-    
-    private func customNavigationBar(safeAreaTop: CGFloat) -> some View {
-        HStack {
-            Button { store.send(.backTapped) } label: {
-                navigationBarButton(uiImage: UIImage.Icons.arrowLeft01)
-            }
-            
-            Spacer()
-            
-            HStack(spacing: 12) {
-                Button {} label: {
-                    navigationBarButton(uiImage: UIImage.Icons.ellipsis02)
-                }
-                
-                if !isScrolled {
-                    Button {} label: {
-                        navigationBarButton(uiImage: UIImage.Icons.camera)
-                    }
-                }
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.top, safeAreaTop - 5)
-        .overlay(navBarTitleOverlay(safeAreaTop: safeAreaTop))
-        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { newValue in
-            navBarHeight = newValue - 20
-        }
-    }
-    
-    private func navBarTitleOverlay(safeAreaTop: CGFloat) -> some View {
-        Group {
-            if !isNameVisible {
-                Text(store.state.uiModel?.name ?? "")
-                    .font(Font.Typography.HeadingXl.bold)
-                    .lineLimit(1)
-                    .padding(.horizontal, 80)
-                    .padding(.top, safeAreaTop - 16)
-            }
-        }
-    }
-    
-    private func navigationBarButton(uiImage: UIImage) -> some View {
-        Image(uiImage: uiImage)
-            .padding(10)
-            .background(isScrolled ? Color.Palette.grayQuaternary : Color.Palette.whiteMedium)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .padding(.bottom, 16)
     }
     
     // MARK: - Header
@@ -224,11 +189,11 @@ struct CommunityDetailView: View {
     
     // MARK: - Bottom Content
     
-    private func bottomView(_ proxy: GeometryProxy) -> some View {
+    private var bottomView: some View {
         VStack(alignment: .leading, spacing: 0) {
             clubInfoView
             segmentView
-            tabView(proxy)
+            tabView
         }
         .padding(.horizontal)
     }
@@ -250,7 +215,7 @@ struct CommunityDetailView: View {
                 $0.frame(in: .named("scroll")).minY
             } action: { minY in
                 withAnimation {
-                    isNameVisible = minY > navBarHeight
+                    isNameVisible = minY > 0
                 }
             }
     }
@@ -297,7 +262,7 @@ struct CommunityDetailView: View {
                 $0.frame(in: .named("scroll")).minY
             } action: { minY in
                 withAnimation(.easeInOut(duration: 0.2)) {
-                    isSegmentSticky = minY <= navBarHeight
+                    isSegmentSticky = minY <= 0
                 }
             }
     }
@@ -306,16 +271,7 @@ struct CommunityDetailView: View {
     private var segmentViewSticky: some View {
         segmentPicker
             .padding(.horizontal, 16)
-            .padding(.bottom, 8)
-            .background(
-                Color.white
-                    .shadow(
-                        color: Color.black.opacity(0.1),
-                        radius: 4,
-                        x: 0,
-                        y: 2
-                    )
-            )
+            .padding(.vertical, 4)
             .mask(
                 Rectangle().padding(.bottom, -10)
             )
@@ -337,7 +293,7 @@ struct CommunityDetailView: View {
     // MARK: - Tabs
     
     @ViewBuilder
-    private func tabView(_ proxy: GeometryProxy) -> some View {
+    private var tabView: some View {
         TabView(
             selection: Binding(
                 get: { store.state.selectedSegment },
@@ -349,7 +305,7 @@ struct CommunityDetailView: View {
             )
         ) {
             tabContent(for: .about, content: infoTab)
-            tabContent(for: .clubs, content: clubsTab(proxy))
+            tabContent(for: .clubs, content: clubsTab)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .frame(height: tabHeights[store.state.selectedSegment] ?? 300)
@@ -415,7 +371,7 @@ struct CommunityDetailView: View {
         }
     }
     
-    private func clubsTab(_ proxy: GeometryProxy) -> some View {
+    private var clubsTab: some View {
         VStack(spacing: 0) {
             let clubs = store.state.uiModel?.clubsData ?? []
             if !clubs.isEmpty {
@@ -442,7 +398,7 @@ struct CommunityDetailView: View {
             }
         }
         .padding(.top)
-        .padding(.bottom, proxy.safeAreaInsets.bottom)
+        .padding(.bottom, 34)
     }
     
     private func emptyView(

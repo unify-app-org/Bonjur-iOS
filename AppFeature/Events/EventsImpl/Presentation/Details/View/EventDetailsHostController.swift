@@ -14,6 +14,7 @@ final class EventDetailsHostController: UIFeatureController<
     EventDetailsFeature,
     EventDetailsView
 > {
+
     override func handleEffect(_ effect: EventDetailsSideEffect) {
         switch effect {
         case .loading(let isLoading):

@@ -15,7 +15,6 @@ import Communities
 
 struct DiscoverView: View {
     @ObservedObject var store: StoreOf<DiscoverFeature>
-    @State private var viewHeight: CGFloat = 110
     @State private var offset: CGFloat = 0
     @State private var currentCommunitiesPage = 0
     
@@ -26,7 +25,6 @@ struct DiscoverView: View {
 
     init(
         store: StoreOf<DiscoverFeature>,
-        viewHeight: CGFloat = 110,
         offset: CGFloat = 0,
         clubsModule: ClubsModule = resolve(),
         eventsModule: EventsModule = resolve(),
@@ -34,31 +32,81 @@ struct DiscoverView: View {
         communitiesModule: CommunitiesModule = resolve()
     ) {
         self.offset = offset
-        self.viewHeight = viewHeight
         self.store = store
         self.clubsModule = clubsModule
         self.eventsModule = eventsModule
         self.hangoutsModule = hangoutsModule
         self.communitiesModule = communitiesModule
     }
-    
+
     var body: some View {
-        ZStack(alignment: .top) {
-            VStack(spacing: .zero) {
-                Color.clear
-                    .frame(height: viewHeight)
-                scrollView
-            }
-            VStack(spacing: .zero) {
-                topView
-                    .padding(.vertical, 8)
-                Spacer()
-            }
+        VStack(spacing: 4) {
+            filterView
+            scrollView
         }
         .onAppear {
             store.send(.fetchData)
         }
-        .navigationBarHidden(true)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarRole(.editor)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                HStack(spacing: 8) {
+                    profileButton
+                    greetingView
+                        .padding(.horizontal, 6)
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                bellButton
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var profileButton: some View {
+        let url = URL(string: store.state.uiModel.user.profileImage ?? "")
+        CachedAsyncImage(url: url) { image in
+            image
+                .resizable()
+                .frame(width: 36, height: 36)
+        } placeholder: {
+            Image(systemName: "person")
+                .renderingMode(.template)
+                .foregroundStyle(Color.Palette.blackHigh)
+        }
+        .toolbarItemBackground {
+            
+        }
+    }
+
+    private var greetingView: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(store.state.uiModel.user.greeting)
+                .font(Font.Typography.TextMd.regular)
+                .foregroundStyle(Color.Palette.grayPrimary)
+            Text(store.state.uiModel.user.name)
+                .font(Font.Typography.BodyTextSm.medium)
+                .foregroundStyle(Color.Palette.black)
+        }
+        .fixedSize()
+    }
+
+    private var bellButton: some View {
+        Image(uiImage: UIImage.Icons.bell)
+            .toolbarItemBackground {
+                
+            }
+    }
+
+    private var filterView: some View {
+        FilterView(
+            model: store.state.uiModel.filters,
+            selectedItems: { _ in
+                // do
+            }
+        )
+        .background(Color.Palette.white)
     }
     
     private var scrollView: some View {
@@ -80,18 +128,18 @@ struct DiscoverView: View {
             }
         }
     }
-    
+
     var offsetReader: some View {
-          GeometryReader { proxy in
-              Color.clear
-                  .preference(
-                      key: OffsetPreferenceKey.self,
-                      value: proxy.frame(in: .named("EndDetectionScrollView")).maxY
-                  )
-          }
-          .frame(height: 0)
+        GeometryReader { proxy in
+            Color.clear
+                .preference(
+                    key: OffsetPreferenceKey.self,
+                    value: proxy.frame(in: .named("EndDetectionScrollView")).maxY
+                )
+        }
+        .frame(height: 0)
     }
-    
+
     private func communitiesView(geometry: GeometryProxy) -> some View {
         VStack(spacing: 0) {
             if !store.state.uiModel.communities.isEmpty {
@@ -120,14 +168,14 @@ struct DiscoverView: View {
             }
         }
     }
-    
+
     private func clubsView(geometry: GeometryProxy) -> some View {
         VStack(spacing: 0) {
             let isEmpty = store.state.uiModel.clubs.isEmpty
             headerTitle("Clubs", viewAllVisible: !isEmpty, type: .clubs)
             if !isEmpty {
                 let clubs = store.state.uiModel.clubs
-                
+
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
                         ForEach(Array(clubs.enumerated()), id: \.element.uuid) { index, item in
@@ -149,7 +197,7 @@ struct DiscoverView: View {
             } else {
                 emptyView(
                     icon: UIImage.Icons.twoUsers,
-                    text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
+                    text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
                     buttonTitle: "Create a club +",
                     type: .clubs
                 )
@@ -157,7 +205,7 @@ struct DiscoverView: View {
             }
         }
     }
-    
+
     private func emptyView(
         icon: UIImage,
         text: String,
@@ -167,11 +215,11 @@ struct DiscoverView: View {
         AppEmptyView(
             model: .init(
                 icon: UIImage.Icons.twoUsers,
-                text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
+                text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
                 buttonTitle: "Create a club +"
             )
         ) {
-            
+
         }
         .padding()
     }
@@ -182,7 +230,7 @@ struct DiscoverView: View {
             if !uiModel.events.isEmpty, !uiModel.clubs.isEmpty {
                 let events = store.state.uiModel.events
                 headerTitle("Events", type: .events)
-                
+
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
                         ForEach(Array(events.enumerated()), id: \.element.uuid) { index, item in
@@ -192,7 +240,7 @@ struct DiscoverView: View {
                                     store.send(.eventItemOnTap(id: item.id))
                                 },
                                 onButtonTap: {
-                                    
+
                                 }
                             ) as? AnyView {
                                 view
@@ -216,7 +264,7 @@ struct DiscoverView: View {
                 viewAllVisible: !isEmpty,
                 type: .hangOuts
             )
-            
+
             if !isEmpty {
                 let hangouts = store.state.uiModel.hangouts
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -228,7 +276,7 @@ struct DiscoverView: View {
                                     store.send(.hangoutsItemOnTap(id: item.id))
                                 },
                                 onButtonTap: {
-                                    
+
                                 }
                             ) as? AnyView {
                                 view
@@ -243,7 +291,7 @@ struct DiscoverView: View {
             } else {
                 emptyView(
                     icon: UIImage.Icons.twoUsers,
-                    text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
+                    text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
                     buttonTitle: "Create a club +",
                     type: .hangOuts
                 )
@@ -251,7 +299,7 @@ struct DiscoverView: View {
             }
         }
     }
-    
+
     private func headerTitle(
         _ text: String,
         viewAllVisible: Bool = true,
@@ -276,72 +324,6 @@ struct DiscoverView: View {
             }
         }
         .padding(.trailing)
-    }
-
-    @ViewBuilder
-    private var topView: some View {
-        VStack(spacing: .zero) {
-            profileView
-                .padding(.horizontal)
-            FilterView(
-                model: store.state.uiModel.filters,
-                selectedItems: { item in
-                    // do
-                }
-            )
-        }
-        .onGeometryChange(for: CGFloat.self) { proxy in
-            proxy.size.height
-        } action: { newValue in
-            self.viewHeight = newValue
-        }
-        .background(Color.Palette.white)
-    }
-    
-    private var profileView: some View {
-        HStack {
-            let url = URL(string: store.state.uiModel.user.profileImage ?? "")
-            Button {
-                
-            } label: {
-                CachedAsyncImage(url: url) { image in
-                    image
-                        .resizable()
-                        .frame(width: 40, height: 40)
-                } placeholder: {
-                    Image(systemName: "person")
-                        .frame(width: 24, height: 24)
-                        .padding(12)
-                        .foregroundStyle(Color.Palette.black)
-                        .background(Color.Palette.grayQuaternary)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
-                }
-            }
-            
-            VStack(spacing: 4) {
-                Text(store.state.uiModel.user.greeting)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .multilineTextAlignment(.leading)
-                    .font(Font.Typography.TextMd.regular)
-                    .foregroundStyle(Color.Palette.grayPrimary)
-                Text(store.state.uiModel.user.name)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .multilineTextAlignment(.leading)
-                    .font(Font.Typography.BodyTextSm.medium)
-                    .foregroundStyle(Color.Palette.black)
-            }
-            
-            Button {
-                
-            } label: {
-                Image(uiImage: UIImage.Icons.bell)
-                    .frame(width: 24, height: 24)
-                    .padding(12)
-                    .foregroundStyle(Color.Palette.graySecondary)
-                    .background(Color.Palette.grayQuaternary)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
-            }
-        }
     }
 }
 

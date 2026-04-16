@@ -13,27 +13,49 @@ import SwiftUI
 extension AppDelegate {
     
    func setupGlobalNavigationAppearance() {
-       let appearance = UINavigationBarAppearance()
-       appearance.configureWithOpaqueBackground()
-       appearance.applyGlobalBackButtonStyle()
-       appearance.titleTextAttributes = [
+       let titleAttributes: [NSAttributedString.Key: Any] = [
            .foregroundColor: UIColor(Color.Palette.blackHigh)
        ]
-       appearance.largeTitleTextAttributes = [
+       let largeTitleAttributes: [NSAttributedString.Key: Any] = [
            .foregroundColor: UIColor(Color.Palette.blackHigh),
            .font: UIFont.systemFont(ofSize: 28, weight: .bold),
            .baselineOffset: 8
        ]
+       
+       let standardAppearance = UINavigationBarAppearance()
+       let scrollEdgeAppearance = UINavigationBarAppearance()
+       
+       if #available(iOS 26.0, *) {
+           standardAppearance.configureWithDefaultBackground()
+           standardAppearance.backgroundColor = .clear
+           scrollEdgeAppearance.configureWithDefaultBackground()
+           scrollEdgeAppearance.backgroundColor = .clear
+       } else {
+           standardAppearance.configureWithOpaqueBackground()
+           scrollEdgeAppearance.configureWithTransparentBackground()
+       }
+       standardAppearance.applyGlobalBackButtonStyle()
+       scrollEdgeAppearance.applyGlobalBackButtonStyle()
+       
+       standardAppearance.titleTextAttributes = titleAttributes
+       standardAppearance.largeTitleTextAttributes = largeTitleAttributes
+       standardAppearance.shadowColor = .clear
+       
+       scrollEdgeAppearance.titleTextAttributes = titleAttributes
+       scrollEdgeAppearance.largeTitleTextAttributes = largeTitleAttributes
+       scrollEdgeAppearance.shadowColor = .clear
+       
        let navigationBarAppearance = UINavigationBar.appearance()
-       navigationBarAppearance.standardAppearance = appearance
-       appearance.shadowColor = .clear
-       navigationBarAppearance.scrollEdgeAppearance = appearance
-       navigationBarAppearance.compactAppearance = appearance
-       navigationBarAppearance.compactScrollEdgeAppearance = appearance
+       navigationBarAppearance.standardAppearance = standardAppearance
+       navigationBarAppearance.scrollEdgeAppearance = scrollEdgeAppearance
+       navigationBarAppearance.compactAppearance = standardAppearance
+       navigationBarAppearance.compactScrollEdgeAppearance = scrollEdgeAppearance
        navigationBarAppearance.tintColor = UIColor(Color.Palette.blackHigh)
-
-       UINavigationBarAppearanceConfigurator.applyGlobalBackButtonImage(to: navigationBarAppearance)
-       UINavigationBarAppearanceConfigurator.applyGlobalBackButtonTitleOffset()
+       
+       if #available(iOS 26.0, *) {
+           UINavigationBarAppearanceConfigurator.applyGlobalBackButtonImage(to: navigationBarAppearance)
+           UINavigationBarAppearanceConfigurator.applyGlobalBackButtonTitleOffset()
+       }
    }
 }
 
@@ -41,9 +63,14 @@ enum NavigationBarAppearanceGlobal {
     static let backTitleOffset = UIOffset(horizontal: -1000, vertical: 0)
     
     static var backImage: UIImage {
-        UIImage.Icons.arrowLeft01.withAlignmentRectInsets(
-            .init(top: 0, left: -8, bottom: 4.3, right: 0)
-        ).withRenderingMode(.alwaysTemplate)
+        if #available(iOS 26.0, *) {
+            UIImage.Icons.arrowLeft01
+                .withRenderingMode(.alwaysTemplate)
+        } else {
+            UIImage.Icons.arrowLeft01.withAlignmentRectInsets(
+                .init(top: 0, left: -8, bottom: 4.3, right: 0)
+            ).withRenderingMode(.alwaysTemplate)
+        }
     }
     
     static func makeBackButtonAppearance() -> UIBarButtonItemAppearance {

@@ -28,7 +28,6 @@ struct EventsListView: View {
         .onAppear {
             store.send(.fetchData)
         }
-        .toolbar(.visible)
     }
     
     @ViewBuilder

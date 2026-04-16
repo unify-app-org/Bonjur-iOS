@@ -302,7 +302,7 @@ struct DiscoverView: View {
         HStack {
             let url = URL(string: store.state.uiModel.user.profileImage ?? "")
             Button {
-                
+                store.send(.profileTapped)
             } label: {
                 CachedAsyncImage(url: url) { image in
                     image

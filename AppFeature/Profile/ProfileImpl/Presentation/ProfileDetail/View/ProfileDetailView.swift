@@ -182,15 +182,6 @@ struct ProfileDetailView: View {
         segmentPicker
             .padding(.horizontal, 16)
             .padding(.vertical, 4)
-            .background(
-                Color.white
-                    .shadow(
-                        color: Color.black.opacity(0.1),
-                        radius: 4,
-                        x: 0,
-                        y: 2
-                    )
-            )
             .mask(
                 Rectangle().padding(.bottom, -10)
             )

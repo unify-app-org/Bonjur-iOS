@@ -10,6 +10,8 @@ import Discover
 
 protocol DiscoverDelegate {
     func viewAllClubs()
+    func openProfile()
+    func didUpdateActivityCounts(events: Int, hangouts: Int)
 }
 
 class DiscoverModuleImpl: DiscoverModule, DiscoverDelegate {
@@ -28,5 +30,16 @@ class DiscoverModuleImpl: DiscoverModule, DiscoverDelegate {
     
     func viewAllClubs() {
         moduleDelegate?.viewAllClubs()
+    }
+    
+    func openProfile() {
+        moduleDelegate?.openProfile()
+    }
+    
+    func didUpdateActivityCounts(events: Int, hangouts: Int) {
+        moduleDelegate?.didUpdateActivityCounts(
+            events: events,
+            hangouts: hangouts
+        )
     }
 }

@@ -134,6 +134,16 @@ extension AppTabBarHostController: DiscoverModuleDelegate {
         let clubsViewController = clubsModule.makeClubsViewController() as! UIViewController
         mainNavigationController.pushViewController(clubsViewController, animated: true)
     }
+    
+    func openProfile() {
+        let profileViewController = profileModule.makeProfileViewController() as! UIViewController
+        mainNavigationController.pushViewController(profileViewController, animated: true)
+    }
+    
+    func didUpdateActivityCounts(events: Int, hangouts: Int) {
+        dockModel.joinedEventsCount = events
+        dockModel.joinedHangoutsCount = hangouts
+    }
 }
 
 extension AppTabBarHostController: UINavigationControllerDelegate {

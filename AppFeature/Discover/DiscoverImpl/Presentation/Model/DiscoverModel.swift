@@ -60,6 +60,7 @@ final class DiscoverViewState: UIFeatureState {
 
 enum DiscoverAction: UIFeatureAction {
     case fetchData
+    case profileTapped
     case viewAllTapped(AppUIEntities.ActivityType)
     case clubItemOnTap(id: Int)
     case eventItemOnTap(id: String)

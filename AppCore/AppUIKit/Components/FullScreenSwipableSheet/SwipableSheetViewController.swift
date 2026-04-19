@@ -21,6 +21,16 @@ class SwipableSheetViewController<Content: View, Background: View>: UIViewContro
     private let backgroundContainer = UIView()
 
     private var scrollLocked = false
+
+    private var embeddedNavigationController: UINavigationController? {
+        findNavigationController(in: hostingController)
+    }
+
+    private var isOnRootScreen: Bool {
+        guard let embeddedNavigationController else { return true }
+        return embeddedNavigationController.viewControllers.count <= 1
+    }
+
     init(
         ignoresSafeArea: Bool,
         isPresented: Binding<Bool>,
@@ -151,6 +161,7 @@ class SwipableSheetViewController<Content: View, Background: View>: UIViewContro
         switch gesture.state {
 
         case .began:
+            guard isOnRootScreen else { return }
             scrollLocked = true
             setScrollLocked(true)
 
@@ -229,8 +240,14 @@ class SwipableSheetViewController<Content: View, Background: View>: UIViewContro
 
     // MARK: - Scroll + Swipe
 
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard gestureRecognizer is UIPanGestureRecognizer else { return true }
+        return isOnRootScreen
+    }
+
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
                            shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer) -> Bool {
+        guard isOnRootScreen else { return false }
 
         guard let pan = gestureRecognizer as? UIPanGestureRecognizer else { return false }
 
@@ -244,5 +261,21 @@ class SwipableSheetViewController<Content: View, Background: View>: UIViewContro
         }
 
         return Int(offset) <= 1 && velocity > 0
+    }
+
+    private func findNavigationController(in viewController: UIViewController?) -> UINavigationController? {
+        guard let viewController else { return nil }
+
+        if let navigationController = viewController as? UINavigationController {
+            return navigationController
+        }
+
+        for child in viewController.children {
+            if let navigationController = findNavigationController(in: child) {
+                return navigationController
+            }
+        }
+
+        return nil
     }
 }

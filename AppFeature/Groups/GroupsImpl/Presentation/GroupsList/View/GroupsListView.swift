@@ -71,7 +71,7 @@ struct GroupsListView: View {
     
     private var titleView: some View {
         VStack {
-            Text("Groups")
+            Text("My activities")
                 .font(Font.Typography.TitleL.extraBold)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal)

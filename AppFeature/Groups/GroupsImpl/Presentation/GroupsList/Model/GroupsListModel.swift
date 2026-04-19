@@ -16,6 +16,7 @@ import SwiftUI
 // MARK: - GroupsList input
 
 struct GroupsListInputData {
+    let onDismiss: (() -> Void)?
 }
 
 // MARK: - Side effects

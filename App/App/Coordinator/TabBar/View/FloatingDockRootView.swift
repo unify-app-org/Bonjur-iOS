@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 import AppUIKit
 
 struct FloatingDockRootView: View {
@@ -13,16 +14,15 @@ struct FloatingDockRootView: View {
     
     let onHomeTap: () -> Void
     let onActivitiesTap: () -> Void
+    let makeActivitiesNavigationController: () -> UINavigationController
     let onCreateTap: () -> Void
     
     @State private var activitiesButtonSize = CGSize(width: 120, height: 44)
     @State private var measuredSideButtonSize = CGSize(width: 46, height: 46)
-    @State private var isDockPresented = false
     
     private let sideButtonSize: CGFloat = 46
     private let horizontalSpacing: CGFloat = 12
     
-    private let dockVisibilityAnimation = Animation.spring(duration: 0.5, bounce: 0.5, blendDuration: 0.2)
     private let homeSlideAnimation = Animation.spring(duration: 0.3, bounce: 0.4, blendDuration: 0.4)
  
     private let badgeAnimation = Animation.spring(response: 0.34, dampingFraction: 0.68)
@@ -40,26 +40,18 @@ struct FloatingDockRootView: View {
     }
     
     var body: some View {
-        ZStack {
-            if isDockPresented {
-                dockContent
-                    .transition(
-                        .asymmetric(
-                            insertion: .move(edge: .bottom).combined(with: .opacity),
-                            removal: .move(edge: .bottom).combined(with: .opacity)
-                        )
-                    )
-            }
-        }
-        .onAppear {
-            withAnimation(dockVisibilityAnimation) {
-                isDockPresented = model.isVisible
-            }
-        }
-        .onChange(of: model.isVisible) { isVisible in
-            withAnimation(dockVisibilityAnimation) {
-                isDockPresented = isVisible
-            }
+        dockContent
+        .appSwipeableSheet(
+            ignoresSafeArea: true,
+            isPresented: $model.isActivitiesPresented
+        ) { _ in
+            ActivitiesNavigationControllerHost(
+                makeNavigationController: makeActivitiesNavigationController
+            )
+            .ignoresSafeArea()
+        } background: {
+            Color.Palette.white
+                .ignoresSafeArea()
         }
     }
     
@@ -183,6 +175,7 @@ struct FloatingDockRootView: View {
                 model: model,
                 onHomeTap: {},
                 onActivitiesTap: {},
+                makeActivitiesNavigationController: { UINavigationController() },
                 onCreateTap: {}
             )
         }
@@ -213,9 +206,21 @@ struct FloatingDockRootView: View {
                 model: model,
                 onHomeTap: {},
                 onActivitiesTap: {},
+                makeActivitiesNavigationController: { UINavigationController() },
                 onCreateTap: {}
             )
         }
         .padding(.bottom, 24)
+    }
+}
+
+private struct ActivitiesNavigationControllerHost: UIViewControllerRepresentable {
+    let makeNavigationController: () -> UINavigationController
+
+    func makeUIViewController(context: Context) -> UINavigationController {
+        makeNavigationController()
+    }
+
+    func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {
     }
 }

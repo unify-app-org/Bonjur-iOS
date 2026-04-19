@@ -55,6 +55,7 @@ class SwipableSheetViewController<Content: View, Background: View>: UIViewContro
         backgroundContainer.translatesAutoresizingMaskIntoConstraints = false
         backgroundController.view.translatesAutoresizingMaskIntoConstraints = false
 
+        addChild(backgroundController)
         view.addSubview(backgroundContainer)
         backgroundContainer.addSubview(backgroundController.view)
 
@@ -69,6 +70,8 @@ class SwipableSheetViewController<Content: View, Background: View>: UIViewContro
             backgroundController.view.trailingAnchor.constraint(equalTo: backgroundContainer.trailingAnchor),
             backgroundController.view.bottomAnchor.constraint(equalTo: backgroundContainer.bottomAnchor)
         ])
+
+        backgroundController.didMove(toParent: self)
     }
 
     // MARK: - Setup Content
@@ -80,6 +83,7 @@ class SwipableSheetViewController<Content: View, Background: View>: UIViewContro
         containerView.translatesAutoresizingMaskIntoConstraints = false
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
 
+        addChild(hostingController)
         view.addSubview(containerView)
         containerView.addSubview(hostingController.view)
 
@@ -94,6 +98,8 @@ class SwipableSheetViewController<Content: View, Background: View>: UIViewContro
             hostingController.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             hostingController.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
         ])
+
+        hostingController.didMove(toParent: self)
     }
 
     // MARK: - Gesture

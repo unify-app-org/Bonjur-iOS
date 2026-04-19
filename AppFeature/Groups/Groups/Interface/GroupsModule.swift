@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol GroupsModule {
-    func makeGroups() -> AnyObject
+    func makeGroups(inputData: GroupsModuleModel.InputData) -> AnyObject
 }

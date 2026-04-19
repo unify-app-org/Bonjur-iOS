@@ -10,7 +10,9 @@ import Groups
 
 struct GroupsModuleImpl: GroupsModule {
     
-    func makeGroups() -> AnyObject {
-        GroupsListBuilder(inputData: .init()).build()
+    func makeGroups(inputData: GroupsModuleModel.InputData) -> AnyObject {
+        GroupsListBuilder(
+            inputData: .init(onDismiss: inputData.onDismiss)
+        ).build()
     }
 }

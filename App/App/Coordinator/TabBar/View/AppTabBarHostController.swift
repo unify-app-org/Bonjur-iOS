@@ -40,6 +40,9 @@ final class AppTabBarHostController: UIViewController {
             onActivitiesTap: { [weak self] in
                 self?.handleActivitiesTap()
             },
+            makeActivitiesNavigationController: { [weak self] in
+                self?.makeActivitiesNavigationController() ?? UINavigationController()
+            },
             onCreateTap: { [weak self] in
                 self?.handleCreateTap()
             }
@@ -120,7 +123,20 @@ final class AppTabBarHostController: UIViewController {
     }
     
     private func handleActivitiesTap() {
-        // Sheet presentation is added in the next step.
+        dockModel.isActivitiesPresented = true
+    }
+
+    private func makeActivitiesNavigationController() -> UINavigationController {
+        let groupsViewController = groupsModule.makeGroups(
+            inputData: .init(
+                onDismiss: { [weak self] in
+                    self?.dockModel.isActivitiesPresented = false
+                }
+            )
+        ) as! UIViewController
+        let navigationController = UINavigationController(rootViewController: groupsViewController)
+        navigationController.view.backgroundColor = .white
+        return navigationController
     }
     
     private func handleCreateTap() {

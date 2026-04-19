@@ -8,5 +8,11 @@
 import Foundation
 
 public enum GroupsModuleModel {
-    
+    public struct InputData {
+        public let onDismiss: (() -> Void)?
+
+        public init(onDismiss: (() -> Void)? = nil) {
+            self.onDismiss = onDismiss
+        }
+    }
 }

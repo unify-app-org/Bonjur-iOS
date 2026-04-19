@@ -13,25 +13,28 @@ import Events
 import Clubs
 
 struct GroupsListView: View {
-    
+
     // MARK: - Properties
     @Environment(\.dismiss) var dismiss
-    
+
     @ObservedObject var store: StoreOf<GroupsListFeature>
-    
+    private let onDismiss: (() -> Void)?
+
     private let clubsModule: ClubsModule
     private let eventsModule: EventsModule
     private let hangoutsModule: HangoutsModule
-    
+
     // MARK: - Initialization
     
     init(
         store: StoreOf<GroupsListFeature>,
+        onDismiss: (() -> Void)? = nil,
         clubsModule: ClubsModule = resolve(),
         eventsModule: EventsModule = resolve(),
         hangoutsModule: HangoutsModule = resolve()
     ) {
         self.store = store
+        self.onDismiss = onDismiss
         self.clubsModule = clubsModule
         self.eventsModule = eventsModule
         self.hangoutsModule = hangoutsModule
@@ -56,48 +59,35 @@ struct GroupsListView: View {
             store.send(.fetchData)
         }
         .animation(.easeInOut, value: store.state.selectedSegment)
-        .toolbar(.hidden)
+        .navigationTitle("My activities")
+        .ignoresSafeArea(edges: .bottom)
+        .toolbar{
+            ToolbarItem(placement: .topBarTrailing) {
+                Image(uiImage: UIImage.Icons.chevronDown02)
+                    .toolbarItemBackground(
+                        isScrolled: true
+                    ) {
+                        if let onDismiss {
+                            onDismiss()
+                        } else {
+                            dismiss()
+                        }
+                    }
+            }
+        }
     }
-    
+
     // MARK: - Top View
-    
+
     @ViewBuilder
     private var topView: some View {
         VStack(spacing: 24) {
-            titleView
             searchAndSegmentView
         }
         .background(Color.Palette.white)
+        .padding(.top,12)
     }
-    
-    private var titleView: some View {
-        VStack {
-            HStack{
-                Text("My activities")
-                    .font(Font.Typography.TitleL.extraBold)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                   
-                Spacer()
-                Button{
-                    dismiss()
-                }label: {
-                    Image(uiImage: UIImage.Icons.chevronDown02)
-                                            .resizable()
-                                            .renderingMode(.template)
-                                            .frame(width: 22, height: 22)
-                                            .frame(width: 36, height: 36)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                                    .fill(Color.Palette.grayQuaternary)
-                                            )
-                                            .foregroundStyle(Color.Palette.black)
-                      
-                }
-            }
-            .padding(.horizontal)
-        }
-    }
-    
+
     private var searchAndSegmentView: some View {
         VStack(spacing: .zero) {
             SearchView(text: .constant(""))

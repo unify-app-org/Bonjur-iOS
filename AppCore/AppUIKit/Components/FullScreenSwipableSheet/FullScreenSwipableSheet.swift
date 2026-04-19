@@ -2,7 +2,7 @@
 import SwiftUI
 import UIKit
 
-extension View {
+public extension View {
     func appSwipeableSheet<Content: View, Background: View>(
         ignoresSafeArea: Bool = false,
         isPresented: Binding<Bool>,

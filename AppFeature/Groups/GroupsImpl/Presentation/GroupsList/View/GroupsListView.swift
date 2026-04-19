@@ -15,6 +15,7 @@ import Clubs
 struct GroupsListView: View {
     
     // MARK: - Properties
+    @Environment(\.dismiss) var dismiss
     
     @ObservedObject var store: StoreOf<GroupsListFeature>
     
@@ -71,10 +72,29 @@ struct GroupsListView: View {
     
     private var titleView: some View {
         VStack {
-            Text("My activities")
-                .font(Font.Typography.TitleL.extraBold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal)
+            HStack{
+                Text("My activities")
+                    .font(Font.Typography.TitleL.extraBold)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                   
+                Spacer()
+                Button{
+                    dismiss()
+                }label: {
+                    Image(uiImage: UIImage.Icons.chevronDown02)
+                                            .resizable()
+                                            .renderingMode(.template)
+                                            .frame(width: 22, height: 22)
+                                            .frame(width: 36, height: 36)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                                    .fill(Color.Palette.grayQuaternary)
+                                            )
+                                            .foregroundStyle(Color.Palette.black)
+                      
+                }
+            }
+            .padding(.horizontal)
         }
     }
     

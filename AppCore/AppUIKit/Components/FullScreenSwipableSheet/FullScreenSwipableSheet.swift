@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 
 extension View {
-    func fullScreenSwipableSheet<Content: View, Background: View>(
+    func appSwipeableSheet<Content: View, Background: View>(
         ignoresSafeArea: Bool = false,
         isPresented: Binding<Bool>,
         @ViewBuilder content: @escaping (UIEdgeInsets) -> Content,
@@ -78,7 +78,7 @@ struct ExampleView:View {
                 Button("Show"){
                     show.toggle()
                 }
-                .fullScreenSwipableSheet(isPresented: $show){safeArea in
+                .appSwipeableSheet(isPresented: $show){safeArea in
                     
                     ScrollView{
                         LazyVStack{

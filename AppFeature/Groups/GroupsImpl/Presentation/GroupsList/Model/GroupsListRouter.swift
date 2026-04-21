@@ -44,15 +44,12 @@ final class GroupsListRouter: GroupsListRouterProtocol {
         switch route {
         case .clubDetail(let id):
             let vc = clubModule.makeClubsDetailsVC(clubId: id) as! UIViewController
-            vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .eventDetail(let id):
             let vc = eventModule.makeEventsDetails(eventId: id) as! UIViewController
-            vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .hangoutDetail(let id):
             let vc = hangoutModule.makeHangoutDetails(hangoutId: id) as! UIViewController
-            vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

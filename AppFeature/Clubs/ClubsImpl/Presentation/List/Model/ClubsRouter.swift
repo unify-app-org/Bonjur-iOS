@@ -24,7 +24,6 @@ final class ClubsRouter: ClubsRouterProtocol {
         switch route {
         case .showDetails(let clubId):
             let vc = ClubDetailsBuilder(inputData: .init(clubId: clubId)).build()
-            vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

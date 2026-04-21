@@ -47,19 +47,15 @@ final class ProfileDetailRouter: ProfileDetailRouterProtocol {
         switch route {
         case .clubsDetails(let clubId):
             let vc = clubModule.makeClubsDetailsVC(clubId: clubId) as! UIViewController
-            vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .eventsDetails(let id):
             let vc = eventModule.makeEventsDetails(eventId: id) as! UIViewController
-            vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .hangoutsDetails(let id):
             let vc = hangoutModule.makeHangoutDetails(hangoutId: id) as! UIViewController
-            vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .settings:
             let vc = ProfileSettingsBuilder(inputData: .init()).build()
-            vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .studentCard(let inputData):
             let studentCardBuilder = StudentCardBuilder(inputData: inputData)

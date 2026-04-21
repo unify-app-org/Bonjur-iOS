@@ -115,7 +115,7 @@ final class AppTabBarHostController: UIViewController {
     }
     
     private func updateDockMode() {
-        dockModel.mode = (isOnDashboard && !dockModel.isActivitiesPresented) ? .home : .away
+        dockModel.mode = (isOnDashboard) ? .home : .away
     }
     
     private func handleHomeTap() {

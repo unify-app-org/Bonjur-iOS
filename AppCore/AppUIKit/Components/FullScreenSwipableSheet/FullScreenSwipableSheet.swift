@@ -42,28 +42,50 @@ private struct SwipableSheetPresenter<Content: View, Background: View>: UIViewCo
     let content: (UIEdgeInsets) -> Content
     let background: () -> Background
 
+    final class Coordinator {
+        weak var presentedSheetController: UIViewController?
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
     func makeUIViewController(context: Context) -> UIViewController {
         UIViewController()
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+        let presentedSheetController = context.coordinator.presentedSheetController
+
         if isPresented {
-            if uiViewController.presentedViewController == nil {
-
-                let safeArea = uiViewController.view.safeAreaInsets
-
-                let sheetVC = SwipableSheetViewController(
-                    ignoresSafeArea: ignoresSafeArea,
-                    isPresented: $isPresented,
-                    content: content(safeArea),
-                    background: background().ignoresSafeArea()
-                )
-
-                sheetVC.modalPresentationStyle = .overFullScreen
-                uiViewController.present(sheetVC, animated: true)
+            if let presentedSheetController,
+               uiViewController.presentedViewController === presentedSheetController ||
+               presentedSheetController.presentingViewController != nil {
+                return
             }
+
+            context.coordinator.presentedSheetController = nil
+            guard uiViewController.presentedViewController == nil else { return }
+
+            let safeArea = uiViewController.view.safeAreaInsets
+            let sheetVC = SwipableSheetViewController(
+                ignoresSafeArea: ignoresSafeArea,
+                isPresented: $isPresented,
+                content: content(safeArea),
+                background: background().ignoresSafeArea()
+            )
+
+            sheetVC.modalPresentationStyle = .overFullScreen
+            context.coordinator.presentedSheetController = sheetVC
+            uiViewController.present(sheetVC, animated: true)
         } else {
-            uiViewController.presentedViewController?.dismiss(animated: true)
+            guard let presentedSheetController else { return }
+
+            if uiViewController.presentedViewController === presentedSheetController {
+                presentedSheetController.dismiss(animated: true)
+            }
+
+            context.coordinator.presentedSheetController = nil
         }
     }
 }

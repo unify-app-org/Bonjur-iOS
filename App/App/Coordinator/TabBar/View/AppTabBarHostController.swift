@@ -45,6 +45,9 @@ final class AppTabBarHostController: UIViewController {
             },
             onCreateTap: { [weak self] in
                 self?.handleCreateTap()
+            },
+            onCreateSelected: { [weak self] type in
+                self?.handleCreateSelection(type)
             }
         )
         let controller = UIHostingController(rootView: rootView)
@@ -140,7 +143,19 @@ final class AppTabBarHostController: UIViewController {
     }
     
     private func handleCreateTap() {
-        // Native create sheet is added in the next step.
+        dockModel.isCreatePresented = true
+    }
+
+    private func handleCreateSelection(_ type: CreateType) {
+        switch type {
+        case .club:
+            let viewController = clubsModule.makeCreateVC() as! UIViewController
+            mainNavigationController.pushViewController(viewController, animated: true)
+        case .event:
+            break
+        case .hangout:
+            break
+        }
     }
 }
 

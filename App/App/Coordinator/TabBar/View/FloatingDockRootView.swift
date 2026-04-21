@@ -16,6 +16,7 @@ struct FloatingDockRootView: View {
     let onActivitiesTap: () -> Void
     let makeActivitiesNavigationController: () -> UINavigationController
     let onCreateTap: () -> Void
+    let onCreateSelected: (CreateType) -> Void
     
     @State private var activitiesButtonSize = CGSize(width: 120, height: 44)
     @State private var measuredSideButtonSize = CGSize(width: 46, height: 46)
@@ -52,6 +53,16 @@ struct FloatingDockRootView: View {
         } background: {
             Color.Palette.white
                 .ignoresSafeArea()
+        }
+        .appSheet(
+            isPresented: $model.isCreatePresented,
+            detents: [.fraction(0.4)],
+            dragIndicator: .visible
+        ) {
+            CreateView { type in
+                model.isCreatePresented = false
+                onCreateSelected(type)
+            }
         }
     }
     
@@ -176,7 +187,8 @@ struct FloatingDockRootView: View {
                 onHomeTap: {},
                 onActivitiesTap: {},
                 makeActivitiesNavigationController: { UINavigationController() },
-                onCreateTap: {}
+                onCreateTap: {},
+                onCreateSelected: { _ in }
             )
         }
         .padding(.bottom, 24)
@@ -207,7 +219,8 @@ struct FloatingDockRootView: View {
                 onHomeTap: {},
                 onActivitiesTap: {},
                 makeActivitiesNavigationController: { UINavigationController() },
-                onCreateTap: {}
+                onCreateTap: {},
+                onCreateSelected: { _ in }
             )
         }
         .padding(.bottom, 24)

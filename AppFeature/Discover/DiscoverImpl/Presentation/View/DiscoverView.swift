@@ -48,7 +48,6 @@ struct DiscoverView: View {
             store.send(.fetchData)
         }
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarRole(.editor)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 profileButton

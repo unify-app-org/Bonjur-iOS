@@ -38,7 +38,7 @@ typealias DiscoverFeature = UIFeatureDefinition<
 
 final class DiscoverViewState: UIFeatureState {
     @Published var uiModel: UIModel = .init(
-        user: .init(id: 1, name: "", profileImage: nil, greeting: ""),
+        user: .init(id: 1, name: "", profileImage: "https://i.pinimg.com/1200x/70/38/80/703880553b7883b4122c551581d43927.jpg", greeting: ""),
         filters: [],
         communities: [],
         clubs: [],

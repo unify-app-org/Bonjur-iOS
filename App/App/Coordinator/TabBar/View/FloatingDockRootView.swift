@@ -43,7 +43,6 @@ struct FloatingDockRootView: View {
     var body: some View {
         dockContent
         .appSwipeableSheet(
-            ignoresSafeArea: true,
             isPresented: $model.isActivitiesPresented
         ) { _ in
             ActivitiesNavigationControllerHost(

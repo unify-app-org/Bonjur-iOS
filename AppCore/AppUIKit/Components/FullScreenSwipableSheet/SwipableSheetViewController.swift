@@ -9,7 +9,6 @@ import UIKit
 
 class SwipableSheetViewController<Content: View, Background: View>: UIViewController, UIGestureRecognizerDelegate {
 
-    var ignoresSafeArea: Bool
     var content: Content
     var background: Background
     var isPresented: Binding<Bool>
@@ -32,12 +31,10 @@ class SwipableSheetViewController<Content: View, Background: View>: UIViewContro
     }
 
     init(
-        ignoresSafeArea: Bool,
         isPresented: Binding<Bool>,
         content: Content,
         background: Background
     ) {
-        self.ignoresSafeArea = ignoresSafeArea
         self.isPresented = isPresented
         self.content = content
         self.background = background
@@ -212,31 +209,6 @@ class SwipableSheetViewController<Content: View, Background: View>: UIViewContro
         }
     }
 
-    // MARK: - Animations
-
-    private func animateDismiss() {
-        let height = view.bounds.height
-
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut) {
-            let transform = CGAffineTransform(translationX: 0, y: height)
-            self.containerView.transform = transform
-            self.backgroundContainer.transform = transform
-        } completion: { _ in
-            self.isPresented.wrappedValue = false
-        }
-    }
-
-    private func animateReset() {
-        UIView.animate(
-            withDuration: 0.4,
-            delay: 0,
-            usingSpringWithDamping: 0.85,
-            initialSpringVelocity: 0
-        ) {
-            self.containerView.transform = .identity
-            self.backgroundContainer.transform = .identity
-        }
-    }
 
     // MARK: - Scroll + Swipe
 

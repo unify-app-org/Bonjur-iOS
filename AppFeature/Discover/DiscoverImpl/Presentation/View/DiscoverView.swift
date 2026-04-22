@@ -66,20 +66,22 @@ struct DiscoverView: View {
     private var profileButton: some View {
         let url = URL(string: store.state.uiModel.user.profileImage ?? "")
 
-        CachedAsyncImage(url: url) { image in
-            image
-                .resizable()
-                .frame(width: 36, height: 36)
-                .scaledToFill()
-                .clipShape(Circle())
-        } placeholder: {
-            Image(systemName: "person")
-                .renderingMode(.template)
-                .foregroundStyle(Color.Palette.blackHigh)
-        }
-        .applyGlassIfAvailable()
-        .onTapGesture {
+        Button{
             store.send(.profileTapped)
+        }label: {
+            
+            CachedAsyncImage(url: url) { image in
+                image
+                    .resizable()
+                    .frame(width: 36, height: 36)
+                    .scaledToFill()
+                    .clipShape(Circle())
+            } placeholder: {
+                Image(systemName: "person")
+                    .renderingMode(.template)
+                    .foregroundStyle(Color.Palette.blackHigh)
+                    .toolbarItemBackground()
+            }
         }
     }
 

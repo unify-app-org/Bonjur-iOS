@@ -38,7 +38,7 @@ typealias DiscoverFeature = UIFeatureDefinition<
 
 final class DiscoverViewState: UIFeatureState {
     @Published var uiModel: UIModel = .init(
-        user: .init(id: 1, name: "", profileImage: nil, greeting: ""),
+        user: .init(id: 1, name: "", profileImage: "", greeting: ""),
         filters: [],
         communities: [],
         clubs: [],
@@ -60,6 +60,7 @@ final class DiscoverViewState: UIFeatureState {
 
 enum DiscoverAction: UIFeatureAction {
     case fetchData
+    case profileTapped
     case viewAllTapped(AppUIEntities.ActivityType)
     case clubItemOnTap(id: Int)
     case eventItemOnTap(id: String)

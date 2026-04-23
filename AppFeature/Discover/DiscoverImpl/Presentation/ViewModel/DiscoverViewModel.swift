@@ -38,6 +38,10 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .profileTapped:
+            Task {
+                await router.navigate(to: .profile)
+            }
         case .viewAllTapped(let activity):
             viewAllTapped(activity)
         case .clubItemOnTap(let id):
@@ -153,6 +157,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     
     private func handleEventsData(_ data: [EventsModuleModel.CardInputData]) {
         state.uiModel.events = data
+        publishActivityCounts()
     }
     
     private func fetchHangoutsData() async {
@@ -169,5 +174,24 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     
     private func handleHangoutsData(_ data: [HangoutsModuleModel.CardInputData]) {
         state.uiModel.hangouts = data
+        publishActivityCounts()
+    }
+    
+    private func publishActivityCounts() {
+        let joinedEvents = state.uiModel.events.filter {
+            $0.requestType == .joined
+        }.count
+        let joinedHangouts = state.uiModel.hangouts.filter {
+            $0.requestType == .joined
+        }.count
+        
+        Task {
+            await router.navigate(
+                to: .activityCountsUpdated(
+                    events: joinedEvents,
+                    hangouts: joinedHangouts
+                )
+            )
+        }
     }
 }

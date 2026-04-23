@@ -12,6 +12,8 @@ import Clubs
 import Communities
 
 enum DiscoverRoute {
+    case profile
+    case activityCountsUpdated(events: Int, hangouts: Int)
     case viewAllClubs
     case viewAllEvents
     case viewAllHangouts
@@ -53,31 +55,32 @@ final class DiscoverRouter: DiscoverRouterProtocol {
     @MainActor
     func navigate(to route: DiscoverRoute) {
         switch route {
+        case .profile:
+            delegate.openProfile()
+        case .activityCountsUpdated(let events, let hangouts):
+            delegate.didUpdateActivityCounts(
+                events: events,
+                hangouts: hangouts
+            )
         case .viewAllClubs:
             delegate.viewAllClubs()
         case .viewAllEvents:
             let vc = eventModule.makeEventsList() as! UIViewController
-            vc.hidesBottomBarWhenPushed = true
             view?.navigationController?.pushViewController(vc, animated: true)
         case .viewAllHangouts:
             let vc = hangoutModule.makeHangoutsList() as! UIViewController
-            vc.hidesBottomBarWhenPushed = true
             view?.navigationController?.pushViewController(vc, animated: true)
         case .clubsDetails(let clubId):
             let vc = clubModule.makeClubsDetailsVC(clubId: clubId) as! UIViewController
-            vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .eventsDetails(let id):
             let vc = eventModule.makeEventsDetails(eventId: id) as! UIViewController
-            vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .hangoutsDetails(let id):
             let vc = hangoutModule.makeHangoutDetails(hangoutId: id) as! UIViewController
-            vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .communityDetails(let id):
             let vc = communityModule.makeCommunityDetail(communityId: id) as! UIViewController
-            vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

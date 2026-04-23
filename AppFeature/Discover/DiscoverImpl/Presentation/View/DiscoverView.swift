@@ -48,15 +48,14 @@ struct DiscoverView: View {
             store.send(.fetchData)
         }
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarRole(.editor)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                HStack(spacing: 8) {
-                    profileButton
-                    greetingView
-                        .padding(.horizontal, 6)
-                }
+                profileButton
             }
+            ToolbarItem(placement: .topBarLeading) {
+                greetingView
+            }
+            .applySharedBackgroundVisibilityIfAvailable(.hidden)
             ToolbarItem(placement: .topBarTrailing) {
                 bellButton
             }
@@ -66,17 +65,23 @@ struct DiscoverView: View {
     @ViewBuilder
     private var profileButton: some View {
         let url = URL(string: store.state.uiModel.user.profileImage ?? "")
-        CachedAsyncImage(url: url) { image in
-            image
-                .resizable()
-                .frame(width: 36, height: 36)
-        } placeholder: {
-            Image(systemName: "person")
-                .renderingMode(.template)
-                .foregroundStyle(Color.Palette.blackHigh)
-        }
-        .toolbarItemBackground {
+
+        Button{
+            store.send(.profileTapped)
+        }label: {
             
+            CachedAsyncImage(url: url) { image in
+                image
+                    .resizable()
+                    .frame(width: 36, height: 36)
+                    .scaledToFill()
+                    .clipShape(Circle())
+            } placeholder: {
+                Image(systemName: "person")
+                    .renderingMode(.template)
+                    .foregroundStyle(Color.Palette.blackHigh)
+                    .toolbarItemBackground()
+            }
         }
     }
 

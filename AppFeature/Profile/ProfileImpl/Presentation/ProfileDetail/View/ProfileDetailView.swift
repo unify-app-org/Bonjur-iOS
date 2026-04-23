@@ -16,7 +16,6 @@ struct ProfileDetailView: View {
     @ObservedObject var store: StoreOf<ProfileDetailFeature>
     
     @State private var isSegmentSticky = false
-    @State private var navBarHeight: CGFloat = 0
     @State private var tabHeights: [ProfileDetailViewState.SegmentTypes: CGFloat] = [:]
     
     private let clubsModule: ClubsModule
@@ -36,28 +35,40 @@ struct ProfileDetailView: View {
     }
     
     var body: some View {
-        GeometryReader { proxy in
-            ZStack(alignment: .top) {
-                mainScrollView(proxy)
-                navigationOverlay(safeAreaTop: proxy.safeAreaInsets.top)
+        ZStack(alignment: .top) {
+            mainScrollView
+            
+            if isSegmentSticky {
+                segmentViewSticky
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
-            .ignoresSafeArea(edges: .top)
-            .enableSwipeBack()
         }
         .animation(.easeInOut, value: store.state.selectedSegment)
         .onFirstAppear {
             store.send(.fetchData)
         }
-        .toolbar(.hidden)
+        .navigationTitle("Profile")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    store.send(.settingsTapped)
+                } label: {
+                    Image(uiImage: UIImage.Icons.settings01)
+                        .renderingMode(.template)
+                }
+                .foregroundStyle(Color.Palette.black)
+            }
+        }
+        .enableSwipeBack()
     }
     
     // MARK: - Main Components
     
-    private func mainScrollView(_ proxy: GeometryProxy) -> some View {
+    private var mainScrollView: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 26) {
-                Color.clear
-                    .frame(height: navBarHeight)
                 userCardView
                 userInfoView
                 segmentView
@@ -67,44 +78,6 @@ struct ProfileDetailView: View {
         }
         .coordinateSpace(name: "scroll")
     }
-    
-    private func navigationOverlay(safeAreaTop: CGFloat) -> some View {
-        VStack(spacing: 0) {
-            customNavigationBar(safeAreaTop: safeAreaTop)
-                .background(Color.white)
-            
-            if isSegmentSticky {
-                segmentViewSticky
-                    .transition(.move(edge: .top).combined(with: .opacity))
-            }
-        }
-        .animation(.easeInOut(duration: 0.2), value: isSegmentSticky)
-    }
-    
-    // MARK: - Navigation Bar
-    
-    private func customNavigationBar(safeAreaTop: CGFloat) -> some View {
-        HStack {
-            Text("Profile")
-                .font(Font.Typography.TitleL.extraBold)
-                .foregroundStyle(Color.Palette.black)
-            
-            Spacer()
-            
-            Button {
-                store.send(.settingsTapped)
-            } label: {
-                Image(uiImage: UIImage.Icons.settings01)
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.top, safeAreaTop)
-        .padding(.bottom, 8)
-        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { newValue in
-            navBarHeight = newValue - 16
-        }
-    }
-    
     // MARK: - User Card
     
     @ViewBuilder
@@ -199,7 +172,7 @@ struct ProfileDetailView: View {
                 $0.frame(in: .named("scroll")).minY
             } action: { minY in
                 withAnimation(.easeInOut(duration: 0.2)) {
-                    isSegmentSticky = minY <= navBarHeight
+                    isSegmentSticky = minY <= 0
                 }
             }
     }
@@ -209,15 +182,6 @@ struct ProfileDetailView: View {
         segmentPicker
             .padding(.horizontal, 16)
             .padding(.vertical, 4)
-            .background(
-                Color.white
-                    .shadow(
-                        color: Color.black.opacity(0.1),
-                        radius: 4,
-                        x: 0,
-                        y: 2
-                    )
-            )
             .mask(
                 Rectangle().padding(.bottom, -10)
             )

@@ -24,3 +24,14 @@ public extension View {
         }
     }
 }
+
+public extension ToolbarContent {
+    @ToolbarContentBuilder
+    func applySharedBackgroundVisibilityIfAvailable(_ visibility: Visibility) -> some ToolbarContent {
+        if #available(iOS 26.0, *) {
+            self.sharedBackgroundVisibility(visibility)
+        } else {
+            self
+        }
+    }
+}

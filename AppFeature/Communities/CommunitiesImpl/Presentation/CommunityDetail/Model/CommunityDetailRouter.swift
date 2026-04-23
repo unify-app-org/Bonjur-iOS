@@ -33,7 +33,6 @@ final class CommunityDetailRouter: CommunityDetailRouterProtocol {
         switch route {
         case .clubsDetails(let id):
             let vc = clubModule.makeClubsDetailsVC(clubId: id) as! UIViewController
-            vc.hidesBottomBarWhenPushed = true
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .back:
             self.view?.navigationController?.popViewController(animated: true)

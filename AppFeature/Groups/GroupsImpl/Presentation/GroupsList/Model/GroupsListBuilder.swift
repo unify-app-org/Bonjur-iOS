@@ -30,7 +30,10 @@ struct GroupsListBuilder {
         let controller = GroupsListHostController(
             viewModel: viewModel
         ) { store in
-            GroupsListView(store: store)
+            GroupsListView(
+                store: store,
+                onDismiss: inputData.onDismiss
+            )
         }
         
         router.view = controller

@@ -10,7 +10,7 @@ import SwiftUI
 import AppUIKit
 
 struct CreateView: View {
-    
+
     let model: [Model] = [
         .init(
             title: "Club",
@@ -36,49 +36,64 @@ struct CreateView: View {
     }
     
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Create")
-                .font(Font.Typography.HeadingXl.bold)
-                .foregroundStyle(Color.Palette.blackHigh)
-                .frame(maxWidth: .infinity, alignment: .leading)
+        VStack(alignment: .leading, spacing: 24) {
+            titleView
             listView
         }
-        .padding(.vertical, 24)
-        .padding(.leading, 24)
-        .frame(maxWidth: .infinity)
-        .background(Color.white)
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .padding(.top, 36)
+        .padding(.horizontal, 24)
+        .padding(.bottom, 16)
+        .background(Color.Palette.white)
+    }
+
+    private var titleView: some View {
+        Text("Create")
+            .font(Font.Typography.HeadingXl.bold)
+            .foregroundStyle(Color.Palette.blackHigh)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     private var listView: some View {
-        VStack(spacing: 20) {
-            ForEach(model, id: \.id) { item in
-                listItem(item: item)
+        VStack(spacing: 0) {
+            ForEach(Array(model.enumerated()), id: \.element.id) { index, item in
+                listItem(
+                    item: item,
+                    showsDivider: index < model.count - 1
+                )
             }
         }
+        .background(Color.Palette.white)
     }
     
-    private func listItem(item: Model) -> some View {
+    private func listItem(item: Model, showsDivider: Bool) -> some View {
         Button {
             selectedType(item.type)
         } label: {
-            HStack(spacing: 16) {
-                Image(uiImage: item.icon)
-                    .padding(12)
-                    .background(Color.Palette.grayQuaternary)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                VStack {
+            VStack(spacing: 0) {
+                HStack(spacing: 16) {
+                    Image(uiImage: item.icon)
+                        .padding(12)
+                        .background(Color.Palette.grayQuaternary)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+
                     Text(item.title)
                         .font(Font.Typography.BodyTextSm.regular)
                         .foregroundStyle(Color.Palette.blackHigh)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    Divider()
-                        .padding(.top, 8)
+
+                    Spacer(minLength: 0)
                 }
-                .padding(.top, 8)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 16)
+
+                if showsDivider {
+                    Divider()
+                }
             }
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
     }
 }
 

@@ -27,7 +27,7 @@ final class AppCoordinator {
     }
     
     func start() {
-//        userDefaults.set(false, forKey: .isAuthenticated)
+        userDefaults.set(false, forKey: .isAuthenticated)
         let isAuthenticated = userDefaults.bool(forKey: .isAuthenticated)
         
         var apiClient: APIClientProtocol = dependencyContainer.resolve(

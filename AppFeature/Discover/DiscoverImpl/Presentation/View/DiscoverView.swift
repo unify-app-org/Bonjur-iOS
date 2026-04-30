@@ -52,10 +52,15 @@ struct DiscoverView: View {
             ToolbarItem(placement: .topBarLeading) {
                 profileButton
             }
-            ToolbarItem(placement: .topBarLeading) {
-                greetingView
+            if #available(iOS 26.0, *) {
+                ToolbarItem(placement: .topBarLeading) {
+                    greetingView
+                }.sharedBackgroundVisibility(.hidden)
+            } else {
+                ToolbarItem(placement: .topBarLeading) {
+                    greetingView
+                }
             }
-            .applySharedBackgroundVisibilityIfAvailable(.hidden)
             ToolbarItem(placement: .topBarTrailing) {
                 bellButton
             }

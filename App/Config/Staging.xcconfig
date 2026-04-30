@@ -9,7 +9,7 @@
 // Configuration settings file format documentation can be found at:
 // https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
 
-BASE_URL = http:/$()/localhost:8080
+BASE_URL = http:/$()/66.70.191.74:8080
 ENVIRONMENT = staging
 APP_NAME = Unify-staging
 BUNDLE_ID = com.unify.app.staging

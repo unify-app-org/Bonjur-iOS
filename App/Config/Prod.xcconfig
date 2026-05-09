@@ -12,3 +12,9 @@ BASE_URL = https:/$()/api.unify.co
 ENVIRONMENT = prod
 APP_NAME = Unify
 BUNDLE_ID = com.unify.app.prod
+
+MSAL_CLIENT_ID = 2e87ef5d-44d1-417f-832f-335e3b02a635
+MSAL_AUTHORITY_URL = https:/$()/login.microsoftonline.com/organizations
+MSAL_REDIRECT_URI = msauth.com.unify.app.prod:/$()/auth
+MSAL_URL_SCHEME = msauth.com.unify.app.prod
+

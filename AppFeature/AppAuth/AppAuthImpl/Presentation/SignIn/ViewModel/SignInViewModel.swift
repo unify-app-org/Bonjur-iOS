@@ -52,7 +52,11 @@ final class SignInViewModel: UIFeatureViewModel<SignInFeature> {
             postEffect(.loading(false))
         }
         do {
-            try await dependencies.useCase.login(email: state.email, password: state.password)
+            try await dependencies.useCase.login(
+                communityId: inputData.communityId,
+                email: state.email,
+                password: state.password
+            )
             await handleSignIn()
         } catch {
             state.error = .init(

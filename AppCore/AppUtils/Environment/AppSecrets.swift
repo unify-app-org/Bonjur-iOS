@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AppEnvironment {
+public struct AppSecrets {
     
     public enum EnvironmentType: String {
         case test, prod
@@ -19,5 +19,20 @@ public struct AppEnvironment {
     
     public static var baseURL: String {
         return Bundle.main.object(forInfoDictionaryKey: "BASE_URL") as? String ?? ""
+    }
+    
+    
+    //MARK: - MSAL
+    
+    public static var msalClientId: String {
+        return Bundle.main.object(forInfoDictionaryKey: "MSAL_CLIENT_ID") as? String ?? ""
+    }
+    
+    public static var msalAuthorityUrl: String {
+        return Bundle.main.object(forInfoDictionaryKey: "MSAL_AUTHORITY_URL") as? String ?? ""
+    }
+    
+    public static var msalRedirectURI: String {
+        return Bundle.main.object(forInfoDictionaryKey: "MSAL_REDIRECT_URI") as? String ?? ""
     }
 }

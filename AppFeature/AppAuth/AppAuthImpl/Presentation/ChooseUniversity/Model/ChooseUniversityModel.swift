@@ -32,6 +32,7 @@ typealias ChooseUniversityFeature = UIFeatureDefinition<
 
 final class ChooseUniversityViewState: UIFeatureState {
     @Published var uiModel: [SelectableListItemView.Model] = []
+    @Published var error: AppAlert.Config? = nil
     var disabled: Bool {
          uiModel.first(where: { $0.selected }) == nil
      }

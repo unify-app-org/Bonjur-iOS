@@ -182,6 +182,9 @@ public extension TargetDependency {
         )
     }
     
+    enum AppPackage {
+        public static let MSAL: TargetDependency = .external(name: "MSAL")
+    }
     
     enum TestHelpers {
         public static let SnapshotTesting: TargetDependency = .external(name: "SnapshotTesting")

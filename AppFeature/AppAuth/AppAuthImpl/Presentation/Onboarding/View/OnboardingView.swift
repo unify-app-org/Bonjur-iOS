@@ -102,7 +102,7 @@ struct OnboardingView: View {
     }
     
     private func itemView(
-        _ model: OnboardingUIModel
+        _ model: AuthUIModel.Onboarding
     ) -> some View {
         VStack(alignment: .leading) {
             Text(model.title)

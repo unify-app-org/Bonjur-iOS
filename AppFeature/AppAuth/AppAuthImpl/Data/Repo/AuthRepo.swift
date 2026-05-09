@@ -7,11 +7,16 @@
 
 import AppStorage
 import AppNetwork
+import AppUIKit
 
 protocol AuthRepo {
     func login(
-        email: String, password: String?
+        communityId: Int,
+        email: String,
+        password: String?
     ) async throws(APIError)
+    
+    func getCommunityList() async throws(APIError) -> [SelectableListItemView.Model]
 }
 
 class AuthRepoImpl: AuthRepo {
@@ -28,13 +33,16 @@ class AuthRepoImpl: AuthRepo {
     }
     
     func login(
-        email: String, password: String?
+        communityId: Int,
+        email: String,
+        password: String?
     ) async throws(APIError) {
         let deviceManager = DeviceManager.shared
         let body: AuthDTOModel.LoginRequest = .init(
             mail: email,
-            deviceId: deviceManager.deviceId,
+            deviceId: "string",
             devicePlatform: deviceManager.devicePlatform,
+            communityId: communityId,
             deviceOs: deviceManager.deviceOs,
             deviceModel: deviceManager.deviceModel,
             appVersion: deviceManager.appVersion,
@@ -44,5 +52,13 @@ class AuthRepoImpl: AuthRepo {
         await tokenManager.saveAccessToken(data.accessToken)
         await tokenManager.saveRefreshToken(data.refreshToken)
         await tokenManager.saveUserId(data.userId)
+    }
+    
+    func getCommunityList() async throws(APIError) -> [SelectableListItemView.Model] {
+        let data = try await dataSource.communityData()
+        let uiModel: [SelectableListItemView.Model] = data.map { item in
+                .init(id: item.id, title: item.name, selected: false)
+        }
+        return uiModel
     }
 }

@@ -30,7 +30,7 @@ typealias OnboardingFeature = UIFeatureDefinition<
 // MARK: - View State
 
 final class OnboardingViewState: UIFeatureState {
-    @Published var uiModel: [OnboardingUIModel] = []
+    @Published var uiModel: [AuthUIModel.Onboarding] = []
 }
 
 // MARK: - Feature Action

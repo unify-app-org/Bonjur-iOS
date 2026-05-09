@@ -38,7 +38,7 @@ final class APIClient: APIClientProtocol {
     // MARK: - Init
     
     public init(
-        baseURL: String = AppEnvironment.baseURL,
+        baseURL: String = AppSecrets.baseURL,
         session: URLSession = .shared,
         tokenManager: TokenManager = resolve(),
         logger: NetworkLogger = resolve(),

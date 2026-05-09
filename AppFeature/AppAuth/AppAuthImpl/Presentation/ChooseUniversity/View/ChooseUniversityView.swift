@@ -28,9 +28,12 @@ struct ChooseUniversityView: View {
         }
         .padding()
         .navigationBarHidden(false)
-        .onAppear {
+        .onFirstAppear {
             store.send(.fetchData)
         }
+        .appErrorAlert(
+            alert: $store.state.error
+        )
     }
     
     private var topView: some View {

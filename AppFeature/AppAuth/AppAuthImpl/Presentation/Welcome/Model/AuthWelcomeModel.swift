@@ -33,7 +33,7 @@ typealias AuthWelcomeFeature = UIFeatureDefinition<
 // MARK: - View State
 
 final class AuthWelcomeViewState: UIFeatureState {
-    @Published var uiModel: OnboardingUIModel = .init(
+    @Published var uiModel: AuthUIModel.Onboarding = .init(
         title: "",
         subtitle: "",
         image: UIImage.Icons.bigResume

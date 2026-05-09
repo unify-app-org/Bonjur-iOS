@@ -87,13 +87,13 @@ private final class AppLoadingViewController: UIViewController {
         cardView.layer.shadowColor = UIColor.black.cgColor
         cardView.layer.shadowOpacity = 0.08
         cardView.layer.shadowOffset = CGSize(width: 0, height: 4)
-        cardView.layer.shadowRadius = 16
+        cardView.layer.shadowRadius = 8
         view.addSubview(cardView)
         NSLayoutConstraint.activate([
             cardView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             cardView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            cardView.widthAnchor.constraint(equalToConstant: 80),
-            cardView.heightAnchor.constraint(equalToConstant: 80)
+            cardView.widthAnchor.constraint(equalToConstant: 90),
+            cardView.heightAnchor.constraint(equalToConstant: 90)
         ])
     }
 

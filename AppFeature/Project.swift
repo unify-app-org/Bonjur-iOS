@@ -14,7 +14,7 @@ let appAuthTarget = Target.createFeatureModule(
     name: "AppAuth",
     implConfig: .init(
         dependencies: [
-            
+            .AppPackage.MSAL
         ]
     )
 ).add(to: &frameworkTargets)

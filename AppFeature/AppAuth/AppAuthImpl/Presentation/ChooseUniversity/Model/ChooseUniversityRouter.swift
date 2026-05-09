@@ -8,8 +8,7 @@
 import UIKit
 
 enum ChooseUniversityRoute {
-    case welcome
-    case signIn
+    case signIn(SignInInputData)
 }
 
 protocol ChooseUniversityRouterProtocol {
@@ -19,21 +18,14 @@ protocol ChooseUniversityRouterProtocol {
 
 final class ChooseUniversityRouter: ChooseUniversityRouterProtocol {
     weak var view: UIViewController?
-    
+    private let signInFlowCoordinator = SignInFlowCoordinator()
+
     @MainActor
     func navigate(to route: ChooseUniversityRoute) {
         switch route {
-        case .signIn:
-            let vc = SignInBuilder(
-                inputData: .init()
-            ).build()
-            view?.navigationController?.pushViewController(vc, animated: true)
-        case .welcome:
-            let vc = AuthWelcomeBuilder(
-                inputData: .init(name: "Huseyn")
-            ).build()
-            vc.modalPresentationStyle = .fullScreen
-            view?.present(vc, animated: true)
+        case .signIn(let inputData):
+            guard let view else { return }
+            signInFlowCoordinator.start(from: view, with: inputData)
         }
     }
 }

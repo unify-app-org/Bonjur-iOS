@@ -12,22 +12,24 @@ import AppStorage
 
 protocol AuthUsecases {
     
-    func onboarding() -> [OnboardingUIModel]
-    
-    func chooseUniversity() async throws(APIError) -> [SelectableListItemView.Model]
-    
-    func welcome(name: String) -> OnboardingUIModel
+    func onboarding() -> [AuthUIModel.Onboarding]
+        
+    func welcome(name: String) -> AuthUIModel.Onboarding
     
     func languages() -> [SelectableListItemView.Model]
     
     func genders() -> [SelectableListItemView.Model]
     
-    func interests() -> [AuthInterestsModel]
+    func interests() -> [AuthUIModel.Interests]
     
     func login(
+        communityId: Int,
         email: String,
         password: String?
     ) async throws(APIError)
+    
+    @MainActor
+    func getCommunities() async throws(APIError) -> [SelectableListItemView.Model]
 }
 
 final class AuthUsecasesImpl: AuthUsecases {
@@ -38,7 +40,7 @@ final class AuthUsecasesImpl: AuthUsecases {
         self.repo = repo
     }
     
-    func onboarding() -> [OnboardingUIModel] {
+    func onboarding() -> [AuthUIModel.Onboarding] {
         [
             .init(
                 title: "Find Your \nPeople",
@@ -58,29 +60,9 @@ final class AuthUsecasesImpl: AuthUsecases {
         ]
     }
     
-    func chooseUniversity() async throws(APIError) -> [SelectableListItemView.Model] {
-        return [
-            .init(
-                id: 1,
-                title: "UFAZ",
-                selected: false
-            ),
-            .init(
-                id: 2,
-                title: "ADNSU",
-                selected: false
-            ),
-            .init(
-                id: 3,
-                title: "BHOS",
-                selected: false
-            )
-        ]
-    }
-    
     func welcome(
         name: String
-    ) -> OnboardingUIModel {
+    ) -> AuthUIModel.Onboarding {
         .init(
             title: "Welcome \(name)",
             subtitle: "Complete your profile for better interaction.It will take only 5 minutes.",
@@ -138,7 +120,7 @@ final class AuthUsecasesImpl: AuthUsecases {
         ]
     }
     
-    func interests() -> [AuthInterestsModel] {
+    func interests() -> [AuthUIModel.Interests] {
         return [
             .init(
                 title: "Example",
@@ -240,9 +222,19 @@ final class AuthUsecasesImpl: AuthUsecases {
     }
     
     func login(
+        communityId: Int,
         email: String,
         password: String?
     ) async throws(APIError) {
-        try await repo.login(email: email, password: password)
+        try await repo.login(
+            communityId: communityId,
+            email: email,
+            password: password
+        )
+    }
+    
+    @MainActor
+    func getCommunities() async throws(APIError) -> [SelectableListItemView.Model] {
+        try await repo.getCommunityList()
     }
 }

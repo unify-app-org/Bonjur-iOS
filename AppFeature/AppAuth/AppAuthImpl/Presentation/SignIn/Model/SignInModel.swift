@@ -13,6 +13,7 @@ import AppUIKit
 // MARK: - SignIn input
 
 struct SignInInputData {
+    let communityId: Int
 }
 
 // MARK: - Side effects
@@ -34,8 +35,8 @@ typealias SignInFeature = UIFeatureDefinition<
 final class SignInViewState: UIFeatureState {
     @Published var error: AppAlert.Config? = nil
     
-    @Published var email: String = ""
-    @Published var password: String = ""
+    @Published var email: String = "test@gmail.com"
+    @Published var password: String = "test123"
     
     var isValid: Bool {
         !email.isEmpty && !password.isEmpty

@@ -42,20 +42,34 @@ final class ChooseUniversityViewModel: UIFeatureViewModel<ChooseUniversityFeatur
     
     private func fetchData() {
         Task {
-            state.uiModel = try await dependencies.useCase.chooseUniversity()
+            await getCommunities()
+        }
+    }
+    
+    private func getCommunities() async {
+        postEffect(.loading(true))
+        defer {
+            postEffect(.loading(false))
+        }
+        
+        do {
+            state.uiModel = try await dependencies.useCase.getCommunities()
+        } catch {
+            state.error = .init(
+                title: error.localizedDescription,
+                subtitle: error.detail
+            )
         }
     }
     
     private func nextTapped() {
-        let selectedItem = state.uiModel.first(where: { $0.selected == true })
-        if selectedItem?.id == 1 {
-            Task {
-                await router.navigate(to: .welcome)
-            }
-        } else {
-            Task {
-                await router.navigate(to: .signIn)
-            }
+        guard let selectedItem = state.uiModel.first(where: { $0.selected == true }) else {
+            return
+        }
+        Task {
+            await router.navigate(to: .signIn(
+                .init(communityId: selectedItem.id)
+            ))
         }
     }
     

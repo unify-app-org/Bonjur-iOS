@@ -34,7 +34,7 @@ final class AuthOptionalInfoViewState: UIFeatureState {
     @Published var currentStep: Int = 1
     @Published var langauges: [SelectableListItemView.Model] = []
     @Published var genders: [SelectableListItemView.Model] = []
-    @Published var interests: [AuthInterestsModel] = []
+    @Published var interests: [AuthUIModel.Interests] = []
     @Published var biography: String?
     @Published var birthDate: Date?
     @Published var showDatePicker: Bool = false

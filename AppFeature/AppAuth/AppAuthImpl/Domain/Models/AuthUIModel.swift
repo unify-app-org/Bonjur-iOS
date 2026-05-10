@@ -19,6 +19,7 @@ struct AuthUIModel {
     
     struct Interests: Identifiable {
         let id: UUID = UUID()
+        let type: String
         let title: String
         var interests: [CategoriesChipsView.Model]
     }

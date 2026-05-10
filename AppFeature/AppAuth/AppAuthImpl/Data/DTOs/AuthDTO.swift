@@ -26,6 +26,7 @@ enum AuthDTOModel {
         let accessToken: String
         let refreshToken: String
         let userId: String
+        let isFirstLogin: Bool
     }
     
     //MARK: - Communities
@@ -46,8 +47,13 @@ enum AuthDTOModel {
     //MARK: - Statics
     
     struct CategoriesResponse: Decodable {
-        let id: Int
-        let title: String
+        let type, title: String?
+        let subCategories: [SubCategoriesResponse]
+    }
+    
+    struct SubCategoriesResponse: Decodable {
+        let id: Int?
+        let title: String?
     }
     
     struct LanguagesResponse: Decodable {

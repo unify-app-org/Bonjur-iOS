@@ -16,7 +16,7 @@ protocol AuthRepo {
         communityId: Int,
         email: String,
         password: String?
-    ) async throws(APIError)
+    ) async throws(APIError) -> Bool
     
     func getCommunityList() async throws(APIError) -> [SelectableListItemView.Model]
     
@@ -26,26 +26,31 @@ protocol AuthRepo {
     ) async throws(APIError) -> Data
     
     func getLanguages() async throws(APIError) -> [SelectableListItemView.Model]
+    
+    func getCategories() async throws(APIError) -> [AuthUIModel.Interests]
 }
 
 class AuthRepoImpl: AuthRepo {
     
     private let dataSource: AuthDataSource
     private let tokenManager: TokenManager
-    
+    private let userDefaults: UserDefaultsProtocol
+
     init(
         dataSource: AuthDataSource = resolve(),
-        tokenManager: TokenManager = resolve()
+        tokenManager: TokenManager = resolve(),
+        userDefaults: UserDefaultsProtocol = resolve()
     ) {
         self.dataSource = dataSource
         self.tokenManager = tokenManager
+        self.userDefaults = userDefaults
     }
     
     func login(
         communityId: Int,
         email: String,
         password: String?
-    ) async throws(APIError) {
+    ) async throws(APIError) -> Bool {
         let deviceManager = DeviceManager.shared
         let body: AuthDTOModel.LoginRequest = .init(
             mail: email,
@@ -58,9 +63,11 @@ class AuthRepoImpl: AuthRepo {
             password: password
         )
         let data = try await dataSource.login(body: body)
+        userDefaults.set(true, forKey: .isAuthenticated)
         await tokenManager.saveAccessToken(data.accessToken)
         await tokenManager.saveRefreshToken(data.refreshToken)
         await tokenManager.saveUserId(data.userId)
+        return data.isFirstLogin
     }
     
     func getCommunityList() async throws(APIError) -> [SelectableListItemView.Model] {
@@ -88,6 +95,25 @@ class AuthRepoImpl: AuthRepo {
                     id: item.id,
                     title: item.name ?? "",
                     selected: false
+                )
+        }
+        return uiModel
+    }
+    
+    func getCategories() async throws(APIError) -> [AuthUIModel.Interests] {
+        let data = try await dataSource.getCategories()
+        let uiModel: [AuthUIModel.Interests] = data.map { item in
+            let interests: [CategoriesChipsView.Model] = item.subCategories.map { item in
+                    .init(
+                        id: item.id ?? 0,
+                        title: item.title ?? "",
+                        selected: false
+                    )
+            }
+            return .init(
+                    type: item.type ?? "",
+                    title: item.title ?? "",
+                    interests: interests
                 )
         }
         return uiModel

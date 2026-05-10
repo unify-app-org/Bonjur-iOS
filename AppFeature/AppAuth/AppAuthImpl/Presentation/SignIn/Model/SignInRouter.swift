@@ -9,6 +9,7 @@ import UIKit
 
 enum SignInRoute {
     case home
+    case welcome(AuthWelcomeInputData)
 }
 
 protocol SignInRouterProtocol {
@@ -33,6 +34,12 @@ final class SignInRouter: SignInRouterProtocol {
         switch route {
         case .home:
             authDelegate.finishAuthentication()
+        case .welcome(let inputData):
+            let vc = AuthWelcomeBuilder(
+                inputData: inputData
+            ).build()
+            vc.modalPresentationStyle = .fullScreen
+            view?.present(vc, animated: true)
         }
     }
 }

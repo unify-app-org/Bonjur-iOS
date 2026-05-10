@@ -12,7 +12,6 @@ final class SignInViewModel: UIFeatureViewModel<SignInFeature> {
     
     struct Dependencies {
         let useCase: AuthUsecases
-        let userDefaults: UserDefaultsProtocol
     }
     
     private let router: SignInRouterProtocol
@@ -52,12 +51,12 @@ final class SignInViewModel: UIFeatureViewModel<SignInFeature> {
             postEffect(.loading(false))
         }
         do {
-            try await dependencies.useCase.login(
+            let isFirstLogin = try await dependencies.useCase.login(
                 communityId: inputData.communityId,
                 email: state.email,
                 password: state.password
             )
-            await handleSignIn()
+            await handleSignIn(isFirstLogin)
         } catch {
             state.error = .init(
                 title: error.localizedDescription,
@@ -67,8 +66,17 @@ final class SignInViewModel: UIFeatureViewModel<SignInFeature> {
     }
     
     @MainActor
-    private func handleSignIn() {
-        dependencies.userDefaults.set(true, forKey: .isAuthenticated)
-        router.navigate(to: .home)
+    private func handleSignIn(
+        _ isFirstLogin: Bool
+    ) {
+        if isFirstLogin {
+            router.navigate(
+                to: .welcome(
+                    .init()
+                )
+            )
+        } else {
+            router.navigate(to: .home)
+        }
     }
 }

@@ -47,3 +47,18 @@ public extension String {
         return date
     }
 }
+
+public extension Date {
+    
+    func toString(format: DateFormat) -> String {
+        let formatter = makeDateFormatter()
+        formatter.dateFormat = format.rawValue
+        return formatter.string(from: self)
+    }
+    
+    private func makeDateFormatter() -> DateFormatter {
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
+        return formatter
+    }
+}

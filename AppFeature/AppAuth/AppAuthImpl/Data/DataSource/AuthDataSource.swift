@@ -20,6 +20,8 @@ protocol AuthDataSource {
     ) async throws(APIError) -> Data
     
     func getLanguages() async throws(APIError) -> [AuthDTOModel.LanguagesResponse]
+    
+    func getCategories() async throws(APIError) -> [AuthDTOModel.CategoriesResponse]
 }
 
 final class AuthDataSourceImpl: NetworkService<AuthEnpoints>, AuthDataSource {
@@ -48,5 +50,9 @@ final class AuthDataSourceImpl: NetworkService<AuthEnpoints>, AuthDataSource {
     
     func getLanguages() async throws(APIError) -> [AuthDTOModel.LanguagesResponse] {
         try await fetch(endPoint: .getLanguages)
+    }
+    
+    func getCategories() async throws(APIError) -> [AuthDTOModel.CategoriesResponse] {
+        try await fetch(endPoint: .getCategories)
     }
 }

@@ -9,6 +9,7 @@ import UIKit
 import AppNetwork
 import AppFoundation
 import AppUIKit
+import AppUtils
 
 final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeature> {
     
@@ -35,9 +36,7 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
     override func handle(action: AuthOptionalInfoFeature.Action) {
         switch action {
         case .fetchData:
-            Task {
-                await fetchData()
-            }
+            fetchData()
         case .selectedGender(let id):
             selectGender(id)
         case .selectedLanguage(let id):
@@ -57,13 +56,33 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
         }
     }
     
-    @MainActor
     private func fetchData() {
-        state.genders = dependencies.useCase.genders()
-        state.interests = dependencies.useCase.interests()
         Task {
+            await fetchCategories()
             await fetchLanguages()
+            state.genders = dependencies.useCase.genders()
         }
+    }
+    
+    private func fetchCategories() async {
+        do {
+            let data = try await dependencies.useCase.interests()
+            await handleCategories(data)
+        } catch {
+            postEffect(
+                .error(
+                    title: error.localizedDescription,
+                    subtitle: error.localizedDescription
+                )
+            )
+        }
+    }
+    
+    @MainActor
+    private func handleCategories(
+        _ data: [AuthUIModel.Interests]
+    ) {
+        state.interests = data
     }
     
     private func fetchLanguages() async {
@@ -102,17 +121,10 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
             return item.interests.filter({ $0.selected }).map({ $0.id })
         }
         let languages = state.langauges.filter({ $0.selected }).map({ $0.id })
+        let birthDate = state.birthDate?.toString(format: .yyyyMMdd)
         
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        var birthDateString: String?
-        if let birthDate = state.birthDate {
-            birthDateString = formatter.string(from: birthDate)
-        } else {
-            birthDateString = nil
-        }
         let request: AuthDTOModel.OptionalsQuery = .init(
-            birthDate: birthDateString,
+            birthDate: birthDate,
             gender: gender,
             about: state.biography,
             categoriesId: categories,
@@ -132,14 +144,17 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
     }
     
     private func sendOptionals() async {
+        postEffect(.loading(true))
         do {
             let request = buildRequest()
             let _ = try await dependencies.useCase.sendOptionals(
                 multiPart: request.0,
                 queryData: request.1
             )
+            postEffect(.loading(false))
             await handleSendOptionals()
         } catch {
+            postEffect(.loading(false))
             await handleSendOptionals()
         }
     }

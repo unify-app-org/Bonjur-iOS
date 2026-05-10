@@ -32,7 +32,7 @@ extension AuthEnpoints: AppEndPoint {
         case .getLanguages:
             "api/sd/v1/languages"
         case .getCategories:
-            "api/v1/categories"
+            "api/sd/v1/categories"
         case .sendOptionals:
             "api/us/v1/users"
         }

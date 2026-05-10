@@ -28,8 +28,6 @@ final class AuthOptionalInfoHostController: UIFeatureController<
         }
     }
     
-    
-
     private func showAlert(
         title: String,
         subtitle: String?,

@@ -15,7 +15,8 @@ final class SignInFlowCoordinator {
     private let msalManager = MicrosoftAuthManager()
     private weak var presentingViewController: UIViewController?
     private let useCase: AuthUsecases = resolve()
-
+    private var authDelegate: AuthDelegate = resolve()
+    
     @MainActor
     func start(from viewController: UIViewController, with inputData: SignInInputData) {
         presentingViewController = viewController
@@ -46,15 +47,13 @@ final class SignInFlowCoordinator {
     @MainActor
     private func handleMSALResult(_ result: MSALSignInResult) {
         guard let email = result.email,
-                let communityId = inputData?.communityId,
-                let name = result.name else {
+                let communityId = inputData?.communityId else {
             errorAlert(title: "Microsoft Sign In Failed")
             return
         }
         Task {
             await login(
                 email,
-                name,
                 communityId
             )
         }
@@ -62,7 +61,6 @@ final class SignInFlowCoordinator {
     
     private func login(
         _ email: String,
-        _ name: String,
         _ communityId: Int
     ) async {
         AppLoadingUI.show()
@@ -70,21 +68,32 @@ final class SignInFlowCoordinator {
             AppLoadingUI.dismiss()
         }
         do {
-            try await useCase.login(
+            let isFirstLogin = try await useCase.login(
                 communityId: communityId,
                 email: email,
                 password: nil
             )
-            await handleSignIn(name)
+            await handleLogin( isFirstLogin)
         } catch {
             await errorAlert(title: error.localizedDescription)
         }
     }
     
     @MainActor
-    private func handleSignIn(_ name: String) async {
+    private func handleLogin(
+        _ isFirstLogin: Bool
+    ) {
+        if isFirstLogin {
+            routeToWelcome()
+        } else {
+            authDelegate.finishAuthentication()
+        }
+    }
+    
+    @MainActor
+    private func routeToWelcome() {
         let vc = AuthWelcomeBuilder(
-            inputData: .init(name: name)
+            inputData: .init()
         ).build()
         vc.modalPresentationStyle = .fullScreen
         presentingViewController?.present(vc, animated: true)

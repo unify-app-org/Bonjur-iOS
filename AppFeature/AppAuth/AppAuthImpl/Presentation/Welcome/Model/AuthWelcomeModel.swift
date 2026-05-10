@@ -13,7 +13,7 @@ import UIKit
 // MARK: - AuthWelcome input
 
 struct AuthWelcomeInputData {
-    let name: String
+    
 }
 
 // MARK: - Side effects

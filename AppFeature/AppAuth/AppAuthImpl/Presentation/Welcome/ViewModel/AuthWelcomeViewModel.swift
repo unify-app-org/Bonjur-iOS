@@ -52,6 +52,6 @@ final class AuthWelcomeViewModel: UIFeatureViewModel<AuthWelcomeFeature> {
     }
     
     private func fetchData() {
-        state.uiModel = dependencies.useCase.welcome(name: inputData.name)
+        state.uiModel = dependencies.useCase.welcome()
     }
 }

@@ -16,6 +16,8 @@ public protocol AppEndPoint {
     var requiresAuth: Bool { get }
     var body: Encodable? { get }
     var queryParameters: [String: String]? { get }
+    var multipartFormData: MultipartFormData? { get }
+    var contentType: ContentType { get }
 }
 
 public extension AppEndPoint {
@@ -34,6 +36,19 @@ public extension AppEndPoint {
     var queryParameters: [String: String]? {
         return nil
     }
+    
+    var multipartFormData: MultipartFormData? {
+        return nil
+    }
+    
+    var contentType: ContentType {
+        return .json
+    }
+}
+
+public enum ContentType: String {
+    case json = "application/json"
+    case formData = "multipart/form-data; boundary=Boundary-12345"
 }
 
 public enum HTTPMethod: String {

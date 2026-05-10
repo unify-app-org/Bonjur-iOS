@@ -18,6 +18,10 @@ struct AuthOptionalInfoInputData {
 
 enum AuthOptionalInfoSideEffect: UISideEffect {
     case loading(Bool)
+    case error(
+        title: String,
+        subtitle: String?
+    )
 }
 
 // MARK: - Feature Definition

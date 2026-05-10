@@ -28,8 +28,14 @@ protocol AuthUsecases {
         password: String?
     ) async throws(APIError)
     
-    @MainActor
     func getCommunities() async throws(APIError) -> [SelectableListItemView.Model]
+    
+    func sendOptionals(
+        multiPart: MultipartFormData?,
+        queryData: AuthDTOModel.OptionalsQuery?
+    ) async throws(APIError) -> Data
+    
+    func getLanguages() async throws(APIError) -> [SelectableListItemView.Model]
 }
 
 final class AuthUsecasesImpl: AuthUsecases {
@@ -71,38 +77,7 @@ final class AuthUsecasesImpl: AuthUsecases {
     }
     
     func languages() -> [SelectableListItemView.Model] {
-        [
-            .init(
-                id: 1,
-                title: "Azerbaijan",
-                selected: false,
-                style: .multySelect
-            ),
-            .init(
-                id: 2,
-                title: "English",
-                selected: false,
-                style: .multySelect
-            ),
-            .init(
-                id: 3,
-                title: "Russian",
-                selected: false,
-                style: .multySelect
-            ),
-            .init(
-                id: 4,
-                title: "French",
-                selected: false,
-                style: .multySelect
-            ),
-            .init(
-                id: 5,
-                title: "Turkish",
-                selected: false,
-                style: .multySelect
-            )
-        ]
+        []
     }
     
     func genders() -> [SelectableListItemView.Model] {
@@ -110,115 +85,20 @@ final class AuthUsecasesImpl: AuthUsecases {
             .init(
                 id: 1,
                 title: "Female",
+                type: AuthUIModel.Gender.female.rawValue,
                 selected: false
             ),
             .init(
                 id: 2,
                 title: "Male",
+                type: AuthUIModel.Gender.male.rawValue,
                 selected: false
             )
         ]
     }
     
     func interests() -> [AuthUIModel.Interests] {
-        return [
-            .init(
-                title: "Example",
-                interests: [
-                    .init(
-                        id: 1,
-                        title: "love",
-                        selected: false
-                    ),
-                    .init(
-                        id: 2,
-                        title: "love",
-                        selected: false
-                    ),
-                    .init(
-                        id: 3,
-                        title: "beautiful",
-                        selected: false
-                    ),
-                    .init(
-                        id: 4,
-                        title: "fashion",
-                        selected: false
-                    ),
-                    .init(
-                        id: 5,
-                        title: "dog",
-                        selected: false
-                    ),
-                    .init(
-                        id: 6,
-                        title: "art",
-                        selected: false
-                    ),
-                ]
-            ),
-            .init(
-                title: "Example",
-                interests: [
-                    .init(
-                        id: 7,
-                        title: "love",
-                        selected: false
-                    ),
-                    .init(
-                        id: 8,
-                        title: "love",
-                        selected: false
-                    ),
-                    .init(
-                        id: 9,
-                        title: "beautiful",
-                        selected: false
-                    ),
-                    .init(
-                        id: 10,
-                        title: "fashion",
-                        selected: false
-                    ),
-                    .init(
-                        id: 11,
-                        title: "dog",
-                        selected: false
-                    ),
-                    .init(
-                        id: 12,
-                        title: "art",
-                        selected: false
-                    ),
-                    .init(
-                        id: 13,
-                        title: "love",
-                        selected: false
-                    ),
-                    .init(
-                        id: 14,
-                        title: "beautiful",
-                        selected: false
-                    ),
-                    .init(
-                        id: 15,
-                        title: "fashion",
-                        selected: false
-                    ),
-                    .init(
-                        id: 16,
-                        title: "dog",
-                        selected: false
-                    ),
-                    .init(
-                        id: 17,
-                        title: "art",
-                        selected: false
-                    ),
-                ]
-            )
-            
-        ]
+        return []
     }
     
     func login(
@@ -236,5 +116,19 @@ final class AuthUsecasesImpl: AuthUsecases {
     @MainActor
     func getCommunities() async throws(APIError) -> [SelectableListItemView.Model] {
         try await repo.getCommunityList()
+    }
+    
+    func sendOptionals(
+        multiPart: MultipartFormData?,
+        queryData: AuthDTOModel.OptionalsQuery?
+    ) async throws(APIError) -> Data {
+        try await repo.sendOptionals(
+            multiPart: multiPart,
+            queryData: queryData
+        )
+    }
+    
+    func getLanguages() async throws(APIError) -> [SelectableListItemView.Model] {
+        try  await repo.getLanguages()
     }
 }

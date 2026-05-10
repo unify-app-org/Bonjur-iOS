@@ -88,7 +88,7 @@ final class APIClient: APIClientProtocol {
             throw APIError.invalidURL
         }
         
-        if let queryParams = endpoint.queryParameters {
+        if let queryParams = endpoint.queryParameters, !queryParams.isEmpty {
             urlComponents.queryItems = queryParams.map { URLQueryItem(name: $0.key, value: $0.value) }
         }
         
@@ -108,15 +108,23 @@ final class APIClient: APIClientProtocol {
             let token = await tokenManager.getAccessToken()
                 request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(localization.currentLanguage, forHTTPHeaderField: "Accept-Language")
         
         var bodyData: Data?
-        if let body = endpoint.body {
+        if var multipart = endpoint.multipartFormData {
+            if let body = endpoint.body {
+                multipart.mergeEncodableFields(body)
+            }
+            bodyData = multipart.encode()
+            request.httpBody = bodyData
+            request.setValue(
+                "multipart/form-data; boundary=\(multipart.boundary)",
+                forHTTPHeaderField: "Content-Type"
+            )
+        } else if let body = endpoint.body {
             do {
                 let encoder = JSONEncoder()
                 bodyData = try encoder.encode(body)
-                
                 request.httpBody = bodyData
             } catch {
                 let error = APIError.decodingError(error)
@@ -128,6 +136,9 @@ final class APIClient: APIClientProtocol {
                 )
                 throw error
             }
+            request.setValue(endpoint.contentType.rawValue, forHTTPHeaderField: "Content-Type")
+        } else {
+            request.setValue(endpoint.contentType.rawValue, forHTTPHeaderField: "Content-Type")
         }
         
         logger.logRequest(request, body: bodyData)

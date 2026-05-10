@@ -8,6 +8,8 @@
 import AppStorage
 import AppNetwork
 import AppUIKit
+import Foundation
+import AppUtils
 
 protocol AuthRepo {
     func login(
@@ -17,6 +19,13 @@ protocol AuthRepo {
     ) async throws(APIError)
     
     func getCommunityList() async throws(APIError) -> [SelectableListItemView.Model]
+    
+    func sendOptionals(
+        multiPart: MultipartFormData?,
+        queryData: AuthDTOModel.OptionalsQuery?
+    ) async throws(APIError) -> Data
+    
+    func getLanguages() async throws(APIError) -> [SelectableListItemView.Model]
 }
 
 class AuthRepoImpl: AuthRepo {
@@ -40,7 +49,7 @@ class AuthRepoImpl: AuthRepo {
         let deviceManager = DeviceManager.shared
         let body: AuthDTOModel.LoginRequest = .init(
             mail: email,
-            deviceId: "string",
+            deviceId: deviceManager.deviceId,
             devicePlatform: deviceManager.devicePlatform,
             communityId: communityId,
             deviceOs: deviceManager.deviceOs,
@@ -58,6 +67,28 @@ class AuthRepoImpl: AuthRepo {
         let data = try await dataSource.communityData()
         let uiModel: [SelectableListItemView.Model] = data.map { item in
                 .init(id: item.id, title: item.name, selected: false)
+        }
+        return uiModel
+    }
+    
+    func sendOptionals(
+        multiPart: MultipartFormData?,
+        queryData: AuthDTOModel.OptionalsQuery?
+    ) async throws(APIError) -> Data {
+        try await dataSource.sendOptionals(
+            multiPart: multiPart,
+            queryData: queryData
+        )
+    }
+    
+    func getLanguages() async throws(APIError) -> [SelectableListItemView.Model] {
+        let data = try await dataSource.getLanguages()
+        let uiModel: [SelectableListItemView.Model] = data.map { item in
+                .init(
+                    id: item.id,
+                    title: item.name ?? "",
+                    selected: false
+                )
         }
         return uiModel
     }

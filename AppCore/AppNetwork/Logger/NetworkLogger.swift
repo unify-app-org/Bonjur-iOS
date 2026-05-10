@@ -45,7 +45,7 @@ final class NetworkLoggerImpl: NetworkLogger {
             print("\n📋 Headers:")
             headers.forEach { key, value in
                 if key.lowercased() == "authorization" {
-                    print("  \(key): Bearer ***")
+                    print("  \(key): \(value)")
                 } else {
                     print("  \(key): \(value)")
                 }

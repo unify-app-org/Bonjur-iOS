@@ -5,8 +5,10 @@
 //  Created by Huseyn Hasanov on 26.12.25.
 //
 
-import AppFoundation
 import UIKit
+import AppNetwork
+import AppFoundation
+import AppUIKit
 
 final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeature> {
     
@@ -33,7 +35,9 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
     override func handle(action: AuthOptionalInfoFeature.Action) {
         switch action {
         case .fetchData:
-            fetchData()
+            Task {
+                await fetchData()
+            }
         case .selectedGender(let id):
             selectGender(id)
         case .selectedLanguage(let id):
@@ -53,10 +57,96 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
         }
     }
     
+    @MainActor
+    private func fetchData() {
+        state.genders = dependencies.useCase.genders()
+        state.interests = dependencies.useCase.interests()
+        Task {
+            await fetchLanguages()
+        }
+    }
+    
+    private func fetchLanguages() async {
+        do {
+            let data = try await dependencies.useCase.getLanguages()
+            await handleLanguage(data)
+        } catch {
+            postEffect(
+                .error(
+                    title: error.localizedDescription,
+                    subtitle: error.detail
+                )
+            )
+        }
+    }
+    
+    @MainActor
+    private func handleLanguage(
+        _ data: [SelectableListItemView.Model]
+    ) {
+        state.langauges = data
+    }
+    
     private func skipTapped() {
         Task {
-           await router.navigate(to: .skip)
+           await sendOptionals()
        }
+    }
+    
+    private func buildRequest() -> (
+        MultipartFormData?,
+        AuthDTOModel.OptionalsQuery?
+    ) {
+        let gender = state.genders.first(where: { $0.selected })?.type
+        let categories = state.interests.flatMap { item in
+            return item.interests.filter({ $0.selected }).map({ $0.id })
+        }
+        let languages = state.langauges.filter({ $0.selected }).map({ $0.id })
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        var birthDateString: String?
+        if let birthDate = state.birthDate {
+            birthDateString = formatter.string(from: birthDate)
+        } else {
+            birthDateString = nil
+        }
+        let request: AuthDTOModel.OptionalsQuery = .init(
+            birthDate: birthDateString,
+            gender: gender,
+            about: state.biography,
+            categoriesId: categories,
+            languagesId: languages
+        )
+        guard let image = state.selectedImage else {
+            return (nil, request)
+        }
+        var formData = MultipartFormData()
+        formData.addFile(
+            name: "image",
+            fileName: "avatar.jpg",
+            mimeType: "image/jpeg",
+            data: image
+        )
+        return (formData, request)
+    }
+    
+    private func sendOptionals() async {
+        do {
+            let request = buildRequest()
+            let _ = try await dependencies.useCase.sendOptionals(
+                multiPart: request.0,
+                queryData: request.1
+            )
+            await handleSendOptionals()
+        } catch {
+            await handleSendOptionals()
+        }
+    }
+    
+    @MainActor
+    private func handleSendOptionals() {
+        router.navigate(to: .skip)
     }
     
     private func previouseTapped() {
@@ -104,11 +194,5 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
             }
             return updated
         }
-    }
-    
-    private func fetchData() {
-        state.genders = dependencies.useCase.genders()
-        state.langauges = dependencies.useCase.languages()
-        state.interests = dependencies.useCase.interests()
     }
 }

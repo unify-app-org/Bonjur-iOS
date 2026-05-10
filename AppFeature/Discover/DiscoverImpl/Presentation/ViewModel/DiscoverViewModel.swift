@@ -94,7 +94,6 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     }
     
     private func fetchUsersData() async {
-        postEffect(.loading(true))
         do {
             let data = try await dependencies.useCase.fetchUserData()
             handleUserData(data)
@@ -161,9 +160,6 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     }
     
     private func fetchHangoutsData() async {
-        defer {
-            postEffect(.loading(false))
-        }
         do {
             let data = try await dependencies.useCase.fetchHangoutsData()
             handleHangoutsData(data)

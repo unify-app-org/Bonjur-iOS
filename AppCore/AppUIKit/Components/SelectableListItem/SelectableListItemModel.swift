@@ -15,10 +15,12 @@ public extension SelectableListItemView {
         public let title: String
         public var selected: Bool
         public let style: Style
+        public let type: String?
         
         public init(
             id: Int,
             title: String,
+            type: String? = nil,
             selected: Bool,
             style: Style = .default
         ) {
@@ -26,6 +28,7 @@ public extension SelectableListItemView {
             self.title = title
             self.selected = selected
             self.style = style
+            self.type = type
         }
         
         public enum Style {

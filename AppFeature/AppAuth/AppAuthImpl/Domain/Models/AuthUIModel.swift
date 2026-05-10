@@ -22,4 +22,9 @@ struct AuthUIModel {
         let title: String
         var interests: [CategoriesChipsView.Model]
     }
+    
+    enum Gender: String {
+        case male = "MALE"
+        case female = "FEMALE"
+    }
 }

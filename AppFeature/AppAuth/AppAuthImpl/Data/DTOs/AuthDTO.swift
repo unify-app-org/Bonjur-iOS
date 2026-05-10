@@ -34,4 +34,24 @@ enum AuthDTOModel {
         let id: Int
         let name: String
     }
+    
+    struct OptionalsQuery: Encodable {
+        let birthDate: String?
+        let gender: String?
+        let about: String?
+        let categoriesId: [Int]
+        let languagesId: [Int]
+    }
+    
+    //MARK: - Statics
+    
+    struct CategoriesResponse: Decodable {
+        let id: Int
+        let title: String
+    }
+    
+    struct LanguagesResponse: Decodable {
+        let id: Int
+        let name, code: String?
+    }
 }

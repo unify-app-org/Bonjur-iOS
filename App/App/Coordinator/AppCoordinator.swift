@@ -35,13 +35,16 @@ final class AppCoordinator {
         )
         apiClient.activityDelegate = self
         
-        if isAuthenticated {
-            showTabBar()
-        } else {
-            showRegisterVC()
+        Task { @MainActor in
+            if isAuthenticated {
+                showTabBar()
+            } else {
+                showRegisterVC()
+            }
         }
     }
     
+    @MainActor
     func showRegisterVC() {
         let registerVC = dependencyContainer.resolve(
             AppAuthModule.self
@@ -51,6 +54,7 @@ final class AppCoordinator {
         window.makeKeyAndVisible()
     }
     
+    @MainActor
     func showTabBar() {
         let tabBarVC = AppTabBarBuilder(
             inputData: .init(),
@@ -74,17 +78,21 @@ extension AppCoordinator: NetworkActivityDelegate {
     }
     
     func refreshDidFinish() {
-        AppLoadingUI.show()
+        AppLoadingUI.dismiss()
     }
     
     func refreshFailure() {
-        showRegisterVC()
+        Task { @MainActor in
+            showRegisterVC()
+        }
     }
 }
 
 extension AppCoordinator: AppAuthModuleDelegate {
     
     func appAuthModuleDidFinish() {
-        showTabBar()
+        Task { @MainActor in
+            showTabBar()
+        }
     }
 }

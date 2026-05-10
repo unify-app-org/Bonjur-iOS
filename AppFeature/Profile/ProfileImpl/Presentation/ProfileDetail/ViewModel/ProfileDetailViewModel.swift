@@ -71,10 +71,19 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
     }
     
     private func fetchUserData() async {
+        postEffect(.loading(true))
+        defer {
+            postEffect(.loading(false))
+        }
         do {
             state.uiModel = try await dependencies.useCase.getProfileData()
         } catch {
-            
+            postEffect(
+                .error(
+                    error.localizedDescription,
+                    error.detail
+                )
+            )
         }
     }
     
@@ -102,7 +111,6 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
             birthday: currentUIModel.birthday,
             languages: currentUIModel.languages,
             tags: currentUIModel.tags,
-            cardCover: backgroundType,
             clubs: currentUIModel.clubs,
             events: currentUIModel.events,
             hangouts: currentUIModel.hangouts

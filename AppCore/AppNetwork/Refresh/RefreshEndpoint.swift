@@ -15,7 +15,7 @@ enum RefreshEndpoint: AppEndPoint {
     var path: String {
         switch self {
         case .refresh:
-            "/api/as/v1/auth/refresh"
+            "api/as/v1/auth/refresh"
         }
     }
     
@@ -31,5 +31,9 @@ enum RefreshEndpoint: AppEndPoint {
         case .refresh(let body):
             return body
         }
+    }
+    
+    var requiresAuth: Bool {
+        false
     }
 }

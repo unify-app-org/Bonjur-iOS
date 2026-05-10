@@ -8,22 +8,45 @@
 import AppNetwork
 
 enum ProfileEndPoint {
-    case test
+    case getUsers
+    case updateUserData(MultipartFormData?)
 }
 
 extension ProfileEndPoint: AppEndPoint {
     
     var path: String {
         switch self {
-        case .test:
-            "test/test"
+        case .getUsers:
+            "api/us/v1/users/profile"
+        case .updateUserData:
+            "api/us/v1/users"
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .test:
-                .post
+        case .getUsers:
+                .get
+        case .updateUserData:
+                .put
+        }
+    }
+    
+    var multipartFormData: MultipartFormData? {
+        switch self {
+        case .updateUserData(let multiPart):
+            multiPart
+        default:
+            nil
+        }
+    }
+    
+    var contentType: ContentType {
+        switch self {
+        case .updateUserData:
+                .formData
+        default:
+                .json
         }
     }
 }

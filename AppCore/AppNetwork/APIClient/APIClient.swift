@@ -8,6 +8,7 @@
 import Foundation
 import AppUtils
 import AppLocalization
+import AppStorage
 
 public protocol APIClientProtocol {
     var activityDelegate: NetworkActivityDelegate? { get set }
@@ -33,6 +34,7 @@ final class APIClient: APIClientProtocol {
     private let session: URLSession
     private let logger: NetworkLogger
     private let tokenManager: TokenManager
+    private let userDefault: UserDefaultsProtocol
     private let localization: AppLocalizationProtocol
     
     // MARK: - Init
@@ -42,13 +44,15 @@ final class APIClient: APIClientProtocol {
         session: URLSession = .shared,
         tokenManager: TokenManager = resolve(),
         logger: NetworkLogger = resolve(),
-        localization: AppLocalizationProtocol = resolve()
+        localization: AppLocalizationProtocol = resolve(),
+        userDefault: UserDefaultsProtocol = resolve()
     ) {
         self.baseURL = baseURL
         self.session = session
         self.tokenManager = tokenManager
         self.logger = logger
         self.localization = localization
+        self.userDefault = userDefault
     }
     
     // MARK: - Request with Auto-Decoding (BaseResponse Wrapper)
@@ -162,7 +166,9 @@ final class APIClient: APIClientProtocol {
                 
             case 401:
                 if !isRetry && endpoint.requiresAuth {
-                    try await refreshTokenIfNeeded()
+                    if !endpoint.path.contains("auth/refresh") {
+                        try await refreshTokenIfNeeded()
+                    }
                     return try await performRequest(endpoint, isRetry: true)
                 } else {
                     if let networkError = try? JSONDecoder().decode(NetworkError.self, from: data) {
@@ -273,6 +279,7 @@ final class APIClient: APIClientProtocol {
             )
             await tokenManager.clearTokens()
             activityDelegate?.refreshFailure()
+            userDefault.set(false, forKey: .isAuthenticated)
             throw error
         }
     }

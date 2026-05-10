@@ -18,6 +18,7 @@ struct ProfileDetailInputData {
 
 enum ProfileDetailSideEffect: UISideEffect {
     case loading(Bool)
+    case error(String, String?)
 }
 
 // MARK: - Feature Definition

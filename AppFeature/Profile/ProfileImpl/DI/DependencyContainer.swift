@@ -40,6 +40,7 @@ enum ProfileDependencyContainer {
         registerModule()
         registerHelpers()
         registerDataSource()
+        registerRepo()
         registerUseCase()
     }
     
@@ -58,6 +59,12 @@ enum ProfileDependencyContainer {
     private static func registerUseCase() {
         register(ProfileUseCase.self) {
             ProfileUseCaseImpl()
+        }
+    }
+    
+    private static func registerRepo() {
+        register(ProfileRepo.self) {
+            ProfileRepoImpl()
         }
     }
     

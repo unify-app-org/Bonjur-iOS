@@ -16,14 +16,14 @@ protocol ProfileUseCase {
 
 class ProfileUseCaseImpl: ProfileUseCase {
     
-    private let dataSource: ProfileDataSource
+    private let repo: ProfileRepo
     
-    init(dataSource: ProfileDataSource = resolve()) {
-        self.dataSource = dataSource
+    init(repo: ProfileRepo = resolve()) {
+        self.repo = repo
     }
     
     func getProfileData() async throws(APIError) -> ProfileDetail.UIModel {
-        .mock
+        try await repo.getUsers()
     }
     
     func fetchSections(notificationsEnabled: Bool) -> [ProfileSettingsViewState.SettingsSection] {

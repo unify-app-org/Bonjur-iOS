@@ -20,7 +20,6 @@ enum ProfileDetail {
         let birthday: String?
         let languages: [String]?
         let tags: [AppUIEntities.Tags]
-        let cardCover: AppUIEntities.BackgroundType?
         let clubs: [ClubsModuleModel.CardInputData]
         let events: [EventsModuleModel.CardInputData]
         let hangouts: [HangoutsModuleModel.CardInputData]
@@ -41,7 +40,6 @@ extension ProfileDetail.UIModel {
             .init(id: 1, type: "SPORT", title: "Ronaldinho"),
             .init(id: 1, type: "SPORT", title: "Basketball")
         ],
-        cardCover: .teritary,
         clubs: ClubsModuleModel.CardInputData.previewMock,
         events: EventsModuleModel.CardInputData.previewMock,
         hangouts: HangoutsModuleModel.CardInputData.previewMock

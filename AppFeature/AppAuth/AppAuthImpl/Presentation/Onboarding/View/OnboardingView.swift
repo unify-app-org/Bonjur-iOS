@@ -46,15 +46,6 @@ struct OnboardingView: View {
                     Spacer()
                 }
             }
-            
-            HStack {
-                Spacer()
-                Image(uiImage: UIImage.Icons.logoWithText)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 105, height: 32)
-                Spacer()
-            }
         }
         .frame(height: 44)
         .padding(.horizontal)

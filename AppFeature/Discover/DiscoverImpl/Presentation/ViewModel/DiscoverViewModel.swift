@@ -11,6 +11,7 @@ import Clubs
 import Events
 import Hangouts
 import Communities
+import AppNetwork
 
 final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     
@@ -65,12 +66,41 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     
     private func fetchData() {
         Task {
-            await fetchUsersData()
-            await fetchFilterData()
-            await fetchCommunitiesData()
-            await fetchClubsData()
-            await fetchEventsData()
-            await fetchHangoutsData()
+            postEffect(.loading(true))
+            
+            async let userData = dependencies.useCase.fetchUserData()
+            async let filterData = dependencies.useCase.fetchFilterData()
+            async let communitiesData = dependencies.useCase.fetchCommunitiesData()
+            async let clubsData = dependencies.useCase.fetchClubsData()
+            async let eventsData = dependencies.useCase.fetchEventsData()
+            async let hangoutsData = dependencies.useCase.fetchHangoutsData(
+                query: .init(page: 0, size: 10)
+            )
+            
+            do {
+                let (user, filters, communities, clubs, events, hangouts) = try await (
+                    userData,
+                    filterData,
+                    communitiesData,
+                    clubsData,
+                    eventsData,
+                    hangoutsData
+                )
+                
+                state.uiModel.user = user
+                state.uiModel.filters = filters
+                state.uiModel.communities = communities
+                state.uiModel.clubs = clubs
+                state.uiModel.events = events
+                state.uiModel.hangouts = hangouts
+                
+                publishActivityCounts()
+                
+            } catch {
+                postEffect(.error(error as! APIError))
+            }
+            
+            postEffect(.loading(false))
         }
     }
     
@@ -91,86 +121,6 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
                 await router.navigate(to: .viewAllHangouts)
             }
         }
-    }
-    
-    private func fetchUsersData() async {
-        do {
-            let data = try await dependencies.useCase.fetchUserData()
-            handleUserData(data)
-        } catch {
-            postEffect(.error(error))
-        }
-    }
-    
-    private func handleUserData(_ data: UserModel) {
-        state.uiModel.user = data
-    }
-    
-    private func fetchCommunitiesData() async {
-        do {
-            let data = try await dependencies.useCase.fetchCommunitiesData()
-            handleCommunitiesData(data)
-        } catch {
-            postEffect(.error(error))
-        }
-    }
-    
-    private func handleCommunitiesData(_ data: [CommunitiesModuleModel.CardInputData]) {
-        state.uiModel.communities = data
-    }
-    
-    private func fetchFilterData() async {
-        do {
-            let data = try await dependencies.useCase.fetchFilterData()
-            handleFilterData(data)
-        } catch {
-            postEffect(.error(error))
-        }
-    }
-    
-    private func handleFilterData(_ data: [FilterView.Model]) {
-        state.uiModel.filters = data
-    }
-    
-    private func fetchClubsData() async {
-        do {
-            let data = try await dependencies.useCase.fetchClubsData()
-            handleClubsData(data)
-        } catch {
-            postEffect(.error(error))
-        }
-    }
-    
-    private func handleClubsData(_ data: [ClubsModuleModel.CardInputData]) {
-        state.uiModel.clubs = data
-    }
-    
-    private func fetchEventsData() async {
-        do {
-            let data = try await dependencies.useCase.fetchEventsData()
-            handleEventsData(data)
-        } catch {
-            postEffect(.error(error))
-        }
-    }
-    
-    private func handleEventsData(_ data: [EventsModuleModel.CardInputData]) {
-        state.uiModel.events = data
-        publishActivityCounts()
-    }
-    
-    private func fetchHangoutsData() async {
-        do {
-            let data = try await dependencies.useCase.fetchHangoutsData()
-            handleHangoutsData(data)
-        } catch {
-            postEffect(.error(error))
-        }
-    }
-    
-    private func handleHangoutsData(_ data: [HangoutsModuleModel.CardInputData]) {
-        state.uiModel.hangouts = data
-        publishActivityCounts()
     }
     
     private func publishActivityCounts() {

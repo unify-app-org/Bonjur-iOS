@@ -40,6 +40,7 @@ enum DiscoverDependencyContainer {
         registerModule()
         registerHelpers()
         registerDataSource()
+        registerRepo()
         registerUseCase()
     }
     
@@ -52,6 +53,12 @@ enum DiscoverDependencyContainer {
     private static func registerDataSource() {
         register(DiscoverDataSource.self) {
             DiscoverDataSourceImpl()
+        }
+    }
+    
+    private static func registerRepo() {
+        register(DiscoverRepo.self) {
+            DiscoverRepoImpl()
         }
     }
     

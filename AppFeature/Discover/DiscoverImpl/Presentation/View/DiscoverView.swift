@@ -240,7 +240,7 @@ struct DiscoverView: View {
             if !uiModel.events.isEmpty, !uiModel.clubs.isEmpty {
                 let events = store.state.uiModel.events
                 headerTitle("Events", type: .events)
-
+                
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 16) {
                         ForEach(Array(events.enumerated()), id: \.element.uuid) { index, item in
@@ -262,6 +262,14 @@ struct DiscoverView: View {
                     }
                     .padding(.horizontal, 16)
                 }
+            } else {
+                emptyView(
+                    icon: UIImage.Icons.twoUsers,
+                    text: "There are no event for the clubs yet. Be the pioneer and start the very first one now!",
+                    buttonTitle: "Create events +",
+                    type: .hangOuts
+                )
+                .padding()
             }
         }
     }
@@ -301,8 +309,8 @@ struct DiscoverView: View {
             } else {
                 emptyView(
                     icon: UIImage.Icons.twoUsers,
-                    text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
-                    buttonTitle: "Create a club +",
+                    text: "There are no hangouts for this community yet. Be the pioneer and start the very first one now!",
+                    buttonTitle: "Create hangouts +",
                     type: .hangOuts
                 )
                 .padding()

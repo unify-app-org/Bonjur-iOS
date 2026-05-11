@@ -18,15 +18,17 @@ protocol DiscoverUseCase {
     func fetchCommunitiesData() async throws(APIError) -> [CommunitiesModuleModel.CardInputData]
     func fetchClubsData() async throws(APIError) -> [ClubsModuleModel.CardInputData]
     func fetchEventsData() async throws(APIError) -> [EventsModuleModel.CardInputData]
-    func fetchHangoutsData() async throws(APIError) -> [HangoutsModuleModel.CardInputData]
+    func fetchHangoutsData(
+        query: DiscoverDTOModel.PaginationQuery
+    ) async throws(APIError) -> [HangoutsModuleModel.CardInputData]
 }
 
 class DiscoverUseCaseImpl: DiscoverUseCase {
     
-    private let dataSource: DiscoverDataSource
+    private let repo: DiscoverRepo
     
-    init(dataSource: DiscoverDataSource = resolve()) {
-        self.dataSource = dataSource
+    init(repo: DiscoverRepo = resolve()) {
+        self.repo = repo
     }
     
     func fetchUserData() async throws(APIError) -> UserModel {
@@ -54,7 +56,9 @@ class DiscoverUseCaseImpl: DiscoverUseCase {
         EventsModuleModel.CardInputData.previewMock
     }
     
-    func fetchHangoutsData() async throws(APIError) -> [HangoutsModuleModel.CardInputData] {
-        HangoutsModuleModel.CardInputData.previewMock
+    func fetchHangoutsData(
+        query: DiscoverDTOModel.PaginationQuery
+    ) async throws(APIError) -> [HangoutsModuleModel.CardInputData] {
+        try await repo.getHangout(query: query)
     }
 }

@@ -42,9 +42,9 @@ public enum AppPresentationModel {
     
     // MARK: - Access Type
 
-    public enum AccessType {
-        case `public`
-        case `private`
+    public enum AccessType: String, Codable {
+        case `public` = "PUBLIC"
+        case `private` = "PRIVATE"
     }
     
     // MARK: - Request Type

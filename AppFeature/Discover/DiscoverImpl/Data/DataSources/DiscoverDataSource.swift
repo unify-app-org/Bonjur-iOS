@@ -9,10 +9,16 @@ import Foundation
 import AppNetwork
 
 protocol DiscoverDataSource {
-    
+    func getHangout(
+        query: [String: String]
+    ) async throws(APIError) -> [DiscoverDTOModel.Hangout]
 }
 
 final class DiscoverDataSourceImpl: NetworkService<DiscoverEndPoint>, DiscoverDataSource {
     
-    
+    func getHangout(
+        query: [String : String]
+    ) async throws(APIError) -> [DiscoverDTOModel.Hangout] {
+        try await fetch(endPoint: .getHangouts(query))
+    }
 }

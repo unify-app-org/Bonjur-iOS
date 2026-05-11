@@ -43,7 +43,13 @@ final class ProfileSettingsViewModel: UIFeatureViewModel<ProfileSettingsFeature>
         case .didTapTerms:
             Task {@MainActor in  router.navigate(to: .termsAndConditions)}
         case .didTapDeleteAccount:
-            Task {@MainActor in  router.navigate(to: .deleteAccount)}
+            Task { @MainActor in
+                router.navigate(to: .deleteAccount { [weak self] in
+                    Task {
+                        await self?.deleteAccount()
+                    }
+                })
+            }
         case .didTapLogOut:
             Task {@MainActor in router.navigate(to: .logout)}
         case .didToggleNotification(let isOn):
@@ -51,9 +57,29 @@ final class ProfileSettingsViewModel: UIFeatureViewModel<ProfileSettingsFeature>
         }
     }
     
-    
     private func fetchData() {
         state.sections = dependencies.useCase
             .fetchSections(notificationsEnabled: state.notificationsEnabled)
+    }
+    
+    private func deleteAccount() async {
+        postEffect(.loading(true))
+        defer { postEffect(.loading(false)) }
+        do {
+            _ = try await dependencies.useCase.deleteAccount()
+            await handleDelete()
+        } catch {
+            postEffect(
+                .error(
+                    error.localizedDescription,
+                    error.detail
+                )
+            )
+        }
+    }
+    
+    @MainActor
+    private func handleDelete() {
+        router.navigate(to: .finishSession)
     }
 }

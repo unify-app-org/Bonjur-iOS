@@ -82,4 +82,33 @@ public enum AppPresentationModel {
         case clubs
         case hangOuts
     }
+    
+    public enum Gender: String, Codable {
+        case male = "MALE"
+        case female = "FEMALE"
+    }
+    
+    public struct GenderModel: Identifiable {
+        public let id: UUID = UUID()
+        public let type: Gender
+        public let title: String
+        
+        public init(type: Gender, title: String) {
+            self.type = type
+            self.title = title
+        }
+        
+        public static var all: [GenderModel] {
+            [
+                GenderModel(type: .male, title: "Male"),
+                GenderModel(type: .female, title: "Female"),
+            ]
+        }
+        
+        public static func title(for type: String) -> String {
+            all.first(where: {
+                $0.type == .init(rawValue: type) ?? .male
+            })?.title ?? ""
+        }
+    }
 }

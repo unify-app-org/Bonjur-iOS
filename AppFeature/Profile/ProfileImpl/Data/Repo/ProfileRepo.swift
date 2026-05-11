@@ -11,9 +11,19 @@ import Foundation
 import Clubs
 import Events
 import Hangouts
+import AppPresentationModel
 
 protocol ProfileRepo {
     func getUsers() async throws(APIError) -> ProfileDetail.UIModel
+    func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
+    func deleteAccount() async throws(APIError) -> Data
+    func editProfile(
+        multiPart: MultipartFormData?,
+        queryData: ProfileDTOModel.UpdateRequest?
+    ) async throws(APIError) -> Data
+    func fetchSections(
+        notificationsEnabled: Bool
+    ) -> [ProfileSettingsViewState.SettingsSection]
 }
 
 class ProfileRepoImpl: ProfileRepo {
@@ -32,14 +42,20 @@ class ProfileRepoImpl: ProfileRepo {
             backgroundCover: .primary,
             nameSurname: data.username ?? "-",
             speciality: data.specialization ?? "-",
-            course: data.faculty ?? "",
+            course: data.faculty ?? "-",
             community: "-",
             degree: data.degree ?? "-",
             entryYear: String(data.entryYear ?? 2000),
             email: data.mail ?? "",
             imageUrl: URL(string: "")
         )
-        let languages = data.languages?.map({ $0.name ?? "" })
+        let languages: [SelectableListItemView.Model] = data.languages?.map { item in
+            SelectableListItemView.Model(
+                id: item.id ?? 0,
+                title: item.name ?? "-",
+                selected: false
+            )
+        } ?? []
         let tags: [AppUIEntities.Tags] = data.categories?.map { item in
                 .init(
                     id: item.id ?? 0,
@@ -47,17 +63,61 @@ class ProfileRepoImpl: ProfileRepo {
                     title: item.title ?? "-"
                 )
         } ?? []
+        let gender = AppPresentationModel.GenderModel.title(for: data.gender ?? "-")
         let uiModel: ProfileDetail.UIModel = .init(
             userCardModel: userCardModel,
             about: data.about,
-            gender: data.gender,
+            gender: gender,
             birthday: data.birthDate,
             languages: languages,
-            tags: tags,
-            clubs: ClubsModuleModel.CardInputData.previewMock,
-            events: EventsModuleModel.CardInputData.previewMock,
-            hangouts: HangoutsModuleModel.CardInputData.previewMock
+            tags: tags
         )
         return uiModel
+    }
+
+    private func makeURL(from value: String?) -> URL? {
+        guard let value, !value.isEmpty else {
+            return nil
+        }
+        return URL(string: value)
+    }
+
+    func editProfile(
+        multiPart: MultipartFormData?,
+        queryData: ProfileDTOModel.UpdateRequest?
+    ) async throws(APIError) -> Data {
+        try await dataSource.editProfile(
+            multiPart: multiPart,
+            queryData: queryData?.toDictionary()
+        )
+    }
+
+    func getCategories() async throws(APIError) -> [SelectCategoryView.Section] {
+        let data = try await dataSource.getCategories()
+        return data.map { item in
+            let categories: [CategoriesChipsView.Model] = item.subCategories.map { subCategory in
+                .init(
+                    id: subCategory.id ?? 0,
+                    title: subCategory.title ?? "",
+                    selected: false
+                )
+            }
+            
+            return .init(
+                type: item.type ?? "",
+                title: item.title ?? "",
+                categories: categories
+            )
+        }
+    }
+    
+    func deleteAccount() async throws(APIError) -> Data {
+        try await dataSource.deleteAccount()
+    }
+    
+    func fetchSections(
+        notificationsEnabled: Bool
+    ) -> [ProfileSettingsViewState.SettingsSection] {
+        dataSource.fetchSections(notificationsEnabled: notificationsEnabled)
     }
 }

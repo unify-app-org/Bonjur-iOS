@@ -44,7 +44,7 @@ struct ProfileDetailView: View {
             }
         }
         .animation(.easeInOut, value: store.state.selectedSegment)
-        .onFirstAppear {
+        .onAppear {
             store.send(.fetchData)
         }
         .navigationTitle("Profile")
@@ -101,7 +101,7 @@ struct ProfileDetailView: View {
                 Spacer()
                 
                 Button {
-                    
+                    store.send(.editProfile)
                 } label: {
                     Image(uiImage: UIImage.Icons.penLine)
                 }
@@ -115,7 +115,12 @@ struct ProfileDetailView: View {
             VStack(spacing: 21) {
                 userInfoCell(image: UIImage.Icons.genderIcon, title: "Gender", subtitle: store.state.uiModel?.gender ?? "-")
                 userInfoCell(image: UIImage.Icons.cakeBirthday, title: "Birthday", subtitle: store.state.uiModel?.birthday ?? "-")
-                userInfoCell(image: UIImage.Icons.globe01, title: "Languages", subtitle: store.state.uiModel?.languages?.joined(separator: ", ") ?? "-")
+                userInfoCell(
+                    image: UIImage.Icons.globe01, title: "Languages",
+                    subtitle: store.state.uiModel?.languages?
+                        .map({ $0.title })
+                        .joined(separator: ", ") ?? "-"
+                )
             }
         }
     }
@@ -247,7 +252,7 @@ struct ProfileDetailView: View {
     
     @ViewBuilder
     private var clubsTab: some View {
-        let clubs = store.state.uiModel?.clubs ?? []
+        let clubs = store.state.clubs
         VStack(spacing: 16) {
             if clubs.isEmpty {
                 emptyStateView(message: "No clubs yet")
@@ -269,7 +274,7 @@ struct ProfileDetailView: View {
     
     @ViewBuilder
     private var eventsTab: some View {
-        let events = store.state.uiModel?.events ?? []
+        let events = store.state.events
         VStack(spacing: 16) {
             if events.isEmpty {
                 emptyStateView(message: "No events yet")
@@ -294,7 +299,7 @@ struct ProfileDetailView: View {
     
     @ViewBuilder
     private var hangoutsTab: some View {
-        let hangouts = store.state.uiModel?.hangouts ?? []
+        let hangouts = store.state.hangouts
         VStack(spacing: 16) {
             if hangouts.isEmpty {
                 emptyStateView(message: "No hangouts yet")

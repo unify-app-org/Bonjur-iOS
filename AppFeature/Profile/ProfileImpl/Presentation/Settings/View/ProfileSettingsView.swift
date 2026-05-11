@@ -89,7 +89,3 @@ struct SettingsRowView: View {
         }
     }
 }
-
-
-
-

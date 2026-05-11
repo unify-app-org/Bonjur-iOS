@@ -162,9 +162,7 @@ struct ClubDetailsView: View {
     }
     
     private var clubLogo: some View {
-        CachedAsyncImage(url: store.state.uiModel?.logo) { image in
-            image.resizable().frame(width: 88, height: 88)
-        } placeholder: {
+        AvatarView(url: store.state.uiModel?.logo) {
             if let image = UIImage(systemName: "person") {
                 Image(uiImage: image)
                     .resizable()
@@ -173,14 +171,6 @@ struct ClubDetailsView: View {
                     .frame(width: 44, height: 44)
             }
         }
-        .frame(width: 88, height: 88)
-        .background(Color.Palette.grayQuaternary)
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(Color.Palette.grayTeritary.opacity(0.3), lineWidth: 3)
-        )
-        .padding(.horizontal, 16)
         .overlay(alignment: .bottomTrailing) {
             cameraButton
         }

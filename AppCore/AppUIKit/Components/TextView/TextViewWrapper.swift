@@ -12,6 +12,7 @@ struct TextViewWrapper: UIViewRepresentable {
     @Binding var isFocused: Bool
     var characterLimit: Int
     var placeholder: String
+    var keyboardType: UIKeyboardType = .default
     
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
@@ -29,9 +30,11 @@ struct TextViewWrapper: UIViewRepresentable {
         if !context.coordinator.isEditing {
             if text.isEmpty && !uiView.isFirstResponder {
                 uiView.text = placeholder
+                uiView.keyboardType = keyboardType
                 uiView.textColor = .placeholderText
             } else if uiView.text != text {
                 uiView.text = text
+                uiView.keyboardType = keyboardType
                 uiView.textColor = .label
             }
         }

@@ -9,7 +9,12 @@ import AppNetwork
 
 enum ProfileEndPoint {
     case getUsers
-    case updateUserData(MultipartFormData?)
+    case updateUserData(
+        [String: String]?,
+        MultipartFormData?
+    )
+    case getCategories
+    case deleteAccount
 }
 
 extension ProfileEndPoint: AppEndPoint {
@@ -18,23 +23,37 @@ extension ProfileEndPoint: AppEndPoint {
         switch self {
         case .getUsers:
             "api/us/v1/users/profile"
-        case .updateUserData:
+        case .updateUserData, .deleteAccount:
             "api/us/v1/users"
+        case .getCategories:
+            "api/sd/v1/categories"
+        }
+    }
+    
+    var queryParameters: [String : String]? {
+        switch self {
+        case .updateUserData(let query, _):
+            query
+        default:
+            nil
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .getUsers:
+        case .getUsers,
+                .getCategories:
                 .get
         case .updateUserData:
                 .put
+        case .deleteAccount:
+                .delete
         }
     }
     
     var multipartFormData: MultipartFormData? {
         switch self {
-        case .updateUserData(let multiPart):
+        case .updateUserData(_, let multiPart):
             multiPart
         default:
             nil

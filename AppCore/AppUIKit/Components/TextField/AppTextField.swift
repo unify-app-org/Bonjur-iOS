@@ -9,6 +9,7 @@ import SwiftUI
 
 public struct AppTextField: View {
     @FocusState private var isFocused: Bool
+    @Environment(\.isEnabled) private var isEnabled
     
     let text: Binding<String>
     let placeHolder: String
@@ -42,11 +43,12 @@ public struct AppTextField: View {
                 .focused($isFocused)
                 .padding(.horizontal, 24)
                 .padding(.vertical, 16)
+                .background(isEnabled ? Color.clear : Color.Palette.grayQuaternary)
                 .clipShape(Capsule())
                 .overlay(
                     Capsule().stroke(
                         Color.Palette.graySecondary,
-                        lineWidth: isFocused ? 1 : 0.5
+                        lineWidth: isEnabled ? isFocused ? 1 : 0.5 : 0
                     )
                 )
                 .animation(

@@ -18,7 +18,19 @@ struct ProfileDTOModel {
         let categoriesId: [Int]
         let languagesId: [Int]
     }
-    
+
+    //MARK: - Statics
+
+    struct CategoriesResponse: Decodable {
+        let type, title: String?
+        let subCategories: [SubCategoriesResponse]
+    }
+
+    struct SubCategoriesResponse: Decodable {
+        let id: Int?
+        let title: String?
+    }
+
     // MARK: - Response
     
     struct Response: Decodable {

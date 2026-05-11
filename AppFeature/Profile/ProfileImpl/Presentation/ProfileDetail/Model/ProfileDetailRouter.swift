@@ -15,6 +15,7 @@ enum ProfileDetailRoute {
     case eventsDetails(id: String)
     case hangoutsDetails(id: String)
     case settings
+    case editProfile(EditProfileInputData)
     case studentCard(StudentCardInputData)
 }
 
@@ -45,6 +46,11 @@ final class ProfileDetailRouter: ProfileDetailRouterProtocol {
     @MainActor
     func navigate(to route: ProfileDetailRoute) {
         switch route {
+        case .editProfile(let inputData):
+            let vc = EditProfileBuilder(
+                inputData: inputData
+            ).build()
+            view?.navigationController?.pushViewController(vc, animated: true)
         case .clubsDetails(let clubId):
             let vc = clubModule.makeClubsDetailsVC(clubId: clubId) as! UIViewController
             self.view?.navigationController?.pushViewController(vc, animated: true)

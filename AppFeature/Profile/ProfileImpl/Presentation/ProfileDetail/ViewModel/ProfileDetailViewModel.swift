@@ -34,6 +34,15 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .editProfile:
+            Task {
+                guard let uiModel = state.uiModel else { return }
+                await router.navigate(
+                    to: .editProfile(
+                        .init(profileData: uiModel)
+                    )
+                )
+            }
         case .clubsItemTapped(let id):
             Task {
                 await router.navigate(to: .clubsDetails(id: id))
@@ -110,10 +119,7 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
             gender: currentUIModel.gender,
             birthday: currentUIModel.birthday,
             languages: currentUIModel.languages,
-            tags: currentUIModel.tags,
-            clubs: currentUIModel.clubs,
-            events: currentUIModel.events,
-            hangouts: currentUIModel.hangouts
+            tags: currentUIModel.tags
         )
         
         state.uiModel = updatedUIModel

@@ -10,3 +10,7 @@ import Foundation
 public protocol ProfileModule {
     func makeProfileViewController() -> AnyObject
 }
+
+public protocol ProfileDelegate: AnyObject {
+    func logout()
+}

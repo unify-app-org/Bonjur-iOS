@@ -1,8 +1,8 @@
 //
-//  ProfileSettingsHostController.swift
+//  EditProfileHostController.swift
 //  ProfileImpl
 //
-//  Created by Nahid Askerli on 26.03.26.
+//  Created by Huseyn Hasanov on 11.05.26.
 //
 
 import UIKit
@@ -11,11 +11,11 @@ import AppFoundation
 
 // MARK: - Controller
 
-final class ProfileSettingsHostController: UIFeatureController<
-    ProfileSettingsFeature,
-    ProfileSettingsView
+final class EditProfileHostController: UIFeatureController<
+    EditProfileFeature,
+    EditProfileView
 > {
-    override func handleEffect(_ effect: ProfileSettingsSideEffect) {
+    override func handleEffect(_ effect: EditProfileSideEffect) {
         switch effect {
         case .loading(let isLoading):
             if isLoading {

@@ -15,6 +15,8 @@ public class ProfileConfigurator {
     public static func setup(
         diContainer: AppDIContainer
     ) {
-        ProfileDependencyContainer.setup(container: diContainer)
+        ProfileDependencyContainer.setup(
+            container: diContainer
+        )
     }
 }

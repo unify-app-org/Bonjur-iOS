@@ -10,23 +10,39 @@ import SwiftUI
 
 public struct TextView: View {
     
-    var text: Binding<String>
-    var characterLimit: Int = 500
+    private var text: Binding<String>
+    private var characterLimit: Int = 500
+    private let model: TextView.Model
     @State private var isFocused: Bool = false
+    @Environment(\.isEnabled) private var isEnabled
     
-    public init(text: Binding<String>, characterLimit: Int = 500) {
+    public init(
+        text: Binding<String>,
+        characterLimit: Int = 500,
+        model: TextView.Model = .init()
+    ) {
         self.text = text
         self.characterLimit = characterLimit
+        self.model = model
     }
     
     public var body: some View {
-        VStack(alignment: .trailing, spacing: 8) {
-            VStack {
+        VStack(alignment: .leading, spacing: 12) {
+            if let title = model.title {
+                Text(title)
+                    .font(Font.Typography.HeadingMd.medium)
+                    .frame(
+                        maxWidth: .infinity,
+                        alignment: .leading
+                    )
+            }
+            VStack(alignment: .trailing, spacing: 8) {
                 TextViewWrapper(
                     text: text,
                     isFocused: $isFocused,
                     characterLimit: characterLimit,
-                    placeholder: "Write something"
+                    placeholder: "Write something",
+                    keyboardType: model.keyboardType
                 )
                 .frame(minHeight: 40)
                 
@@ -37,16 +53,17 @@ public struct TextView: View {
                     .frame(maxWidth: .infinity, alignment: .trailing)
             }
             .padding()
-            .background(Color.Palette.grayQuaternary)
+            .background(Color.clear)
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
                     .stroke(
-                        Color.Palette.blackHigh,
-                        lineWidth: isFocused ? 0.5 : 0.1
+                        Color.Palette.graySecondary,
+                        lineWidth: isEnabled ? isFocused ? 1 : 0.5 : 0
                     )
             )
             .animation(.easeInOut(duration: 0.25), value: isFocused)
+            .background(isEnabled ? Color.clear : Color.Palette.grayQuaternary)
         }
     }
 }
@@ -55,4 +72,20 @@ public struct TextView: View {
     TextView(text: .constant(""), characterLimit: 10)
         .padding()
         .frame(height: 370)
+}
+
+public extension TextView {
+    
+    struct Model {
+        let title: String?
+        let keyboardType: UIKeyboardType
+        
+        public init(
+            title: String? = nil,
+            keyboardType: UIKeyboardType = .default
+        ) {
+            self.keyboardType = keyboardType
+            self.title = title
+        }
+    }
 }

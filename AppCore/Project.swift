@@ -46,7 +46,8 @@ let appFoundationTarget = Target.createFrameworkTarget(
 let appUIKitTarget = Target.createFrameworkTarget(
     name: "AppUIKit",
     dependencies: [
-        .AppCore.AppUtils
+        .AppCore.AppUtils,
+        .AppCore.AppPresentationModel
     ]
 ).add(to: &frameworkTargets)
 

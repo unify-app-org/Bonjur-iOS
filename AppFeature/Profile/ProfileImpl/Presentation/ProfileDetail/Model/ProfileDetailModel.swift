@@ -8,6 +8,9 @@
 import AppFoundation
 import SwiftUI
 import AppUIKit
+import Hangouts
+import Events
+import Clubs
 
 // MARK: - ProfileDetail input
 
@@ -33,6 +36,9 @@ typealias ProfileDetailFeature = UIFeatureDefinition<
 
 final class ProfileDetailViewState: UIFeatureState {
     @Published var uiModel: ProfileDetail.UIModel?
+    @Published var clubs: [ClubsModuleModel.CardInputData] = ClubsModuleModel.CardInputData.previewMock
+    @Published var events: [EventsModuleModel.CardInputData] = EventsModuleModel.CardInputData.previewMock
+    @Published var hangouts: [HangoutsModuleModel.CardInputData] = HangoutsModuleModel.CardInputData.previewMock
     @Published var selectedSegment: SegmentTypes = .clubs
     
     enum SegmentTypes: String, CaseIterable, Identifiable {
@@ -48,6 +54,7 @@ final class ProfileDetailViewState: UIFeatureState {
 
 enum ProfileDetailAction: UIFeatureAction {
     case fetchData
+    case editProfile
     case clubsItemTapped(Int)
     case eventsItemTapped(String)
     case hangoutsItemTapped(String)

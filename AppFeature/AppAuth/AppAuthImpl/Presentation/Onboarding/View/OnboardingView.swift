@@ -43,6 +43,8 @@ struct OnboardingView: View {
                         Image(uiImage: UIImage.Icons.arrowLeft01)
                             .frame(width: 28)
                     }
+                    .padding(8)
+                    .applyGlassIfAvailable()
                     Spacer()
                 }
             }

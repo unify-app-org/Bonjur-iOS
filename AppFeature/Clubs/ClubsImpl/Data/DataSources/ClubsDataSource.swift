@@ -26,9 +26,9 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
                         .primary,
                         .secondary,
                         .teritary,
-                        .color(.orange),
-                        .color(.red),
-                        .color(.pink)
+                        .orange,
+                        .red,
+                        .pink
                     ])
                 )
             ),

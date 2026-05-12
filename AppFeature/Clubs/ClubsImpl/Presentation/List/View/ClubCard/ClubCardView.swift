@@ -95,7 +95,7 @@ struct ClubCardView: View {
     private var membersView: some View {
         HStack(spacing: 8) {
             HStack(spacing: -10) {
-                ForEach(Array(model.members.enumerated()), id: \.element.uuid) { index, member in
+                ForEach(Array(model.members.enumerated()), id: \.element.id) { index, member in
                     let url = URL(string: member.profileImage ?? "")
                     CachedAsyncImage(url: url) { image in
                         image

@@ -8,7 +8,6 @@
 import Foundation
 
 struct UserModel {
-    let id: Int
     let name: String
     let profileImage: String?
     let greeting: String

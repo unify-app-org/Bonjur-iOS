@@ -14,10 +14,19 @@ import Communities
 
 protocol DiscoverUseCase {
     func fetchUserData() async throws(APIError) -> UserModel
+    
     func fetchFilterData() async throws(APIError) -> [FilterView.Model]
-    func fetchCommunitiesData() async throws(APIError) -> [CommunitiesModuleModel.CardInputData]
-    func fetchClubsData() async throws(APIError) -> [ClubsModuleModel.CardInputData]
+    
+    func fetchCommunitiesData(
+        query: DiscoverDTOModel.PaginationQuery
+    ) async throws(APIError) -> [CommunitiesModuleModel.CardInputData]
+    
+    func fetchClubsData(
+        query: DiscoverDTOModel.PaginationQuery
+    ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
+    
     func fetchEventsData() async throws(APIError) -> [EventsModuleModel.CardInputData]
+    
     func fetchHangoutsData(
         query: DiscoverDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsModuleModel.CardInputData]
@@ -32,24 +41,23 @@ class DiscoverUseCaseImpl: DiscoverUseCase {
     }
     
     func fetchUserData() async throws(APIError) -> UserModel {
-        .init(
-            id: 1,
-            name: "Huseyn Hasanov",
-            profileImage: nil,
-            greeting: "Welcome to the world of SwiftUI"
-        )
+        try await repo.getUser()
     }
     
     func fetchFilterData() async throws(APIError) -> [FilterView.Model] {
         FilterView.Model.mock
     }
     
-    func fetchCommunitiesData() async throws(APIError) -> [CommunitiesModuleModel.CardInputData] {
-        CommunitiesModuleModel.CardInputData.previewMock
+    func fetchCommunitiesData(
+        query: DiscoverDTOModel.PaginationQuery
+    ) async throws(APIError) -> [CommunitiesModuleModel.CardInputData] {
+        try await repo.getCommunities(query: query)
     }
     
-    func fetchClubsData() async throws(APIError) -> [ClubsModuleModel.CardInputData] {
-        ClubsModuleModel.CardInputData.previewMock
+    func fetchClubsData(
+        query: DiscoverDTOModel.PaginationQuery
+    ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
+        try await repo.getClubs(query: query)
     }
     
     func fetchEventsData() async throws(APIError) -> [EventsModuleModel.CardInputData] {

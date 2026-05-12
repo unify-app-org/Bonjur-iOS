@@ -8,7 +8,6 @@
 import SwiftUI
 import AppUIKit
 import Communities
-import AppPresentationModel
 
 extension CommunityCardView {
     
@@ -51,48 +50,9 @@ extension CommunityCardView.Model {
             subTitle: from.subTitle,
             logoURL: from.logoURL,
             memberCount: from.memberCount,
-            members: Self.mapMembers(from.members),
-            bgType: Self.mapBackgroundType(from.bgType)
+            members: from.members,
+            bgType: from.bgType
         )
-    }
-    
-    private static func mapMembers(
-        _ members: [AppPresentationModel.Member]
-    ) -> [AppUIEntities.Member] {
-        members.map {
-            AppUIEntities.Member(
-                id: $0.id,
-                profileImage: $0.profileImage
-            )
-        }
-    }
-    
-    private static func mapColorType(
-        _ type: AppPresentationModel.ColorType
-    ) -> AppUIEntities.ColorType {
-        switch type {
-        case .orange:
-            return .orange
-        case .red:
-            return .red
-        case .pink:
-            return .pink
-        }
-    }
-    
-    private static func mapBackgroundType(
-        _ type: AppPresentationModel.BackgroundType
-    ) -> AppUIEntities.BackgroundType {
-        switch type {
-        case .primary:
-            return .primary
-        case .secondary:
-            return .secondary
-        case .teritary:
-            return .teritary
-        case .color(let color):
-            return .color(mapColorType(color))
-        }
     }
 }
 
@@ -106,15 +66,15 @@ extension CommunityCardView.Model {
             memberCount: 123,
             members: [
                 .init(
-                    id: 1,
+                    id: "1",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
                 ),
                 .init(
-                    id: 2,
+                    id: "2",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 ),
                 .init(
-                    id: 3,
+                    id: "3",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 )
             ],
@@ -128,15 +88,15 @@ extension CommunityCardView.Model {
             memberCount: 1675,
             members: [
                 .init(
-                    id: 1,
+                    id: "1",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
                 ),
                 .init(
-                    id: 2,
+                    id: "2",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 ),
                 .init(
-                    id: 3,
+                    id: "3",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 )
             ],

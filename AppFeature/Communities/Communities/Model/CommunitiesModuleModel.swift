@@ -53,15 +53,15 @@ public extension CommunitiesModuleModel.CardInputData {
             memberCount: 123,
             members: [
                 .init(
-                    id: 1,
+                    id: "1",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
                 ),
                 .init(
-                    id: 2,
+                    id: "2",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 ),
                 .init(
-                    id: 3,
+                    id: "3",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 )
             ],
@@ -75,15 +75,15 @@ public extension CommunitiesModuleModel.CardInputData {
             memberCount: 1675,
             members: [
                 .init(
-                    id: 1,
+                    id: "1",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
                 ),
                 .init(
-                    id: 2,
+                    id: "2",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 ),
                 .init(
-                    id: 3,
+                    id: "3",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 )
             ],

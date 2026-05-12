@@ -23,6 +23,20 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     private let inputData: DiscoverInputData
     private let dependencies: DiscoverViewModel.Dependencies
     
+    private let paginationStep = 10
+    private var communitiesSize = 10
+    private var clubsSize = 10
+    private var eventsSize = 10
+    private var hangoutsSize = 10
+    private var isLoadingMoreCommunities = false
+    private var isLoadingMoreClubs = false
+    private var isLoadingMoreEvents = false
+    private var isLoadingMoreHangouts = false
+    private var hasMoreCommunities = true
+    private var hasMoreClubs = true
+    private var hasMoreEvents = true
+    private var hasMoreHangouts = true
+    
     init(
         state: DiscoverFeature.State,
         router: DiscoverRouterProtocol,
@@ -39,6 +53,8 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .loadMore(let activity):
+            loadMore(activity)
         case .profileTapped:
             Task {
                 await router.navigate(to: .profile)
@@ -67,14 +83,21 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     private func fetchData() {
         Task {
             postEffect(.loading(true))
+            defer {
+                postEffect(.loading(false))
+            }
             
             async let userData = dependencies.useCase.fetchUserData()
             async let filterData = dependencies.useCase.fetchFilterData()
-            async let communitiesData = dependencies.useCase.fetchCommunitiesData()
-            async let clubsData = dependencies.useCase.fetchClubsData()
+            async let communitiesData = dependencies.useCase.fetchCommunitiesData(
+                query: .init(page: 0, size: communitiesSize)
+            )
+            async let clubsData = dependencies.useCase.fetchClubsData(
+                query: .init(page: 0, size: clubsSize)
+            )
             async let eventsData = dependencies.useCase.fetchEventsData()
             async let hangoutsData = dependencies.useCase.fetchHangoutsData(
-                query: .init(page: 0, size: 10)
+                query: .init(page: 0, size: hangoutsSize)
             )
             
             do {
@@ -91,16 +114,127 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
                 state.uiModel.filters = filters
                 state.uiModel.communities = communities
                 state.uiModel.clubs = clubs
-                state.uiModel.events = events
+                state.uiModel.events = Array(events.prefix(eventsSize))
                 state.uiModel.hangouts = hangouts
+                hasMoreCommunities = communities.count >= communitiesSize
+                hasMoreClubs = clubs.count >= clubsSize
+                hasMoreEvents = events.count > state.uiModel.events.count
+                hasMoreHangouts = hangouts.count >= hangoutsSize
                 
                 publishActivityCounts()
                 
             } catch {
                 postEffect(.error(error as! APIError))
             }
+        }
+    }
+    
+    private func loadMore(_ type: AppUIEntities.ActivityType) {
+        switch type {
+        case .community:
+            loadMoreCommunities()
+        case .clubs:
+            loadMoreClubs()
+        case .hangOuts:
+            loadMoreHangouts()
+        case .events:
+            loadMoreEvents()
+        }
+    }
+    
+    private func loadMoreCommunities() {
+        guard !isLoadingMoreCommunities, hasMoreCommunities else { return }
+        isLoadingMoreCommunities = true
+        let previousSize = communitiesSize
+        communitiesSize += paginationStep
+        
+        Task {
+            defer {
+                isLoadingMoreCommunities = false
+            }
             
-            postEffect(.loading(false))
+            do {
+                let communities = try await dependencies.useCase.fetchCommunitiesData(
+                    query: .init(page: 0, size: communitiesSize)
+                )
+                hasMoreCommunities = communities.count > state.uiModel.communities.count
+                state.uiModel.communities = communities
+            } catch {
+                communitiesSize = previousSize
+                postEffect(.error(error as! APIError))
+            }
+        }
+    }
+    
+    private func loadMoreClubs() {
+        guard !isLoadingMoreClubs, hasMoreClubs else { return }
+        isLoadingMoreClubs = true
+        let previousSize = clubsSize
+        clubsSize += paginationStep
+        
+        Task {
+            defer {
+                isLoadingMoreClubs = false
+            }
+            
+            do {
+                let clubs = try await dependencies.useCase.fetchClubsData(
+                    query: .init(page: 0, size: clubsSize)
+                )
+                hasMoreClubs = clubs.count > state.uiModel.clubs.count
+                state.uiModel.clubs = clubs
+            } catch {
+                clubsSize = previousSize
+                postEffect(.error(error as! APIError))
+            }
+        }
+    }
+    
+    private func loadMoreEvents() {
+        guard !isLoadingMoreEvents, hasMoreEvents else { return }
+        isLoadingMoreEvents = true
+        let previousSize = eventsSize
+        eventsSize += paginationStep
+        
+        Task {
+            defer {
+                isLoadingMoreEvents = false
+            }
+            
+            do {
+                let events = try await dependencies.useCase.fetchEventsData()
+                let visibleEvents = Array(events.prefix(eventsSize))
+                hasMoreEvents = events.count > visibleEvents.count
+                state.uiModel.events = visibleEvents
+            } catch {
+                eventsSize = previousSize
+                postEffect(.error(error as! APIError))
+            }
+        }
+    }
+    
+    private func loadMoreHangouts() {
+        guard !isLoadingMoreHangouts, hasMoreHangouts else { return }
+        isLoadingMoreHangouts = true
+        let previousSize = hangoutsSize
+        hangoutsSize += paginationStep
+        
+        Task {
+            defer {
+                isLoadingMoreHangouts = false
+            }
+            
+            do {
+                let hangouts = try await dependencies.useCase.fetchHangoutsData(
+                    query: .init(page: 0, size: hangoutsSize)
+                )
+                hasMoreHangouts = hangouts.count > state.uiModel.hangouts.count
+                state.uiModel.hangouts = hangouts
+                publishActivityCounts()
+            } catch {
+                hangoutsSize = previousSize
+                postEffect(.error(error as! APIError))
+            }
         }
     }
     

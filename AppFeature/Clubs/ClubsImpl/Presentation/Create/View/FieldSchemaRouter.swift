@@ -19,14 +19,6 @@ extension ClubsCreate.TagItem: Hashable {
     }
 }
 
-// MARK: - BackgroundType + Equatable
-
-extension AppUIEntities.BackgroundType: Equatable {
-    public static func == (lhs: AppUIEntities.BackgroundType, rhs: AppUIEntities.BackgroundType) -> Bool {
-        lhs.bgColor == rhs.bgColor
-    }
-}
-
 // MARK: - Router
 
 struct FieldSchemaRouter: View {

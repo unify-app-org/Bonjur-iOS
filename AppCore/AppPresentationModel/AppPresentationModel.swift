@@ -11,11 +11,11 @@ public enum AppPresentationModel {
     
     // MARK: - Member
 
-    public struct Member {
-        public let id: Int
+    public struct Member: Identifiable, Codable, Hashable {
+        public let id: String
         public let profileImage: String?
         
-        public init(id: Int, profileImage: String?) {
+        public init(id: String, profileImage: String?) {
             self.id = id
             self.profileImage = profileImage
         }
@@ -23,8 +23,7 @@ public enum AppPresentationModel {
     
     // MARK: - Tags
 
-    public struct Tags: Identifiable {
-        public let uuid: UUID = UUID()
+    public struct Tags: Identifiable, Codable, Hashable {
         public let id: Int
         public let type: String
         public let title: String
@@ -42,41 +41,42 @@ public enum AppPresentationModel {
     
     // MARK: - Access Type
 
-    public enum AccessType: String, Codable {
+    public enum AccessType: String, Codable, Hashable {
         case `public` = "PUBLIC"
         case `private` = "PRIVATE"
     }
     
     // MARK: - Request Type
-
-    public enum RequestType {
+    
+    public enum RequestType: Codable, Hashable {
         case joined
         case rejected
         case pending
         case none
     }
     
-    // MARK: - Background  Color Type
-    
-    public enum BackgroundType {
-        /// green
-        case primary
-        /// blue
-        case secondary
-        /// purple
-        case teritary
-        case color(ColorType)
+    public enum ActivityStatus: String, Codable {
+        case active = "ACTIVE"
+        case inactive = "INACTIVE"
     }
     
-    public enum ColorType {
-        case orange
-        case red
-        case pink
+    // MARK: - Background  Color Type
+    
+    public enum BackgroundType: String, Codable, Hashable {
+        /// green
+        case primary = "GREEN"
+        /// blue
+        case secondary = "BLUE"
+        /// purple
+        case teritary = "PURPLE"
+        case orange = "ORANGE"
+        case red = "RED"
+        case pink = "PINK"
     }
     
     // MARK: - Activity Types
     
-    public enum ActivityType {
+    public enum ActivityType: Codable, Hashable {
         case community
         case events
         case clubs

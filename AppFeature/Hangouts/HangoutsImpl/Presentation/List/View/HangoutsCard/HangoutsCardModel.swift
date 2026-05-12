@@ -8,7 +8,6 @@
 import Foundation
 import AppUIKit
 import Hangouts
-import AppPresentationModel
 
 extension HangoutsCardView {
     
@@ -78,48 +77,10 @@ extension HangoutsCardView.Model {
             description: from.description,
             memberCount: from.memberCount,
             totalCapacity: from.totalCapacity,
-            tags: Self.mapTags(from.tags),
-            accessType: Self.mapAccessType(from.accessType),
-            requestType: Self.mapRequestType(from.requestType)
+            tags: from.tags,
+            accessType: from.accessType,
+            requestType: from.requestType
         )
-    }
-    
-    private static func mapRequestType(
-        _ type: AppPresentationModel.RequestType
-    ) -> AppUIEntities.RequestType {
-        switch type {
-        case .joined:
-            return .joined
-        case .rejected:
-            return .rejected
-        case .pending:
-            return .pending
-        case .none:
-            return .none
-        }
-    }
-    
-    private static func mapAccessType(
-        _ type: AppPresentationModel.AccessType
-    ) -> AppUIEntities.AccessType {
-        switch type {
-        case .public:
-            return .public
-        case .private:
-            return .private
-        }
-    }
-    
-    private static func mapTags(
-        _ tags: [AppPresentationModel.Tags]
-    ) -> [AppUIEntities.Tags] {
-        tags.map {
-            AppUIEntities.Tags(
-                id: $0.id,
-                type: $0.type,
-                title: $0.title
-            )
-        }
     }
 }
 

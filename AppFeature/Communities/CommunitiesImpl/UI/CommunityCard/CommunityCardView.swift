@@ -103,7 +103,7 @@ struct CommunityCardView: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .multilineTextAlignment(.leading)
             HStack(spacing: -10) {
-                ForEach(Array(model.members.enumerated()), id: \.element.uuid) { index, member in
+                ForEach(Array(model.members.enumerated()), id: \.element.id) { index, member in
                     CachedAsyncImage(url: URL(string: member.profileImage ?? "")) { image in
                         image
                             .resizable()

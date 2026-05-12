@@ -36,9 +36,9 @@ final class StudentCardViewState: UIFeatureState {
         .primary,
         .secondary,
         .teritary,
-        .color(.orange),
-        .color(.red),
-        .color(.pink)
+        .orange,
+        .red,
+        .pink
     ]
 
     var displayedCover: AppUIEntities.BackgroundType? {

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppPresentationModel
 
 struct ProfileDTOModel {
     
@@ -35,18 +36,19 @@ struct ProfileDTOModel {
     
     struct Response: Decodable {
         let fullName, mail, phone, faculty: String?
-        let specialization, username, about, degree: String?
+        let specialization, username, about, degree, profileUrl: String?
+        let background: AppPresentationModel.BackgroundType?
         let entryYear, year: Int?
         let gender, birthDate: String?
         let categories: [Category]?
         let languages: [Language]?
         
-        struct Category: Codable {
+        struct Category: Decodable {
             let id: Int?
             let title: String?
         }
         
-        struct Language: Codable {
+        struct Language: Decodable {
             let id: Int?
             let name: String?
         }

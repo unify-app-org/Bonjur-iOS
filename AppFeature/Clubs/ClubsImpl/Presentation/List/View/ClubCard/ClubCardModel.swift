@@ -8,7 +8,6 @@
 import Foundation
 import AppUIKit
 import Clubs
-import AppPresentationModel
 
 extension ClubCardView {
     
@@ -64,76 +63,11 @@ extension ClubCardView.Model {
             memberCount: model.memberCount,
             totalCapacity: model.totalCapacity,
             community: model.community,
-            members: Self.mapMembers(model.members),
-            bgType: Self.mapBackgroundType(model.bgType),
-            accessType: Self.mapAccessType(model.accessType),
-            requestType: Self.mapRequestType(model.requestType)
+            members: model.members,
+            bgType: model.bgType,
+            accessType: model.accessType,
+            requestType: model.requestType
         )
-    }
-    
-    private static func mapMembers(
-        _ members: [AppPresentationModel.Member]
-    ) -> [AppUIEntities.Member] {
-        members.map {
-            AppUIEntities.Member(
-                id: $0.id,
-                profileImage: $0.profileImage
-            )
-        }
-    }
-    
-    private static func mapColorType(
-        _ type: AppPresentationModel.ColorType
-    ) -> AppUIEntities.ColorType {
-        switch type {
-        case .orange:
-            return .orange
-        case .red:
-            return .red
-        case .pink:
-            return .pink
-        }
-    }
-    
-    private static func mapBackgroundType(
-        _ type: AppPresentationModel.BackgroundType
-    ) -> AppUIEntities.BackgroundType {
-        switch type {
-        case .primary:
-            return .primary
-        case .secondary:
-            return .secondary
-        case .teritary:
-            return .teritary
-        case .color(let color):
-            return .color(mapColorType(color))
-        }
-    }
-    
-    private static func mapRequestType(
-        _ type: AppPresentationModel.RequestType
-    ) -> AppUIEntities.RequestType {
-        switch type {
-        case .joined:
-            return .joined
-        case .rejected:
-            return .rejected
-        case .pending:
-            return .pending
-        case .none:
-            return .none
-        }
-    }
-    
-    private static func mapAccessType(
-        _ type: AppPresentationModel.AccessType
-    ) -> AppUIEntities.AccessType {
-        switch type {
-        case .public:
-            return .public
-        case .private:
-            return .private
-        }
     }
 }
 
@@ -150,19 +84,19 @@ extension ClubCardView.Model {
             community: "UFAZ",
             members: [
                 .init(
-                    id: 1,
+                    id: "1",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
                 ),
                 .init(
-                    id: 2,
+                    id: "2",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 ),
                 .init(
-                    id: 3,
+                    id: "3",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 )
             ],
-            bgType: .color(.orange),
+            bgType: .orange,
             accessType: .private,
             requestType: .none
         ),
@@ -176,15 +110,15 @@ extension ClubCardView.Model {
             community: "UFAZ",
             members: [
                 .init(
-                    id: 1,
+                    id: "1",
                     profileImage: nil
                 ),
                 .init(
-                    id: 2,
+                    id: "2",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 ),
                 .init(
-                    id: 3,
+                    id: "3",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 )
             ],
@@ -202,15 +136,15 @@ extension ClubCardView.Model {
             community: "UFAZ",
             members: [
                 .init(
-                    id: 1,
+                    id: "1",
                     profileImage: nil
                 ),
                 .init(
-                    id: 2,
+                    id: "2",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 ),
                 .init(
-                    id: 3,
+                    id: "3",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 )
             ],
@@ -228,19 +162,19 @@ extension ClubCardView.Model {
             community: "UFAZ",
             members: [
                 .init(
-                    id: 1,
+                    id: "1",
                     profileImage: nil
                 ),
                 .init(
-                    id: 2,
+                    id: "2",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 ),
                 .init(
-                    id: 3,
+                    id: "3",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 )
             ],
-            bgType: .color(.red),
+            bgType: .red,
             accessType: .private,
             requestType: .none
         )

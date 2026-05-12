@@ -64,19 +64,19 @@ public extension ClubsModuleModel.CardInputData {
             community: "UFAZ",
             members: [
                 .init(
-                    id: 1,
+                    id: "1",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
                 ),
                 .init(
-                    id: 2,
+                    id: "2",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 ),
                 .init(
-                    id: 3,
+                    id: "3",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 )
             ],
-            bgType: .color(.orange),
+            bgType: .orange,
             accessType: .private,
             requestType: .none
         ),
@@ -90,15 +90,15 @@ public extension ClubsModuleModel.CardInputData {
             community: "UFAZ",
             members: [
                 .init(
-                    id: 1,
+                    id: "1",
                     profileImage: nil
                 ),
                 .init(
-                    id: 2,
+                    id: "2",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 ),
                 .init(
-                    id: 3,
+                    id: "3",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 )
             ],
@@ -116,15 +116,15 @@ public extension ClubsModuleModel.CardInputData {
             community: "UFAZ",
             members: [
                 .init(
-                    id: 1,
+                    id: "1",
                     profileImage: nil
                 ),
                 .init(
-                    id: 2,
+                    id: "2",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 ),
                 .init(
-                    id: 3,
+                    id: "3",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 )
             ],
@@ -142,19 +142,19 @@ public extension ClubsModuleModel.CardInputData {
             community: "UFAZ",
             members: [
                 .init(
-                    id: 1,
+                    id: "1",
                     profileImage: nil
                 ),
                 .init(
-                    id: 2,
+                    id: "2",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 ),
                 .init(
-                    id: 3,
+                    id: "3",
                     profileImage: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                 )
             ],
-            bgType: .color(.red),
+            bgType: .red,
             accessType: .private,
             requestType: .none
         )

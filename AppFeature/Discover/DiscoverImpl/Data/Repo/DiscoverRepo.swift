@@ -19,6 +19,16 @@ protocol DiscoverRepo {
     func getHangout(
         query: DiscoverDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsModuleModel.CardInputData]
+    
+    func getClubs(
+        query: DiscoverDTOModel.PaginationQuery
+    ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
+    
+    func getCommunities(
+        query: DiscoverDTOModel.PaginationQuery
+    ) async throws(APIError) -> [CommunitiesModuleModel.CardInputData]
+    
+    func getUser() async throws(APIError) -> UserModel
 }
 
 class DiscoverRepoImpl: DiscoverRepo {
@@ -54,5 +64,70 @@ class DiscoverRepoImpl: DiscoverRepo {
                 )
         }
         return uiModel
+    }
+    
+    func getClubs(
+        query: DiscoverDTOModel.PaginationQuery
+    ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
+        let data = try await dataSource.getClubs(
+            query: query.toDictionary()
+        )
+        let uiModel: [ClubsModuleModel.CardInputData] = data.map { item in
+            let members: [AppPresentationModel.Member] = item.members?.map { member in
+                    .init(
+                        id: member.id ?? "",
+                        profileImage: member.url ?? ""
+                    )
+            } ?? []
+            return .init(
+                    id: item.id ?? 0,
+                    name: item.name ?? "-",
+                    communityName: item.communityName ?? "-",
+                    logoURL: item.clubProfile ?? "",
+                    memberCount: item.count ?? 0,
+                    totalCapacity: 0,
+                    community: item.communityName ?? "-",
+                    members: members,
+                    bgType: item.background ?? .primary,
+                    accessType: .private,
+                    requestType: .joined
+                )
+        }
+        return uiModel
+    }
+    
+    func getCommunities(
+        query: DiscoverDTOModel.PaginationQuery
+    ) async throws(APIError) -> [CommunitiesModuleModel.CardInputData] {
+        let data = try await dataSource.getCommunities(
+            query: query.toDictionary()
+        )
+        let uiModel: [CommunitiesModuleModel.CardInputData] = data.map { item in
+            let members: [AppPresentationModel.Member] = item.members?.map { member in
+                    .init(
+                        id: member.id ?? "",
+                        profileImage: member.url ?? ""
+                    )
+            } ?? []
+            return .init(
+                    id: item.id ?? 0,
+                    name: item.name ?? "-",
+                    subTitle: "Community",
+                    logoURL: item.logoUrl ?? "",
+                    memberCount: item.membersCount ?? 0,
+                    members:members ,
+                    bgType: item.background ?? .primary
+                )
+        }
+        return uiModel
+    }
+    
+    func getUser() async throws(APIError) -> UserModel {
+        let data = try await dataSource.getUser()
+        return .init(
+            name: data.fullName ?? "-",
+            profileImage: data.profileUrl ?? "",
+            greeting: "Hello and Welcome!"
+        )
     }
 }

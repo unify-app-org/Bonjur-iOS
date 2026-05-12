@@ -8,7 +8,6 @@
 import SwiftUI
 import AppUIKit
 import Events
-import AppPresentationModel
 
 extension EventsCardView {
     
@@ -95,77 +94,11 @@ extension EventsCardView.Model {
                 name: from.club.name,
                 id: from.club.id
             ),
-            tags: Self.mapTags(from.tags),
-            bgType: Self.mapBackgroundType(from.bgType),
-            requestType: Self.mapRequestType(from.requestType),
-            accessType: Self.mapAccessType(from.accessType)
+            tags: from.tags,
+            bgType: from.bgType,
+            requestType: from.requestType,
+            accessType: from.accessType
         )
-    }
-    
-    private static func mapColorType(
-        _ type: AppPresentationModel.ColorType
-    ) -> AppUIEntities.ColorType {
-        switch type {
-        case .orange:
-            return .orange
-        case .red:
-            return .red
-        case .pink:
-            return .pink
-        }
-    }
-    
-    private static func mapBackgroundType(
-        _ type: AppPresentationModel.BackgroundType
-    ) -> AppUIEntities.BackgroundType {
-        switch type {
-        case .primary:
-            return .primary
-        case .secondary:
-            return .secondary
-        case .teritary:
-            return .teritary
-        case .color(let color):
-            return .color(mapColorType(color))
-        }
-    }
-    
-    private static func mapRequestType(
-        _ type: AppPresentationModel.RequestType
-    ) -> AppUIEntities.RequestType {
-        switch type {
-        case .joined:
-            return .joined
-        case .rejected:
-            return .rejected
-        case .pending:
-            return .pending
-        case .none:
-            return .none
-        }
-    }
-    
-    private static func mapAccessType(
-        _ type: AppPresentationModel.AccessType
-    ) -> AppUIEntities.AccessType {
-        switch type {
-        case .public:
-            return .public
-        case .private:
-            return .private
-        }
-    }
-    
-    private static func mapTags(
-        _ tags: [AppPresentationModel.Tags]
-    ) -> [AppUIEntities.Tags] {
-        tags.map {
-            AppUIEntities.Tags(
-                id: $0.id,
-                type: $0.type,
-                title: $0.title
-            )
-        }
     }
 }
 

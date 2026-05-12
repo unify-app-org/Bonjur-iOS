@@ -12,6 +12,7 @@ import Discover
 import Clubs
 import Groups
 import Profile
+import AppPresentationModel
 
 final class AppTabBarHostController: UIViewController {
 
@@ -166,8 +167,12 @@ extension AppTabBarHostController: DiscoverModuleDelegate {
         mainNavigationController.pushViewController(clubsViewController, animated: true)
     }
     
-    func openProfile() {
-        let profileViewController = profileModule.makeProfileViewController() as! UIViewController
+    func openProfile(
+        userId: String
+    ) {
+        let profileViewController = profileModule.makeProfileViewController(
+            userId: userId
+        ) as! UIViewController
         mainNavigationController.pushViewController(profileViewController, animated: true)
     }
     

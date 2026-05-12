@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppPresentationModel
 
 public protocol DiscoverModule {
     func makeDiscover(_ delegate: DiscoverModuleDelegate) -> AnyObject
@@ -13,6 +14,6 @@ public protocol DiscoverModule {
 
 public protocol DiscoverModuleDelegate: AnyObject {
     func viewAllClubs()
-    func openProfile()
+    func openProfile(userId: String)
     func didUpdateActivityCounts(events: Int, hangouts: Int)
 }

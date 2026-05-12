@@ -7,6 +7,7 @@
 
 import Foundation
 import AppNetwork
+import AppPresentationModel
 
 protocol DiscoverDataSource {
     func getHangout(
@@ -21,7 +22,7 @@ protocol DiscoverDataSource {
         query: [String: String]
     ) async throws(APIError) -> [DiscoverDTOModel.Community]
     
-    func getUser() async throws(APIError) -> DiscoverDTOModel.User
+    func getUser() async throws(APIError) -> AppPresentationModel.UserResponse
 }
 
 final class DiscoverDataSourceImpl: NetworkService<DiscoverEndPoint>, DiscoverDataSource {
@@ -44,7 +45,7 @@ final class DiscoverDataSourceImpl: NetworkService<DiscoverEndPoint>, DiscoverDa
         try await fetch(endPoint: .getCommunities(query))
     }
     
-    func getUser() async throws(APIError) -> DiscoverDTOModel.User {
+    func getUser() async throws(APIError) -> AppPresentationModel.UserResponse {
         try await fetch(endPoint: .getUser)
     }
 }

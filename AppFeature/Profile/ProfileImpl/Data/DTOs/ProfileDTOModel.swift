@@ -31,26 +31,4 @@ struct ProfileDTOModel {
         let id: Int?
         let title: String?
     }
-
-    // MARK: - Response
-    
-    struct Response: Decodable {
-        let fullName, mail, phone, faculty: String?
-        let specialization, username, about, degree, profileUrl: String?
-        let background: AppPresentationModel.BackgroundType?
-        let entryYear, year: Int?
-        let gender, birthDate: String?
-        let categories: [Category]?
-        let languages: [Language]?
-        
-        struct Category: Decodable {
-            let id: Int?
-            let title: String?
-        }
-        
-        struct Language: Decodable {
-            let id: Int?
-            let name: String?
-        }
-    }
 }

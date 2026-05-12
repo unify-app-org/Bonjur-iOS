@@ -111,4 +111,73 @@ public enum AppPresentationModel {
             })?.title ?? ""
         }
     }
+    
+    
+    // MARK: - UserResponse
+    
+    public struct UserResponse: Decodable {
+        public let fullName, mail, phone, faculty: String?
+        public let specialization, username, about, degree, profileUrl: String?
+        public let background: AppPresentationModel.BackgroundType?
+        public let entryYear, year: Int?
+        public let gender, birthDate: String?
+        public let categories: [Category]?
+        public let languages: [Language]?
+        
+        public init(
+            fullName: String?,
+            mail: String?
+            , phone: String?,
+            faculty: String?,
+            specialization: String?,
+            username: String?,
+            about: String?,
+            degree: String?,
+            profileUrl: String?,
+            background: AppPresentationModel.BackgroundType?,
+            entryYear: Int?,
+            year: Int?,
+            gender: String?,
+            birthDate: String?,
+            categories: [Category]?,
+            languages: [Language]?
+        ) {
+            self.fullName = fullName
+            self.mail = mail
+            self.phone = phone
+            self.faculty = faculty
+            self.specialization = specialization
+            self.username = username
+            self.about = about
+            self.degree = degree
+            self.profileUrl = profileUrl
+            self.background = background
+            self.entryYear = entryYear
+            self.year = year
+            self.gender = gender
+            self.birthDate = birthDate
+            self.categories = categories
+            self.languages = languages
+        }
+        
+        public struct Category: Decodable {
+            public let id: Int?
+            public let title: String?
+            
+            public init(id: Int?, title: String?) {
+                self.id = id
+                self.title = title
+            }
+        }
+        
+        public struct Language: Decodable {
+            public let id: Int?
+            public let name: String?
+            
+            public init(id: Int?, name: String?) {
+                self.id = id
+                self.name = name
+            }
+        }
+    }
 }

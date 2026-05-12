@@ -5,6 +5,7 @@
 //  Created by Huseyn Hasanov on 04.02.26.
 //
 
+import AppPresentationModel
 import AppFoundation
 import SwiftUI
 import AppUIKit
@@ -15,6 +16,7 @@ import Clubs
 // MARK: - ProfileDetail input
 
 struct ProfileDetailInputData {
+    let userId: String
 }
 
 // MARK: - Side effects

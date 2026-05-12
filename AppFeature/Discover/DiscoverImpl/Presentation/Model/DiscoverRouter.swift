@@ -10,9 +10,10 @@ import Events
 import Hangouts
 import Clubs
 import Communities
+import AppPresentationModel
 
 enum DiscoverRoute {
-    case profile
+    case profile(String)
     case activityCountsUpdated(events: Int, hangouts: Int)
     case viewAllClubs
     case viewAllEvents
@@ -55,8 +56,10 @@ final class DiscoverRouter: DiscoverRouterProtocol {
     @MainActor
     func navigate(to route: DiscoverRoute) {
         switch route {
-        case .profile:
-            delegate.openProfile()
+        case .profile(let userId):
+            delegate.openProfile(
+                userId: userId
+            )
         case .activityCountsUpdated(let events, let hangouts):
             delegate.didUpdateActivityCounts(
                 events: events,

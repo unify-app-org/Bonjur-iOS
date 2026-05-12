@@ -5,12 +5,13 @@
 //  Created by Huseyn Hasanov on 04.02.26.
 //
 
+import AppPresentationModel
 import Foundation
 import AppNetwork
 import UIKit
 
 protocol ProfileDataSource {
-    func fetchProfile() async throws(APIError) -> ProfileDTOModel.Response
+    func fetchProfile() async throws(APIError) -> AppPresentationModel.UserResponse
     func getCategories() async throws(APIError) -> [ProfileDTOModel.CategoriesResponse]
     func editProfile(
         multiPart: MultipartFormData?,
@@ -24,7 +25,7 @@ protocol ProfileDataSource {
 
 final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataSource {
 
-    func fetchProfile() async throws(APIError) -> ProfileDTOModel.Response {
+    func fetchProfile() async throws(APIError) -> AppPresentationModel.UserResponse {
         try await fetch(endPoint: .getUsers)
     }
 

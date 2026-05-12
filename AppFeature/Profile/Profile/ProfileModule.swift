@@ -6,9 +6,12 @@
 //
 
 import Foundation
+import AppPresentationModel
 
 public protocol ProfileModule {
-    func makeProfileViewController() -> AnyObject
+    func makeProfileViewController(
+        userId: String
+    ) -> AnyObject
 }
 
 public protocol ProfileDelegate: AnyObject {

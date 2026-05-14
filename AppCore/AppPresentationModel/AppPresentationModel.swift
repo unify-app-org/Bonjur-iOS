@@ -130,7 +130,8 @@ public enum AppPresentationModel {
         public let specialization, username, about, degree, fileUrl, greeting: String?
         public let background: AppPresentationModel.BackgroundType?
         public let entryYear, year: Int?
-        public let gender, birthDate: String?
+        public let gender: AppPresentationModel.Gender?
+        public let birthDate: String?
         public let categories: [Category]?
         public let languages: [Language]?
         
@@ -147,7 +148,7 @@ public enum AppPresentationModel {
             background: AppPresentationModel.BackgroundType?,
             entryYear: Int?,
             year: Int?,
-            gender: String?,
+            gender: AppPresentationModel.Gender?,
             birthDate: String?,
             communityName: String?,
             greeting: String?,

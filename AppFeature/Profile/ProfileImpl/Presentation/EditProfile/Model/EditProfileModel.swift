@@ -49,6 +49,7 @@ final class EditProfileViewState: UIFeatureState {
     @Published var showCategoryPicker: Bool = false
     
     @Published var gender: AppPresentationModel.Gender = .male
+    @Published var bgType: AppPresentationModel.BackgroundType = .primary
     @Published var categorySections: [SelectCategoryView.Section] = []
     @Published var languages: [SelectableListItemView.Model] = []
 

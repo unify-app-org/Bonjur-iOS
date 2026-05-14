@@ -18,6 +18,16 @@ struct ProfileDTOModel {
         let about: String?
         let categoriesId: [Int]
         let languagesId: [Int]
+        let background: AppPresentationModel.BackgroundType?
+        
+        enum CodingKeys: String, CodingKey {
+            case birthDate
+            case gender
+            case about
+            case categoriesId
+            case languagesId
+            case background = "backgroundColour"
+        }
     }
 
     //MARK: - Statics

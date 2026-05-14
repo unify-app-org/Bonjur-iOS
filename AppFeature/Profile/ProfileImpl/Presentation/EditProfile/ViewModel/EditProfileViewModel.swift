@@ -72,11 +72,12 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
         state.entry = inputData.profileData.userCardModel.entryYear
         state.course = inputData.profileData.userCardModel.course
         state.about = inputData.profileData.about ?? "-"
-        state.gender = AppPresentationModel.Gender(rawValue: inputData.profileData.gender ?? "") ?? .male
+        state.gender = inputData.profileData.gender?.type ?? .male
         state.birthDate = inputData.profileData.birthday?.convertToDate(from: .yyyyMMdd)
         state.birthDateText = state.birthDate?.toString(format: .ddMMyyyy) ?? "-"
         state.languages = inputData.profileData.languages ?? []
         state.avatarURL = inputData.profileData.userCardModel.imageUrl
+        state.bgType = inputData.profileData.userCardModel.backgroundCover ?? .primary
         
         Task {
             await fetchCategories()
@@ -120,13 +121,15 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
         }
         let languages = state.languages.filter({ $0.selected }).map({ $0.id })
         let birthDate = state.birthDate?.toString(format: .yyyyMMdd)
+        let bgType = state.bgType
         
         let request: ProfileDTOModel.UpdateRequest = .init(
             birthDate: birthDate,
             gender: gender,
             about: state.about,
             categoriesId: categories,
-            languagesId: languages
+            languagesId: languages,
+            background: bgType
         )
         guard let image = state.selectedImage else {
             return (nil, request)

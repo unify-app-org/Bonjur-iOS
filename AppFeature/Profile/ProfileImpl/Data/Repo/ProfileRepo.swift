@@ -63,7 +63,12 @@ class ProfileRepoImpl: ProfileRepo {
                     title: item.title ?? "-"
                 )
         } ?? []
-        let gender = AppPresentationModel.GenderModel.title(for: data.gender ?? "-")
+        let gender = AppPresentationModel.GenderModel(
+            type: data.gender ?? .male,
+            title: AppPresentationModel.GenderModel.title(
+                for: data.gender?.rawValue ?? ""
+            )
+        )
         let uiModel: ProfileDetail.UIModel = .init(
             userCardModel: userCardModel,
             about: data.about,

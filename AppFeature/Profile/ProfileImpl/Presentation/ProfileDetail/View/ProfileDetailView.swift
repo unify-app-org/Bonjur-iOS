@@ -113,7 +113,7 @@ struct ProfileDetailView: View {
                 chipsView(data: store.state.uiModel?.tags ?? [])
             }
             VStack(spacing: 21) {
-                userInfoCell(image: UIImage.Icons.genderIcon, title: "Gender", subtitle: store.state.uiModel?.gender ?? "-")
+                userInfoCell(image: UIImage.Icons.genderIcon, title: "Gender", subtitle: store.state.uiModel?.gender?.title ?? "-")
                 userInfoCell(image: UIImage.Icons.cakeBirthday, title: "Birthday", subtitle: store.state.uiModel?.birthday ?? "-")
                 userInfoCell(
                     image: UIImage.Icons.globe01, title: "Languages",

@@ -7,6 +7,7 @@
 
 import AppFoundation
 import AppUIKit
+import AppNetwork
 
 final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
     
@@ -60,13 +61,20 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
                 await router.navigate(to: .settings)
             }
         case .userCardTapped:
-            Task{
-                if let userCardModel = self.state.uiModel?.userCardModel {
-                    await router.navigate(to: .studentCard(.init(userCardModel: userCardModel, onSave: { [weak self] backgroundType in
-                        self?.store.send(.userCardCoverSaved(backgroundType))
-                    })))
-                }
-              
+            guard let userCardModel = self.state.uiModel?.userCardModel else {
+                return
+            }
+            Task {
+                await router.navigate(
+                    to: .studentCard(
+                        .init(
+                            userCardModel: userCardModel,
+                            onSave: { [weak self] backgroundType in
+                                self?.applyUserCardCover(backgroundType)
+                            }
+                        )
+                    )
+                )
             }
         case .userCardCoverSaved(let backgroundType):
             applyUserCardCover(backgroundType)
@@ -96,6 +104,44 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
         }
     }
     
+    private func editUser(
+        _ request: ProfileDTOModel.UpdateRequest?
+    ) async {
+        postEffect(.loading(true))
+        defer {
+            postEffect(.loading(false))
+        }
+        do {
+            _ = try await dependencies.useCase.editProfile(
+                multiPart: nil,
+                queryData: request
+            )
+        } catch {
+            
+        }
+    }
+    
+    private func buildRequest(
+        bgType: AppUIEntities.BackgroundType?
+    ) -> (
+        ProfileDTOModel.UpdateRequest?
+    ) {
+        let gender = state.uiModel?.gender?.type.rawValue ?? "-"
+        let categories = state.uiModel?.tags.map({ $0.id }) ?? []
+        let languages = state.uiModel?.languages?.map({ $0.id }) ?? []
+        let birthDate = state.uiModel?.birthday ?? ""
+        
+        let request: ProfileDTOModel.UpdateRequest = .init(
+            birthDate: birthDate,
+            gender: gender,
+            about: state.uiModel?.about ?? "",
+            categoriesId: categories,
+            languagesId: languages,
+            background: bgType
+        )
+        return request
+    }
+    
     private func applyUserCardCover(_ backgroundType: AppUIEntities.BackgroundType?) {
         guard let currentUIModel = state.uiModel else {
             return
@@ -123,5 +169,10 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
         )
         
         state.uiModel = updatedUIModel
+        
+        let request = buildRequest(bgType: backgroundType)
+        Task {
+            await editUser(request)
+        }
     }
 }

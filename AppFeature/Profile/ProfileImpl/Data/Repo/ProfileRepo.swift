@@ -39,15 +39,15 @@ class ProfileRepoImpl: ProfileRepo {
     func getUsers() async throws(APIError) -> ProfileDetail.UIModel {
         let data = try await dataSource.fetchProfile()
         let userCardModel: UserCardModel = .init(
-            backgroundCover: .primary,
+            backgroundCover: data.background,
             nameSurname: data.username ?? "-",
             speciality: data.specialization ?? "-",
             course: data.faculty ?? "-",
-            community: "-",
+            community: data.communityName ?? "-",
             degree: data.degree ?? "-",
             entryYear: String(data.entryYear ?? 2000),
             email: data.mail ?? "",
-            imageUrl: URL(string: "")
+            imageUrl: URL(string: data.fileUrl ?? "")
         )
         let languages: [SelectableListItemView.Model] = data.languages?.map { item in
             SelectableListItemView.Model(

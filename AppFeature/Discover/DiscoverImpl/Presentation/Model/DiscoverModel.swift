@@ -23,7 +23,7 @@ struct DiscoverInputData {
 
 enum DiscoverSideEffect: UISideEffect {
     case loading(Bool)
-    case error(APIError)
+    case error(APIError?)
 }
 
 // MARK: - Feature Definition

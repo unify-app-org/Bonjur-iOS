@@ -133,7 +133,7 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
         }
         var formData = MultipartFormData()
         formData.addFile(
-            name: "image",
+            name: "file",
             fileName: "avatar.jpg",
             mimeType: "image/jpeg",
             data: image

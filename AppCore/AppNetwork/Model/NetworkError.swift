@@ -58,13 +58,13 @@ public enum APIError: Error {
             nil
         case .noData:
             nil
-        case .decodingError(let error):
+        case .decodingError(_):
             nil
         case .error(let networkError):
             networkError.failureReason
         case .unauthorized:
             nil
-        case .networkError(let error):
+        case .networkError(_):
             nil
         case .unknown:
             nil

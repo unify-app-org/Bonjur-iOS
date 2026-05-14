@@ -35,12 +35,25 @@ public enum AppUIEntities {
     
     public typealias ActivityType = AppPresentationModel.ActivityType
     
-    public enum UserActivityRole: String, CaseIterable {
-        case member = "Members"
-        case president = "President"
-        case visePresident = "Vise president"
-        case eventCreator = "Event creators"
-        case notJoined
+    // MARK: - User Activity Roles
+    
+    public typealias UserActivityRole = AppPresentationModel.UserActivityRole
+}
+
+public extension AppPresentationModel.UserActivityRole {
+    var title: String {
+        switch self {
+        case .member:
+            return "Members"
+        case .president:
+            return "President"
+        case .visePresident:
+            return "Vise president"
+        case .eventCreator:
+            return "Event creators"
+        case .notJoined:
+            return "-"
+        }
     }
 }
 

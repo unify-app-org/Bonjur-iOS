@@ -14,6 +14,7 @@ public struct CachedAsyncImage<Content: View, Placeholder: View>: View {
 
     @State private var image: UIImage?
     @State private var isLoading = false
+    @State private var loadingURL: URL?
 
     public init(
         url: URL?,
@@ -33,47 +34,47 @@ public struct CachedAsyncImage<Content: View, Placeholder: View>: View {
                 placeholder()
             }
         }
-        .onAppear {
-            if image == nil && !isLoading {
-                Task {
-                    await load()
-                }
-            }
+        .task(id: url) {
+            await load(url)
         }
     }
 
-    private func load() async {
-        guard let url, !isLoading else { return }
+    @MainActor
+    private func load(_ url: URL?) async {
+        image = nil
+        loadingURL = url
         
-        isLoading = true
-
-        // Check cache first
-        if let cached = ImageCache.shared.object(forKey: url as NSURL) {
-            await MainActor.run {
-                image = cached
-                isLoading = false
-            }
+        guard let url else {
+            isLoading = false
             return
         }
 
-        // Load from network
+        isLoading = true
+
+        if let cached = ImageCache.shared.object(forKey: url as NSURL) {
+            image = cached
+            isLoading = false
+            return
+        }
+
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
+            guard !Task.isCancelled, loadingURL == url else {
+                return
+            }
+
             if let uiImage = UIImage(data: data) {
                 ImageCache.shared.setObject(uiImage, forKey: url as NSURL)
-                await MainActor.run {
-                    image = uiImage
-                    isLoading = false
-                }
-            } else {
-                await MainActor.run {
-                    isLoading = false
-                }
+                image = uiImage
             }
+            
+            isLoading = false
         } catch {
-            await MainActor.run {
-                isLoading = false
+            guard !Task.isCancelled, loadingURL == url else {
+                return
             }
+
+            isLoading = false
         }
     }
 }

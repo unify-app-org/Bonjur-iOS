@@ -113,9 +113,9 @@ class DiscoverRepoImpl: DiscoverRepo {
                     id: item.id ?? 0,
                     name: item.name ?? "-",
                     subTitle: "Community",
-                    logoURL: item.logoUrl ?? "",
+                    logoURL: item.profile ?? "",
                     memberCount: item.membersCount ?? 0,
-                    members:members ,
+                    members: members ,
                     bgType: item.background ?? .primary
                 )
         }
@@ -126,7 +126,7 @@ class DiscoverRepoImpl: DiscoverRepo {
         let data = try await dataSource.getUser()
         return .init(
             name: data.fullName ?? "-",
-            profileImage: data.profileUrl ?? "",
+            profileImage: data.fileUrl ?? "",
             greeting: "Hello and Welcome!"
         )
     }

@@ -74,6 +74,16 @@ public enum AppPresentationModel {
         case pink = "PINK"
     }
     
+    // MARK: - User Activity Role
+    
+    public enum UserActivityRole: String, Codable, CaseIterable {
+        case member = "MEMBER"
+        case president = "PRESIDENT"
+        case visePresident = "VICE_PRESIDENT"
+        case eventCreator = "EVENT_CREATOR"
+        case notJoined
+    }
+    
     // MARK: - Activity Types
     
     public enum ActivityType: Codable, Hashable {
@@ -116,8 +126,8 @@ public enum AppPresentationModel {
     // MARK: - UserResponse
     
     public struct UserResponse: Decodable {
-        public let fullName, mail, phone, faculty: String?
-        public let specialization, username, about, degree, profileUrl: String?
+        public let fullName, mail, phone, faculty, communityName: String?
+        public let specialization, username, about, degree, fileUrl, greeting: String?
         public let background: AppPresentationModel.BackgroundType?
         public let entryYear, year: Int?
         public let gender, birthDate: String?
@@ -126,19 +136,21 @@ public enum AppPresentationModel {
         
         public init(
             fullName: String?,
-            mail: String?
-            , phone: String?,
+            mail: String?,
+            phone: String?,
             faculty: String?,
             specialization: String?,
             username: String?,
             about: String?,
             degree: String?,
-            profileUrl: String?,
+            fileUrl: String?,
             background: AppPresentationModel.BackgroundType?,
             entryYear: Int?,
             year: Int?,
             gender: String?,
             birthDate: String?,
+            communityName: String?,
+            greeting: String?,
             categories: [Category]?,
             languages: [Language]?
         ) {
@@ -150,7 +162,7 @@ public enum AppPresentationModel {
             self.username = username
             self.about = about
             self.degree = degree
-            self.profileUrl = profileUrl
+            self.fileUrl = fileUrl
             self.background = background
             self.entryYear = entryYear
             self.year = year
@@ -158,6 +170,8 @@ public enum AppPresentationModel {
             self.birthDate = birthDate
             self.categories = categories
             self.languages = languages
+            self.greeting = greeting
+            self.communityName = communityName
         }
         
         public struct Category: Decodable {
@@ -178,6 +192,26 @@ public enum AppPresentationModel {
                 self.id = id
                 self.name = name
             }
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case fullName, communityName
+            case mail
+            case phone
+            case faculty
+            case specialization
+            case username
+            case about
+            case degree
+            case fileUrl
+            case background = "backgroundColour"
+            case entryYear
+            case year
+            case gender
+            case birthDate
+            case categories
+            case languages
+            case greeting
         }
     }
 }

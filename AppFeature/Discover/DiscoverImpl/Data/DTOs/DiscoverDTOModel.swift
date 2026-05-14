@@ -45,10 +45,11 @@ struct DiscoverDTOModel {
         let name: String?
         let communityName: String?
         let background: AppPresentationModel.BackgroundType?
+        let visibility: AppPresentationModel.AccessType?
         let clubProfile: String?
         let backgroundUrl: String?
         let about: String?
-        let count: Int?
+        let count, capacity: Int?
         let joined: Bool?
         let members: [Member]?
     }
@@ -59,8 +60,18 @@ struct DiscoverDTOModel {
         let id: Int?
         let name: String?
         let membersCount: Int?
-        let logoUrl: String?
+        let profile, backgroundUrl: String?
         let members: [Member]?
         let background: AppPresentationModel.BackgroundType?
+        
+        enum CodingKeys: String, CodingKey {
+            case id
+            case name
+            case membersCount
+            case profile
+            case backgroundUrl
+            case members
+            case background = "backgroundColour"
+        }
     }
 }

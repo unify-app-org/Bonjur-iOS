@@ -135,7 +135,7 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
         }
         var formData = MultipartFormData()
         formData.addFile(
-            name: "image",
+            name: "file",
             fileName: "avatar.jpg",
             mimeType: "image/jpeg",
             data: image

@@ -37,7 +37,7 @@ public extension SelectableListItemView {
         }
         
         var backgroundColor: Color {
-            if selected {
+            if selected && style == .default {
                 return Color.Palette.primary
             } else {
                 return .clear

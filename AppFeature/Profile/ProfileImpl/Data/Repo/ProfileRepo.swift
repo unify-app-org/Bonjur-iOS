@@ -16,6 +16,7 @@ import AppPresentationModel
 protocol ProfileRepo {
     func getUsers(userId: String?) async throws(APIError) -> ProfileDetail.UIModel
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
+    func getLanguages() async throws(APIError) -> [SelectableListItemView.Model]
     func deleteAccount() async throws(APIError) -> Data
     func editProfile(
         multiPart: MultipartFormData?,
@@ -118,6 +119,18 @@ class ProfileRepoImpl: ProfileRepo {
                 type: item.type ?? "",
                 title: item.title ?? "",
                 categories: categories
+            )
+        }
+    }
+    
+    func getLanguages() async throws(APIError) -> [SelectableListItemView.Model] {
+        let data = try await dataSource.getLanguages()
+        return data.map { item in
+            .init(
+                id: item.id,
+                title: item.name ?? "",
+                selected: false,
+                style: .multySelect
             )
         }
     }

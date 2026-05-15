@@ -68,6 +68,29 @@ struct EditProfileView: View {
                 }
             )
         }
+        .sheet(
+            isPresented: Binding(
+                get: { store.state.showLanguagePicker },
+                set: { isPresented in
+                    if !isPresented {
+                        store.send(.dismissLanguagePicker)
+                    }
+                }
+            )
+        ) {
+            SelectableListView(
+                items: $store.state.languages,
+                title: "Select spoken language",
+                subtitle: "Select languages you know",
+                doneTitle: "Select",
+                onBack: {
+                    store.send(.dismissLanguagePicker)
+                },
+                onDone: {
+                    store.send(.languagePickerDone)
+                }
+            )
+        }
     }
     
     private var avatar: some View {
@@ -173,6 +196,18 @@ struct EditProfileView: View {
                 },
                 onRemove: { id in
                     store.send(.removeCategory(id))
+                }
+            )
+            
+            SelectionChipsField(
+                title: "Spoken languages",
+                addTitle: "Add language",
+                items: store.state.selectedLanguages,
+                onAdd: {
+                    store.send(.addLanguageTapped)
+                },
+                onRemove: { id in
+                    store.send(.removeLanguage(id))
                 }
             )
         }

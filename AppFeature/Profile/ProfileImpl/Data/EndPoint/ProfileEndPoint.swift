@@ -14,6 +14,7 @@ enum ProfileEndPoint {
         MultipartFormData?
     )
     case getCategories
+    case getLanguages
     case deleteAccount
     case getUserById(String)
 }
@@ -30,6 +31,8 @@ extension ProfileEndPoint: AppEndPoint {
             "api/us/v1/users/\(id)"
         case .getCategories:
             "api/sd/v1/categories"
+        case .getLanguages:
+            "api/sd/v1/languages"
         }
     }
     
@@ -46,6 +49,7 @@ extension ProfileEndPoint: AppEndPoint {
         switch self {
         case .getUsers,
                 .getCategories,
+                .getLanguages,
                 .getUserById:
                 .get
         case .updateUserData:

@@ -13,6 +13,7 @@ import AppUIKit
 protocol ProfileUseCase {
     func getProfileData(userId: String?) async throws(APIError) -> ProfileDetail.UIModel
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
+    func getLanguages() async throws(APIError) -> [SelectableListItemView.Model]
     func fetchSections(notificationsEnabled: Bool) -> [ProfileSettingsViewState.SettingsSection]
     func editProfile(
         multiPart: MultipartFormData?,
@@ -35,6 +36,10 @@ class ProfileUseCaseImpl: ProfileUseCase {
 
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section] {
         try await repo.getCategories()
+    }
+    
+    func getLanguages() async throws(APIError) -> [SelectableListItemView.Model] {
+        try await repo.getLanguages()
     }
     
     func editProfile(

@@ -41,4 +41,9 @@ struct ProfileDTOModel {
         let id: Int?
         let title: String?
     }
+    
+    struct LanguagesResponse: Decodable {
+        let id: Int
+        let name, code: String?
+    }
 }

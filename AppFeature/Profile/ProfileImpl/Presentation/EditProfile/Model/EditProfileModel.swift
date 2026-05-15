@@ -47,6 +47,7 @@ final class EditProfileViewState: UIFeatureState {
     @Published var birthDateText: String = ""
     @Published var showDatePicker: Bool = false
     @Published var showCategoryPicker: Bool = false
+    @Published var showLanguagePicker: Bool = false
     
     @Published var gender: AppPresentationModel.Gender = .male
     @Published var bgType: AppPresentationModel.BackgroundType = .primary
@@ -60,6 +61,17 @@ final class EditProfileViewState: UIFeatureState {
         categorySections
             .flatMap(\.categories)
             .filter(\.selected)
+    }
+    
+    var selectedLanguages: [SelectionFieldItem] {
+        languages
+            .filter(\.selected)
+            .map {
+                SelectionFieldItem(
+                    id: $0.id,
+                    title: $0.title
+                )
+            }
     }
 }
 
@@ -75,5 +87,9 @@ enum EditProfileAction: UIFeatureAction {
     case removeCategory(Int)
     case dismissCategoryPicker
     case categoryPickerDone
+    case addLanguageTapped
+    case removeLanguage(Int)
+    case dismissLanguagePicker
+    case languagePickerDone
     case saveTapped
 }

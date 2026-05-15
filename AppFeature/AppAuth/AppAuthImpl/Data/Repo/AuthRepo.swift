@@ -94,7 +94,8 @@ class AuthRepoImpl: AuthRepo {
                 .init(
                     id: item.id,
                     title: item.name ?? "",
-                    selected: false
+                    selected: false,
+                    style: .multySelect
                 )
         }
         return uiModel

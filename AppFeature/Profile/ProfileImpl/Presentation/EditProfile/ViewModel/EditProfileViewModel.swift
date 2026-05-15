@@ -57,6 +57,15 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
             state.showCategoryPicker = false
         case .categoryPickerDone:
             state.showCategoryPicker = false
+        case .addLanguageTapped:
+            state.showDatePicker = false
+            state.showLanguagePicker = true
+        case .removeLanguage(let id):
+            toggleLanguage(with: id, selected: false)
+        case .dismissLanguagePicker:
+            state.showLanguagePicker = false
+        case .languagePickerDone:
+            state.showLanguagePicker = false
         case .saveTapped:
             Task {
                 await editUser()
@@ -75,12 +84,13 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
         state.gender = inputData.profileData.gender?.type ?? .male
         state.birthDate = inputData.profileData.birthday?.convertToDate(from: .yyyyMMdd)
         state.birthDateText = state.birthDate?.toString(format: .ddMMyyyy) ?? "-"
-        state.languages = inputData.profileData.languages ?? []
+        state.languages = selectedProfileLanguages()
         state.avatarURL = inputData.profileData.userCardModel.imageUrl
         state.bgType = inputData.profileData.userCardModel.backgroundCover ?? .primary
         
         Task {
             await fetchCategories()
+            await fetchLanguages()
         }
     }
     
@@ -167,6 +177,25 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
         }
     }
     
+    private func fetchLanguages() async {
+        do {
+            let data = try await dependencies.useCase.getLanguages()
+            await handleLanguages(data)
+        } catch {
+            await handleLanguages(selectedProfileLanguages())
+        }
+    }
+    
+    @MainActor
+    private func handleLanguages(_ languages: [SelectableListItemView.Model]) {
+        let selectedIds = Set((inputData.profileData.languages ?? []).map(\.id))
+        state.languages = languages.map { language in
+            var updatedLanguage = language
+            updatedLanguage.selected = selectedIds.contains(language.id) || language.selected
+            return updatedLanguage
+        }
+    }
+    
     private func toggleCategory(with id: Int, selected: Bool) {
         state.categorySections = state.categorySections.map { section in
             var updatedSection = section
@@ -178,6 +207,27 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
                 return updatedCategory
             }
             return updatedSection
+        }
+    }
+    
+    private func toggleLanguage(with id: Int, selected: Bool) {
+        state.languages = state.languages.map { language in
+            var updatedLanguage = language
+            if language.id == id {
+                updatedLanguage.selected = selected
+            }
+            return updatedLanguage
+        }
+    }
+    
+    private func selectedProfileLanguages() -> [SelectableListItemView.Model] {
+        (inputData.profileData.languages ?? []).map { language in
+            .init(
+                id: language.id,
+                title: language.title,
+                selected: true,
+                style: .multySelect
+            )
         }
     }
 }

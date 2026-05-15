@@ -15,6 +15,7 @@ enum ProfileEndPoint {
     )
     case getCategories
     case deleteAccount
+    case getUserById(String)
 }
 
 extension ProfileEndPoint: AppEndPoint {
@@ -25,6 +26,8 @@ extension ProfileEndPoint: AppEndPoint {
             "api/us/v1/users/profile"
         case .updateUserData, .deleteAccount:
             "api/us/v1/users"
+        case .getUserById(let id):
+            "api/us/v1/users/\(id)"
         case .getCategories:
             "api/sd/v1/categories"
         }
@@ -42,7 +45,8 @@ extension ProfileEndPoint: AppEndPoint {
     var method: HTTPMethod {
         switch self {
         case .getUsers,
-                .getCategories:
+                .getCategories,
+                .getUserById:
                 .get
         case .updateUserData:
                 .put

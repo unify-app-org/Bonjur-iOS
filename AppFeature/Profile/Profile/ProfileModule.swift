@@ -10,7 +10,7 @@ import AppPresentationModel
 
 public protocol ProfileModule {
     func makeProfileViewController(
-        userId: String
+        userId: String?
     ) -> AnyObject
 }
 

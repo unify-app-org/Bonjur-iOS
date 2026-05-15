@@ -47,7 +47,7 @@ struct ProfileDetailView: View {
         .onAppear {
             store.send(.fetchData)
         }
-        .navigationTitle("Profile")
+        .navigationTitle(store.state.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible)
         .toolbar {
@@ -84,6 +84,7 @@ struct ProfileDetailView: View {
     private var userCardView: some View {
         if let data = store.state.uiModel?.userCardModel {
             UserCardView(model: data) {
+                guard !store.state.isOtherUser else { return }
                 store.send(.userCardTapped)
             }
         }
@@ -100,10 +101,12 @@ struct ProfileDetailView: View {
                 
                 Spacer()
                 
-                Button {
-                    store.send(.editProfile)
-                } label: {
-                    Image(uiImage: UIImage.Icons.penLine)
+                if !store.state.isOtherUser {
+                    Button {
+                        store.send(.editProfile)
+                    } label: {
+                        Image(uiImage: UIImage.Icons.penLine)
+                    }
                 }
             }
             Text(store.state.uiModel?.about ?? "No information")

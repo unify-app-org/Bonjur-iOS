@@ -33,11 +33,14 @@ protocol DiscoverRepo {
 
 class DiscoverRepoImpl: DiscoverRepo {
     private let dataSource: DiscoverDataSource
+    private let tokenManger: TokenManager
     
     init(
-        dataSource: DiscoverDataSource = resolve()
+        dataSource: DiscoverDataSource = resolve(),
+        tokenManger: TokenManager = resolve()
     ) {
         self.dataSource = dataSource
+        self.tokenManger = tokenManger
     }
     
     func getHangout(
@@ -123,7 +126,10 @@ class DiscoverRepoImpl: DiscoverRepo {
     }
     
     func getUser() async throws(APIError) -> UserModel {
-        let data = try await dataSource.getUser()
+        let userId = await tokenManger.getUserId()
+        let data = try await dataSource.getUser(
+            userId: userId
+        )
         return .init(
             name: data.fullName ?? "-",
             profileImage: data.fileUrl ?? "",

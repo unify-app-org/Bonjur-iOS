@@ -167,11 +167,9 @@ extension AppTabBarHostController: DiscoverModuleDelegate {
         mainNavigationController.pushViewController(clubsViewController, animated: true)
     }
     
-    func openProfile(
-        userId: String
-    ) {
+    func openProfile() {
         let profileViewController = profileModule.makeProfileViewController(
-            userId: userId
+            userId: nil
         ) as! UIViewController
         mainNavigationController.pushViewController(profileViewController, animated: true)
     }

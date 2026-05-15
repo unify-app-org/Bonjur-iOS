@@ -16,7 +16,7 @@ import Clubs
 // MARK: - ProfileDetail input
 
 struct ProfileDetailInputData {
-    let userId: String
+    let userId: String?
 }
 
 // MARK: - Side effects
@@ -42,6 +42,8 @@ final class ProfileDetailViewState: UIFeatureState {
     @Published var events: [EventsModuleModel.CardInputData] = EventsModuleModel.CardInputData.previewMock
     @Published var hangouts: [HangoutsModuleModel.CardInputData] = HangoutsModuleModel.CardInputData.previewMock
     @Published var selectedSegment: SegmentTypes = .clubs
+    @Published var navigationTitle = "Profile"
+    @Published var isOtherUser = false
     
     enum SegmentTypes: String, CaseIterable, Identifiable {
         case clubs = "Clubs"

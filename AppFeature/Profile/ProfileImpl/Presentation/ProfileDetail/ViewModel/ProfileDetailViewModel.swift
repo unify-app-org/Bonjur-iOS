@@ -93,7 +93,10 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
             postEffect(.loading(false))
         }
         do {
-            state.uiModel = try await dependencies.useCase.getProfileData()
+            let data = try await dependencies.useCase.getProfileData(
+                userId: inputData.userId
+            )
+            await handleFetchUser(data)
         } catch {
             postEffect(
                 .error(
@@ -102,6 +105,16 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
                 )
             )
         }
+    }
+    
+    @MainActor
+    private func handleFetchUser(
+        _ data: ProfileDetail.UIModel
+    ) {
+        state.uiModel = data
+        guard let _ = inputData.userId else { return }
+        state.navigationTitle = "About user"
+        state.isOtherUser = true
     }
     
     private func editUser(

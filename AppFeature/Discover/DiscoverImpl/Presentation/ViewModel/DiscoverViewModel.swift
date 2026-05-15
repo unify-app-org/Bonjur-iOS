@@ -69,7 +69,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         case .profileTapped:
             Task {
                 await router.navigate(
-                    to: .profile("")
+                    to: .profile
                 )
             }
         case .viewAllTapped(let activity):

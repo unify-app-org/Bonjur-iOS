@@ -14,7 +14,7 @@ import Hangouts
 import AppPresentationModel
 
 protocol ProfileRepo {
-    func getUsers() async throws(APIError) -> ProfileDetail.UIModel
+    func getUsers(userId: String?) async throws(APIError) -> ProfileDetail.UIModel
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
     func deleteAccount() async throws(APIError) -> Data
     func editProfile(
@@ -29,15 +29,21 @@ protocol ProfileRepo {
 class ProfileRepoImpl: ProfileRepo {
     
     private let dataSource: ProfileDataSource
+    private let tokenManager: TokenManager
     
     init(
-        dataSource: ProfileDataSource = resolve()
+        dataSource: ProfileDataSource = resolve(),
+        tokenManager: TokenManager = resolve()
     ) {
         self.dataSource = dataSource
+        self.tokenManager = tokenManager
     }
     
-    func getUsers() async throws(APIError) -> ProfileDetail.UIModel {
-        let data = try await dataSource.fetchProfile()
+    func getUsers(userId: String?) async throws(APIError) -> ProfileDetail.UIModel {
+        let fallbackId = await tokenManager.getUserId()
+        let data = try await dataSource.fetchProfile(
+            userId: userId ?? fallbackId
+        )
         let userCardModel: UserCardModel = .init(
             backgroundCover: data.background,
             nameSurname: data.username ?? "-",

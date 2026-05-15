@@ -11,7 +11,7 @@ import UIKit
 import AppUIKit
 
 protocol ProfileUseCase {
-    func getProfileData() async throws(APIError) -> ProfileDetail.UIModel
+    func getProfileData(userId: String?) async throws(APIError) -> ProfileDetail.UIModel
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
     func fetchSections(notificationsEnabled: Bool) -> [ProfileSettingsViewState.SettingsSection]
     func editProfile(
@@ -29,8 +29,8 @@ class ProfileUseCaseImpl: ProfileUseCase {
         self.repo = repo
     }
     
-    func getProfileData() async throws(APIError) -> ProfileDetail.UIModel {
-        try await repo.getUsers()
+    func getProfileData(userId: String?) async throws(APIError) -> ProfileDetail.UIModel {
+        try await repo.getUsers(userId: userId)
     }
 
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section] {

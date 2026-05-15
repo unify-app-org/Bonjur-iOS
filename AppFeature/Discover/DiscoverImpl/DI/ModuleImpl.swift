@@ -11,9 +11,7 @@ import AppPresentationModel
 
 protocol DiscoverDelegate {
     func viewAllClubs()
-    func openProfile(
-        userId: String
-    )
+    func openProfile()
     func didUpdateActivityCounts(events: Int, hangouts: Int)
 }
 
@@ -35,12 +33,8 @@ class DiscoverModuleImpl: DiscoverModule, DiscoverDelegate {
         moduleDelegate?.viewAllClubs()
     }
     
-    func openProfile(
-        userId: String
-    ) {
-        moduleDelegate?.openProfile(
-            userId: userId
-        )
+    func openProfile() {
+        moduleDelegate?.openProfile()
     }
     
     func didUpdateActivityCounts(events: Int, hangouts: Int) {

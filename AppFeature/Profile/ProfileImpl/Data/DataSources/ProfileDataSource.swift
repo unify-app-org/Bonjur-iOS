@@ -11,7 +11,7 @@ import AppNetwork
 import UIKit
 
 protocol ProfileDataSource {
-    func fetchProfile() async throws(APIError) -> AppPresentationModel.UserResponse
+    func fetchProfile(userId: String) async throws(APIError) -> AppPresentationModel.UserResponse
     func getCategories() async throws(APIError) -> [ProfileDTOModel.CategoriesResponse]
     func editProfile(
         multiPart: MultipartFormData?,
@@ -25,8 +25,8 @@ protocol ProfileDataSource {
 
 final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataSource {
 
-    func fetchProfile() async throws(APIError) -> AppPresentationModel.UserResponse {
-        try await fetch(endPoint: .getUsers)
+    func fetchProfile(userId: String) async throws(APIError) -> AppPresentationModel.UserResponse {
+        try await fetch(endPoint: .getUserById(userId))
     }
 
     func getCategories() async throws(APIError) -> [ProfileDTOModel.CategoriesResponse] {

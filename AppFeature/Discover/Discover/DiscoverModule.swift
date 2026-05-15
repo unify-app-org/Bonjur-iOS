@@ -14,6 +14,6 @@ public protocol DiscoverModule {
 
 public protocol DiscoverModuleDelegate: AnyObject {
     func viewAllClubs()
-    func openProfile(userId: String)
+    func openProfile()
     func didUpdateActivityCounts(events: Int, hangouts: Int)
 }

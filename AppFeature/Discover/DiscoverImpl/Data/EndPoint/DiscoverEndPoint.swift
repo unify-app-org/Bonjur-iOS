@@ -12,6 +12,7 @@ enum DiscoverEndPoint {
     case getCommunities([String : String])
     case getClubs([String : String])
     case getUser
+    case getUserById(String)
 }
 
 extension DiscoverEndPoint: AppEndPoint {
@@ -26,6 +27,8 @@ extension DiscoverEndPoint: AppEndPoint {
             "api/ds/v1/clubs"
         case .getUser:
             "api/us/v1/users/profile"
+        case .getUserById(let id):
+            "api/us/v1/users/\(id)"
         }
     }
     
@@ -45,7 +48,8 @@ extension DiscoverEndPoint: AppEndPoint {
         case .getHangouts,
                 .getClubs,
                 .getCommunities,
-                .getUser:
+                .getUser,
+                .getUserById:
                 .get
         }
     }

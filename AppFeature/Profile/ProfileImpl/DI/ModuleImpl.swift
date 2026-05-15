@@ -11,7 +11,7 @@ import Profile
 struct ProfileModuleImpl: ProfileModule {
     
     func makeProfileViewController(
-        userId: String
+        userId: String?
     ) -> AnyObject {
         ProfileDetailBuilder(
             inputData: .init(

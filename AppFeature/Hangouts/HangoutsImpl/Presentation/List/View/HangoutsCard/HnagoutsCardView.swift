@@ -93,7 +93,7 @@ struct HangoutsCardView: View {
     private var bottomView: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
-                ForEach(model.tags, id: \.id) { item in
+                ForEach(Array(model.tags.enumerated()), id: \.offset) { _, item in
                     Text("#\(item.title.lowercased())")
                         .lineLimit(1)
                         .font(Font.Typography.TextSm.regular)

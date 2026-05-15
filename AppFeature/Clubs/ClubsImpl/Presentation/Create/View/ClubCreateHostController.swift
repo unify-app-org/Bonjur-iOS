@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AppUIKit
 import AppFoundation
 
 // MARK: - Controller
@@ -18,9 +19,9 @@ final class ClubCreateHostController: UIFeatureController<
         switch effect {
         case .loading(let isLoading):
             if isLoading {
-                
+                AppLoadingUI.show()
             } else {
-                
+                AppLoadingUI.dismiss()
             }
         }
     }

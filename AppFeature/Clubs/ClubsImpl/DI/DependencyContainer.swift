@@ -40,6 +40,7 @@ enum ClubsDependencyContainer {
         registerModule()
         registerHelpers()
         registerDataSource()
+        registerRepo()
         registerUseCase()
     }
     
@@ -52,6 +53,12 @@ enum ClubsDependencyContainer {
     private static func registerDataSource() {
         register(ClubsDataSource.self) {
             ClubsDataSourceImpl()
+        }
+    }
+    
+    private static func registerRepo() {
+        register(ClubRepo.self) {
+            ClubRepoImpl()
         }
     }
     

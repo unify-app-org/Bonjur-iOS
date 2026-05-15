@@ -7,6 +7,7 @@
 
 import Foundation
 import AppUIKit
+import AppPresentationModel
 
 enum ClubsCreate {
     
@@ -19,16 +20,38 @@ enum ClubsCreate {
             self.label = label
         }
     }
+    
+    struct CategoriesResponse: Decodable {
+        let type, title: String?
+        let subCategories: [SubCategoriesResponse]
+    }
+    
+    struct SubCategoriesResponse: Decodable {
+        let id: Int?
+        let title: String?
+    }
 
     struct LinkItem: Identifiable, Equatable {
         let id: UUID
-        var label: String
-        var value: String
+        var type: String
+        var name: String
+        var url: String
+        
+        var label: String { name }
+        var value: String { url }
 
         init(id: UUID = UUID(), value: String, label: String) {
             self.id = id
-            self.value = value
-            self.label = label
+            self.type = ""
+            self.name = label
+            self.url = value
+        }
+        
+        init(id: UUID = UUID(), type: String, name: String, url: String) {
+            self.id = id
+            self.type = type
+            self.name = name
+            self.url = url
         }
     }
     
@@ -45,7 +68,7 @@ enum ClubsCreate {
         case tags([TagItem])
         case links([LinkItem])
         case cover(AppUIEntities.BackgroundType)
-        case radio(RadioType)
+        case radio(AppPresentationModel.AccessType)
     }
 
     // MARK: - Field Schema
@@ -78,7 +101,7 @@ enum ClubsCreate {
 
     struct RadioOption: Identifiable {
         let id = UUID()
-        let value: RadioType
+        let value: AppPresentationModel.AccessType
         let label: String
         let description: String
     }
@@ -101,10 +124,5 @@ enum ClubsCreate {
         case location
         case rules
         case about
-    }
-    
-    enum RadioType: String {
-        case `public`
-        case `private`
     }
 }

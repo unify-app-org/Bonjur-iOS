@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AppUIKit
+import AppPresentationModel
 
 // MARK: - TagItem + Hashable
 
@@ -24,6 +25,23 @@ extension ClubsCreate.TagItem: Hashable {
 struct FieldSchemaRouter: View {
     let field: ClubsCreate.FieldSchema
     @Binding var values: [ClubsCreate.FieldID: ClubsCreate.FieldValue]
+    let selectedCategories: [CategoriesChipsView.Model]
+    let onAddCategory: () -> Void
+    let onRemoveCategory: (Int) -> Void
+    
+    init(
+        field: ClubsCreate.FieldSchema,
+        values: Binding<[ClubsCreate.FieldID: ClubsCreate.FieldValue]>,
+        selectedCategories: [CategoriesChipsView.Model] = [],
+        onAddCategory: @escaping () -> Void = {},
+        onRemoveCategory: @escaping (Int) -> Void = { _ in }
+    ) {
+        self.field = field
+        self._values = values
+        self.selectedCategories = selectedCategories
+        self.onAddCategory = onAddCategory
+        self.onRemoveCategory = onRemoveCategory
+    }
 
     var body: some View {
         switch field.type {
@@ -66,24 +84,28 @@ struct FieldSchemaRouter: View {
             )
 
         case .chipInput(let placeholder):
-            ChipInputField(
-                field: field,
-                placeholder: placeholder,
-                tags: Binding(
-                    get: { values.tags(field.id) },
-                    set: { values[field.id] = .tags($0) }
-                )
+            CategorySelectionField(
+                title: field.label,
+                addTitle: placeholder,
+                categories: selectedCategories,
+                onAdd: onAddCategory,
+                onRemove: onRemoveCategory
             )
+            .padding(.horizontal, 16)
+            .padding(.bottom, 14)
 
         case .linkInput(let placeholder):
-            LinkInputField(
-                field: field,
-                placeholder: placeholder,
+            AppLinksField(
+                title: field.label,
+                addTitle: placeholder,
                 links: Binding(
-                    get: { values.links(field.id) },
-                    set: { values[field.id] = .links($0) }
-                )
+                    get: { values.links(field.id).map(\.appLinkItem) },
+                    set: { values[field.id] = .links($0.map(\.clubLinkItem)) }
+                ),
+                maxCount: 4
             )
+            .padding(.horizontal, 16)
+            .padding(.bottom, 14)
         }
     }
 }
@@ -112,7 +134,7 @@ extension Dictionary where Key == ClubsCreate.FieldID, Value == ClubsCreate.Fiel
         return .primary
     }
 
-    func radio(_ id: ClubsCreate.FieldID) -> ClubsCreate.RadioType {
+    func radio(_ id: ClubsCreate.FieldID) -> AppPresentationModel.AccessType {
         if case .radio(let v) = self[id] { return v }
         return .public
     }
@@ -124,10 +146,34 @@ extension Dictionary where Key == ClubsCreate.FieldID, Value == ClubsCreate.Fiel
                 return !text(field.id).trimmingCharacters(in: .whitespaces).isEmpty
             case .chipInput:
                 return !tags(field.id).isEmpty
+            case .linkInput:
+                return !links(field.id).isEmpty
             default:
                 return true
             }
         }
+    }
+}
+
+private extension ClubsCreate.LinkItem {
+    var appLinkItem: AppLinkItem {
+        AppLinkItem(
+            id: id,
+            type: type,
+            name: name,
+            url: url
+        )
+    }
+}
+
+private extension AppLinkItem {
+    var clubLinkItem: ClubsCreate.LinkItem {
+        ClubsCreate.LinkItem(
+            id: id,
+            type: type,
+            name: name,
+            url: url
+        )
     }
 }
 
@@ -184,8 +230,8 @@ private struct CoverPickerField: View {
 private struct RadioGroupField: View {
     let field: ClubsCreate.FieldSchema
     let options: [ClubsCreate.RadioOption]
-    let selected: ClubsCreate.RadioType
-    let onChange: (ClubsCreate.RadioType) -> Void
+    let selected: AppPresentationModel.AccessType
+    let onChange: (AppPresentationModel.AccessType ) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -267,136 +313,6 @@ private struct TextAreaField: View {
         }
         .padding(.horizontal, 16)
         .padding(.bottom, 14)
-    }
-}
-
-// MARK: - Chip Input Field
-
-private struct ChipInputField: View {
-    let field: ClubsCreate.FieldSchema
-    let placeholder: String
-    @Binding var tags: [ClubsCreate.TagItem]
-
-    @State private var inputText = ""
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            FieldLabel(field: field)
-
-            if !tags.isEmpty {
-                FlowLayout(spacing: 8, items: tags) { (tag: ClubsCreate.TagItem) in
-                    CategoriesChipsView(
-                        model: .init(
-                            id: tag.id,
-                            title: tag.label,
-                            selected: true
-                        )
-                    )
-                    .onTapGesture {
-                        tags = tags.filter { $0.id != tag.id }
-                    }
-                }
-            }
-
-            AppTextField(text: $inputText, placeHolder: placeholder)
-                .onSubmit { addChip() }
-                .overlay(alignment: .trailing) {
-                    Button(action: addChip) {
-                        Image(systemName: "plus")
-                            .font(.system(size: 16, weight: .medium))
-                            .foregroundStyle(Color.Palette.blackMedium)
-                            .padding(.trailing, 20)
-                    }
-                }
-        }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 14)
-    }
-
-    private func addChip() {
-        let trimmed = inputText.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty else { return }
-        let tempId = (tags.map(\.id).min() ?? 0) - 1
-        tags = tags + [ClubsCreate.TagItem(id: tempId, label: trimmed)]
-        inputText = ""
-    }
-}
-
-// MARK: - Link Input Field
-
-private struct LinkInputField: View {
-    let field: ClubsCreate.FieldSchema
-    let placeholder: String
-    @Binding var links: [ClubsCreate.LinkItem]
-
-    @State private var inputText = ""
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            FieldLabel(field: field)
-            
-            ForEach($links, id: \.id) { $link in
-                HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        if !link.label.isEmpty {
-                            Text(link.label)
-                                .font(Font.Typography.BodyTextSm.regular)
-                                .foregroundStyle(Color.Palette.blackMedium)
-                        }
-                        Text(link.value)
-                            .font(Font.Typography.BodyTextMd.regular)
-                            .foregroundStyle(Color.Palette.blackHigh)
-                            .lineLimit(1)
-                    }
-
-                    Spacer()
-
-                    Button {
-                        removeLink(id: link.id)
-                    } label: {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 12, weight: .bold))
-                            .foregroundStyle(Color.Palette.cardBgRed)
-                            .padding(8)
-                            .background(Color.Palette.cardBgRed.opacity(0.08))
-                            .clipShape(Circle())
-                    }
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 14)
-                .background(Color.Palette.grayQuaternary)
-                .clipShape(Capsule())
-            }
-
-            AppTextField(
-                text: $inputText,
-                placeHolder: placeholder
-            )
-            .onSubmit { addLink() }
-            .overlay(alignment: .trailing) {
-                Button(action: addLink) {
-                    Image(systemName: "plus")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundStyle(Color.Palette.blackMedium)
-                        .padding(.trailing, 20)
-                }
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 14)
-    }
-
-    private func addLink() {
-        let trimmed = inputText.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty else { return }
-        var updated = links
-        updated.append(ClubsCreate.LinkItem(id: UUID(), value: trimmed, label: ""))
-        links = updated
-        inputText = ""
-    }
-
-    private func removeLink(id: UUID) {
-        links = links.filter { $0.id != id }
     }
 }
 

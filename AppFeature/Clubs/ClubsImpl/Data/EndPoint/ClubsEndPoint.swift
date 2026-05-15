@@ -8,22 +8,45 @@
 import AppNetwork
 
 enum ClubsEndPoint {
-    case test
+    case createClub(MultipartFormData)
+    case getCategories
 }
 
 extension ClubsEndPoint: AppEndPoint {
     
     var path: String {
         switch self {
-        case .test:
-            "test/test"
+        case .createClub:
+            "api/cs/v1/clubs"
+        case .getCategories:
+            "api/sd/v1/categories"
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .test:
+        case .createClub:
                 .post
+        case .getCategories:
+                .get
+        }
+    }
+    
+    var multipartFormData: MultipartFormData? {
+        switch self {
+        case .createClub(let multiPart):
+            multiPart
+        default:
+            nil
+        }
+    }
+    
+    var contentType: ContentType {
+        switch self {
+        case .createClub:
+                .formData
+        default:
+                .json
         }
     }
 }

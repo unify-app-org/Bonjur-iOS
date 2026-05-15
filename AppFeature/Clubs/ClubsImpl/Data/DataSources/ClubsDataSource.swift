@@ -10,9 +10,15 @@ import AppNetwork
 
 protocol ClubsDataSource {
     func fetchCreate() async throws(APIError) -> [ClubsCreate.FieldSchema]
+    func getCategories() async throws(APIError) -> [ClubsCreate.CategoriesResponse]
+    func createClub(request: MultipartFormData) async throws(APIError) -> Data
 }
 
 final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource {
+    
+    func getCategories() async throws(APIError) -> [ClubsCreate.CategoriesResponse] {
+        try await fetch(endPoint: .getCategories)
+    }
     
     func fetchCreate() async throws(APIError) -> [ClubsCreate.FieldSchema] {
         [
@@ -64,15 +70,15 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
                 type: .chipInput(placeholder: "Add category")
             ),
             ClubsCreate.FieldSchema(
-                id: .capacity,
-                label: "Capasity",
-                type: .text(placeholder: "200"),
-                required: false
-            ),
-            ClubsCreate.FieldSchema(
                 id: .links,
                 label: "Add link",
                 type: .linkInput(placeholder: "Add link"),
+                required: false
+            ),
+            ClubsCreate.FieldSchema(
+                id: .capacity,
+                label: "Capasity",
+                type: .text(placeholder: "200"),
                 required: false
             ),
             ClubsCreate.FieldSchema(
@@ -91,5 +97,9 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
                 type: .textArea(placeholder: "I want to have a coffee and then go...", maxLength: 100)
             )
         ]
+    }
+    
+    func createClub(request: MultipartFormData) async throws(APIError) -> Data {
+        try await fetchRawData(endPoint: .createClub(request))
     }
 }

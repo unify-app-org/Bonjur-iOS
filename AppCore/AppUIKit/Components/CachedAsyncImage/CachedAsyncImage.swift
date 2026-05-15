@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppUtils
 
 public struct CachedAsyncImage<Content: View, Placeholder: View>: View {
     let url: URL?
@@ -35,7 +36,7 @@ public struct CachedAsyncImage<Content: View, Placeholder: View>: View {
             }
         }
         .task(id: url) {
-            await load(url)
+            await load(resolvedURL(from: url))
         }
     }
 
@@ -51,8 +52,14 @@ public struct CachedAsyncImage<Content: View, Placeholder: View>: View {
 
         isLoading = true
 
-        if let cached = ImageCache.shared.object(forKey: url as NSURL) {
+        let cacheKey = url as NSURL
+        if let cached = ImageCache.shared.object(forKey: cacheKey) {
             image = cached
+            isLoading = false
+            return
+        }
+        
+        if ImageCache.hasRecentFailure(forKey: cacheKey) {
             isLoading = false
             return
         }
@@ -64,7 +71,8 @@ public struct CachedAsyncImage<Content: View, Placeholder: View>: View {
             }
 
             if let uiImage = UIImage(data: data) {
-                ImageCache.shared.setObject(uiImage, forKey: url as NSURL)
+                ImageCache.shared.setObject(uiImage, forKey: cacheKey)
+                ImageCache.clearFailure(forKey: cacheKey)
                 image = uiImage
             }
             
@@ -74,7 +82,24 @@ public struct CachedAsyncImage<Content: View, Placeholder: View>: View {
                 return
             }
 
+            ImageCache.markFailure(forKey: cacheKey)
             isLoading = false
         }
+    }
+    
+    private func resolvedURL(from url: URL?) -> URL? {
+        guard
+            let url,
+            url.host == "minio",
+            var components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+            let baseURLComponents = URLComponents(string: AppSecrets.baseURL),
+            let baseHost = baseURLComponents.host
+        else {
+            return url
+        }
+        
+        components.host = baseHost
+        components.scheme = components.scheme ?? baseURLComponents.scheme
+        return components.url ?? url
     }
 }

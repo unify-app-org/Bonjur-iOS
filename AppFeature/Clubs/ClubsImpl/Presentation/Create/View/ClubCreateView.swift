@@ -8,29 +8,75 @@
 import SwiftUI
 import AppFoundation
 import AppUIKit
+import PhotosUI
 
 struct ClubCreateView: View {
     @ObservedObject var store: StoreOf<ClubCreateFeature>
     
     @State private var isScrolled = false
     @State private var baseHeight: CGFloat = 164
-    @State private var navBarHeight: CGFloat = 0
+    @State private var selectedLogo: PhotosPickerItem?
+    @State private var selectedBgPhoto: PhotosPickerItem?
     
     var body: some View {
         GeometryReader { proxy in
-            ZStack(alignment: .top) {
-                mainScrollView(proxy)
-                navigationOverlay(safeAreaTop: proxy.safeAreaInsets.top)
-            }
-            .ignoresSafeArea()
-            .toolbar(.hidden)
-            .enableSwipeBack()
-            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { newValue in
-                baseHeight = newValue / 4.5
+            mainScrollView(proxy)
+                .ignoresSafeArea(edges: .top)
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { newValue in
+                    baseHeight = newValue / 4
+                }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar(.visible)
+        .toolbarBackground(isScrolled ? .automatic : .hidden, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Image(uiImage: UIImage.Icons.arrowLeft01)
+                    .toolbarItemBackground(
+                        isScrolled: isScrolled
+                    ) {
+                        store.send(.backTapped)
+                    }
             }
         }
         .onAppear {
             store.send(.fetchData)
+        }
+        .onChange(of: selectedLogo) { newItem in
+            Task {
+                if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                    store.state.selectedLogo = data
+                }
+            }
+        }
+        .onChange(of: selectedBgPhoto) { newItem in
+            Task {
+                if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                    store.state.backgroundPhoto = data
+                }
+            }
+        }
+        .dismissKeyboardOnTap()
+        .sheet(
+            isPresented: Binding(
+                get: { store.state.showCategoryPicker },
+                set: { isPresented in
+                    if !isPresented {
+                        store.send(.dismissCategoryPicker)
+                    }
+                }
+            )
+        ) {
+            SelectCategoryView(
+                sections: $store.state.categorySections,
+                onBack: {
+                    store.send(.dismissCategoryPicker)
+                },
+                onDone: {
+                    store.send(.categoryPickerDone)
+                }
+            )
         }
     }
     
@@ -53,51 +99,12 @@ struct ClubCreateView: View {
                     contentSize: .fill
                 )
             ) {
-                
+                store.send(.continueTapped)
             }
             .disabled(!store.state.isValid)
-            .padding(.bottom, proxy.safeAreaInsets.bottom)
+            .padding(.bottom, min(proxy.safeAreaInsets.bottom, 34))
             .padding(.horizontal)
         }
-    }
-    
-    private func navigationOverlay(safeAreaTop: CGFloat) -> some View {
-        VStack(spacing: 0) {
-            customNavigationBar(safeAreaTop: safeAreaTop)
-                .background(isScrolled ? Color.white : Color.clear)
-                .clipShape(RoundedRectangle(cornerRadius: .zero))
-                .shadow(
-                    color: isScrolled ? Color.black.opacity(0.1) : Color.clear,
-                    radius: isScrolled ? 4 : 0,
-                    x: 0,
-                    y: isScrolled ? 2 : 0
-                )
-        }
-        .animation(.easeInOut(duration: 0.2), value: isScrolled)
-    }
-    
-    // MARK: - Navigation Bar
-    
-    private func customNavigationBar(safeAreaTop: CGFloat) -> some View {
-        HStack {
-            Button { store.send(.backTapped) } label: {
-                navigationBarButton(uiImage: UIImage.Icons.arrowLeft01)
-            }
-            Spacer()
-        }
-        .padding(.horizontal, 16)
-        .padding(.top, safeAreaTop - 5)
-        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { newValue in
-            navBarHeight = newValue - 20
-        }
-    }
-    
-    private func navigationBarButton(uiImage: UIImage) -> some View {
-        Image(uiImage: uiImage)
-            .padding(10)
-            .background(isScrolled ? Color.Palette.grayQuaternary : Color.Palette.whiteMedium)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .padding(.bottom, 16)
     }
     
     // MARK: - Header
@@ -124,9 +131,18 @@ struct ClubCreateView: View {
     }
     
     private var headerContent: some View {
-        CardBackgroundView(cardType: .club) {}
+        PhotosPicker(selection: $selectedBgPhoto, matching: .images) {
+            CardBackgroundView(cardType: .club) {
+                if let selectedLogo = store.state.backgroundPhoto,
+                   let image = UIImage(data: selectedLogo) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                }
+            }
             .backgroundType(store.state.values.cover(.cover))
             .cornerRadius(.zero)
+        }
     }
     
     // MARK: - Logo
@@ -134,10 +150,10 @@ struct ClubCreateView: View {
     private var logoView: some View {
         HStack(alignment: .lastTextBaseline) {
             clubLogo
-                .onTapGesture {
-                    // picker
-                }
             Spacer()
+            cameraButton
+                .padding(.bottom, 60)
+                .padding(.trailing)
         }
         .padding(.top, -44)
         .padding(.bottom, 16)
@@ -145,48 +161,48 @@ struct ClubCreateView: View {
     
     @ViewBuilder
     private var clubLogo: some View {
-        ZStack {
-            if let selectedLogo = store.state.selectedLogo,
-                let image = UIImage(data: selectedLogo) {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-            } else {
-                Image(uiImage: UIImage.Icons.user)
-                    .resizable()
-                    .renderingMode(.template)
-                    .scaledToFit()
-                    .foregroundStyle(Color.Palette.blackMedium)
-                    .padding(22)
-                    .background(Color.Palette.grayQuaternary)
+        PhotosPicker(selection: $selectedLogo, matching: .images) {
+            ZStack {
+                if let selectedLogo = store.state.selectedLogo,
+                   let image = UIImage(data: selectedLogo) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                } else {
+                    Image(uiImage: UIImage.Icons.user)
+                        .resizable()
+                        .renderingMode(.template)
+                        .scaledToFit()
+                        .foregroundStyle(Color.Palette.blackMedium)
+                        .padding(22)
+                        .background(Color.Palette.grayQuaternary)
+                }
             }
-        }
-        .frame(width: 88, height: 88)
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(Color.Palette.grayTeritary.opacity(0.3), lineWidth: 3)
-        )
-        .padding(.horizontal, 16)
-        .overlay(alignment: .bottomTrailing) {
-            cameraButton
+            .frame(width: 88, height: 88)
+            .clipShape(RoundedRectangle(cornerRadius: 20))
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.Palette.grayTeritary.opacity(0.3), lineWidth: 3)
+            )
+            .padding(.horizontal, 16)
+            .overlay(alignment: .bottomTrailing) {
+                cameraButton
+            }
         }
     }
     
     private var cameraButton: some View {
-        Button {} label: {
-            Image(uiImage: UIImage.Icons.camera)
-                .resizable()
-                .renderingMode(.template)
-                .frame(width: 18, height: 18)
-                .foregroundStyle(Color.Palette.blackMedium)
-                .padding(7)
-                .background(Color.Palette.grayQuaternary)
-                .clipShape(Circle())
-                .overlay(
-                    Circle().stroke(Color.Palette.whiteHigh, lineWidth: 2)
-                )
-        }
+        Image(uiImage: UIImage.Icons.camera)
+            .resizable()
+            .renderingMode(.template)
+            .frame(width: 18, height: 18)
+            .foregroundStyle(Color.Palette.blackMedium)
+            .padding(7)
+            .background(Color.Palette.grayQuaternary)
+            .clipShape(Circle())
+            .overlay(
+                Circle().stroke(Color.Palette.whiteHigh, lineWidth: 2)
+            )
     }
     
     // MARK: - Bottom Content
@@ -206,7 +222,14 @@ struct ClubCreateView: View {
                     values: Binding(
                         get: { store.state.values },
                         set: { store.state.values = $0 }
-                    )
+                    ),
+                    selectedCategories: store.state.selectedCategories,
+                    onAddCategory: {
+                        store.send(.addCategoryTapped)
+                    },
+                    onRemoveCategory: { id in
+                        store.send(.removeCategory(id))
+                    }
                 )
             }
         }

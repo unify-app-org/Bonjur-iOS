@@ -50,6 +50,12 @@ public struct MultipartFormData {
         }
     }
     
+    public mutating func addJSONField(name: String, encodable: Encodable) {
+        guard let data = try? JSONEncoder().encode(encodable),
+              let jsonString = String(data: data, encoding: .utf8) else { return }
+        addField(name: name, value: jsonString)
+    }
+    
     // MARK: - Build body
     
     public func encode() -> Data {

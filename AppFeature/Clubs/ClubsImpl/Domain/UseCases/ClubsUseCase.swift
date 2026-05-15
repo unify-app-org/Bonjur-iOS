@@ -12,14 +12,16 @@ protocol ClubsUseCase {
     func fetchClubsData() async throws(APIError) -> [ClubCardView.Model]
     func fetchClubDetails(clubId: Int) async throws(APIError) -> ClubsDetailsModel.UIModel
     func fetchCreateFields() async throws(APIError) -> [ClubsCreate.FieldSchema]
+    func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
+    func createClub(request: MultipartFormData) async throws(APIError) -> Void
 }
 
 class ClubsUseCaseImpl: ClubsUseCase {
     
-    private let dataSource: ClubsDataSource
+    private let repo: ClubRepo
     
-    init(dataSource: ClubsDataSource = resolve()) {
-        self.dataSource = dataSource
+    init(repo: ClubRepo = resolve()) {
+        self.repo = repo
     }
 
     func fetchClubsData() async throws(APIError) -> [ClubCardView.Model] {
@@ -33,6 +35,14 @@ class ClubsUseCaseImpl: ClubsUseCase {
     }
     
     func fetchCreateFields() async throws(APIError) -> [ClubsCreate.FieldSchema] {
-        try await dataSource.fetchCreate()
+        try await repo.fetchCreate()
+    }
+    
+    func getCategories() async throws(APIError) -> [SelectCategoryView.Section] {
+        try await repo.getCategories()
+    }
+    
+    func createClub(request: MultipartFormData) async throws(APIError) {
+        try await repo.createClub(request: request)
     }
 }

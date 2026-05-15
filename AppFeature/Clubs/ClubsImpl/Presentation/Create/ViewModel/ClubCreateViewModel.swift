@@ -6,6 +6,8 @@
 //
 
 import AppFoundation
+import AppNetwork
+import AppPresentationModel
 
 final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
     
@@ -32,15 +34,33 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
     override func handle(action: ClubCreateFeature.Action) {
         switch action {
         case .backTapped:
-            break
+            Task {
+                await router.navigate(to: .backTapped)
+            }
         case .fetchData:
             fetchData()
+        case .addCategoryTapped:
+            state.showCategoryPicker = true
+        case .removeCategory(let id):
+            toggleCategory(with: id, selected: false)
+            syncSelectedCategories()
+        case .dismissCategoryPicker:
+            syncSelectedCategories()
+            state.showCategoryPicker = false
+        case .categoryPickerDone:
+            syncSelectedCategories()
+            state.showCategoryPicker = false
+        case .continueTapped:
+            Task {
+                await createClub()
+            }
         }
     }
     
     private func fetchData() {
         Task {
             await fetchCreate()
+            await fetchCategories()
         }
     }
     
@@ -51,5 +71,96 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
         } catch { }
     }
     
+    private func fetchCategories() async {
+        do {
+            state.categorySections = try await dependencies.useCase.getCategories()
+        } catch {
+            state.categorySections = []
+        }
+    }
     
+    private func toggleCategory(with id: Int, selected: Bool) {
+        state.categorySections = state.categorySections.map { section in
+            var updatedSection = section
+            updatedSection.categories = section.categories.map { category in
+                var updatedCategory = category
+                if category.id == id {
+                    updatedCategory.selected = selected
+                }
+                return updatedCategory
+            }
+            return updatedSection
+        }
+    }
+    
+    private func syncSelectedCategories() {
+        state.values[.category] = .tags(
+            state.selectedCategories.map {
+                ClubsCreate.TagItem(id: $0.id, label: $0.title)
+            }
+        )
+    }
+    
+    private func createClub() async {
+        postEffect(.loading(true))
+        defer {
+            postEffect(.loading(false))
+        }
+        do {
+            try await dependencies.useCase.createClub(request: buildRequest())
+        } catch {
+            
+        }
+    }
+    
+    private func buildRequest() -> MultipartFormData {
+        var multiPartData = MultipartFormData()
+        let name = state.values.text(.clubName)
+        let ownerContact = state.values.text(.ownerContact)
+        let about = state.values.text(.about)
+        let visibility = state.values.radio(.visibility)
+        let location = state.values.text(.location)
+        let links: [ClubDTOModel.Link] = state.values.links(.links).map { item in
+                .init(type: item.type, name: item.name, url: item.url)
+        }
+        let bgColor = state.values.cover(.cover)
+        let capacity = Int(state.values.text(.capacity))
+        let categoryIds = state.values.tags(.category).map { $0.id }
+        let rules = state.values.text(.rules)
+
+        let request = ClubDTOModel.CreateRequest(
+            communityId: 1,
+            name: name,
+            ownerContact: ownerContact,
+            about: about,
+            visibility: visibility,
+            location: location,
+            links: links,
+            backgroundColour: bgColor,
+            capacity: capacity,
+            categoryIds: categoryIds,
+            rule: rules
+        )
+        multiPartData.addJSONField(
+            name: "request",
+            encodable: request
+        )
+        if let logo = state.selectedLogo {
+            multiPartData.addFile(
+                name: "clubProfile",
+                fileName: "clubProfile.jpg",
+                mimeType: "image/jpeg",
+                data: logo
+            )
+        }
+        if let bgPhoto = state.backgroundPhoto {
+            multiPartData.addFile(
+                name: "backgroundPhoto",
+                fileName: "backgroundPhoto.jpg",
+                mimeType: "image/jpeg",
+                data: bgPhoto
+            )
+        }
+        return multiPartData
+    }
 }

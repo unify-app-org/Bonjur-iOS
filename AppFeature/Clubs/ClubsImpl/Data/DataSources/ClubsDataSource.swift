@@ -12,6 +12,8 @@ protocol ClubsDataSource {
     func fetchCreate() async throws(APIError) -> [ClubsCreate.FieldSchema]
     func getCategories() async throws(APIError) -> [ClubsCreate.CategoriesResponse]
     func createClub(request: MultipartFormData) async throws(APIError) -> Data
+    func fetchClubById(id: Int) async throws(APIError) -> ClubDTOModel.Response
+    func fetchClubMemberById(id: Int) async throws(APIError) -> ClubDTOModel.MemberResponse
 }
 
 final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource {
@@ -101,5 +103,13 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
     
     func createClub(request: MultipartFormData) async throws(APIError) -> Data {
         try await fetchRawData(endPoint: .createClub(request))
+    }
+    
+    func fetchClubById(id: Int) async throws(APIError) -> ClubDTOModel.Response {
+        try await fetch(endPoint: .getClubById(id))
+    }
+    
+    func fetchClubMemberById(id: Int) async throws(APIError) -> ClubDTOModel.MemberResponse {
+        try await fetch(endPoint: .getMembersByClubId(id))
     }
 }

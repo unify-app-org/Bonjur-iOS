@@ -7,9 +7,11 @@
 
 import UIKit
 import Clubs
+import Profile
 
 enum CommunityDetailRoute {
     case clubsDetails(id: Int)
+    case userDetails(id: String)
     case back
 }
 
@@ -21,13 +23,18 @@ protocol CommunityDetailRouterProtocol {
 final class CommunityDetailRouter: CommunityDetailRouterProtocol {
     weak var view: UIViewController?
     private var clubModule: ClubsModule
+    private var profileModule: ProfileModule
+    
     init(
         view: UIViewController? = nil,
-        clubModule: ClubsModule = resolve()
+        clubModule: ClubsModule = resolve(),
+        profileModule: ProfileModule = resolve()
     ) {
         self.view = view
         self.clubModule = clubModule
+        self.profileModule = profileModule
     }
+    
     @MainActor
     func navigate(to route: CommunityDetailRoute) {
         switch route {
@@ -36,6 +43,9 @@ final class CommunityDetailRouter: CommunityDetailRouterProtocol {
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .back:
             self.view?.navigationController?.popViewController(animated: true)
+        case .userDetails(let id):
+            let vc = profileModule.makeProfileViewController(userId: id) as! UIViewController
+            view?.navigationController?.pushViewController(vc, animated: true)
         }
     }
 }

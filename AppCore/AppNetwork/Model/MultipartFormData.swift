@@ -25,8 +25,19 @@ public struct MultipartFormData {
     
     // MARK: - Mutating helpers
     
-    public mutating func addField(name: String, value: String) {
-        fields.append(FormField(name: name, value: value))
+    public mutating func addField(
+        name: String,
+        value: String,
+        contentType: String? = nil
+    ) {
+        guard let data = value.data(using: .utf8) else { return }
+        fields.append(
+            FormField(
+                name: name,
+                data: data,
+                contentType: contentType
+            )
+        )
     }
     
     public mutating func addFile(
@@ -39,21 +50,15 @@ public struct MultipartFormData {
     }
     
     /// Encodes an `Encodable` body as a JSON dictionary and appends each
-    /// top-level key/value pair as a text form field.
-    public mutating func mergeEncodableFields(_ encodable: Encodable) {
-        guard let data = try? JSONEncoder().encode(encodable),
-              let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-            return
-        }
-        for (key, value) in dict {
-            addField(name: key, value: "\(value)")
-        }
-    }
-    
     public mutating func addJSONField(name: String, encodable: Encodable) {
-        guard let data = try? JSONEncoder().encode(encodable),
-              let jsonString = String(data: data, encoding: .utf8) else { return }
-        addField(name: name, value: jsonString)
+        guard let data = try? JSONEncoder().encode(encodable) else { return }
+        fields.append(
+            FormField(
+                name: name,
+                data: data,
+                contentType: "application/json; charset=utf-8"
+            )
+        )
     }
     
     // MARK: - Build body
@@ -64,8 +69,13 @@ public struct MultipartFormData {
         
         for field in fields {
             body.append("--\(boundary)\(crlf)")
-            body.append("Content-Disposition: form-data; name=\"\(field.name)\"\(crlf)\(crlf)")
-            body.append("\(field.value)\(crlf)")
+            body.append("Content-Disposition: form-data; name=\"\(field.name)\"\(crlf)")
+            if let contentType = field.contentType {
+                body.append("Content-Type: \(contentType)\(crlf)")
+            }
+            body.append(crlf)
+            body.append(field.data)
+            body.append(crlf)
         }
         
         for file in files {
@@ -85,11 +95,17 @@ public struct MultipartFormData {
 
 public struct FormField {
     public let name: String
-    public let value: String
+    public let data: Data
+    public let contentType: String?
     
-    public init(name: String, value: String) {
+    public init(
+        name: String,
+        data: Data,
+        contentType: String? = nil
+    ) {
         self.name = name
-        self.value = value
+        self.data = data
+        self.contentType = contentType
     }
 }
 

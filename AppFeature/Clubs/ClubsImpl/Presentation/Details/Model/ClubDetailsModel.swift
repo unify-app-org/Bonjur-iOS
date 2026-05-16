@@ -9,6 +9,8 @@ import AppFoundation
 import SwiftUI
 import Events
 import AppUIKit
+import Communities
+import AppNetwork
 
 // MARK: - ClubDetails input
 
@@ -20,6 +22,7 @@ struct ClubDetailsInputData {
 
 enum ClubDetailsSideEffect: UISideEffect {
     case loading(Bool)
+    case error(APIError?)
 }
 
 // MARK: - Feature Definition
@@ -35,6 +38,8 @@ typealias ClubDetailsFeature = UIFeatureDefinition<
 final class ClubDetailsViewState: UIFeatureState {
     
     @Published var uiModel: ClubsDetailsModel.UIModel?
+    @Published var members: CommunitiesMemberModuleModel.GroupedMembersData?
+    @Published var eventsData: [EventsModuleModel.CardInputData] = []
     @Published var selectedSegment: SegmentTypes = .about
     
     enum SegmentTypes: String, CaseIterable, Identifiable {
@@ -51,6 +56,7 @@ final class ClubDetailsViewState: UIFeatureState {
 enum ClubDetailsAction: UIFeatureAction {
     case fetchData
     case backTapped
+    case userTapped(String)
 }
 
 // MARK: - PreferenceKey

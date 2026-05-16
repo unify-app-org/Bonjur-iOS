@@ -7,12 +7,14 @@
 
 import AppFoundation
 import AppNetwork
+import AppStorage
 import AppPresentationModel
 
 final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
     
     struct Dependencies {
         let useCase: ClubsUseCase
+        let userDefaults: UserDefaultsProtocol
     }
     
     private let router: ClubCreateRouterProtocol
@@ -127,9 +129,10 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
         let capacity = Int(state.values.text(.capacity))
         let categoryIds = state.values.tags(.category).map { $0.id }
         let rules = state.values.text(.rules)
-
+        let communityId = dependencies.userDefaults.integer(forKey: .communityId)
+        
         let request = ClubDTOModel.CreateRequest(
-            communityId: 1,
+            communityId: communityId,
             name: name,
             ownerContact: ownerContact,
             about: about,
@@ -141,10 +144,7 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
             categoryIds: categoryIds,
             rule: rules
         )
-        multiPartData.addJSONField(
-            name: "request",
-            encodable: request
-        )
+        multiPartData.addJSONField(name: "request", encodable: request)
         if let logo = state.selectedLogo {
             multiPartData.addFile(
                 name: "clubProfile",

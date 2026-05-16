@@ -1,70 +1,43 @@
 //
-//  ClubRepo.swift
+//  CommunityRepo.swift
 //  AppFeature
 //
-//  Created by Huseyn Hasanov on 15.05.26.
+//  Created by Huseyn Hasanov on 16.05.26.
 //
 
 import Foundation
+import Clubs
+import AppPresentationModel
 import AppNetwork
 import AppUIKit
 import Communities
 
-protocol ClubRepo {
-    func fetchCreate() async throws(APIError) -> [ClubsCreate.FieldSchema]
-    func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
-    func createClub(request: MultipartFormData) async throws(APIError) -> Void
-    func fetchClubDetails(
-        clubId: Int
-    ) async throws(APIError) -> ClubsDetailsModel.UIModel
-    func fetchClubMemberById(id: Int) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
+protocol CommunityRepo {
+    func fetchClubById(
+        id: Int
+    ) async throws(APIError) -> CommunityDetails.UIModel
+    func fetchClubMemberById(
+        id: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
 }
 
-class ClubRepoImpl: ClubRepo {
-    
-    private let dataSource: ClubsDataSource
+class CommunityRepoImpl: CommunityRepo {
+    private let dataSource: CommunityDataSource
     
     init(
-        dataSource: ClubsDataSource = resolve()
+        dataSource: CommunityDataSource = resolve()
     ) {
         self.dataSource = dataSource
     }
     
-    func fetchCreate() async throws(APIError) -> [ClubsCreate.FieldSchema] {
-        try await dataSource.fetchCreate()
-    }
-    
-    func getCategories() async throws(APIError) -> [SelectCategoryView.Section] {
-        let data = try await dataSource.getCategories()
-        return data.map { item in
-            let categories: [CategoriesChipsView.Model] = item.subCategories.map { subCategory in
-                .init(
-                    id: subCategory.id ?? 0,
-                    title: subCategory.title ?? "",
-                    selected: false
-                )
-            }
-            
-            return .init(
-                type: item.type ?? "",
-                title: item.title ?? "",
-                categories: categories
-            )
-        }
-    }
-    
-    func createClub(
-        request: MultipartFormData
-    ) async throws(APIError) -> Void {
-        let _ = try await dataSource.createClub(request: request)
-    }
-    
-    func fetchClubDetails(clubId: Int) async throws(APIError) -> ClubsDetailsModel.UIModel {
-        let data = try await dataSource.fetchClubById(id: clubId)
+    func fetchClubById(
+        id: Int
+    ) async throws(APIError) -> CommunityDetails.UIModel {
+        let data = try await dataSource.fetchClubById(id: id)
         let tags: [AppUIEntities.Tags] = data.categories.map { category in
                 .init(id: category.id, type: "", title: category.title)
         }
-        var info: [ClubsDetailsModel.Info] = []
+        var info: [CommunityDetails.Info] = []
         info.append(
             .init(
                 title: "About",
@@ -87,7 +60,7 @@ class ClubRepoImpl: ClubRepo {
             )
         )
         if let links = data.links, !links.isEmpty {
-            let subItem: [ClubsDetailsModel.SubInfo] = links.map { link in
+            let subItem: [CommunityDetails.SubInfo] = links.map { link in
                     .init(title: link.name, description: link.url, isLink: true)
             }
             info.append(
@@ -97,21 +70,18 @@ class ClubRepoImpl: ClubRepo {
                 )
             )
         }
-        let uiModel: ClubsDetailsModel.UIModel = .init(
+        let uiModel: CommunityDetails.UIModel = .init(
             name: data.name,
-            communityName: data.communityName,
-            membersCount: 0,
-            logo: URL(string: "-"),
-            coverImage: URL(string: "-"),
+            membersCount: data.capacity ?? 0,
+            logo: URL(string: ""),
+            coverImage: URL(string: ""),
             coverColorType: .primary,
-            userActivityType: .member,
-            accessType: data.visibility,
             tags: tags,
             infoData: info
         )
         return uiModel
     }
-    
+
     func fetchClubMemberById(
         id: Int
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
@@ -125,6 +95,7 @@ class ClubRepoImpl: ClubRepo {
                 role: member.role
             )
         }
+
         return .init(users: users)
     }
 }

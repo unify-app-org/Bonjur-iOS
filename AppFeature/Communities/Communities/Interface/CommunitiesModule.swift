@@ -107,9 +107,9 @@ public protocol CommunitiesModule {
     ) -> AnyObject
 
     
-    /// Builds a lightweight members list view for club member sections.
+    /// Builds a lightweight members list view for role-grouped member sections.
     ///
-    /// Use this when you only need grouped owner, president, and member rows backed by the shared
+    /// Use this when you need role-based member rows backed by the shared
     /// `MemberListView`, while keeping row and options handling in the caller.
     ///
     /// - Parameter input: Member content and callbacks for row taps and options taps.

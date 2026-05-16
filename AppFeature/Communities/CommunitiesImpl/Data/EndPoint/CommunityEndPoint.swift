@@ -8,22 +8,26 @@
 import AppNetwork
 
 enum CommunityEndPoint {
-    case test
+    case getClubById(Int)
+    case getMembersByClubId(Int)
 }
 
 extension CommunityEndPoint: AppEndPoint {
     
     var path: String {
         switch self {
-        case .test:
-            "test/test"
+        case .getClubById(let id):
+            "api/cs/v1/clubs/\(id)"
+        case .getMembersByClubId(let id):
+            "api/cs/v1/clubs/\(id)/members"
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .test:
-                .post
+        case .getClubById,
+                .getMembersByClubId:
+                .get
         }
     }
 }

@@ -10,6 +10,8 @@ import AppNetwork
 enum ClubsEndPoint {
     case createClub(MultipartFormData)
     case getCategories
+    case getClubById(Int)
+    case getMembersByClubId(Int)
 }
 
 extension ClubsEndPoint: AppEndPoint {
@@ -20,6 +22,10 @@ extension ClubsEndPoint: AppEndPoint {
             "api/cs/v1/clubs"
         case .getCategories:
             "api/sd/v1/categories"
+        case .getClubById(let id):
+            "api/cs/v1/clubs/\(id)"
+        case .getMembersByClubId(let id):
+            "api/cs/v1/clubs/\(id)/members"
         }
     }
     
@@ -27,7 +33,9 @@ extension ClubsEndPoint: AppEndPoint {
         switch self {
         case .createClub:
                 .post
-        case .getCategories:
+        case .getCategories,
+                .getClubById,
+                .getMembersByClubId:
                 .get
         }
     }

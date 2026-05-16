@@ -15,8 +15,31 @@ public struct NetworkError: Decodable, LocalizedError {
     let error: String?
     let errors: [String: [String]]?
     
+    enum CodingKeys: String, CodingKey {
+        case status
+        case message
+        case detail
+        case path
+        case error
+        case errors
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let statusCode = try? container.decodeIfPresent(Int.self, forKey: .status) {
+            status = String(statusCode)
+        } else {
+            status = try container.decodeIfPresent(String.self, forKey: .status)
+        }
+        message = try container.decodeIfPresent(String.self, forKey: .message)
+        detail = try container.decodeIfPresent(String.self, forKey: .detail)
+        path = try container.decodeIfPresent(String.self, forKey: .path)
+        error = try container.decodeIfPresent(String.self, forKey: .error)
+        errors = try? container.decodeIfPresent([String: [String]].self, forKey: .errors)
+    }
+    
     public var errorDescription: String? {
-        return message
+        return message ?? detail ?? error
     }
     
     public var failureReason: String? {

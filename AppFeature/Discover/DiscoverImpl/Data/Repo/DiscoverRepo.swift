@@ -133,7 +133,7 @@ class DiscoverRepoImpl: DiscoverRepo {
         return .init(
             name: data.fullName ?? "-",
             profileImage: data.fileUrl ?? "",
-            greeting: "Hello and Welcome!"
+            greeting: data.greeting ?? ""
         )
     }
 }

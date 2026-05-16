@@ -9,6 +9,7 @@ import SwiftUI
 import AppFoundation
 import Clubs
 import AppUIKit
+import Communities
 
 struct CommunityDetailView: View {
     @ObservedObject var store: StoreOf<CommunityDetailFeature>
@@ -306,6 +307,7 @@ struct CommunityDetailView: View {
         ) {
             tabContent(for: .about, content: infoTab)
             tabContent(for: .clubs, content: clubsTab)
+            tabContent(for: .members, content: membersTab)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .frame(height: tabHeights[store.state.selectedSegment] ?? 300)
@@ -373,7 +375,7 @@ struct CommunityDetailView: View {
     
     private var clubsTab: some View {
         VStack(spacing: 0) {
-            let clubs = store.state.uiModel?.clubsData ?? []
+            let clubs = store.state.clubsData
             if !clubs.isEmpty {
                 VStack(spacing: 16) {
                     ForEach(clubs, id: \.uuid) { item in
@@ -399,6 +401,40 @@ struct CommunityDetailView: View {
         }
         .padding(.top)
         .padding(.bottom, 34)
+    }
+
+    @ViewBuilder
+    private var membersTab: some View {
+        if let membersData = store.state.membersData {
+            let input = CommunitiesMemberModuleModel.ClubMembersInput(
+                data: membersData,
+                onOptionsTapped: { _ in },
+                onMemberTapped: { member in
+                    store.send(.userTapped(member.id))
+                }
+            )
+
+            MemberListView(
+                sections: .clubMembers(
+                    from: input
+                ),
+                onRowTap: { row in
+                    input.onMemberTapped(row.member)
+                },
+                onAccessoryTap: { row in
+                    input.onOptionsTapped(row.member)
+                },
+                onSelectGroupTap: { _ in
+                    
+                },
+                showsScrollView: false,
+                horizontalPadding: false
+            )
+            .padding(.top)
+            .padding(.bottom, 34)
+        } else {
+            EmptyView()
+        }
     }
     
     private func emptyView(

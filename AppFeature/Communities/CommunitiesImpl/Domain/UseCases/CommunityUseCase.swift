@@ -6,20 +6,26 @@
 //
 
 import Foundation
+import Communities
 
 protocol CommunityUseCase {
     func fetchCommunityData(id: Int) async throws -> CommunityDetails.UIModel
+    func fetchCommunityMembers(id: Int) async throws -> CommunitiesMemberModuleModel.GroupedMembersData
 }
 
 class CommunityUseCaseImpl: CommunityUseCase {
     
-    private let dataSource: CommunityDataSource
+    private let repo: CommunityRepo
     
-    init(dataSource: CommunityDataSource = resolve()) {
-        self.dataSource = dataSource
+    init(repo: CommunityRepo = resolve()) {
+        self.repo = repo
     }
     
     func fetchCommunityData(id: Int) async throws -> CommunityDetails.UIModel {
-        CommunityDetails.UIModel.mockData
+        try await repo.fetchClubById(id: id)
+    }
+
+    func fetchCommunityMembers(id: Int) async throws -> CommunitiesMemberModuleModel.GroupedMembersData {
+        try await repo.fetchClubMemberById(id: id)
     }
 }

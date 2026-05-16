@@ -9,4 +9,5 @@
 public enum UserDefultsKeys: String {
     case isDarkModeEnabled
     case isAuthenticated
+    case communityId
 }

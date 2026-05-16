@@ -6,9 +6,11 @@
 //
 
 import UIKit
+import Profile
 
 enum ClubDetailsRoute {
     case backTapped
+    case userDetail(String)
 }
 
 protocol ClubDetailsRouterProtocol {
@@ -18,12 +20,24 @@ protocol ClubDetailsRouterProtocol {
 
 final class ClubDetailsRouter: ClubDetailsRouterProtocol {
     weak var view: UIViewController?
+    private let profile: ProfileModule
+    
+    init(
+        view: UIViewController? = nil,
+        profile: ProfileModule = resolve()
+    ) {
+        self.view = view
+        self.profile = profile
+    }
     
     @MainActor
     func navigate(to route: ClubDetailsRoute) {
         switch route {
         case .backTapped:
             self.view?.navigationController?.popViewController(animated: true)
+        case .userDetail(let id):
+            let vc = profile.makeProfileViewController(userId: id) as! UIViewController
+            view?.navigationController?.pushViewController(vc, animated: true)
         }
     }
 }

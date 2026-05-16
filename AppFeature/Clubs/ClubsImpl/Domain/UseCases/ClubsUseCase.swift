@@ -7,6 +7,7 @@
 
 import AppUIKit
 import AppNetwork
+import Communities
 
 protocol ClubsUseCase {
     func fetchClubsData() async throws(APIError) -> [ClubCardView.Model]
@@ -14,6 +15,9 @@ protocol ClubsUseCase {
     func fetchCreateFields() async throws(APIError) -> [ClubsCreate.FieldSchema]
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
     func createClub(request: MultipartFormData) async throws(APIError) -> Void
+    func fetchClubMemberById(
+        id: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
 }
 
 class ClubsUseCaseImpl: ClubsUseCase {
@@ -31,7 +35,7 @@ class ClubsUseCaseImpl: ClubsUseCase {
     func fetchClubDetails(
         clubId: Int
     ) async throws(APIError) -> ClubsDetailsModel.UIModel {
-        .mockData
+        try await repo.fetchClubDetails(clubId: clubId)
     }
     
     func fetchCreateFields() async throws(APIError) -> [ClubsCreate.FieldSchema] {
@@ -44,5 +48,11 @@ class ClubsUseCaseImpl: ClubsUseCase {
     
     func createClub(request: MultipartFormData) async throws(APIError) {
         try await repo.createClub(request: request)
+    }
+    
+    func fetchClubMemberById(
+        id: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
+        try await repo.fetchClubMemberById(id: id)
     }
 }

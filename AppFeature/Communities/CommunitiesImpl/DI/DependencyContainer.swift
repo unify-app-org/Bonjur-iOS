@@ -39,6 +39,7 @@ enum CommunitiesDependencyContainer {
         
         registerModule()
         registerHelpers()
+        registerRepo()
         registerDataSource()
         registerUseCase()
     }
@@ -52,6 +53,12 @@ enum CommunitiesDependencyContainer {
     private static func registerDataSource() {
         register(CommunityDataSource.self) {
             CommunityDataSourceImpl()
+        }
+    }
+    
+    private static func registerRepo() {
+        register(CommunityRepo.self) {
+            CommunityRepoImpl()
         }
     }
     

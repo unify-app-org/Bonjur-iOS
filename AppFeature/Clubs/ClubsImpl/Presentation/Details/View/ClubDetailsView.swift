@@ -410,7 +410,7 @@ struct ClubDetailsView: View {
     
     @ViewBuilder
     private var eventsTab: some View {
-        let events = store.state.uiModel?.eventsData ?? []
+        let events = store.state.eventsData
         if !events.isEmpty {
             VStack(spacing: 20) {
                 ForEach(events, id: \.uuid) { item in
@@ -438,12 +438,14 @@ struct ClubDetailsView: View {
 
     @ViewBuilder
     private var membersTab: some View {
-        if let clubMembers = store.state.uiModel?.clubMembers,
+        if let clubMembers = store.state.members,
            let view = communitiesModule.makeMembersListView(
                input: .init(
                    data: clubMembers,
                    onOptionsTapped: { _ in },
-                   onMemberTapped: { _ in }
+                   onMemberTapped: { member in
+                       store.send(.userTapped(member.id))
+                   }
                )
            ) as? AnyView {
             view

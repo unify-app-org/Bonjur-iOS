@@ -20,8 +20,6 @@ struct CommunityDetails {
         let coverColorType: AppUIEntities.BackgroundType
         let tags: [AppUIEntities.Tags]
         let infoData: [Info]
-        let eventsData: [EventsModuleModel.CardInputData]
-        let clubsData: [ClubsModuleModel.CardInputData]
     }
     
     struct Info: Identifiable {
@@ -111,8 +109,6 @@ extension CommunityDetails.UIModel {
                     )
                 ]
             )
-        ],
-        eventsData: EventsModuleModel.CardInputData.previewMock,
-        clubsData: ClubsModuleModel.CardInputData.previewMock
+        ]
     )
 }

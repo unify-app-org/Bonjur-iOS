@@ -9,6 +9,7 @@ import SwiftUI
 import AppFoundation
 import AppUIKit
 import PhotosUI
+import ImageIO
 
 struct ClubCreateView: View {
     @ObservedObject var store: StoreOf<ClubCreateFeature>
@@ -17,6 +18,8 @@ struct ClubCreateView: View {
     @State private var baseHeight: CGFloat = 164
     @State private var selectedLogo: PhotosPickerItem?
     @State private var selectedBgPhoto: PhotosPickerItem?
+    @State private var logoImage: UIImage?
+    @State private var backgroundImage: UIImage?
     
     var body: some View {
         GeometryReader { proxy in
@@ -47,6 +50,7 @@ struct ClubCreateView: View {
             Task {
                 if let data = try? await newItem?.loadTransferable(type: Data.self) {
                     store.state.selectedLogo = data
+                    logoImage = await downsampleImage(data: data, maxPixelSize: 360)
                 }
             }
         }
@@ -54,6 +58,7 @@ struct ClubCreateView: View {
             Task {
                 if let data = try? await newItem?.loadTransferable(type: Data.self) {
                     store.state.backgroundPhoto = data
+                    backgroundImage = await downsampleImage(data: data, maxPixelSize: 1200)
                 }
             }
         }
@@ -133,9 +138,8 @@ struct ClubCreateView: View {
     private var headerContent: some View {
         PhotosPicker(selection: $selectedBgPhoto, matching: .images) {
             CardBackgroundView(cardType: .club) {
-                if let selectedLogo = store.state.backgroundPhoto,
-                   let image = UIImage(data: selectedLogo) {
-                    Image(uiImage: image)
+                if let backgroundImage {
+                    Image(uiImage: backgroundImage)
                         .resizable()
                         .scaledToFill()
                 }
@@ -163,9 +167,8 @@ struct ClubCreateView: View {
     private var clubLogo: some View {
         PhotosPicker(selection: $selectedLogo, matching: .images) {
             ZStack {
-                if let selectedLogo = store.state.selectedLogo,
-                   let image = UIImage(data: selectedLogo) {
-                    Image(uiImage: image)
+                if let logoImage {
+                    Image(uiImage: logoImage)
                         .resizable()
                         .scaledToFill()
                 } else {
@@ -233,5 +236,27 @@ struct ClubCreateView: View {
                 )
             }
         }
+    }
+    
+    private func downsampleImage(data: Data, maxPixelSize: CGFloat) async -> UIImage? {
+        await Task.detached(priority: .userInitiated) {
+            let options = [kCGImageSourceShouldCache: false] as CFDictionary
+            guard let source = CGImageSourceCreateWithData(data as CFData, options) else {
+                return nil
+            }
+            
+            let thumbnailOptions = [
+                kCGImageSourceCreateThumbnailFromImageAlways: true,
+                kCGImageSourceShouldCacheImmediately: true,
+                kCGImageSourceCreateThumbnailWithTransform: true,
+                kCGImageSourceThumbnailMaxPixelSize: maxPixelSize
+            ] as CFDictionary
+            
+            guard let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, thumbnailOptions) else {
+                return nil
+            }
+            
+            return UIImage(cgImage: cgImage)
+        }.value
     }
 }

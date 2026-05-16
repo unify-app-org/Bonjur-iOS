@@ -33,7 +33,7 @@ final class NetworkLoggerImpl: NetworkLogger {
     
     func logRequest(
         _ request: URLRequest,
-        body: Data? = nil
+        body: Data?
     ) {
         print("\n🚀 ============ REQUEST START ============")
         
@@ -44,19 +44,21 @@ final class NetworkLoggerImpl: NetworkLogger {
         if let headers = request.allHTTPHeaderFields, !headers.isEmpty {
             print("\n📋 Headers:")
             headers.forEach { key, value in
-                if key.lowercased() == "authorization" {
-                    print("  \(key): \(value)")
-                } else {
-                    print("  \(key): \(value)")
-                }
+                print("  \(key): \(value)")
             }
         }
         
         if let bodyData = body ?? request.httpBody {
             print("\n📦 Body:")
-            if let jsonObject = try? JSONSerialization.jsonObject(with: bodyData),
-               let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted),
-               let prettyString = String(data: prettyData, encoding: .utf8) {
+            let contentType = request.allHTTPHeaderFields?["Content-Type"] ?? ""
+            
+            if contentType.contains("multipart/form-data"),
+               let boundary = contentType.components(separatedBy: "boundary=").last {
+                // Parse and log multipart parts readably
+                logMultipartBody(bodyData, boundary: boundary)
+            } else if let jsonObject = try? JSONSerialization.jsonObject(with: bodyData),
+                      let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted),
+                      let prettyString = String(data: prettyData, encoding: .utf8) {
                 print(prettyString)
             } else if let bodyString = String(data: bodyData, encoding: .utf8) {
                 print(bodyString)
@@ -64,6 +66,58 @@ final class NetworkLoggerImpl: NetworkLogger {
         }
         
         print("============ REQUEST END ============\n")
+    }
+
+    private func logMultipartBody(_ data: Data, boundary: String) {
+        guard let delimiterData = "--\(boundary)".data(using: .utf8) else { return }
+        
+        var parts: [Data] = []
+        var searchRange = data.startIndex..<data.endIndex
+        
+        while let range = data.range(of: delimiterData, in: searchRange) {
+            if range.lowerBound > searchRange.lowerBound {
+                parts.append(data[searchRange.lowerBound..<range.lowerBound])
+            }
+            searchRange = range.upperBound..<data.endIndex
+        }
+        if searchRange.lowerBound < data.endIndex {
+            parts.append(data[searchRange])
+        }
+        
+        for part in parts {
+            guard let partString = String(data: part, encoding: .utf8) else {
+                // Pure binary part (image)
+                print("  --- Part ---")
+                print("  [Binary data, \(part.count) bytes]")
+                continue
+            }
+            
+            let trimmed = partString.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmed.isEmpty && trimmed != "--" else { continue }
+            
+            // Split headers from body on double CRLF
+            guard let headerBodySeparator = trimmed.range(of: "\r\n\r\n") else {
+                print("  --- Part ---")
+                print("  \(trimmed)")
+                continue
+            }
+            
+            let headers = String(trimmed[trimmed.startIndex..<headerBodySeparator.lowerBound])
+            let body = String(trimmed[headerBodySeparator.upperBound...])
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            print("  --- Part ---")
+            print("  \(headers.replacingOccurrences(of: "\r\n", with: "\n  "))")
+            
+            if let bodyData = body.data(using: .utf8),
+               let jsonObject = try? JSONSerialization.jsonObject(with: bodyData),
+               let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted),
+               let prettyString = String(data: prettyData, encoding: .utf8) {
+                print(prettyString)
+            } else if !body.isEmpty {
+                print("  \(body)")
+            }
+        }
     }
     
     // MARK: - Response Logging

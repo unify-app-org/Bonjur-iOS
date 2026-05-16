@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppPresentationModel
 
 public enum CommunitiesMemberModuleModel {
     public struct MemberCellModel: Hashable, Sendable {
@@ -13,12 +14,20 @@ public enum CommunitiesMemberModuleModel {
         public let name: String
         public let avatarURL: URL?
         public let subtitle: String
+        public let role: AppPresentationModel.UserActivityRole
 
-        public init(id: String, name: String, avatarURL: URL?, subtitle: String) {
+        public init(
+            id: String,
+            name: String,
+            avatarURL: URL?,
+            subtitle: String,
+            role: AppPresentationModel.UserActivityRole = .member
+        ) {
             self.id = id
             self.name = name
             self.avatarURL = avatarURL
             self.subtitle = subtitle
+            self.role = role
         }
     }
 
@@ -35,18 +44,29 @@ public enum CommunitiesMemberModuleModel {
     }
 
     public struct GroupedMembersData: Hashable, Sendable {
-        public let owner: MemberCellModel
-        public let president: MemberCellModel?
-        public let members: [MemberCellModel]
+        public let sections: [MemberListSection]
 
-        public init(
-            owner: MemberCellModel,
-            president: MemberCellModel? = nil,
-            members: [MemberCellModel]
-        ) {
-            self.owner = owner
-            self.president = president
-            self.members = members
+        public init(sections: [MemberListSection]) {
+            self.sections = sections
+        }
+
+        public init(users: [MemberCellModel]) {
+            let groupedUsers = Dictionary(grouping: users, by: \.role)
+            let sections = groupedUsers
+                .sorted { lhs, rhs in
+                    lhs.key.sortPriority < rhs.key.sortPriority
+                }
+                .map { role, users in
+                    MemberListSection(
+                        title: role.title,
+                        memberCount: users.count,
+                        members: users.sorted { lhs, rhs in
+                            lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
+                        }
+                    )
+                }
+
+            self.sections = sections
         }
     }
 
@@ -78,6 +98,38 @@ public enum CommunitiesMemberModuleModel {
                 studentListTitle: nil,
                 sections: []
             )
+        }
+    }
+}
+
+private extension AppPresentationModel.UserActivityRole {
+    var sortPriority: Int {
+        switch self {
+        case .president:
+            return 0
+        case .visePresident:
+            return 1
+        case .eventCreator:
+            return 2
+        case .member:
+            return 3
+        case .notJoined:
+            return 4
+        }
+    }
+
+    var title: String {
+        switch self {
+        case .member:
+            return "Members"
+        case .president:
+            return "President"
+        case .visePresident:
+            return "Vise president"
+        case .eventCreator:
+            return "Event creators"
+        case .notJoined:
+            return "-"
         }
     }
 }
@@ -204,22 +256,16 @@ public extension CommunitiesMemberModuleModel {
     }
 
     struct ClubMembersInput {
-        public let owner: MemberCellModel
-        public let president: MemberCellModel?
-        public let members: [MemberCellModel]
+        public let sections: [MemberListSection]
         public let onOptionsTapped: (MemberCellModel) -> Void
         public let onMemberTapped: (MemberCellModel) -> Void
 
         public init(
-            owner: MemberCellModel,
-            president: MemberCellModel? = nil,
-            members: [MemberCellModel],
+            sections: [MemberListSection],
             onOptionsTapped: @escaping (MemberCellModel) -> Void,
             onMemberTapped: @escaping (MemberCellModel) -> Void
         ) {
-            self.owner = owner
-            self.president = president
-            self.members = members
+            self.sections = sections
             self.onOptionsTapped = onOptionsTapped
             self.onMemberTapped = onMemberTapped
         }
@@ -230,9 +276,7 @@ public extension CommunitiesMemberModuleModel {
             onMemberTapped: @escaping (MemberCellModel) -> Void
         ) {
             self.init(
-                owner: data.owner,
-                president: data.president,
-                members: data.members,
+                sections: data.sections,
                 onOptionsTapped: onOptionsTapped,
                 onMemberTapped: onMemberTapped
             )

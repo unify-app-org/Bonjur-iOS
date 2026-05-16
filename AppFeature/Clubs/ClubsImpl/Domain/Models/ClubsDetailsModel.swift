@@ -22,8 +22,6 @@ struct ClubsDetailsModel {
         let accessType: AppUIEntities.AccessType
         let tags: [AppUIEntities.Tags]
         let infoData: [Info]
-        let eventsData: [EventsModuleModel.CardInputData]
-        let clubMembers: CommunitiesMemberModuleModel.GroupedMembersData
     }
     
     struct Info: Identifiable {
@@ -116,27 +114,27 @@ extension ClubsDetailsModel.UIModel {
                     )
                 ]
             )
-        ],
-        eventsData: EventsModuleModel.CardInputData.previewMock,
-        clubMembers: .mockData
+        ]
     )
 }
 
 private extension CommunitiesMemberModuleModel.GroupedMembersData {
     static let mockData: Self = .init(
-        owner: .init(
-            id: "owner-1",
-            name: "Nihad Asgarli",
-            avatarURL: URL(string: "https://i.pinimg.com/736x/76/f7/d5/76f7d5c6bb02d8d142dd359b534e326e.jpg"),
-            subtitle: "Bachelor, Computer engineering, 2017"
-        ),
-        president: .init(
-            id: "president-1",
-            name: "Huseyn Hasanov",
-            avatarURL: URL(string: "https://i.pinimg.com/736x/ae/9e/cb/ae9ecb29d446fdf6679ee4bfd28280af.jpg"),
-            subtitle: "Bachelor, Computer engineering, 2017"
-        ),
-        members: [
+        users: [
+            .init(
+                id: "owner-1",
+                name: "Nihad Asgarli",
+                avatarURL: URL(string: "https://i.pinimg.com/736x/76/f7/d5/76f7d5c6bb02d8d142dd359b534e326e.jpg"),
+                subtitle: "Bachelor, Computer engineering, 2017",
+                role: .president
+            ),
+            .init(
+                id: "president-1",
+                name: "Huseyn Hasanov",
+                avatarURL: URL(string: "https://i.pinimg.com/736x/ae/9e/cb/ae9ecb29d446fdf6679ee4bfd28280af.jpg"),
+                subtitle: "Bachelor, Computer engineering, 2017",
+                role: .visePresident
+            ),
             .init(
                 id: "member-1",
                 name: "Durdana Hasanova",

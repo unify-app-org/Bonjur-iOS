@@ -115,10 +115,7 @@ final class APIClient: APIClientProtocol {
         request.setValue(localization.currentLanguage, forHTTPHeaderField: "Accept-Language")
         
         var bodyData: Data?
-        if var multipart = endpoint.multipartFormData {
-            if let body = endpoint.body {
-                multipart.mergeEncodableFields(body)
-            }
+        if let multipart = endpoint.multipartFormData {
             bodyData = multipart.encode()
             request.httpBody = bodyData
             request.setValue(
@@ -171,59 +168,29 @@ final class APIClient: APIClientProtocol {
                     }
                     return try await performRequest(endpoint, isRetry: true)
                 } else {
-                    if let networkError = try? JSONDecoder().decode(NetworkError.self, from: data) {
-                        logger.logError(
-                            APIError.error(networkError),
-                            url: url.absoluteString,
-                            statusCode: httpResponse.statusCode,
-                            errorBody: data
-                        )
-                        throw APIError.error(networkError)
-                    }
-                    logger.logError(
-                        APIError.unauthorized,
+                    throw decodedAPIError(
+                        from: data,
+                        fallback: .unauthorized,
                         url: url.absoluteString,
-                        statusCode: httpResponse.statusCode,
-                        errorBody: data
+                        statusCode: httpResponse.statusCode
                     )
-                    throw APIError.unauthorized
                 }
                 
             case 400...499:
-                if let networkError = try? JSONDecoder().decode(NetworkError.self, from: data) {
-                    logger.logError(
-                        APIError.error(networkError),
-                        url: url.absoluteString,
-                        statusCode: httpResponse.statusCode,
-                        errorBody: data
-                    )
-                    throw APIError.error(networkError)
-                }
-                logger.logError(
-                    APIError.unknown,
+                throw decodedAPIError(
+                    from: data,
+                    fallback: .unknown,
                     url: url.absoluteString,
-                    statusCode: httpResponse.statusCode,
-                    errorBody: data
+                    statusCode: httpResponse.statusCode
                 )
-                throw APIError.unknown
                 
             case 500...599:
-                if let networkError = try? JSONDecoder().decode(NetworkError.self, from: data) {
-                    logger.logError(
-                        APIError.error(networkError),
-                        url: url.absoluteString,
-                        statusCode: httpResponse.statusCode,
-                        errorBody: data
-                    )
-                    throw APIError.error(networkError)
-                }
-                logger.logError(
-                    APIError.unknown,
+                throw decodedAPIError(
+                    from: data,
+                    fallback: .unknown,
                     url: url.absoluteString,
-                    statusCode: httpResponse.statusCode,
-                    errorBody: data
+                    statusCode: httpResponse.statusCode
                 )
-                throw APIError.unknown
                 
             default:
                 logger.logError(
@@ -246,6 +213,27 @@ final class APIClient: APIClientProtocol {
             )
             throw APIError.networkError(error)
         }
+    }
+    
+    private func decodedAPIError(
+        from data: Data,
+        fallback: APIError,
+        url: String,
+        statusCode: Int
+    ) -> APIError {
+        let error: APIError
+        if let networkError = try? JSONDecoder().decode(NetworkError.self, from: data) {
+            error = .error(networkError)
+        } else {
+            error = fallback
+        }
+        logger.logError(
+            error,
+            url: url,
+            statusCode: statusCode,
+            errorBody: data
+        )
+        return error
     }
     
     // MARK: - Token Refresh

@@ -7,6 +7,9 @@
 
 import AppFoundation
 import SwiftUI
+import Clubs
+import Communities
+import AppNetwork
 
 // MARK: - CommunityDetail input
 
@@ -18,6 +21,7 @@ struct CommunityDetailInputData {
 
 enum CommunityDetailSideEffect: UISideEffect {
     case loading(Bool)
+    case error(APIError?)
 }
 
 // MARK: - Feature Definition
@@ -34,10 +38,13 @@ final class CommunityDetailViewState: UIFeatureState {
     
     @Published var uiModel: CommunityDetails.UIModel?
     @Published var selectedSegment: SegmentTypes = .about
+    @Published var clubsData: [ClubsModuleModel.CardInputData] = []
+    @Published var membersData: CommunitiesMemberModuleModel.GroupedMembersData?
     
     enum SegmentTypes: String, CaseIterable, Identifiable {
         case about = "About"
         case clubs = "Clubs"
+        case members = "Members"
         
         var id: Self { self }
     }
@@ -49,6 +56,7 @@ enum CommunityDetailAction: UIFeatureAction {
     case fetchData
     case backTapped
     case clubItemTapped(Int)
+    case userTapped(String)
 }
 
 // MARK: - PreferenceKey

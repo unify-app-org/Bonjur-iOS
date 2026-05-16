@@ -11,6 +11,9 @@ import AppUIKit
 import Communities
 
 protocol ClubRepo {
+    func fetchClubs(
+        query: ClubDTOModel.PaginationQuery
+    ) async throws(APIError) -> [ClubCardView.Model]
     func fetchCreate() async throws(APIError) -> [ClubsCreate.FieldSchema]
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
     func createClub(request: MultipartFormData) async throws(APIError) -> Void
@@ -21,19 +24,47 @@ protocol ClubRepo {
 }
 
 class ClubRepoImpl: ClubRepo {
-    
+
     private let dataSource: ClubsDataSource
-    
+
     init(
         dataSource: ClubsDataSource = resolve()
     ) {
         self.dataSource = dataSource
     }
-    
+
+    func fetchClubs(
+        query: ClubDTOModel.PaginationQuery
+    ) async throws(APIError) -> [ClubCardView.Model] {
+        let data = try await dataSource.fetchClubs(query: query.toDictionary())
+        return data.map { item in
+            let members: [AppUIEntities.Member] = item.members?.map { member in
+                .init(
+                    id: member.id ?? "",
+                    profileImage: member.url ?? ""
+                )
+            } ?? []
+
+            return .init(
+                id: item.id ?? 0,
+                name: item.name ?? "-",
+                communityName: item.communityName ?? "-",
+                logoURL: item.clubProfile ?? "",
+                memberCount: item.count ?? 0,
+                totalCapacity: item.capacity ?? 0,
+                community: item.communityName ?? "-",
+                members: members,
+                bgType: item.background ?? .primary,
+                accessType: item.visibility ?? .private,
+                requestType: .none
+            )
+        }
+    }
+
     func fetchCreate() async throws(APIError) -> [ClubsCreate.FieldSchema] {
         try await dataSource.fetchCreate()
     }
-    
+
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section] {
         let data = try await dataSource.getCategories()
         return data.map { item in

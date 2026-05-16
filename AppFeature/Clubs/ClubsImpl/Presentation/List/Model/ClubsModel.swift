@@ -33,6 +33,7 @@ typealias ClubsFeature = UIFeatureDefinition<
 
 final class ClubsViewState: UIFeatureState {
     @Published var uiModel: UIModel = .init()
+    @Published var searchText: String = ""
     
     struct UIModel {
         var clubs: [ClubCardView.Model] = []
@@ -43,5 +44,7 @@ final class ClubsViewState: UIFeatureState {
 
 enum ClubsAction: UIFeatureAction {
     case fetchData
+    case loadMore
+    case searchChanged(String)
     case itemOnTap(id: Int)
 }

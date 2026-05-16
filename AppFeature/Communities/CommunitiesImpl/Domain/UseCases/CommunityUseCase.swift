@@ -7,10 +7,15 @@
 
 import Foundation
 import Communities
+import AppNetwork
+import Clubs
 
 protocol CommunityUseCase {
     func fetchCommunityData(id: Int) async throws -> CommunityDetails.UIModel
     func fetchCommunityMembers(id: Int) async throws -> CommunitiesMemberModuleModel.GroupedMembersData
+    func fetchClubs(
+        query: CommunityDTO.PaginationQuery
+    ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
 }
 
 class CommunityUseCaseImpl: CommunityUseCase {
@@ -27,5 +32,11 @@ class CommunityUseCaseImpl: CommunityUseCase {
 
     func fetchCommunityMembers(id: Int) async throws -> CommunitiesMemberModuleModel.GroupedMembersData {
         try await repo.fetchClubMemberById(id: id)
+    }
+    
+    func fetchClubs(
+        query: CommunityDTO.PaginationQuery
+    ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
+        try await repo.getClubs(query: query)
     }
 }

@@ -10,6 +10,7 @@ import AppNetwork
 enum ClubsEndPoint {
     case createClub(MultipartFormData)
     case getCategories
+    case getClubs([String: String])
     case getClubById(Int)
     case getMembersByClubId(Int)
 }
@@ -22,6 +23,8 @@ extension ClubsEndPoint: AppEndPoint {
             "api/cs/v1/clubs"
         case .getCategories:
             "api/sd/v1/categories"
+        case .getClubs:
+            "api/ds/v1/clubs"
         case .getClubById(let id):
             "api/cs/v1/clubs/\(id)"
         case .getMembersByClubId(let id):
@@ -34,6 +37,7 @@ extension ClubsEndPoint: AppEndPoint {
         case .createClub:
                 .post
         case .getCategories,
+                .getClubs,
                 .getClubById,
                 .getMembersByClubId:
                 .get
@@ -49,6 +53,15 @@ extension ClubsEndPoint: AppEndPoint {
         }
     }
     
+    var queryParameters: [String: String]? {
+        switch self {
+        case .getClubs(let query):
+            query
+        default:
+            nil
+        }
+    }
+
     var contentType: ContentType {
         switch self {
         case .createClub:

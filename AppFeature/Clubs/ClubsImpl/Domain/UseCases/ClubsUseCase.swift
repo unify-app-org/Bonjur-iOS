@@ -10,7 +10,9 @@ import AppNetwork
 import Communities
 
 protocol ClubsUseCase {
-    func fetchClubsData() async throws(APIError) -> [ClubCardView.Model]
+    func fetchClubsData(
+        query: ClubDTOModel.PaginationQuery
+    ) async throws(APIError) -> [ClubCardView.Model]
     func fetchClubDetails(clubId: Int) async throws(APIError) -> ClubsDetailsModel.UIModel
     func fetchCreateFields() async throws(APIError) -> [ClubsCreate.FieldSchema]
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
@@ -28,8 +30,10 @@ class ClubsUseCaseImpl: ClubsUseCase {
         self.repo = repo
     }
 
-    func fetchClubsData() async throws(APIError) -> [ClubCardView.Model] {
-        ClubCardView.Model.previewData
+    func fetchClubsData(
+        query: ClubDTOModel.PaginationQuery
+    ) async throws(APIError) -> [ClubCardView.Model] {
+        try await repo.fetchClubs(query: query)
     }
     
     func fetchClubDetails(

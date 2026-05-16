@@ -11,22 +11,29 @@
 import AppNetwork
 
 enum HangoutsEndPoint {
-    case test
+    case getHangouts([String: String])
 }
 
 extension HangoutsEndPoint: AppEndPoint {
     
     var path: String {
         switch self {
-        case .test:
-            "test/test"
+        case .getHangouts:
+            "api/ds/v1/hangouts"
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .test:
-                .post
+        case .getHangouts:
+                .get
+        }
+    }
+
+    var queryParameters: [String: String]? {
+        switch self {
+        case .getHangouts(let query):
+            query
         }
     }
 }

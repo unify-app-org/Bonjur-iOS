@@ -9,9 +9,15 @@ import Foundation
 import AppPresentationModel
 
 struct ClubDTOModel {
-    
+
     // MARK: - Request
-    
+
+    struct PaginationQuery: Encodable {
+        let page: Int
+        let size: Int
+        let name: String?
+    }
+
     struct CreateRequest: Encodable {
         let communityId: Int
         let name: String
@@ -25,15 +31,15 @@ struct ClubDTOModel {
         let categoryIds: [Int]
         let rule: String?
     }
-    
+
     struct Link: Codable {
         let type: String
         let name: String
         let url: String
     }
-    
+
     // MARK: - Response
-    
+
     struct Response: Decodable {
         let communityId: Int
         let visibility: AppPresentationModel.AccessType
@@ -47,15 +53,35 @@ struct ClubDTOModel {
         let links: [Link]?
         let categories: [Category]
     }
-    
+
     struct Category: Decodable {
         let id: Int
         let title: String
     }
-    
+
+    struct ListMember: Decodable {
+        let id: String?
+        let fullName: String?
+        let url: String?
+    }
+
+    struct ListResponse: Decodable {
+        let id: Int?
+        let name: String?
+        let communityName: String?
+        let background: AppPresentationModel.BackgroundType?
+        let visibility: AppPresentationModel.AccessType?
+        let clubProfile: String?
+        let backgroundUrl: String?
+        let about: String?
+        let count, capacity: Int?
+        let joined: Bool?
+        let members: [ListMember]?
+    }
+
     struct MemberResponse: Decodable {
         let content: [Member]
-        
+
         struct Member: Decodable {
             let userId: String?
             let role: AppPresentationModel.UserActivityRole

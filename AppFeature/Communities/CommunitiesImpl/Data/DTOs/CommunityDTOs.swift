@@ -48,4 +48,29 @@ struct CommunityDTO {
         let name: String
         let url: String
     }
+    
+    struct ClubResponse: Decodable {
+        let id: Int?
+        let name: String?
+        let communityName: String?
+        let background: AppPresentationModel.BackgroundType?
+        let visibility: AppPresentationModel.AccessType?
+        let clubProfile: String?
+        let backgroundUrl: String?
+        let about: String?
+        let count, capacity: Int?
+        let joined: Bool?
+        let members: [Member]?
+    }
+    
+    struct Member: Decodable {
+        let id: String?
+        let fullName: String?
+        let url: String?
+    }
+    
+    public struct PaginationQuery: Encodable {
+        let page: Int
+        let size: Int
+    }
 }

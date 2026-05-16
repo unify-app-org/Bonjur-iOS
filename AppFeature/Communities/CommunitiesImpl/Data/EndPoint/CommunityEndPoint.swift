@@ -10,6 +10,7 @@ import AppNetwork
 enum CommunityEndPoint {
     case getClubById(Int)
     case getMembersByClubId(Int)
+    case getClubs([String : String])
 }
 
 extension CommunityEndPoint: AppEndPoint {
@@ -20,14 +21,26 @@ extension CommunityEndPoint: AppEndPoint {
             "api/cs/v1/clubs/\(id)"
         case .getMembersByClubId(let id):
             "api/cs/v1/clubs/\(id)/members"
+        case .getClubs:
+            "api/ds/v1/clubs"
         }
     }
     
     var method: HTTPMethod {
         switch self {
         case .getClubById,
-                .getMembersByClubId:
+                .getMembersByClubId,
+                .getClubs:
                 .get
+        }
+    }
+    
+    var queryParameters: [String : String]? {
+        switch self {
+        case .getClubs(let query):
+                query
+        default:
+            nil
         }
     }
 }

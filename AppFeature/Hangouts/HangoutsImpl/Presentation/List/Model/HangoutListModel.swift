@@ -33,6 +33,7 @@ typealias HangoutListFeature = UIFeatureDefinition<
 
 final class HangoutListViewState: UIFeatureState {
     @Published var uiModel: UIModel = .init(hangouts: [])
+    @Published var searchText: String = ""
     
     struct UIModel {
         var hangouts: [HangoutsCardView.Model]
@@ -43,5 +44,7 @@ final class HangoutListViewState: UIFeatureState {
 
 enum HangoutListAction: UIFeatureAction {
     case fetchData
+    case loadMore
+    case searchChanged(String)
     case itemTapped(id: String)
 }

@@ -8,6 +8,7 @@
 import AppFoundation
 import AppNetwork
 import Communities
+import Clubs
 
 private typealias FetchResult<T> = Result<T, Error>
 
@@ -20,6 +21,7 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
     private struct InitialFetchResults {
         let detail: FetchResult<CommunityDetails.UIModel>
         let members: FetchResult<CommunitiesMemberModuleModel.GroupedMembersData>
+        let clubs: FetchResult<[ClubsModuleModel.CardInputData]>
     }
     
     private let router: CommunityDetailRouterProtocol
@@ -85,9 +87,16 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
             )
         }
         
+        async let clubs = result {
+            try await dependencies.useCase.fetchClubs(
+                query: .init(page: 0, size: 10)
+            )
+        }
+        
         return await .init(
             detail: detail,
-            members: members
+            members: members,
+            clubs: clubs
         )
     }
     
@@ -113,6 +122,15 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
         case .failure(let error):
             firstError = firstError ?? error
         }
+        
+        switch results.clubs {
+        case .success(let clubs):
+            Task { @MainActor in
+                handleClubs(clubs)
+            }
+        case .failure(let error):
+            firstError = firstError ?? error
+        }
         return firstError
     }
     
@@ -128,6 +146,13 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
         _ data: CommunitiesMemberModuleModel.GroupedMembersData
     ) {
         state.membersData = data
+    }
+    
+    @MainActor
+    private func handleClubs(
+        _ data: [ClubsModuleModel.CardInputData]
+    ) {
+        state.clubsData = data
     }
     
     private func result<T>(

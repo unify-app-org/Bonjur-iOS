@@ -16,9 +16,14 @@ protocol CommunityRepo {
     func fetchClubById(
         id: Int
     ) async throws(APIError) -> CommunityDetails.UIModel
+    
     func fetchClubMemberById(
         id: Int
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
+    
+    func getClubs(
+        query: CommunityDTO.PaginationQuery
+    ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
 }
 
 class CommunityRepoImpl: CommunityRepo {
@@ -95,7 +100,36 @@ class CommunityRepoImpl: CommunityRepo {
                 role: member.role
             )
         }
-
         return .init(users: users)
+    }
+    
+    func getClubs(
+        query: CommunityDTO.PaginationQuery
+    ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
+        let data = try await dataSource.getClubs(
+            query: query.toDictionary()
+        )
+        let uiModel: [ClubsModuleModel.CardInputData] = data.map { item in
+            let members: [AppPresentationModel.Member] = item.members?.map { member in
+                AppPresentationModel.Member(
+                    id: member.id ?? "",
+                    profileImage: member.url ?? ""
+                )
+            } ?? []
+            return .init(
+                    id: item.id ?? 0,
+                    name: item.name ?? "-",
+                    communityName: item.communityName ?? "-",
+                    logoURL: item.clubProfile ?? "",
+                    memberCount: item.count ?? 0,
+                    totalCapacity: 0,
+                    community: item.communityName ?? "-",
+                    members: members,
+                    bgType: item.background ?? .primary,
+                    accessType: .private,
+                    requestType: .joined
+                )
+        }
+        return uiModel
     }
 }

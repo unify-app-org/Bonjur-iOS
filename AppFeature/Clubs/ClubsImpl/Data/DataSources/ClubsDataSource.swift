@@ -11,17 +11,22 @@ import AppNetwork
 protocol ClubsDataSource {
     func fetchCreate() async throws(APIError) -> [ClubsCreate.FieldSchema]
     func getCategories() async throws(APIError) -> [ClubsCreate.CategoriesResponse]
+    func fetchClubs(query: [String: String]) async throws(APIError) -> [ClubDTOModel.ListResponse]
     func createClub(request: MultipartFormData) async throws(APIError) -> Data
     func fetchClubById(id: Int) async throws(APIError) -> ClubDTOModel.Response
     func fetchClubMemberById(id: Int) async throws(APIError) -> ClubDTOModel.MemberResponse
 }
 
 final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource {
-    
+
     func getCategories() async throws(APIError) -> [ClubsCreate.CategoriesResponse] {
         try await fetch(endPoint: .getCategories)
     }
-    
+
+    func fetchClubs(query: [String: String]) async throws(APIError) -> [ClubDTOModel.ListResponse] {
+        try await fetch(endPoint: .getClubs(query))
+    }
+
     func fetchCreate() async throws(APIError) -> [ClubsCreate.FieldSchema] {
         [
             ClubsCreate.FieldSchema(

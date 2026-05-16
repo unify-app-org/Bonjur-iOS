@@ -12,7 +12,14 @@ import AppUIKit
 struct ClubsView: View {
     @ObservedObject var store: StoreOf<ClubsFeature>
     @State private var viewHeight: CGFloat = 0
-    
+
+    private var searchTextBinding: Binding<String> {
+        Binding(
+            get: { store.state.searchText },
+            set: { store.send(.searchChanged($0)) }
+        )
+    }
+
     var body: some View {
         ZStack(alignment: .top) {
             VStack(spacing: .zero) {
@@ -25,10 +32,10 @@ struct ClubsView: View {
                 Spacer()
             }
         }
+        .dismissKeyboardOnTap()
         .onAppear {
             store.send(.fetchData)
         }
-        .toolbar(.hidden)
     }
     
     @ViewBuilder
@@ -36,10 +43,13 @@ struct ClubsView: View {
         let clubs = store.state.uiModel.clubs
         if !clubs.isEmpty {
             ScrollView {
-                VStack(spacing: 20) {
-                    ForEach(clubs, id: \.uuid) { item in
+                LazyVStack(spacing: 20) {
+                    ForEach(Array(clubs.enumerated()), id: \.element.uuid) { index, item in
                         ClubCardView(model: item) {
                             store.send(.itemOnTap(id: item.id))
+                        }
+                        .onAppear {
+                            loadMoreIfNeeded(index: index, count: clubs.count)
                         }
                     }
                 }
@@ -67,7 +77,7 @@ struct ClubsView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal)
             VStack(spacing: .zero) {
-                SearchView(text: .constant(""))
+                SearchView(text: searchTextBinding)
                     .padding(.horizontal)
                 FilterView(
                     model: FilterView.Model.mock,
@@ -83,6 +93,11 @@ struct ClubsView: View {
             self.viewHeight = newValue
         }
         .background(Color.Palette.white)
+    }
+
+    private func loadMoreIfNeeded(index: Int, count: Int) {
+        guard count > 0, index == count - 1 else { return }
+        store.send(.loadMore)
     }
 }
 

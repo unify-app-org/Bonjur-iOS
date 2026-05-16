@@ -64,6 +64,7 @@ class AuthRepoImpl: AuthRepo {
         )
         let data = try await dataSource.login(body: body)
         userDefaults.set(true, forKey: .isAuthenticated)
+        userDefaults.set(communityId, forKey: .communityId)
         await tokenManager.saveAccessToken(data.accessToken)
         await tokenManager.saveRefreshToken(data.refreshToken)
         await tokenManager.saveUserId(data.userId)

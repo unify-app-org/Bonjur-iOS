@@ -52,13 +52,15 @@ struct ProfileDetailView: View {
         .toolbar(.visible)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    store.send(.settingsTapped)
-                } label: {
-                    Image(uiImage: UIImage.Icons.settings01)
-                        .renderingMode(.template)
+                if !store.state.isOtherUser {
+                    Button {
+                        store.send(.settingsTapped)
+                    } label: {
+                        Image(uiImage: UIImage.Icons.settings01)
+                            .renderingMode(.template)
+                    }
+                    .foregroundStyle(Color.Palette.black)
                 }
-                .foregroundStyle(Color.Palette.black)
             }
         }
         .enableSwipeBack()

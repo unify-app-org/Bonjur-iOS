@@ -42,14 +42,17 @@ struct ClubDTOModel {
 
     struct Response: Decodable {
         let communityId: Int
+        let membersCount: Int?
         let visibility: AppPresentationModel.AccessType
         let name: String
-        let ownerContact: String
+        let ownerContact: String?
         let location: String?
         let about: String
         let rule: String?
         let capacity: Int?
         let communityName: String
+        let backgroundUrl, logoUrl, backgroundColour, modifiedAt: String?
+        let clubUserRole: AppPresentationModel.UserActivityRole
         let links: [Link]?
         let categories: [Category]
     }

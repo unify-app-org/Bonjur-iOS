@@ -40,6 +40,7 @@ enum HangoutsDependencyContainer {
         registerModule()
         registerHelpers()
         registerDataSource()
+        registerRepo()
         registerUseCase()
     }
     
@@ -52,6 +53,12 @@ enum HangoutsDependencyContainer {
     private static func registerDataSource() {
         register(HangoutsDataSource.self) {
             HangoutsDataSourceImpl()
+        }
+    }
+    
+    private static func registerRepo() {
+        register(HangoutRepo.self) {
+            HangoutRepoImpl()
         }
     }
     

@@ -6,12 +6,11 @@
 //
 
 
-
-
 import AppNetwork
 
 enum HangoutsEndPoint {
     case getHangouts([String: String])
+    case hangoutDetail(String)
 }
 
 extension HangoutsEndPoint: AppEndPoint {
@@ -20,12 +19,15 @@ extension HangoutsEndPoint: AppEndPoint {
         switch self {
         case .getHangouts:
             "api/ds/v1/hangouts"
+        case .hangoutDetail(let id):
+            "api/hs/v1/hangouts/\(id)"
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .getHangouts:
+        case .getHangouts,
+                .hangoutDetail:
                 .get
         }
     }
@@ -34,6 +36,8 @@ extension HangoutsEndPoint: AppEndPoint {
         switch self {
         case .getHangouts(let query):
             query
+        default:
+            nil
         }
     }
 }

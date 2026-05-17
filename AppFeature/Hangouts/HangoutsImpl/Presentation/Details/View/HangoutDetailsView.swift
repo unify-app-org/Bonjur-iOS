@@ -311,7 +311,7 @@ struct HangoutDetailsView: View {
 
     @ViewBuilder
     private var membersTab: some View {
-        if let membersData = store.state.uiModel?.membersData,
+        if let membersData = store.state.membersData,
            let view = communitiesModule.makeMembersListView(
                input: .init(
                    data: membersData,

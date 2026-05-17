@@ -5,9 +5,10 @@
 //  Created by Huseyn Hasanov on 15.05.26.
 //
 
+import AppUIKit
 import Foundation
 import AppNetwork
-import AppUIKit
+import AppStorage
 import Communities
 
 protocol ClubRepo {
@@ -26,17 +27,22 @@ protocol ClubRepo {
 class ClubRepoImpl: ClubRepo {
 
     private let dataSource: ClubsDataSource
-
+    private let userDefaults: UserDefaultsProtocol
+    
     init(
-        dataSource: ClubsDataSource = resolve()
+        dataSource: ClubsDataSource = resolve(),
+        userDefaults: UserDefaultsProtocol = resolve()
     ) {
         self.dataSource = dataSource
+        self.userDefaults = userDefaults
     }
 
     func fetchClubs(
         query: ClubDTOModel.PaginationQuery
     ) async throws(APIError) -> [ClubCardView.Model] {
-        let data = try await dataSource.fetchClubs(query: query.toDictionary())
+        var dict = query.toDictionary()
+        dict["parentId"] = String(userDefaults.integer(forKey: .communityId))
+        let data = try await dataSource.fetchClubs(query: dict)
         return data.map { item in
             let members: [AppUIEntities.Member] = item.members?.map { member in
                 .init(
@@ -104,13 +110,13 @@ class ClubRepoImpl: ClubRepo {
                 ]
             )
         )
-        let capacity = "\(2)/\(data.capacity ?? 0) members"
+        let capacity = "\(data.membersCount ?? 0)/\(data.capacity ?? 0) members"
         info.append(
             .init(
                 title: "Event info",
                 subItems: [
-                    .init(title: "Created/Updated Date", description: "-"),
-                    .init(title: "Owner Contact", description: data.ownerContact),
+                    .init(title: "Created/Updated Date", description: data.modifiedAt ?? "-"),
+                    .init(title: "Owner Contact", description: data.ownerContact ?? "-"),
                     .init(title: "Capacity", description: capacity),
                     .init(title: "Rules", description: data.rule ?? "-"),
                     .init(title: "Location", description: data.location ?? "-")
@@ -131,9 +137,9 @@ class ClubRepoImpl: ClubRepo {
         let uiModel: ClubsDetailsModel.UIModel = .init(
             name: data.name,
             communityName: data.communityName,
-            membersCount: 0,
-            logo: URL(string: "-"),
-            coverImage: URL(string: "-"),
+            membersCount: data.membersCount ?? 0,
+            logo: URL(string: data.logoUrl ?? ""),
+            coverImage: URL(string: data.backgroundUrl ?? ""),
             coverColorType: .primary,
             userActivityType: .member,
             accessType: data.visibility,

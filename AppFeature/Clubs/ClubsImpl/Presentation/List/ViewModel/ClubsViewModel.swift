@@ -57,6 +57,10 @@ final class ClubsViewModel: UIFeatureViewModel<ClubsFeature> {
     }
     
     private func getClubs() async throws {
+        postEffect(.loading(true))
+        defer {
+            postEffect(.loading(false))
+        }
         do {
             let data = try await dependencies.useCase.fetchClubsData(
                 query: makeQuery()

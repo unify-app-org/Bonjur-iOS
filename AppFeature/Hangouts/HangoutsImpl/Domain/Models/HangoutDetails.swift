@@ -20,7 +20,6 @@ enum HangoutDetails {
         let accessType: AppUIEntities.AccessType
         let tags: [AppUIEntities.Tags]
         let infoData: [Info]
-        let membersData: CommunitiesMemberModuleModel.GroupedMembersData
     }
     
     struct Info: Identifiable {
@@ -110,12 +109,12 @@ extension HangoutDetails.UIModel {
                     )
                 ]
             )
-        ],
-        membersData: .mockData
+        ]
     )
 }
 
-private extension CommunitiesMemberModuleModel.GroupedMembersData {
+
+extension CommunitiesMemberModuleModel.GroupedMembersData {
     static let mockData: Self = .init(
         users: [
             .init(

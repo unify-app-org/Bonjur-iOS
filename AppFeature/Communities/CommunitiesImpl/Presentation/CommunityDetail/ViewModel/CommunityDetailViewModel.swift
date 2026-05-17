@@ -89,6 +89,7 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
         
         async let clubs = result {
             try await dependencies.useCase.fetchClubs(
+                communityId: inputData.communityId,
                 query: .init(page: 0, size: 10)
             )
         }

@@ -29,4 +29,34 @@ struct HangoutsDTOModel {
         let membersCount: Int?
         let categoryResponses: [CategoryResponse]
     }
+    
+    struct HangoutDetail: Decodable {
+        let id: String
+        let name: String
+        let about: String?
+        let capacity: Int?
+        let rules: String?
+        let location: String?
+        let visibility: AppPresentationModel.AccessType?
+        let hangoutDate: String?
+        let links: [Link]?
+        let community: Community
+        let categories: [Categories]
+    }
+    
+    struct Community: Decodable {
+        let id: Int
+        let name: String
+    }
+    
+    struct Categories: Decodable {
+        let id: Int
+        let title: String
+    }
+    
+    struct Link: Decodable {
+        let type: String?
+        let name: String?
+        let url: String?
+    }
 }

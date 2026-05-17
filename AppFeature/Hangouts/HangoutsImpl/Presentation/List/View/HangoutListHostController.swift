@@ -7,6 +7,7 @@
 
 import UIKit
 import AppFoundation
+import AppUIKit
 
 // MARK: - Controller
 
@@ -16,14 +17,38 @@ final class HangoutListHostController: UIFeatureController<
 > {
     override func handleEffect(_ effect: HangoutListSideEffect) {
         switch effect {
-        case .error(_):
-            break
         case .loading(let isLoading):
             if isLoading {
-                
+                AppLoadingUI.show()
             } else {
-                
+                AppLoadingUI.dismiss()
             }
+        case .error(let error):
+            showAlert(
+                title: error.localizedDescription,
+                subtitle: error.detail
+            )
         }
+    }
+    
+    private func showAlert(
+        title: String,
+        subtitle: String?,
+        buttonTitle: String = "Got it"
+    ) {
+        AppAlertPresenter.present(
+            .init(
+                config: .init(
+                    title: title,
+                    subtitle: subtitle
+                ),
+                actions: {
+                    AppAlert.Action(
+                        title: buttonTitle,
+                        style: .primary
+                    )
+                }
+            )
+        )
     }
 }

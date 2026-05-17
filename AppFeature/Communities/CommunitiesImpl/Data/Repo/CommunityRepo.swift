@@ -22,6 +22,7 @@ protocol CommunityRepo {
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
     
     func getClubs(
+        communityId: Int,
         query: CommunityDTO.PaginationQuery
     ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
 }
@@ -104,10 +105,13 @@ class CommunityRepoImpl: CommunityRepo {
     }
     
     func getClubs(
+        communityId: Int,
         query: CommunityDTO.PaginationQuery
     ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
+        var dict = query.toDictionary()
+        dict["parentId"] = "\(communityId)"
         let data = try await dataSource.getClubs(
-            query: query.toDictionary()
+            query: dict
         )
         let uiModel: [ClubsModuleModel.CardInputData] = data.map { item in
             let members: [AppPresentationModel.Member] = item.members?.map { member in

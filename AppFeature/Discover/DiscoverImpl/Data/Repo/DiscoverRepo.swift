@@ -9,6 +9,7 @@ import Clubs
 import Events
 import Hangouts
 import AppUIKit
+import AppStorage
 import Foundation
 import AppNetwork
 import Communities
@@ -34,13 +35,16 @@ protocol DiscoverRepo {
 class DiscoverRepoImpl: DiscoverRepo {
     private let dataSource: DiscoverDataSource
     private let tokenManger: TokenManager
+    private let userDefault: UserDefaultsProtocol
     
     init(
         dataSource: DiscoverDataSource = resolve(),
-        tokenManger: TokenManager = resolve()
+        tokenManger: TokenManager = resolve(),
+        userDefault: UserDefaultsProtocol = resolve()
     ) {
         self.dataSource = dataSource
         self.tokenManger = tokenManger
+        self.userDefault = userDefault
     }
     
     func getHangout(
@@ -72,8 +76,10 @@ class DiscoverRepoImpl: DiscoverRepo {
     func getClubs(
         query: DiscoverDTOModel.PaginationQuery
     ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
+        var dict = query.toDictionary()
+        dict["parentId"] = String(userDefault.integer(forKey: .communityId))
         let data = try await dataSource.getClubs(
-            query: query.toDictionary()
+            query: dict
         )
         let uiModel: [ClubsModuleModel.CardInputData] = data.map { item in
             let members: [AppPresentationModel.Member] = item.members?.map { member in

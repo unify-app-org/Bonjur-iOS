@@ -6,11 +6,20 @@
 //
 
 import AppFoundation
+import Communities
+import AppNetwork
+
+private typealias FetchResult<T> = Result<T, Error>
 
 final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
     
     struct Dependencies {
         let useCase: HangoutsUseCase
+    }
+    
+    private struct InitialFetchResults {
+        let detail: FetchResult<HangoutDetails.UIModel>
+        let members: FetchResult<CommunitiesMemberModuleModel.GroupedMembersData>
     }
     
     private let router: HangoutDetailsRouterProtocol
@@ -40,20 +49,101 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
         }
     }
     
-    private func fetchData() {
-        Task {
-            await getHangoutDetail()
-        }
-    }
-    
     private func getHangoutDetail() async {
+        postEffect(.loading(true))
+        defer {
+            postEffect(.loading(false))
+        }
         do {
             let data = try await dependencies.useCase.fetchDetailHangout(
                 id: inputData.hangoutId
             )
             state.uiModel = data
         } catch {
+            postEffect(.error(error))
+        }
+    }
+    
+    private func fetchData() {
+        Task {
+            postEffect(.loading(true))
+            defer {
+                postEffect(.loading(false))
+            }
             
+            let results = await fetchInitialData()
+            let firstError = applyInitialFetchResults(results)
+            
+            if let firstError {
+                postEffect(.error(firstError as! APIError))
+            }
+        }
+    }
+    
+    private func fetchInitialData() async -> InitialFetchResults {
+        async let detail = result {
+            try await dependencies.useCase.fetchDetailHangout(
+                id: inputData.hangoutId
+            )
+        }
+        async let members = result {
+            try await dependencies.useCase.fetchDetailHangoutMembers(
+                id: inputData.hangoutId
+            )
+        }
+        
+        return await .init(
+            detail: detail,
+            members: members
+        )
+    }
+    
+    private func applyInitialFetchResults(
+        _ results: InitialFetchResults
+    ) -> Error? {
+        var firstError: Error?
+        
+        switch results.detail {
+        case .success(let detail):
+            Task { @MainActor in
+                handleUIModel(detail)
+            }
+        case .failure(let error):
+            firstError = firstError ?? error
+        }
+        
+        switch results.members {
+        case .success(let members):
+            Task { @MainActor in
+                handleMembers(members)
+            }
+        case .failure(let error):
+            firstError = firstError ?? error
+        }
+        return firstError
+    }
+    
+    @MainActor
+    private func handleUIModel(
+        _ data: HangoutDetails.UIModel
+    ) {
+        state.uiModel = data
+    }
+    
+    @MainActor
+    private func handleMembers(
+        _ data: CommunitiesMemberModuleModel.GroupedMembersData
+    ) {
+        state.membersData = data
+    }
+    
+    private func result<T>(
+        _ operation: () async throws -> T
+    ) async -> Result<T, Error> {
+        do {
+            return .success(try await operation())
+        } catch {
+            return .failure(error)
         }
     }
 }

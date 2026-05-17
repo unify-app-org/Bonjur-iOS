@@ -7,51 +7,43 @@
 
 import AppUIKit
 import AppNetwork
+import Communities
 
 protocol HangoutsUseCase {
     func fetchHangouts(
         query: HangoutsDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsCardView.Model]
+    
+    func fetchDetailHangoutMembers(
+        id: String
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
+
     func fetchDetailHangout(id: String) async throws(APIError) -> HangoutDetails.UIModel
 }
 
 class HangoutsUseCaseImpl: HangoutsUseCase {
     
-    private let dataSource: HangoutsDataSource
+    private let repo: HangoutRepo
     
-    init(dataSource: HangoutsDataSource = resolve()) {
-        self.dataSource = dataSource
+    init(repo: HangoutRepo = resolve()) {
+        self.repo = repo
     }
-
+    
     func fetchHangouts(
         query: HangoutsDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsCardView.Model] {
-        let data = try await dataSource.fetchHangouts(query: query.toDictionary())
-        return data.map { item in
-            let tags: [AppUIEntities.Tags] = item.categoryResponses.map { category in
-                .init(
-                    id: category.id ?? 0,
-                    type: "",
-                    title: category.title ?? "-"
-                )
-            }
-
-            return .init(
-                id: item.id ?? "-",
-                name: item.name ?? "-",
-                description: item.about ?? "-",
-                memberCount: item.membersCount ?? 0,
-                totalCapacity: item.capacity,
-                tags: tags,
-                accessType: item.visibility ?? .private,
-                requestType: .none
-            )
-        }
+        try await repo.fetchHangouts(query: query)
     }
     
     func fetchDetailHangout(
         id: String
     ) async throws(APIError) -> HangoutDetails.UIModel {
-        HangoutDetails.UIModel.mockData
+        try await repo.fetchDetailHangout(id: id)
+    }
+    
+    func fetchDetailHangoutMembers(
+        id: String
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
+        try await repo.fetchDetailHangoutMembers(id: id)
     }
 }

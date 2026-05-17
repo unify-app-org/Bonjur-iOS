@@ -6,7 +6,9 @@
 //
 
 import AppFoundation
+import Communities
 import SwiftUI
+import AppNetwork
 
 // MARK: - HangoutDetails input
 
@@ -18,6 +20,7 @@ struct HangoutDetailsInputData {
 
 enum HangoutDetailsSideEffect: UISideEffect {
     case loading(Bool)
+    case error(APIError)
 }
 
 // MARK: - Feature Definition
@@ -32,6 +35,7 @@ typealias HangoutDetailsFeature = UIFeatureDefinition<
 
 final class HangoutDetailsViewState: UIFeatureState {
     @Published var uiModel: HangoutDetails.UIModel?
+    @Published var membersData: CommunitiesMemberModuleModel.GroupedMembersData?
     @Published var selectedSegment: SegmentTypes = .about
     @Published var isFileUploadReachedMaxLimit = false
     

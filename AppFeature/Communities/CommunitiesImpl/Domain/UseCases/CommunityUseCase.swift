@@ -14,6 +14,7 @@ protocol CommunityUseCase {
     func fetchCommunityData(id: Int) async throws -> CommunityDetails.UIModel
     func fetchCommunityMembers(id: Int) async throws -> CommunitiesMemberModuleModel.GroupedMembersData
     func fetchClubs(
+        communityId: Int,
         query: CommunityDTO.PaginationQuery
     ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
 }
@@ -35,8 +36,12 @@ class CommunityUseCaseImpl: CommunityUseCase {
     }
     
     func fetchClubs(
+        communityId: Int,
         query: CommunityDTO.PaginationQuery
     ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
-        try await repo.getClubs(query: query)
+        try await repo.getClubs(
+            communityId: communityId,
+            query: query
+        )
     }
 }

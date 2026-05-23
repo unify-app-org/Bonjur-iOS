@@ -41,17 +41,21 @@ public enum AppPresentationModel {
     
     // MARK: - Access Type
 
-    public enum AccessType: String, Codable, Hashable {
+    public enum AccessType: String, Codable, Hashable, CaseIterableWithDefault {
+        public static var defaultValue: AppPresentationModel.AccessType = .private
+        
         case `public` = "PUBLIC"
         case `private` = "PRIVATE"
     }
     
     // MARK: - Request Type
     
-    public enum RequestType: Codable, Hashable {
-        case joined
-        case rejected
-        case pending
+    public enum RequestType: String, Codable, Hashable, CaseIterableWithDefault {
+        public static var defaultValue: AppPresentationModel.RequestType = .none
+        
+        case joined = "ACCEPTED"
+        case rejected = "REJECTED"
+        case pending = "PENDING"
         case none
     }
     
@@ -62,7 +66,9 @@ public enum AppPresentationModel {
     
     // MARK: - Background  Color Type
     
-    public enum BackgroundType: String, Codable, Hashable {
+    public enum BackgroundType: String, Codable, Hashable, CaseIterableWithDefault {
+        public static var defaultValue: AppPresentationModel.BackgroundType = .primary
+        
         /// green
         case primary = "GREEN"
         /// blue
@@ -76,7 +82,9 @@ public enum AppPresentationModel {
     
     // MARK: - User Activity Role
     
-    public enum UserActivityRole: String, Codable, CaseIterable {
+    public enum UserActivityRole: String, Codable, CaseIterable, CaseIterableWithDefault {
+        public static var defaultValue: AppPresentationModel.UserActivityRole = .member
+        
         case member = "MEMBER"
         case president = "PRESIDENT"
         case visePresident = "VICE_PRESIDENT"
@@ -93,7 +101,9 @@ public enum AppPresentationModel {
         case hangOuts
     }
     
-    public enum Gender: String, Codable {
+    public enum Gender: String, Codable, CaseIterableWithDefault {
+        public static var defaultValue: AppPresentationModel.Gender = .male
+        
         case male = "MALE"
         case female = "FEMALE"
     }
@@ -214,5 +224,16 @@ public enum AppPresentationModel {
             case languages
             case greeting
         }
+    }
+}
+
+public protocol CaseIterableWithDefault:
+    Decodable & CaseIterable & RawRepresentable where RawValue: Decodable, AllCases: BidirectionalCollection {
+    static var defaultValue: AllCases.Element { get }
+}
+
+public extension CaseIterableWithDefault {
+    init(from decoder: Decoder) throws {
+        self = try Self(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? Self.defaultValue
     }
 }

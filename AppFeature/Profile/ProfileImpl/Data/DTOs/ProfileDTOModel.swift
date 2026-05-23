@@ -46,4 +46,26 @@ struct ProfileDTOModel {
         let id: Int
         let name, code: String?
     }
+    
+    //MARK: - Clubs
+    
+    struct MyClubListResponse: Decodable {
+        let id: Int?
+        let name: String?
+        let communityName: String?
+        let background: AppPresentationModel.BackgroundType?
+        let visibility: AppPresentationModel.AccessType?
+        let clubProfile: String?
+        let backgroundUrl: String?
+        let about: String?
+        let count, capacity: Int?
+        let joined: Bool?
+        let members: [ListMember]?
+        
+        struct ListMember: Decodable {
+            let id: String?
+            let fullName: String?
+            let url: String?
+        }
+    }
 }

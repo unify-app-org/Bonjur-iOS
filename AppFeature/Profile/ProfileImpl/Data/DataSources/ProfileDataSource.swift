@@ -22,6 +22,7 @@ protocol ProfileDataSource {
     func fetchSections(
         notificationsEnabled: Bool
     ) -> [ProfileSettingsViewState.SettingsSection]
+    func getMyClubs(userID: String) async throws(APIError) -> [ProfileDTOModel.MyClubListResponse]
 }
 
 final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataSource {
@@ -47,6 +48,12 @@ final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataS
     
     func deleteAccount() async throws(APIError) -> Data {
         try await fetchRawData(endPoint: .deleteAccount)
+    }
+    
+    func getMyClubs(
+        userID: String
+    ) async throws(APIError) -> [ProfileDTOModel.MyClubListResponse] {
+        try await fetch(endPoint: .getMyClubs(userID))
     }
     
     func fetchSections(

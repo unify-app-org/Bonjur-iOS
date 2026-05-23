@@ -9,6 +9,7 @@ import Foundation
 import AppNetwork
 import UIKit
 import AppUIKit
+import Clubs
 
 protocol ProfileUseCase {
     func getProfileData(userId: String?) async throws(APIError) -> ProfileDetail.UIModel
@@ -20,6 +21,7 @@ protocol ProfileUseCase {
         queryData: ProfileDTOModel.UpdateRequest?
     ) async throws(APIError) -> Data
     func deleteAccount() async throws(APIError) -> Data
+    func getMyClubs(userId: String?) async throws(APIError) -> [ClubsModuleModel.CardInputData]
 }
 
 class ProfileUseCaseImpl: ProfileUseCase {
@@ -62,5 +64,11 @@ class ProfileUseCaseImpl: ProfileUseCase {
     
     func deleteAccount() async throws(APIError) -> Data {
         try await repo.deleteAccount()
+    }
+    
+    func getMyClubs(
+        userId: String?
+    ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
+        try await repo.getMyClubs(userId: userId)
     }
 }

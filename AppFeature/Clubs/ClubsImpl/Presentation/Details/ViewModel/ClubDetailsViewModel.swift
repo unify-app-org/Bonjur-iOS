@@ -9,16 +9,14 @@ import AppFoundation
 import Communities
 import AppNetwork
 
-private typealias FetchResult<T> = Result<T, Error>
-
 final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
     
     struct Dependencies {
         let useCase: ClubsUseCase
     }
     private struct InitialFetchResults {
-        let detail: FetchResult<ClubsDetailsModel.UIModel>
-        let members: FetchResult<CommunitiesMemberModuleModel.GroupedMembersData>
+        let detail: APIResult<ClubsDetailsModel.UIModel>
+        let members: APIResult<CommunitiesMemberModuleModel.GroupedMembersData>
     }
     
     private let router: ClubDetailsRouterProtocol
@@ -63,18 +61,18 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
             let firstError = applyInitialFetchResults(results)
             
             if let firstError {
-                postEffect(.error(firstError as? APIError))
+                postEffect(.error(firstError))
             }
         }
     }
     
     private func fetchInitialData() async -> InitialFetchResults {
-        async let detail = result {
+        async let detail = apiResult {
             try await dependencies.useCase.fetchClubDetails(
                 clubId: inputData.clubId
             )
         }
-        async let members = result {
+        async let members = apiResult {
             try await dependencies.useCase.fetchClubMemberById(
                 id: inputData.clubId
             )
@@ -88,8 +86,8 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
     
     private func applyInitialFetchResults(
         _ results: InitialFetchResults
-    ) -> Error? {
-        var firstError: Error?
+    ) -> APIError? {
+        var firstError: APIError?
         
         switch results.detail {
         case .success(let detail):
@@ -123,15 +121,5 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
         _ data: CommunitiesMemberModuleModel.GroupedMembersData
     ) {
         state.members = data
-    }
-    
-    private func result<T>(
-        _ operation: () async throws -> T
-    ) async -> Result<T, Error> {
-        do {
-            return .success(try await operation())
-        } catch {
-            return .failure(error)
-        }
     }
 }

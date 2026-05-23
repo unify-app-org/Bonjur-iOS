@@ -10,8 +10,6 @@ import AppNetwork
 import Communities
 import Clubs
 
-private typealias FetchResult<T> = Result<T, Error>
-
 final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature> {
     
     struct Dependencies {
@@ -19,9 +17,9 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
     }
     
     private struct InitialFetchResults {
-        let detail: FetchResult<CommunityDetails.UIModel>
-        let members: FetchResult<CommunitiesMemberModuleModel.GroupedMembersData>
-        let clubs: FetchResult<[ClubsModuleModel.CardInputData]>
+        let detail: APIResult<CommunityDetails.UIModel>
+        let members: APIResult<CommunitiesMemberModuleModel.GroupedMembersData>
+        let clubs: APIResult<[ClubsModuleModel.CardInputData]>
     }
     
     private let router: CommunityDetailRouterProtocol
@@ -70,24 +68,24 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
             let firstError = applyInitialFetchResults(results)
             
             if let firstError {
-                postEffect(.error(firstError as? APIError))
+                postEffect(.error(firstError))
             }
         }
     }
     
     private func fetchInitialData() async -> InitialFetchResults {
-        async let detail = result {
+        async let detail = apiResult {
             try await dependencies.useCase.fetchCommunityData(
                 id: inputData.communityId
             )
         }
-        async let members = result {
+        async let members = apiResult {
             try await dependencies.useCase.fetchCommunityMembers(
                 id: inputData.communityId
             )
         }
         
-        async let clubs = result {
+        async let clubs = apiResult {
             try await dependencies.useCase.fetchClubs(
                 communityId: inputData.communityId,
                 query: .init(page: 0, size: 10)
@@ -103,8 +101,8 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
     
     private func applyInitialFetchResults(
         _ results: InitialFetchResults
-    ) -> Error? {
-        var firstError: Error?
+    ) -> APIError? {
+        var firstError: APIError?
         
         switch results.detail {
         case .success(let detail):
@@ -154,15 +152,5 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
         _ data: [ClubsModuleModel.CardInputData]
     ) {
         state.clubsData = data
-    }
-    
-    private func result<T>(
-        _ operation: () async throws -> T
-    ) async -> Result<T, Error> {
-        do {
-            return .success(try await operation())
-        } catch {
-            return .failure(error)
-        }
     }
 }

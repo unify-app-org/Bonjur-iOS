@@ -8,6 +8,7 @@
 import AppFoundation
 import AppUIKit
 import AppNetwork
+import Clubs
 
 final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
     
@@ -18,7 +19,12 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
     private let router: ProfileDetailRouterProtocol
     private let inputData: ProfileDetailInputData
     private let dependencies: ProfileDetailViewModel.Dependencies
-    
+
+    private struct InitialFetchResults {
+        let user: APIResult<ProfileDetail.UIModel>
+        let clubs: APIResult<[ClubsModuleModel.CardInputData]>
+    }
+
     init(
         state: ProfileDetailFeature.State,
         router: ProfileDetailRouterProtocol,
@@ -83,38 +89,62 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
     
     private func fetchData() {
         Task {
-            await fetchUserData()
+            postEffect(.loading(true))
+            defer {
+                postEffect(.loading(false))
+            }
+
+            let results = await fetchInitialData()
+            let firstError = applyInitialFetchResults(results)
+
+            if let firstError {
+                postEffect(.error(firstError.localizedDescription, firstError.detail))
+            }
         }
     }
     
-    private func fetchUserData() async {
-        postEffect(.loading(true))
-        defer {
-            postEffect(.loading(false))
-        }
-        do {
-            let data = try await dependencies.useCase.getProfileData(
+    private func fetchInitialData() async -> InitialFetchResults {
+        async let user = apiResult {
+            try await dependencies.useCase.getProfileData(
                 userId: inputData.userId
             )
-            await handleFetchUser(data)
-        } catch {
-            postEffect(
-                .error(
-                    error.localizedDescription,
-                    error.detail
-                )
+        }
+        async let clubs = apiResult {
+            try await dependencies.useCase.getMyClubs(
+                userId: inputData.userId
             )
         }
+
+        return await .init(
+            user: user,
+            clubs: clubs
+        )
     }
     
-    @MainActor
-    private func handleFetchUser(
-        _ data: ProfileDetail.UIModel
-    ) {
-        state.uiModel = data
-        guard let _ = inputData.userId else { return }
-        state.navigationTitle = "About user"
-        state.isOtherUser = true
+    private func applyInitialFetchResults(
+        _ results: InitialFetchResults
+    ) -> APIError? {
+        var firstError: APIError?
+
+        switch results.user {
+        case .success(let user):
+            state.uiModel = user
+            if inputData.userId != nil {
+                state.navigationTitle = "About user"
+                state.isOtherUser = true
+            }
+        case .failure(let error):
+            firstError = firstError ?? error
+        }
+
+        switch results.clubs {
+        case .success(let clubs):
+            state.clubs = clubs
+        case .failure(let error):
+            firstError = firstError ?? error
+        }
+
+        return firstError
     }
     
     private func editUser(

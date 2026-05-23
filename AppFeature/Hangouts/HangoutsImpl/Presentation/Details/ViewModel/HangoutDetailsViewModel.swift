@@ -9,8 +9,6 @@ import AppFoundation
 import Communities
 import AppNetwork
 
-private typealias FetchResult<T> = Result<T, Error>
-
 final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
     
     struct Dependencies {
@@ -18,8 +16,8 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
     }
     
     private struct InitialFetchResults {
-        let detail: FetchResult<HangoutDetails.UIModel>
-        let members: FetchResult<CommunitiesMemberModuleModel.GroupedMembersData>
+        let detail: APIResult<HangoutDetails.UIModel>
+        let members: APIResult<CommunitiesMemberModuleModel.GroupedMembersData>
     }
     
     private let router: HangoutDetailsRouterProtocol
@@ -75,18 +73,18 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
             let firstError = applyInitialFetchResults(results)
             
             if let firstError {
-                postEffect(.error(firstError as! APIError))
+                postEffect(.error(firstError))
             }
         }
     }
     
     private func fetchInitialData() async -> InitialFetchResults {
-        async let detail = result {
+        async let detail = apiResult {
             try await dependencies.useCase.fetchDetailHangout(
                 id: inputData.hangoutId
             )
         }
-        async let members = result {
+        async let members = apiResult {
             try await dependencies.useCase.fetchDetailHangoutMembers(
                 id: inputData.hangoutId
             )
@@ -100,8 +98,8 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
     
     private func applyInitialFetchResults(
         _ results: InitialFetchResults
-    ) -> Error? {
-        var firstError: Error?
+    ) -> APIError? {
+        var firstError: APIError?
         
         switch results.detail {
         case .success(let detail):
@@ -135,15 +133,5 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
         _ data: CommunitiesMemberModuleModel.GroupedMembersData
     ) {
         state.membersData = data
-    }
-    
-    private func result<T>(
-        _ operation: () async throws -> T
-    ) async -> Result<T, Error> {
-        do {
-            return .success(try await operation())
-        } catch {
-            return .failure(error)
-        }
     }
 }

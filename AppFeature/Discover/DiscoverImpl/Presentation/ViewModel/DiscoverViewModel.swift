@@ -36,15 +36,13 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     private var hasMoreEvents = true
     private var hasMoreHangouts = true
     
-    private typealias FetchResult<T> = Result<T, Error>
-    
     private struct InitialFetchResults {
-        let user: FetchResult<UserModel>
-        let filters: FetchResult<[FilterView.Model]>
-        let communities: FetchResult<[CommunitiesModuleModel.CardInputData]>
-        let clubs: FetchResult<[ClubsModuleModel.CardInputData]>
-        let events: FetchResult<[EventsModuleModel.CardInputData]>
-        let hangouts: FetchResult<[HangoutsModuleModel.CardInputData]>
+        let user: APIResult<UserModel>
+        let filters: APIResult<[FilterView.Model]>
+        let communities: APIResult<[CommunitiesModuleModel.CardInputData]>
+        let clubs: APIResult<[ClubsModuleModel.CardInputData]>
+        let events: APIResult<[EventsModuleModel.CardInputData]>
+        let hangouts: APIResult<[HangoutsModuleModel.CardInputData]>
     }
     
     init(
@@ -104,32 +102,32 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             publishActivityCounts()
             
             if let firstError {
-                postEffect(.error(firstError as? APIError))
+                postEffect(.error(firstError))
             }
         }
     }
     
     private func fetchInitialData() async -> InitialFetchResults {
-        async let user = result {
+        async let user = apiResult {
             try await dependencies.useCase.fetchUserData()
         }
-        async let filters = result {
+        async let filters = apiResult {
             try await dependencies.useCase.fetchFilterData()
         }
-        async let communities = result {
+        async let communities = apiResult {
             try await dependencies.useCase.fetchCommunitiesData(
                 query: .init(page: 0, size: communitiesSize)
             )
         }
-        async let clubs = result {
+        async let clubs = apiResult {
             try await dependencies.useCase.fetchClubsData(
                 query: .init(page: 0, size: clubsSize)
             )
         }
-        async let events = result {
+        async let events = apiResult {
             try await dependencies.useCase.fetchEventsData()
         }
-        async let hangouts = result {
+        async let hangouts = apiResult {
             try await dependencies.useCase.fetchHangoutsData(
                 query: .init(page: 0, size: hangoutsSize)
             )
@@ -147,8 +145,8 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     
     private func applyInitialFetchResults(
         _ results: InitialFetchResults
-    ) -> Error? {
-        var firstError: Error?
+    ) -> APIError? {
+        var firstError: APIError?
         
         switch results.user {
         case .success(let user):
@@ -345,13 +343,4 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         }
     }
     
-    private func result<T>(
-        _ operation: () async throws -> T
-    ) async -> Result<T, Error> {
-        do {
-            return .success(try await operation())
-        } catch {
-            return .failure(error)
-        }
-    }
 }

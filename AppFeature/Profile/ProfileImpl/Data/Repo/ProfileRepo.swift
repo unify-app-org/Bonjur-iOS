@@ -25,6 +25,7 @@ protocol ProfileRepo {
     func fetchSections(
         notificationsEnabled: Bool
     ) -> [ProfileSettingsViewState.SettingsSection]
+    func getMyClubs(userId: String?) async throws(APIError) -> [ClubsModuleModel.CardInputData]
 }
 
 class ProfileRepoImpl: ProfileRepo {
@@ -143,5 +144,35 @@ class ProfileRepoImpl: ProfileRepo {
         notificationsEnabled: Bool
     ) -> [ProfileSettingsViewState.SettingsSection] {
         dataSource.fetchSections(notificationsEnabled: notificationsEnabled)
+    }
+    
+    func getMyClubs(
+        userId: String?
+    ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
+        let myUserId = await tokenManager.getUserId()
+        let userId = userId ?? myUserId
+        let data = try await dataSource.getMyClubs(userID: userId)
+        return data.map { item in
+            let members: [AppUIEntities.Member] = item.members?.map { member in
+                .init(
+                    id: member.id ?? "",
+                    profileImage: member.url ?? ""
+                )
+            } ?? []
+
+            return .init(
+                id: item.id ?? 0,
+                name: item.name ?? "-",
+                communityName: item.communityName ?? "-",
+                logoURL: item.clubProfile ?? "",
+                memberCount: item.count ?? 0,
+                totalCapacity: item.capacity ?? 0,
+                community: item.communityName ?? "-",
+                members: members,
+                bgType: item.background ?? .primary,
+                accessType: item.visibility ?? .private,
+                requestType: .none
+            )
+        }
     }
 }

@@ -33,3 +33,9 @@ public struct EmptyData: Decodable {
     public init(from decoder: Decoder) throws {
     }
 }
+
+
+public struct PageNationResponse<T: Decodable>: Decodable {
+    public let content: T
+    public let totalElements, size, numberOfElements, totalPages, page: Int?
+}

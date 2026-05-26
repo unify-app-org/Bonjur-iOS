@@ -16,6 +16,10 @@ protocol HangoutsDataSource {
     func fetchHangoutsDetail(
         id: String
     ) async throws(APIError) -> HangoutsDTOModel.HangoutDetail
+    
+    func fetchMembers(
+        id: String
+    ) async throws(APIError) -> PageNationResponse<[HangoutsDTOModel.MemberResponse]>
 }
 
 final class HangoutsDataSourceImpl: NetworkService<HangoutsEndPoint>, HangoutsDataSource {
@@ -30,5 +34,11 @@ final class HangoutsDataSourceImpl: NetworkService<HangoutsEndPoint>, HangoutsDa
         id: String
     ) async throws(APIError) -> HangoutsDTOModel.HangoutDetail {
         try await fetch(endPoint: .hangoutDetail(id))
+    }
+    
+    func fetchMembers(
+        id: String
+    ) async throws(APIError) -> PageNationResponse<[HangoutsDTOModel.MemberResponse]> {
+        try await fetch(endPoint: .members(id))
     }
 }

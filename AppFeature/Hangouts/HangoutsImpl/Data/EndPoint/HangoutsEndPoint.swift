@@ -11,6 +11,7 @@ import AppNetwork
 enum HangoutsEndPoint {
     case getHangouts([String: String])
     case hangoutDetail(String)
+    case members(String)
 }
 
 extension HangoutsEndPoint: AppEndPoint {
@@ -21,13 +22,16 @@ extension HangoutsEndPoint: AppEndPoint {
             "api/ds/v1/hangouts"
         case .hangoutDetail(let id):
             "api/hs/v1/hangouts/\(id)"
+        case .members(let id):
+            "api/hs/v1/hangouts/\(id)/members"
         }
     }
     
     var method: HTTPMethod {
         switch self {
         case .getHangouts,
-                .hangoutDetail:
+                .hangoutDetail,
+                .members:
                 .get
         }
     }

@@ -44,6 +44,7 @@ final class GroupsListViewState: UIFeatureState {
     )
     
     @Published var selectedSegment: SegmentType = .clubs
+    @Published var searchText: String = ""
     
     func currentPageBinding() -> Binding<Int> {
         Binding { [self] in
@@ -88,6 +89,9 @@ final class GroupsListViewState: UIFeatureState {
 
 enum GroupsListAction: UIFeatureAction {
     case fetchData
+    case loadMoreClubs
+    case loadMoreHangouts
+    case searchChanged(String)
     case clubItemTapped(id: Int)
     case eventItemTapped(id: String)
     case hangoutItemTapped(id: String)

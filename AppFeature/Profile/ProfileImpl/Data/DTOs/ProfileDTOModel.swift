@@ -68,4 +68,19 @@ struct ProfileDTOModel {
             let url: String?
         }
     }
+    
+    struct HangoutItem: Decodable {
+        let id: String?
+        let name: String?
+        let visibility: AppPresentationModel.AccessType?
+        let about: String?
+        let capacity: Int?
+        let membersCount: Int?
+        let categoryResponses: [CategoryResponse]
+    }
+    
+    struct CategoryResponse: Decodable {
+        let id: Int?
+        let title: String?
+    }
 }

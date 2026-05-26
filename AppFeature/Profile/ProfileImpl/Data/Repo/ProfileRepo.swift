@@ -26,6 +26,7 @@ protocol ProfileRepo {
         notificationsEnabled: Bool
     ) -> [ProfileSettingsViewState.SettingsSection]
     func getMyClubs(userId: String?) async throws(APIError) -> [ClubsModuleModel.CardInputData]
+    func getMyHangouts(userId: String?) async throws(APIError) -> [HangoutsModuleModel.CardInputData]
 }
 
 class ProfileRepoImpl: ProfileRepo {
@@ -151,7 +152,7 @@ class ProfileRepoImpl: ProfileRepo {
     ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
         let myUserId = await tokenManager.getUserId()
         let userId = userId ?? myUserId
-        let data = try await dataSource.getMyClubs(userID: userId)
+        let data = try await dataSource.getMyClubs(userID: userId).content
         return data.map { item in
             let members: [AppUIEntities.Member] = item.members?.map { member in
                 .init(
@@ -170,6 +171,34 @@ class ProfileRepoImpl: ProfileRepo {
                 community: item.communityName ?? "-",
                 members: members,
                 bgType: item.background ?? .primary,
+                accessType: item.visibility ?? .private,
+                requestType: .none
+            )
+        }
+    }
+    
+    func getMyHangouts(
+        userId: String?
+    ) async throws(APIError) -> [HangoutsModuleModel.CardInputData] {
+        let myUserId = await tokenManager.getUserId()
+        let userId = userId ?? myUserId
+        let data = try await dataSource.fetchMyHangouts(id: userId).content
+        return data.map { item in
+            let tags: [AppUIEntities.Tags] = item.categoryResponses.map { category in
+                .init(
+                    id: category.id ?? 0,
+                    type: "",
+                    title: category.title ?? "-"
+                )
+            }
+
+            return .init(
+                id: item.id ?? "-",
+                name: item.name ?? "-",
+                description: item.about ?? "-",
+                memberCount: item.membersCount ?? 0,
+                totalCapacity: item.capacity,
+                tags: tags,
                 accessType: item.visibility ?? .private,
                 requestType: .none
             )

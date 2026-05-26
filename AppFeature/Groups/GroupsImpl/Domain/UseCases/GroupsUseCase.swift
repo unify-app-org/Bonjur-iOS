@@ -13,28 +13,36 @@ import Hangouts
 
 protocol GroupsUseCase {
     func fetchEvents() async throws(APIError) -> [EventsModuleModel.CardInputData]
-    func fetchClubs() async throws(APIError) -> [ClubsModuleModel.CardInputData]
-    func fetchHangouts() async throws(APIError) -> [HangoutsModuleModel.CardInputData]
+    func fetchClubs(
+        query: GroupsDTOModel.PaginationQuery
+    ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
+    func fetchHangouts(
+        query: GroupsDTOModel.PaginationQuery
+    ) async throws(APIError) -> [HangoutsModuleModel.CardInputData]
 }
 
 class GroupsUseCaseImpl: GroupsUseCase {
     
-    private let dataSource: GroupsDataSource
+    private let repo: GroupsRepo
     
-    init(dataSource: GroupsDataSource = resolve()) {
-        self.dataSource = dataSource
+    init(repo: GroupsRepo = resolve()) {
+        self.repo = repo
     }
 
     func fetchEvents() async throws(APIError) -> [EventsModuleModel.CardInputData] {
         EventsModuleModel.CardInputData.previewMock
     }
     
-    func fetchClubs() async throws(APIError) -> [ClubsModuleModel.CardInputData] {
-        ClubsModuleModel.CardInputData.previewMock
+    func fetchClubs(
+        query: GroupsDTOModel.PaginationQuery
+    ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
+        try await repo.fetchJoinedClubs(query: query)
     }
     
-    func fetchHangouts() async throws(APIError) -> [HangoutsModuleModel.CardInputData] {
-        HangoutsModuleModel.CardInputData.previewMock
+    func fetchHangouts(
+        query: GroupsDTOModel.PaginationQuery
+    ) async throws(APIError) -> [HangoutsModuleModel.CardInputData] {
+        try await repo.fetchJoinedHangouts(query: query)
     }
 }
 

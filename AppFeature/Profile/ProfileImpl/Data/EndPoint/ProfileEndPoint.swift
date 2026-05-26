@@ -18,6 +18,7 @@ enum ProfileEndPoint {
     case deleteAccount
     case getUserById(String)
     case getMyClubs(String)
+    case myHangouts(String)
 }
 
 extension ProfileEndPoint: AppEndPoint {
@@ -36,6 +37,8 @@ extension ProfileEndPoint: AppEndPoint {
             "api/sd/v1/languages"
         case .getMyClubs(let userId):
             "api/cs/v1/clubs/\(userId)/myclubs"
+        case .myHangouts(let id):
+            "api/hs/v1/hangouts/\(id)/myhangouts"
         }
     }
     
@@ -54,7 +57,8 @@ extension ProfileEndPoint: AppEndPoint {
                 .getCategories,
                 .getLanguages,
                 .getUserById,
-                .getMyClubs:
+                .getMyClubs,
+                .myHangouts:
                 .get
         case .updateUserData:
                 .put

@@ -6,6 +6,10 @@
 //
 
 import AppFoundation
+import AppNetwork
+import Clubs
+import Events
+import Hangouts
 
 final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
     
@@ -16,6 +20,16 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
     private let router: GroupsListRouterProtocol
     private let inputData: GroupsListInputData
     private let dependencies: GroupsListViewModel.Dependencies
+    private let paginationStep = 10
+    private var clubsSize = 10
+    private var hangoutsSize = 10
+    private var isLoadingMoreClubs = false
+    private var isLoadingMoreHangouts = false
+    private var hasMoreClubs = true
+    private var hasMoreHangouts = true
+    private var sourceClubs: [ClubsModuleModel.CardInputData] = []
+    private var sourceEvents: [EventsModuleModel.CardInputData] = []
+    private var sourceHangouts: [HangoutsModuleModel.CardInputData] = []
     
     init(
         state: GroupsListFeature.State,
@@ -33,6 +47,12 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .loadMoreClubs:
+            loadMoreClubs()
+        case .loadMoreHangouts:
+            loadMoreHangouts()
+        case .searchChanged(let text):
+            searchChanged(text)
         case .clubItemTapped(let id):
             Task {
                 await router.navigate(to: .clubDetail(id: id))
@@ -58,25 +78,172 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
     
     private func getClubs() async {
         do {
-            state.uiModel.clubs = try await dependencies.useCase.fetchClubs()
+            let clubs = try await dependencies.useCase.fetchClubs(
+                query: makeQuery(size: clubsSize)
+            )
+            hasMoreClubs = clubs.count >= clubsSize
+            sourceClubs = clubs
+            applyClubsSearch()
         } catch {
-            postEffect(.error(error))
+            postError(error)
         }
     }
     
     private func getEvents() async {
         do {
-            state.uiModel.events = try await dependencies.useCase.fetchEvents()
+            sourceEvents = try await dependencies.useCase.fetchEvents()
+            applyEventsSearch()
         } catch {
-            postEffect(.error(error))
+            postError(error)
         }
     }
     
     private func getHangouts() async {
         do {
-            state.uiModel.hangouts = try await dependencies.useCase.fetchHangouts()
+            let hangouts = try await dependencies.useCase.fetchHangouts(
+                query: makeQuery(size: hangoutsSize)
+            )
+            hasMoreHangouts = hangouts.count >= hangoutsSize
+            sourceHangouts = hangouts
+            applyHangoutsSearch()
         } catch {
-            postEffect(.error(error))
+            postError(error)
         }
+    }
+    
+    private func loadMoreClubs() {
+        guard !isLoadingMoreClubs, hasMoreClubs else { return }
+        isLoadingMoreClubs = true
+        let previousSize = clubsSize
+        clubsSize += paginationStep
+        
+        Task {
+            defer {
+                isLoadingMoreClubs = false
+            }
+            
+            do {
+                let previousCount = sourceClubs.count
+                let clubs = try await dependencies.useCase.fetchClubs(
+                    query: makeQuery(size: clubsSize)
+                )
+                hasMoreClubs = clubs.count > previousCount
+                sourceClubs = clubs
+                applyClubsSearch()
+            } catch {
+                clubsSize = previousSize
+                postError(error)
+            }
+        }
+    }
+    
+    private func loadMoreHangouts() {
+        guard !isLoadingMoreHangouts, hasMoreHangouts else { return }
+        isLoadingMoreHangouts = true
+        let previousSize = hangoutsSize
+        hangoutsSize += paginationStep
+        
+        Task {
+            defer {
+                isLoadingMoreHangouts = false
+            }
+            
+            do {
+                let previousCount = sourceHangouts.count
+                let hangouts = try await dependencies.useCase.fetchHangouts(
+                    query: makeQuery(size: hangoutsSize)
+                )
+                hasMoreHangouts = hangouts.count > previousCount
+                sourceHangouts = hangouts
+                applyHangoutsSearch()
+            } catch {
+                hangoutsSize = previousSize
+                postError(error)
+            }
+        }
+    }
+    
+    private func searchChanged(_ text: String) {
+        state.searchText = text
+        clubsSize = paginationStep
+        hangoutsSize = paginationStep
+        hasMoreClubs = true
+        hasMoreHangouts = true
+        
+        applyClubsSearch()
+        applyEventsSearch()
+        applyHangoutsSearch()
+        
+        Task {
+            await getClubs()
+            await getHangouts()
+        }
+    }
+    
+    private func applyClubsSearch() {
+        let query = searchQuery
+        
+        guard !query.isEmpty else {
+            state.uiModel.clubs = sourceClubs
+            return
+        }
+        
+        state.uiModel.clubs = sourceClubs.filter { club in
+            club.name.lowercased().contains(query)
+            || club.communityName.lowercased().contains(query)
+            || club.community.lowercased().contains(query)
+        }
+    }
+    
+    private func applyEventsSearch() {
+        let query = searchQuery
+        
+        guard !query.isEmpty else {
+            state.uiModel.events = sourceEvents
+            return
+        }
+        
+        state.uiModel.events = sourceEvents.filter { event in
+            event.name.lowercased().contains(query)
+            || event.club.name.lowercased().contains(query)
+            || event.tags.contains { $0.title.lowercased().contains(query) }
+        }
+    }
+    
+    private func applyHangoutsSearch() {
+        let query = searchQuery
+        
+        guard !query.isEmpty else {
+            state.uiModel.hangouts = sourceHangouts
+            return
+        }
+        
+        state.uiModel.hangouts = sourceHangouts.filter { hangout in
+            hangout.name.lowercased().contains(query)
+            || hangout.description.lowercased().contains(query)
+            || hangout.tags.contains { $0.title.lowercased().contains(query) }
+        }
+    }
+    
+    private func makeQuery(size: Int) -> GroupsDTOModel.PaginationQuery {
+        let name = state.searchText
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        return .init(
+            page: 0,
+            size: size,
+            name: name.isEmpty ? nil : name
+        )
+    }
+    
+    private var searchQuery: String {
+        state.searchText
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+    }
+    
+    private func postError(_ error: any Error) {
+        guard let apiError = error as? APIError else { return }
+        postEffect(.error(apiError))
     }
 }

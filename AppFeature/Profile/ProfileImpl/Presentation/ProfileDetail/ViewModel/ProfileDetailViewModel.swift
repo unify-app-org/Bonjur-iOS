@@ -9,6 +9,7 @@ import AppFoundation
 import AppUIKit
 import AppNetwork
 import Clubs
+import Hangouts
 
 final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
     
@@ -23,6 +24,7 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
     private struct InitialFetchResults {
         let user: APIResult<ProfileDetail.UIModel>
         let clubs: APIResult<[ClubsModuleModel.CardInputData]>
+        let hangouts: APIResult<[HangoutsModuleModel.CardInputData]>
     }
 
     init(
@@ -114,10 +116,16 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
                 userId: inputData.userId
             )
         }
-
+        async let hangouts = apiResult {
+            try await dependencies.useCase.getMyHangouts(
+                userId: inputData.userId
+            )
+        }
+        
         return await .init(
             user: user,
-            clubs: clubs
+            clubs: clubs,
+            hangouts: hangouts
         )
     }
     
@@ -143,7 +151,14 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
         case .failure(let error):
             firstError = firstError ?? error
         }
-
+        
+        switch results.hangouts {
+        case .success(let clubs):
+            state.hangouts = clubs
+        case .failure(let error):
+            firstError = firstError ?? error
+        }
+        
         return firstError
     }
     

@@ -59,4 +59,14 @@ struct HangoutsDTOModel {
         let name: String?
         let url: String?
     }
+    
+    struct MemberResponse: Decodable {
+        let userId: String?
+        let role: AppPresentationModel.UserActivityRole
+        let fullName: String?
+        let profileUrl: String?
+        let degree: String?
+        let specialization: String?
+        let entryYear: Int?
+    }
 }

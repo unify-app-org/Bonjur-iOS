@@ -8,6 +8,7 @@
 import AppNetwork
 import AppUIKit
 import Communities
+import Foundation
 
 protocol HangoutRepo {
     func fetchHangouts(
@@ -113,6 +114,16 @@ class HangoutRepoImpl: HangoutRepo {
     func fetchDetailHangoutMembers(
         id: String
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
-        .mockData
+        let data = try await dataSource.fetchMembers(id: id).content
+        let users = data.map { member in
+            CommunitiesMemberModuleModel.MemberCellModel(
+                id: member.userId ?? "-",
+                name: member.fullName ?? "-",
+                avatarURL: URL(string: member.profileUrl ?? ""),
+                subtitle: "\(member.degree ?? "-"), \(member.specialization ?? "-"), \(member.entryYear ?? 0)",
+                role: member.role
+            )
+        }
+        return .init(users: users)
     }
 }

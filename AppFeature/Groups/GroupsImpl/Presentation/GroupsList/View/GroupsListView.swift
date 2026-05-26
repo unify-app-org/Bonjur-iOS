@@ -23,6 +23,13 @@ struct GroupsListView: View {
     private let clubsModule: ClubsModule
     private let eventsModule: EventsModule
     private let hangoutsModule: HangoutsModule
+    
+    private var searchTextBinding: Binding<String> {
+        Binding(
+            get: { store.state.searchText },
+            set: { store.send(.searchChanged($0)) }
+        )
+    }
 
     // MARK: - Initialization
     
@@ -61,6 +68,7 @@ struct GroupsListView: View {
         .animation(.easeInOut, value: store.state.selectedSegment)
         .navigationTitle("My activities")
         .ignoresSafeArea(edges: .bottom)
+        .dismissKeyboardOnTap()
         .toolbar{
             ToolbarItem(placement: .topBarTrailing) {
                 Image(uiImage: UIImage.Icons.chevronDown02)
@@ -90,7 +98,7 @@ struct GroupsListView: View {
 
     private var searchAndSegmentView: some View {
         VStack(spacing: .zero) {
-            SearchView(text: .constant(""))
+            SearchView(text: searchTextBinding)
                 .padding(.horizontal)
             segmentView
         }
@@ -120,7 +128,7 @@ struct GroupsListView: View {
         if !clubs.isEmpty {
             ScrollView {
                 VStack(spacing: 20) {
-                    ForEach(clubs, id: \.uuid) { club in
+                    ForEach(Array(clubs.enumerated()), id: \.element.uuid) { index, club in
                         if let view = clubsModule.makeCardView(
                             inputData: club,
                             onTap: {
@@ -128,6 +136,9 @@ struct GroupsListView: View {
                             }
                         ) as? AnyView {
                             view
+                                .onAppear {
+                                    loadMoreClubsIfNeeded(index: index, count: clubs.count)
+                                }
                         }
                     }
                 }
@@ -171,7 +182,7 @@ struct GroupsListView: View {
         if !hangouts.isEmpty {
             ScrollView {
                 VStack(spacing: 20) {
-                    ForEach(hangouts, id: \.uuid) { hangout in
+                    ForEach(Array(hangouts.enumerated()), id: \.element.uuid) { index, hangout in
                         if let view = hangoutsModule.makeHangoutsCard(
                             model: hangout,
                             onTap: {
@@ -180,6 +191,9 @@ struct GroupsListView: View {
                             onButtonTap: { }
                         ) as? AnyView {
                             view
+                                .onAppear {
+                                    loadMoreHangoutsIfNeeded(index: index, count: hangouts.count)
+                                }
                         }
                     }
                 }
@@ -201,5 +215,15 @@ struct GroupsListView: View {
             )
         ) { }
         .padding()
+    }
+    
+    private func loadMoreClubsIfNeeded(index: Int, count: Int) {
+        guard count > 0, index == count - 1 else { return }
+        store.send(.loadMoreClubs)
+    }
+    
+    private func loadMoreHangoutsIfNeeded(index: Int, count: Int) {
+        guard count > 0, index == count - 1 else { return }
+        store.send(.loadMoreHangouts)
     }
 }

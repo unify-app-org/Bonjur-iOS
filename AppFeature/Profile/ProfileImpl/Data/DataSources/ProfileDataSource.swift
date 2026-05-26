@@ -22,7 +22,10 @@ protocol ProfileDataSource {
     func fetchSections(
         notificationsEnabled: Bool
     ) -> [ProfileSettingsViewState.SettingsSection]
-    func getMyClubs(userID: String) async throws(APIError) -> [ProfileDTOModel.MyClubListResponse]
+    func getMyClubs(userID: String) async throws(APIError) -> PageNationResponse<[ProfileDTOModel.MyClubListResponse]>
+    func fetchMyHangouts(
+        id: String
+    ) async throws(APIError) -> PageNationResponse<[ProfileDTOModel.HangoutItem]>
 }
 
 final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataSource {
@@ -52,7 +55,7 @@ final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataS
     
     func getMyClubs(
         userID: String
-    ) async throws(APIError) -> [ProfileDTOModel.MyClubListResponse] {
+    ) async throws(APIError) -> PageNationResponse<[ProfileDTOModel.MyClubListResponse]> {
         try await fetch(endPoint: .getMyClubs(userID))
     }
     
@@ -121,5 +124,11 @@ final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataS
                 ]
             )
         ]
+    }
+    
+    func fetchMyHangouts(
+        id: String
+    ) async throws(APIError) -> PageNationResponse<[ProfileDTOModel.HangoutItem]> {
+        try await fetch(endPoint: .myHangouts(id))
     }
 }

@@ -40,6 +40,7 @@ enum GroupsDependencyContainer {
         registerModule()
         registerHelpers()
         registerDataSource()
+        registerRepo()
         registerUseCase()
     }
     
@@ -52,6 +53,12 @@ enum GroupsDependencyContainer {
     private static func registerDataSource() {
         register(GroupsDataSource.self) {
             GroupsDataSourceImpl()
+        }
+    }
+    
+    private static func registerRepo() {
+        register(GroupsRepo.self) {
+            GroupsRepoImpl()
         }
     }
     

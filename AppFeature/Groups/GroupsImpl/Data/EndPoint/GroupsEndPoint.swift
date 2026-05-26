@@ -8,22 +8,34 @@
 import AppNetwork
 
 enum GroupsEndPoint {
-    case test
+    case joinedClubs([String: String])
+    case joinedHangouts([String: String])
 }
 
 extension GroupsEndPoint: AppEndPoint {
     
     var path: String {
         switch self {
-        case .test:
-            "test/test"
+        case .joinedClubs:
+            "api/cs/v1/clubs/joined"
+        case .joinedHangouts:
+            "api/hs/v1/hangouts/get-joined"
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .test:
-                .post
+        case .joinedClubs,
+                .joinedHangouts:
+                .get
+        }
+    }
+    
+    var queryParameters: [String: String]? {
+        switch self {
+        case .joinedClubs(let query),
+                .joinedHangouts(let query):
+            query
         }
     }
 }

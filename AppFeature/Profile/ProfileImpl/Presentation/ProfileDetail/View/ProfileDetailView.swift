@@ -270,6 +270,7 @@ struct ProfileDetailView: View {
                         }
                     ) as? AnyView {
                         view
+                            .frame(height: 220)
                     }
                 }
             }

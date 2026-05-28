@@ -14,6 +14,10 @@ final class EventDetailsHostController: UIFeatureController<
     EventDetailsFeature,
     EventDetailsView
 > {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        hidesBottomBarWhenPushed = true
+    }
 
     override func handleEffect(_ effect: EventDetailsSideEffect) {
         switch effect {

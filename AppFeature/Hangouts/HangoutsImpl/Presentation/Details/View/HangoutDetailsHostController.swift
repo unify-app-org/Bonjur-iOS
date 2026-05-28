@@ -15,6 +15,11 @@ final class HangoutDetailsHostController: UIFeatureController<
     HangoutDetailsFeature,
     HangoutDetailsView
 > {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        hidesBottomBarWhenPushed = true
+    }
+
     override func handleEffect(_ effect: HangoutDetailsSideEffect) {
         switch effect {
         case .loading(let isLoading):

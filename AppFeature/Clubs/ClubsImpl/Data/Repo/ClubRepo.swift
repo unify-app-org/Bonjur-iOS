@@ -26,6 +26,7 @@ protocol ClubRepo {
         id: Int,
         request: MultipartFormData
     ) async throws(APIError) -> Void
+    func joinClub(id: Int) async throws(APIError) -> Void
 }
 
 class ClubRepoImpl: ClubRepo {
@@ -112,6 +113,107 @@ class ClubRepoImpl: ClubRepo {
         let tags: [AppUIEntities.Tags] = data.categories.map { category in
                 .init(id: category.id, type: "", title: category.title)
         }
+        let logoURL = data.logoUrl.flatMap { URL(string: $0) }
+        let coverURL = data.backgroundUrl.flatMap { URL(string: $0) }
+        let uiModel: ClubsDetailsModel.UIModel = .init(
+            name: data.name,
+            communityName: data.communityName,
+            membersCount: data.membersCount ?? 0,
+            logo: logoURL,
+            coverImage: coverURL,
+            coverColorType: data.backgroundColour ?? .primary,
+            userActivityType: data.clubUserRole ?? .notJoined,
+            accessType: data.visibility,
+            tags: tags,
+            infoData: mapInfo(data),
+            editPrefillData: mapPrefilData(data, tags),
+            joinButton: mapButtonModel(data)
+        )
+        return uiModel
+    }
+    
+    func fetchClubMemberById(
+        id: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
+        let data = try await dataSource.fetchClubMemberById(id: id).content
+        let users = data.map { member in
+            CommunitiesMemberModuleModel.MemberCellModel(
+                id: member.userId ?? "-",
+                name: member.fullName ?? "-",
+                avatarURL: URL(string: member.profileUrl ?? ""),
+                subtitle: "\(member.degree ?? "-"), \(member.specialization ?? "-"), \(member.entryYear ?? 0)",
+                role: member.role
+            )
+        }
+        return .init(users: users)
+    }
+    
+    func joinClub(
+        id: Int
+    ) async throws(APIError) {
+        let _ = try await dataSource.joinClub(id: id)
+    }
+}
+
+// MARK: - Detail Map Helper
+private extension ClubRepoImpl {
+    func mapButtonModel(
+        _ data: ClubDTOModel.Response
+    )-> ClubsDetailsModel.JoinButton? {
+        let disabled = data.requestType == .pending
+        let buttonTitle = switch data.requestType {
+        case .joined:
+            ""
+        case .rejected:
+            ""
+        case .pending:
+            "Request sent"
+        default:
+            switch data.visibility {
+            case .public:
+                "Join"
+            case .private:
+                "Request"
+            }
+        }
+        let joinButton: ClubsDetailsModel.JoinButton = .init(
+            title: buttonTitle,
+            disabled: disabled
+        )
+        let hasJoined = data.clubUserRole ?? .notJoined != .notJoined
+        return hasJoined ? nil : joinButton
+    }
+    
+    func mapPrefilData(
+        _ data: ClubDTOModel.Response,
+        _ tags: [AppUIEntities.Tags]
+    ) -> ClubsCreate.PrefillData {
+        let logoURL = data.logoUrl.flatMap { URL(string: $0) }
+        let coverURL = data.backgroundUrl.flatMap { URL(string: $0) }
+        let editPrefillData = ClubsCreate.PrefillData(
+            logoURL: logoURL,
+            coverURL: coverURL,
+            values: [
+                .cover: .cover(data.backgroundColour ?? .primary),
+                .visibility: .radio(data.visibility),
+                .clubName: .text(data.name),
+                .ownerContact: .text(data.ownerContact ?? ""),
+                .category: .tags(tags.map { .init(id: $0.id, label: $0.title) }),
+                .capacity: .text(data.capacity.map(String.init) ?? ""),
+                .links: .links(data.links?.map {
+                    .init(type: $0.type, name: $0.name, url: $0.url)
+                } ?? []),
+                .location: .text(data.location ?? ""),
+                .rules: .text(data.rule ?? ""),
+                .about: .text(data.about)
+            ]
+        )
+        return editPrefillData
+    }
+    
+    func mapInfo(
+        _ data: ClubDTOModel.Response
+    ) -> [ClubsDetailsModel.Info] {
         var info: [ClubsDetailsModel.Info] = []
         info.append(
             .init(
@@ -145,55 +247,6 @@ class ClubRepoImpl: ClubRepo {
                 )
             )
         }
-        let logoURL = data.logoUrl.flatMap { URL(string: $0) }
-        let coverURL = data.backgroundUrl.flatMap { URL(string: $0) }
-        let editPrefillData = ClubsCreate.PrefillData(
-            logoURL: logoURL,
-            coverURL: coverURL,
-            values: [
-                .cover: .cover(data.backgroundColour ?? .primary),
-                .visibility: .radio(data.visibility),
-                .clubName: .text(data.name),
-                .ownerContact: .text(data.ownerContact ?? ""),
-                .category: .tags(tags.map { .init(id: $0.id, label: $0.title) }),
-                .capacity: .text(data.capacity.map(String.init) ?? ""),
-                .links: .links(data.links?.map {
-                    .init(type: $0.type, name: $0.name, url: $0.url)
-                } ?? []),
-                .location: .text(data.location ?? ""),
-                .rules: .text(data.rule ?? ""),
-                .about: .text(data.about)
-            ]
-        )
-        let uiModel: ClubsDetailsModel.UIModel = .init(
-            name: data.name,
-            communityName: data.communityName,
-            membersCount: data.membersCount ?? 0,
-            logo: logoURL,
-            coverImage: coverURL,
-            coverColorType: data.backgroundColour ?? .primary,
-            userActivityType: data.clubUserRole ?? .notJoined,
-            accessType: data.visibility,
-            tags: tags,
-            infoData: info,
-            editPrefillData: editPrefillData
-        )
-        return uiModel
-    }
-    
-    func fetchClubMemberById(
-        id: Int
-    ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
-        let data = try await dataSource.fetchClubMemberById(id: id).content
-        let users = data.map { member in
-            CommunitiesMemberModuleModel.MemberCellModel(
-                id: member.userId ?? "-",
-                name: member.fullName ?? "-",
-                avatarURL: URL(string: member.profileUrl ?? ""),
-                subtitle: "\(member.degree ?? "-"), \(member.specialization ?? "-"), \(member.entryYear ?? 0)",
-                role: member.role
-            )
-        }
-        return .init(users: users)
+        return info
     }
 }

@@ -23,6 +23,12 @@ struct ClubsDetailsModel {
         let tags: [AppUIEntities.Tags]
         let infoData: [Info]
         let editPrefillData: ClubsCreate.PrefillData
+        let joinButton: JoinButton?
+    }
+    
+    struct JoinButton {
+        let title: String
+        let disabled: Bool
     }
     
     struct Info: Identifiable {
@@ -137,7 +143,7 @@ extension ClubsDetailsModel.UIModel {
                 .rules: .text("Everyone can come"),
                 .about: .text("I want to have a coffee and then go to the film I have one free ticket to the concert for the Sunday evening if someone want just contact.")
             ]
-        )
+        ), joinButton: nil
     )
 }
 

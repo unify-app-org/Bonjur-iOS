@@ -24,6 +24,9 @@ protocol ClubsUseCase {
         id: Int,
         request: MultipartFormData
     ) async throws(APIError)
+    func joinClub(
+        id: Int
+    ) async throws(APIError)
 }
 
 class ClubsUseCaseImpl: ClubsUseCase {
@@ -69,5 +72,9 @@ class ClubsUseCaseImpl: ClubsUseCase {
         id: Int
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
         try await repo.fetchClubMemberById(id: id)
+    }
+    
+    func joinClub(id: Int) async throws(APIError) {
+        try await repo.joinClub(id: id)
     }
 }

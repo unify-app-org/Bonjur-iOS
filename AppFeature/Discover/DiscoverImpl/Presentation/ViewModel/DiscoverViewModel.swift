@@ -87,6 +87,10 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             Task {
                 await router.navigate(to: .communityDetails(id: id))
             }
+        case .joinHangout(let id):
+            Task {
+                await joinHangout(id: id)
+            }
         }
     }
     
@@ -98,13 +102,42 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             }
             
             let results = await fetchInitialData()
-            let firstError = applyInitialFetchResults(results)
+            let firstError = await applyInitialFetchResults(results)
             publishActivityCounts()
             
             if let firstError {
                 postEffect(.error(firstError))
             }
         }
+    }
+    
+    private func joinHangout(id: String) async {
+        postEffect(.loading(true))
+        defer {
+            postEffect(.loading(false))
+        }
+        do {
+            _ = try await dependencies.useCase.joinHangout(
+                request: .init(
+                    hangoutId: id
+                )
+            )
+            let data = try await dependencies.useCase.fetchHangoutsData(
+                query: .init(page: 0, size: hangoutsSize)
+            )
+            await handleJoinHangout(
+                data: data
+            )
+        } catch {
+            postEffect(.error(error))
+        }
+    }
+    
+    @MainActor
+    private func handleJoinHangout(
+        data: [HangoutsModuleModel.CardInputData]
+    ) {
+        state.uiModel.hangouts = data
     }
     
     private func fetchInitialData() async -> InitialFetchResults {
@@ -143,6 +176,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         )
     }
     
+    @MainActor
     private func applyInitialFetchResults(
         _ results: InitialFetchResults
     ) -> APIError? {

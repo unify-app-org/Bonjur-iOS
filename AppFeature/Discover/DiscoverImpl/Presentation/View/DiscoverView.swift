@@ -291,7 +291,7 @@ struct DiscoverView: View {
                         store.send(.hangoutsItemOnTap(id: item.id))
                     },
                     onButtonTap: {
-                        
+                        store.send(.joinHangout(id: item.id))
                     }
                 ) as? AnyView {
                     view

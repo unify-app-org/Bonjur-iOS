@@ -26,6 +26,7 @@ struct FieldSchemaRouter: View {
     let field: ClubsCreate.FieldSchema
     @Binding var values: [ClubsCreate.FieldID: ClubsCreate.FieldValue]
     let selectedCategories: [CategoriesChipsView.Model]
+    let isDisabled: Bool
     let onAddCategory: () -> Void
     let onRemoveCategory: (Int) -> Void
     
@@ -33,12 +34,14 @@ struct FieldSchemaRouter: View {
         field: ClubsCreate.FieldSchema,
         values: Binding<[ClubsCreate.FieldID: ClubsCreate.FieldValue]>,
         selectedCategories: [CategoriesChipsView.Model] = [],
+        isDisabled: Bool = false,
         onAddCategory: @escaping () -> Void = {},
         onRemoveCategory: @escaping (Int) -> Void = { _ in }
     ) {
         self.field = field
         self._values = values
         self.selectedCategories = selectedCategories
+        self.isDisabled = isDisabled
         self.onAddCategory = onAddCategory
         self.onRemoveCategory = onRemoveCategory
     }
@@ -66,6 +69,7 @@ struct FieldSchemaRouter: View {
             TextInputField(
                 field: field,
                 placeholder: placeholder,
+                isDisabled: isDisabled,
                 value: Binding(
                     get: { values.text(field.id) },
                     set: { values[field.id] = .text($0) }
@@ -283,6 +287,7 @@ private struct RadioGroupField: View {
 private struct TextInputField: View {
     let field: ClubsCreate.FieldSchema
     let placeholder: String
+    let isDisabled: Bool
     @Binding var value: String
 
     var body: some View {
@@ -292,6 +297,7 @@ private struct TextInputField: View {
                 text: $value,
                 placeHolder: placeholder
             )
+            .disabled(isDisabled)
         }
         .padding(.horizontal, 16)
         .padding(.bottom, 14)

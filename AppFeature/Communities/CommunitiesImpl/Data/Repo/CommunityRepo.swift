@@ -57,7 +57,7 @@ class CommunityRepoImpl: CommunityRepo {
             .init(
                 title: "Event info",
                 subItems: [
-                    .init(title: "Created/Updated Date", description: "-"),
+                    .init(title: "Created/Updated Date", description: data.modifiedAt ?? "-"),
                     .init(title: "Owner Contact", description: data.ownerContact),
                     .init(title: "Capacity", description: capacity),
                     .init(title: "Rules", description: data.rule ?? "-"),
@@ -76,14 +76,36 @@ class CommunityRepoImpl: CommunityRepo {
                 )
             )
         }
+        let logoURL = data.logoUrl.flatMap { URL(string: $0) }
+        let coverURL = data.backgroundUrl.flatMap { URL(string: $0) }
+        let editPrefillData = ClubsModuleModel.CreatePrefillData(
+            logoURL: logoURL,
+            coverURL: coverURL,
+            coverType: data.backgroundColour ?? .primary,
+            visibility: data.visibility ?? .public,
+            name: data.name,
+            ownerContact: data.ownerContact,
+            categories: tags.map {
+                .init(id: $0.id, title: $0.title)
+            },
+            capacity: data.capacity.map(String.init) ?? "",
+            links: data.links?.map {
+                .init(type: $0.type, name: $0.name, url: $0.url)
+            } ?? [],
+            location: data.location ?? "",
+            rules: data.rule ?? "",
+            about: data.about
+        )
         let uiModel: CommunityDetails.UIModel = .init(
             name: data.name,
             membersCount: data.capacity ?? 0,
-            logo: URL(string: ""),
-            coverImage: URL(string: ""),
-            coverColorType: .primary,
+            logo: logoURL,
+            coverImage: coverURL,
+            coverColorType: data.backgroundColour ?? .primary,
+            userActivity: data.clubUserRole ?? .notJoined,
             tags: tags,
-            infoData: info
+            infoData: info,
+            editPrefillData: editPrefillData
         )
         return uiModel
     }
@@ -137,3 +159,4 @@ class CommunityRepoImpl: CommunityRepo {
         return uiModel
     }
 }
+

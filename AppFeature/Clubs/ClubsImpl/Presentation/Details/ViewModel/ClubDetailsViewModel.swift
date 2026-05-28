@@ -43,6 +43,18 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
             Task { @MainActor in
                 router.navigate(to: .backTapped)
             }
+        case .editTapped:
+            guard let prefillData = state.uiModel?.editPrefillData else {
+                return
+            }
+            Task { @MainActor in
+                router.navigate(
+                    to: .editClub(
+                        id: inputData.clubId,
+                        prefillData: prefillData
+                    )
+                )
+            }
         case .userTapped(let id):
             Task { @MainActor in
                 router.navigate(to: .userDetail(id))

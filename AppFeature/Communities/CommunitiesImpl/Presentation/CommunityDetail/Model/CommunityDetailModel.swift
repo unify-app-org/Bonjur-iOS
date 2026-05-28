@@ -40,6 +40,17 @@ final class CommunityDetailViewState: UIFeatureState {
     @Published var selectedSegment: SegmentTypes = .about
     @Published var clubsData: [ClubsModuleModel.CardInputData] = []
     @Published var membersData: CommunitiesMemberModuleModel.GroupedMembersData?
+    @Published var joinButtonTitle: String = "Join"
+    
+    var isEditable: Bool {
+        uiModel?.userActivity == .visePresident || uiModel?.userActivity == .president
+    }
+    var canCreateEvent: Bool {
+        uiModel?.userActivity != .member && uiModel?.userActivity != .notJoined
+    }
+    var hasJoined: Bool {
+        uiModel?.userActivity != .notJoined
+    }
     
     enum SegmentTypes: String, CaseIterable, Identifiable {
         case about = "About"
@@ -55,6 +66,7 @@ final class CommunityDetailViewState: UIFeatureState {
 enum CommunityDetailAction: UIFeatureAction {
     case fetchData
     case backTapped
+    case editTapped
     case clubItemTapped(Int)
     case userTapped(String)
 }

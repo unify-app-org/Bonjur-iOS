@@ -10,6 +10,71 @@ import AppPresentationModel
 
 public struct ClubsModuleModel {
     
+    public struct CreatePrefillData {
+        public let logoURL: URL?
+        public let coverURL: URL?
+        public let coverType: AppPresentationModel.BackgroundType
+        public let visibility: AppPresentationModel.AccessType
+        public let name: String
+        public let ownerContact: String
+        public let categories: [Category]
+        public let capacity: String
+        public let links: [Link]
+        public let location: String
+        public let rules: String
+        public let about: String
+        
+        public init(
+            logoURL: URL?,
+            coverURL: URL?,
+            coverType: AppPresentationModel.BackgroundType,
+            visibility: AppPresentationModel.AccessType,
+            name: String,
+            ownerContact: String,
+            categories: [Category],
+            capacity: String,
+            links: [Link],
+            location: String,
+            rules: String,
+            about: String
+        ) {
+            self.logoURL = logoURL
+            self.coverURL = coverURL
+            self.coverType = coverType
+            self.visibility = visibility
+            self.name = name
+            self.ownerContact = ownerContact
+            self.categories = categories
+            self.capacity = capacity
+            self.links = links
+            self.location = location
+            self.rules = rules
+            self.about = about
+        }
+    }
+    
+    public struct Category {
+        public let id: Int
+        public let title: String
+        
+        public init(id: Int, title: String) {
+            self.id = id
+            self.title = title
+        }
+    }
+    
+    public struct Link {
+        public let type: String
+        public let name: String
+        public let url: String
+        
+        public init(type: String, name: String, url: String) {
+            self.type = type
+            self.name = name
+            self.url = url
+        }
+    }
+    
     public struct CardInputData: Identifiable {
         public let uuid: UUID = UUID()
         public let id: Int

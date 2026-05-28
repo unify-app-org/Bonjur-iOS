@@ -10,6 +10,7 @@ import Profile
 
 enum ClubDetailsRoute {
     case backTapped
+    case editClub(id: Int, prefillData: ClubsCreate.PrefillData)
     case userDetail(String)
 }
 
@@ -35,6 +36,14 @@ final class ClubDetailsRouter: ClubDetailsRouterProtocol {
         switch route {
         case .backTapped:
             self.view?.navigationController?.popViewController(animated: true)
+        case .editClub(let id, let prefillData):
+            let vc = ClubCreateBuilder(
+                inputData: .init(
+                    id: id,
+                    prefillData: prefillData
+                )
+            ).build()
+            view?.navigationController?.pushViewController(vc, animated: true)
         case .userDetail(let id):
             let vc = profile.makeProfileViewController(userId: id) as! UIViewController
             view?.navigationController?.pushViewController(vc, animated: true)

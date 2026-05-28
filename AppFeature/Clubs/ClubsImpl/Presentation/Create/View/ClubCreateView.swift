@@ -142,6 +142,14 @@ struct ClubCreateView: View {
                     Image(uiImage: backgroundImage)
                         .resizable()
                         .scaledToFill()
+                } else if let existingCoverURL = store.state.existingCoverURL {
+                    CachedAsyncImage(url: existingCoverURL) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    } placeholder: {
+                        EmptyView()
+                    }
                 }
             }
             .backgroundType(store.state.values.cover(.cover))
@@ -171,14 +179,16 @@ struct ClubCreateView: View {
                     Image(uiImage: logoImage)
                         .resizable()
                         .scaledToFill()
+                } else if let existingLogoURL = store.state.existingLogoURL {
+                    CachedAsyncImage(url: existingLogoURL) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    } placeholder: {
+                        defaultLogoImage
+                    }
                 } else {
-                    Image(uiImage: UIImage.Icons.user)
-                        .resizable()
-                        .renderingMode(.template)
-                        .scaledToFit()
-                        .foregroundStyle(Color.Palette.blackMedium)
-                        .padding(22)
-                        .background(Color.Palette.grayQuaternary)
+                    defaultLogoImage
                 }
             }
             .frame(width: 88, height: 88)
@@ -192,6 +202,16 @@ struct ClubCreateView: View {
                 cameraButton
             }
         }
+    }
+    
+    private var defaultLogoImage: some View {
+        Image(uiImage: UIImage.Icons.user)
+            .resizable()
+            .renderingMode(.template)
+            .scaledToFit()
+            .foregroundStyle(Color.Palette.blackMedium)
+            .padding(22)
+            .background(Color.Palette.grayQuaternary)
     }
     
     private var cameraButton: some View {
@@ -227,6 +247,7 @@ struct ClubCreateView: View {
                         set: { store.state.values = $0 }
                     ),
                     selectedCategories: store.state.selectedCategories,
+                    isDisabled: store.state.disabledFieldIDs.contains(field.id),
                     onAddCategory: {
                         store.send(.addCategoryTapped)
                     },

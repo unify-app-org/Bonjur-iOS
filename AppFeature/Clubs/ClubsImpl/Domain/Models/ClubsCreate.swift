@@ -60,6 +60,22 @@ enum ClubsCreate {
         let description: String
         let covers: [AppUIEntities.BackgroundType]
     }
+    
+    struct PrefillData {
+        let logoURL: URL?
+        let coverURL: URL?
+        let values: [FieldID: FieldValue]
+        
+        init(
+            logoURL: URL?,
+            coverURL: URL?,
+            values: [FieldID: FieldValue]
+        ) {
+            self.logoURL = logoURL
+            self.coverURL = coverURL
+            self.values = values
+        }
+    }
 
     // MARK: - Field Value (sum type keyed by field id)
 

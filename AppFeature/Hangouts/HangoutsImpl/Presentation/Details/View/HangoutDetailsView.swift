@@ -32,22 +32,10 @@ struct HangoutDetailsView: View {
         ZStack(alignment: .top) {
             VStack {
                 ScrollView(showsIndicators: false) {
-                    VStack(spacing: .zero) {
-                        Color.white.frame(height: 28)
-                        bottomView
-                    }
+                    contentView
                 }
                 .coordinateSpace(name: "scroll")
-                
-                AppButton(
-                    title: "Join",
-                    model: .init(
-                        contentSize: .fill
-                    )
-                ) {
-                    
-                }
-                .padding(.horizontal)
+                joinButton
             }
             
             if isSegmentSticky {
@@ -77,7 +65,7 @@ struct HangoutDetailsView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Image(uiImage: UIImage.Icons.ellipsis02)
             }
-            if !isScrolled {
+            if store.state.isEditable {
                 ToolbarItem(placement: .topBarTrailing) {
                     Image(uiImage: UIImage.Icons.penLine)
                         .padding(.leading)
@@ -91,9 +79,24 @@ struct HangoutDetailsView: View {
         }
     }
     
+    @ViewBuilder
+    private var joinButton: some View {
+        if !store.state.hasJoined {
+            AppButton(
+                title: "Join",
+                model: .init(
+                    contentSize: .fill
+                )
+            ) {
+                
+            }
+            .padding(.horizontal)
+        }
+    }
+    
     // MARK: - Bottom Content
     
-    private var bottomView: some View {
+    private var contentView: some View {
         VStack(alignment: .leading, spacing: 0) {
             clubInfoView
             segmentView

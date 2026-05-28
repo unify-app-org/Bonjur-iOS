@@ -13,6 +13,7 @@ enum ClubsEndPoint {
     case getClubs([String: String])
     case getClubById(Int)
     case getMembersByClubId(Int)
+    case editClub(Int, MultipartFormData)
 }
 
 extension ClubsEndPoint: AppEndPoint {
@@ -29,6 +30,8 @@ extension ClubsEndPoint: AppEndPoint {
             "api/cs/v1/clubs/\(id)"
         case .getMembersByClubId(let id):
             "api/cs/v1/clubs/\(id)/members"
+        case .editClub(let id, _):
+            "api/cs/v1/clubs/\(id)"
         }
     }
     
@@ -41,12 +44,15 @@ extension ClubsEndPoint: AppEndPoint {
                 .getClubById,
                 .getMembersByClubId:
                 .get
+        case .editClub:
+                .put
         }
     }
     
     var multipartFormData: MultipartFormData? {
         switch self {
-        case .createClub(let multiPart):
+        case .createClub(let multiPart),
+                .editClub(_, let multiPart):
             multiPart
         default:
             nil
@@ -64,7 +70,8 @@ extension ClubsEndPoint: AppEndPoint {
 
     var contentType: ContentType {
         switch self {
-        case .createClub:
+        case .createClub,
+                .editClub:
                 .formData
         default:
                 .json

@@ -49,6 +49,7 @@ struct ClubDetailsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar(.visible)
+        .enableSwipeBack()
         .toolbarBackground(isScrolled ? .automatic : .hidden, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -72,12 +73,14 @@ struct ClubDetailsView: View {
                         isScrolled: isScrolled
                     ) { }
             }
-            if !isScrolled {
+            if store.state.isEditable {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Image(uiImage: UIImage.Icons.camera)
+                    Image(uiImage: UIImage.Icons.penLine)
                         .toolbarItemBackground(
                             isScrolled: isScrolled
-                        ) { }
+                        ) {
+                            store.send(.editTapped)
+                        }
                 }
             }
         }
@@ -100,9 +103,15 @@ struct ClubDetailsView: View {
                 }
             }
             .coordinateSpace(name: "scroll")
-            
+            joinButton
+        }
+    }
+    
+    @ViewBuilder
+    private var joinButton: some View {
+        if !store.state.hasJoined {
             AppButton(
-                title: "Join",
+                title: store.state.joinButtonTitle,
                 model: .init(
                     contentSize: .fill
                 )
@@ -152,10 +161,6 @@ struct ClubDetailsView: View {
         HStack(alignment: .lastTextBaseline) {
             clubLogo
             Spacer()
-            Button {} label: {
-                Image(uiImage: UIImage.Icons.penLine)
-            }
-            .padding(.horizontal)
         }
         .padding(.top, -44)
         .padding(.bottom, 16)
@@ -170,9 +175,6 @@ struct ClubDetailsView: View {
                     .foregroundStyle(Color.Palette.blackMedium)
                     .frame(width: 44, height: 44)
             }
-        }
-        .overlay(alignment: .bottomTrailing) {
-            cameraButton
         }
     }
     
@@ -275,15 +277,18 @@ struct ClubDetailsView: View {
         }
     }
     
+    @ViewBuilder
     private var createEventButton: some View {
-        AppButton(
-            title: "Create new event +",
-            model: .init(
-                type: .secondary,
-                contentSize: .fill,
-                size: .medium
-            )
-        ) {}
+        if store.state.canCreateEvent {
+            AppButton(
+                title: "Create new event +",
+                model: .init(
+                    type: .secondary,
+                    contentSize: .fill,
+                    size: .medium
+                )
+            ) {}
+        }
     }
     
     // MARK: - Segments

@@ -13,6 +13,16 @@ import Foundation
 // MARK: - ClubCreate input
 
 struct ClubCreateInputData {
+    let id: Int?
+    let prefillData: ClubsCreate.PrefillData?
+    
+    init(
+        id: Int? = nil,
+        prefillData: ClubsCreate.PrefillData? = nil
+    ) {
+        self.id = id
+        self.prefillData = prefillData
+    }
 }
 
 // MARK: - Side effects
@@ -35,8 +45,11 @@ final class ClubCreateViewState: UIFeatureState {
     @Published var clubsCreateSchema: [ClubsCreate.FieldSchema] = []
     @Published var selectedLogo: Data?
     @Published var backgroundPhoto: Data?
+    @Published var existingLogoURL: URL?
+    @Published var existingCoverURL: URL?
     @Published var showCategoryPicker: Bool = false
     @Published var categorySections: [SelectCategoryView.Section] = []
+    @Published var disabledFieldIDs: Set<ClubsCreate.FieldID> = []
     @Published var values: [ClubsCreate.FieldID: ClubsCreate.FieldValue] = [
         .cover : .cover(.primary),
         .visibility: .radio(.public)

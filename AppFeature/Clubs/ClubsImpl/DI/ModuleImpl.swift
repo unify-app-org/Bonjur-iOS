@@ -39,4 +39,36 @@ struct ClubsModuleImpl: ClubsModule {
         )
         .build()
     }
+    
+    func makeCreateVC(
+        id: Int,
+        prefillData: ClubsModuleModel.CreatePrefillData
+    ) -> AnyObject {
+        ClubCreateBuilder(
+            inputData: .init(
+                id: id,
+                prefillData: .init(
+                    logoURL: prefillData.logoURL,
+                    coverURL: prefillData.coverURL,
+                    values: [
+                        .cover: .cover(prefillData.coverType),
+                        .visibility: .radio(prefillData.visibility),
+                        .clubName: .text(prefillData.name),
+                        .ownerContact: .text(prefillData.ownerContact),
+                        .category: .tags(prefillData.categories.map {
+                            .init(id: $0.id, label: $0.title)
+                        }),
+                        .capacity: .text(prefillData.capacity),
+                        .links: .links(prefillData.links.map {
+                            .init(type: $0.type, name: $0.name, url: $0.url)
+                        }),
+                        .location: .text(prefillData.location),
+                        .rules: .text(prefillData.rules),
+                        .about: .text(prefillData.about)
+                    ]
+                )
+            )
+        )
+        .build()
+    }
 }

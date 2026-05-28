@@ -46,6 +46,18 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
             }
         case .fetchData:
             fetchData()
+        case .editTapped:
+            guard let prefillData = state.uiModel?.editPrefillData else {
+                return
+            }
+            Task {
+                await router.navigate(
+                    to: .edit(
+                        id: inputData.communityId,
+                        prefillData: prefillData
+                    )
+                )
+            }
         case .clubItemTapped(let id):
             Task {
                 await router.navigate(to: .clubsDetails(id: id))

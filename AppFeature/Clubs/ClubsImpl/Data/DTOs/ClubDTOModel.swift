@@ -18,7 +18,7 @@ struct ClubDTOModel {
         let name: String?
     }
 
-    struct CreateRequest: Encodable {
+    struct Request: Encodable {
         let communityId: Int
         let name: String
         let ownerContact: String
@@ -51,8 +51,9 @@ struct ClubDTOModel {
         let rule: String?
         let capacity: Int?
         let communityName: String
-        let backgroundUrl, logoUrl, backgroundColour, modifiedAt: String?
-        let clubUserRole: AppPresentationModel.UserActivityRole
+        let backgroundUrl, logoUrl, modifiedAt: String?
+        let backgroundColour: AppPresentationModel.BackgroundType?
+        let clubUserRole: AppPresentationModel.UserActivityRole?
         let links: [Link]?
         let categories: [Category]
     }

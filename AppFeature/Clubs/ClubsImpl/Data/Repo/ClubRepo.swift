@@ -22,6 +22,10 @@ protocol ClubRepo {
         clubId: Int
     ) async throws(APIError) -> ClubsDetailsModel.UIModel
     func fetchClubMemberById(id: Int) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
+    func editClub(
+        id: Int,
+        request: MultipartFormData
+    ) async throws(APIError) -> Void
 }
 
 class ClubRepoImpl: ClubRepo {
@@ -90,6 +94,13 @@ class ClubRepoImpl: ClubRepo {
         }
     }
     
+    func editClub(
+        id: Int,
+        request: MultipartFormData
+    ) async throws(APIError) {
+        let _ = try await dataSource.editClub(id: id, request: request)
+    }
+    
     func createClub(
         request: MultipartFormData
     ) async throws(APIError) -> Void {
@@ -134,17 +145,38 @@ class ClubRepoImpl: ClubRepo {
                 )
             )
         }
+        let logoURL = data.logoUrl.flatMap { URL(string: $0) }
+        let coverURL = data.backgroundUrl.flatMap { URL(string: $0) }
+        let editPrefillData = ClubsCreate.PrefillData(
+            logoURL: logoURL,
+            coverURL: coverURL,
+            values: [
+                .cover: .cover(data.backgroundColour ?? .primary),
+                .visibility: .radio(data.visibility),
+                .clubName: .text(data.name),
+                .ownerContact: .text(data.ownerContact ?? ""),
+                .category: .tags(tags.map { .init(id: $0.id, label: $0.title) }),
+                .capacity: .text(data.capacity.map(String.init) ?? ""),
+                .links: .links(data.links?.map {
+                    .init(type: $0.type, name: $0.name, url: $0.url)
+                } ?? []),
+                .location: .text(data.location ?? ""),
+                .rules: .text(data.rule ?? ""),
+                .about: .text(data.about)
+            ]
+        )
         let uiModel: ClubsDetailsModel.UIModel = .init(
             name: data.name,
             communityName: data.communityName,
             membersCount: data.membersCount ?? 0,
-            logo: URL(string: data.logoUrl ?? ""),
-            coverImage: URL(string: data.backgroundUrl ?? ""),
-            coverColorType: .primary,
-            userActivityType: .member,
+            logo: logoURL,
+            coverImage: coverURL,
+            coverColorType: data.backgroundColour ?? .primary,
+            userActivityType: data.clubUserRole ?? .notJoined,
             accessType: data.visibility,
             tags: tags,
-            infoData: info
+            infoData: info,
+            editPrefillData: editPrefillData
         )
         return uiModel
     }

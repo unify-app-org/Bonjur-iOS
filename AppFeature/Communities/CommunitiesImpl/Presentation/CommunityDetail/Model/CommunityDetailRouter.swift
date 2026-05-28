@@ -12,6 +12,7 @@ import Profile
 enum CommunityDetailRoute {
     case clubsDetails(id: Int)
     case userDetails(id: String)
+    case edit(id: Int, prefillData: ClubsModuleModel.CreatePrefillData)
     case back
 }
 
@@ -40,6 +41,12 @@ final class CommunityDetailRouter: CommunityDetailRouterProtocol {
         switch route {
         case .clubsDetails(let id):
             let vc = clubModule.makeClubsDetailsVC(clubId: id) as! UIViewController
+            self.view?.navigationController?.pushViewController(vc, animated: true)
+        case .edit(let id, let prefillData):
+            let vc = clubModule.makeCreateVC(
+                id: id,
+                prefillData: prefillData
+            ) as! UIViewController
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .back:
             self.view?.navigationController?.popViewController(animated: true)

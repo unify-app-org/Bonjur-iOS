@@ -20,4 +20,9 @@ public protocol ClubsModule {
     func makeClubsDetailsVC(clubId: Int) -> AnyObject
     
     func makeCreateVC() -> AnyObject
+    
+    func makeCreateVC(
+        id: Int,
+        prefillData: ClubsModuleModel.CreatePrefillData
+    ) -> AnyObject
 }

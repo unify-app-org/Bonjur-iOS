@@ -18,8 +18,10 @@ struct CommunityDetails {
         let logo: URL?
         let coverImage: URL?
         let coverColorType: AppUIEntities.BackgroundType
+        let userActivity: AppUIEntities.UserActivityRole
         let tags: [AppUIEntities.Tags]
         let infoData: [Info]
+        let editPrefillData: ClubsModuleModel.CreatePrefillData
     }
     
     struct Info: Identifiable {
@@ -53,6 +55,7 @@ extension CommunityDetails.UIModel {
         logo: nil,
         coverImage: nil,
         coverColorType: .secondary,
+        userActivity: .member,
         tags: [
             .init(id: 1, type: "SPORT", title: "Messi"),
             .init(id: 1, type: "SPORT", title: "Ronaldo"),
@@ -109,6 +112,26 @@ extension CommunityDetails.UIModel {
                     )
                 ]
             )
-        ]
+        ],
+        editPrefillData: .init(
+            logoURL: nil,
+            coverURL: nil,
+            coverType: .secondary,
+            visibility: .private,
+            name: "UFAZ Community",
+            ownerContact: "+994 123 45 67",
+            categories: [
+                .init(id: 1, title: "Messi"),
+                .init(id: 2, title: "Ronaldo")
+            ],
+            capacity: "200",
+            links: [
+                .init(type: "", name: "Whatsapp Link", url: "https://www.ufaz.az/en"),
+                .init(type: "", name: "Telegram link", url: "https://www.ufaz.az/en")
+            ],
+            location: "Cafetaria, 2nd floor",
+            rules: "Everyone can come",
+            about: "I want to have a coffee and then go to the film I have one free ticket to the concert for the Sunday evening if someone want just contact."
+        )
     )
 }

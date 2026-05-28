@@ -12,12 +12,14 @@ struct CommunityDTO {
     
     struct Response: Decodable {
         let communityId: Int?
-        let visibility: AppPresentationModel.AccessType
+        let visibility: AppPresentationModel.AccessType?
+        let clubUserRole: AppPresentationModel.UserActivityRole?
+        let backgroundColour: AppPresentationModel.BackgroundType?
         let name: String
         let ownerContact: String
         let location: String?
         let about: String
-        let rule: String?
+        let rule, backgroundUrl, logoUrl, modifiedAt: String?
         let capacity: Int?
         let communityName: String?
         let links: [Link]?

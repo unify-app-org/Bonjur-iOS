@@ -20,6 +20,7 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
     private let router: ClubCreateRouterProtocol
     private let inputData: ClubCreateInputData
     private let dependencies: ClubCreateViewModel.Dependencies
+    private var didApplyPrefillData = false
     
     init(
         state: ClubCreateFeature.State,
@@ -31,6 +32,10 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
         self.inputData = inputData
         self.dependencies = dependencies
         super.init(initialState: state)
+        
+        if inputData.id != nil {
+            self.state.disabledFieldIDs = [.clubName]
+        }
     }
     
     override func handle(action: ClubCreateFeature.Action) {
@@ -53,9 +58,7 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
             syncSelectedCategories()
             state.showCategoryPicker = false
         case .continueTapped:
-            Task {
-                await createClub()
-            }
+            continueTapped()
         }
     }
     
@@ -63,6 +66,7 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
         Task {
             await fetchCreate()
             await fetchCategories()
+            await applyPrefillData()
         }
     }
     
@@ -78,6 +82,33 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
             state.categorySections = try await dependencies.useCase.getCategories()
         } catch {
             state.categorySections = []
+        }
+    }
+    
+    @MainActor
+    private func applyPrefillData() {
+        guard !didApplyPrefillData,
+              let prefillData = inputData.prefillData else {
+            return
+        }
+        
+        didApplyPrefillData = true
+        state.existingLogoURL = prefillData.logoURL
+        state.existingCoverURL = prefillData.coverURL
+        state.values.merge(prefillData.values) { _, new in new }
+        selectPrefilledCategories(prefillData.values.tags(.category))
+    }
+    
+    private func selectPrefilledCategories(_ categories: [ClubsCreate.TagItem]) {
+        let selectedIds = Set(categories.map(\.id))
+        state.categorySections = state.categorySections.map { section in
+            var updatedSection = section
+            updatedSection.categories = section.categories.map { category in
+                var updatedCategory = category
+                updatedCategory.selected = selectedIds.contains(category.id)
+                return updatedCategory
+            }
+            return updatedSection
         }
     }
     
@@ -101,6 +132,31 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
                 ClubsCreate.TagItem(id: $0.id, label: $0.title)
             }
         )
+    }
+    
+    private func continueTapped() {
+        Task {
+            if let id = inputData.id {
+                await editClub(id: id)
+            } else {
+                await createClub()
+            }
+        }
+    }
+    
+    private func editClub(id: Int) async {
+        postEffect(.loading(true))
+        defer {
+            postEffect(.loading(false))
+        }
+        do {
+            try await dependencies.useCase.editClub(
+                id: id,
+                request: buildRequest()
+            )
+        } catch {
+            
+        }
     }
     
     private func createClub() async {
@@ -131,7 +187,7 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
         let rules = state.values.text(.rules)
         let communityId = dependencies.userDefaults.integer(forKey: .communityId)
         
-        let request = ClubDTOModel.CreateRequest(
+        let request = ClubDTOModel.Request(
             communityId: communityId,
             name: name,
             ownerContact: ownerContact,

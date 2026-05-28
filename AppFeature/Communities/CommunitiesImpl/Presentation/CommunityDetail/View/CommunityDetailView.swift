@@ -70,12 +70,14 @@ struct CommunityDetailView: View {
                         isScrolled: isScrolled
                     ) { }
             }
-            if !isScrolled {
+            if store.state.isEditable {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Image(uiImage: UIImage.Icons.camera)
+                    Image(uiImage: UIImage.Icons.penLine)
                         .toolbarItemBackground(
                             isScrolled: isScrolled
-                        ) { }
+                        ) {
+                            store.send(.editTapped)
+                        }
                 }
             }
         }
@@ -138,19 +140,13 @@ struct CommunityDetailView: View {
         HStack(alignment: .lastTextBaseline) {
             clubLogo
             Spacer()
-            Button {} label: {
-                Image(uiImage: UIImage.Icons.penLine)
-            }
-            .padding(.horizontal)
         }
         .padding(.top, -44)
         .padding(.bottom, 16)
     }
     
     private var clubLogo: some View {
-        CachedAsyncImage(url: store.state.uiModel?.logo) { image in
-            image.resizable().frame(width: 88, height: 88)
-        } placeholder: {
+        AvatarView(url: store.state.uiModel?.logo) {
             if let image = UIImage(systemName: "person") {
                 Image(uiImage: image)
                     .resizable()
@@ -158,33 +154,6 @@ struct CommunityDetailView: View {
                     .foregroundStyle(Color.Palette.blackMedium)
                     .frame(width: 44, height: 44)
             }
-        }
-        .frame(width: 88, height: 88)
-        .background(Color.Palette.grayQuaternary)
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(Color.Palette.grayTeritary.opacity(0.3), lineWidth: 3)
-        )
-        .padding(.horizontal, 16)
-        .overlay(alignment: .bottomTrailing) {
-            cameraButton
-        }
-    }
-    
-    private var cameraButton: some View {
-        Button {} label: {
-            Image(uiImage: UIImage.Icons.camera)
-                .resizable()
-                .renderingMode(.template)
-                .frame(width: 18, height: 18)
-                .foregroundStyle(Color.Palette.blackMedium)
-                .padding(7)
-                .background(Color.Palette.grayQuaternary)
-                .clipShape(Circle())
-                .overlay(
-                    Circle().stroke(Color.Palette.whiteHigh, lineWidth: 2)
-                )
         }
     }
     
@@ -240,15 +209,18 @@ struct CommunityDetailView: View {
         }
     }
     
+    @ViewBuilder
     private var createEventButton: some View {
-        AppButton(
-            title: "Create new event +",
-            model: .init(
-                type: .secondary,
-                contentSize: .fill,
-                size: .medium
-            )
-        ) {}
+        if store.state.canCreateEvent {
+            AppButton(
+                title: "Create new event +",
+                model: .init(
+                    type: .secondary,
+                    contentSize: .fill,
+                    size: .medium
+                )
+            ) {}
+        }
     }
     
     // MARK: - Segments

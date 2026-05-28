@@ -39,6 +39,19 @@ final class HangoutDetailsViewState: UIFeatureState {
     @Published var selectedSegment: SegmentTypes = .about
     @Published var isFileUploadReachedMaxLimit = false
     
+    var isEditable: Bool {
+        uiModel?.userActivityType == .visePresident || uiModel?.userActivityType == .president
+    }
+    var canCreateEvent: Bool {
+        uiModel?.userActivityType != .member && uiModel?.userActivityType != .notJoined
+    }
+    var hasJoined: Bool {
+        uiModel?.userActivityType != .notJoined
+    }
+    var isPrivate: Bool {
+        uiModel?.accessType == .private
+    }
+    
     enum SegmentTypes: String, CaseIterable, Identifiable {
         case about = "About"
         case members = "Members"

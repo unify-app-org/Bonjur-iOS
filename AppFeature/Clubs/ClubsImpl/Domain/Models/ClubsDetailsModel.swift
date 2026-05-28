@@ -22,6 +22,7 @@ struct ClubsDetailsModel {
         let accessType: AppUIEntities.AccessType
         let tags: [AppUIEntities.Tags]
         let infoData: [Info]
+        let editPrefillData: ClubsCreate.PrefillData
     }
     
     struct Info: Identifiable {
@@ -114,7 +115,29 @@ extension ClubsDetailsModel.UIModel {
                     )
                 ]
             )
-        ]
+        ],
+        editPrefillData: .init(
+            logoURL: nil,
+            coverURL: nil,
+            values: [
+                .cover: .cover(.secondary),
+                .visibility: .radio(.private),
+                .clubName: .text("Football Club"),
+                .ownerContact: .text("+994 123 45 67"),
+                .category: .tags([
+                    .init(id: 1, label: "Messi"),
+                    .init(id: 2, label: "Ronaldo")
+                ]),
+                .capacity: .text("200"),
+                .links: .links([
+                    .init(type: "", name: "Whatsapp Link", url: "https://www.ufaz.az/en"),
+                    .init(type: "", name: "Telegram link", url: "https://www.ufaz.az/en")
+                ]),
+                .location: .text("Cafetaria, 2nd floor"),
+                .rules: .text("Everyone can come"),
+                .about: .text("I want to have a coffee and then go to the film I have one free ticket to the concert for the Sunday evening if someone want just contact.")
+            ]
+        )
     )
 }
 

@@ -17,6 +17,7 @@ final class FloatingDockModel: ObservableObject {
     @Published var mode: FloatingDockMode = .home
     @Published var joinedEventsCount: Int = 0
     @Published var joinedHangoutsCount: Int = 0
+    @Published var isHidden: Bool = false
     @Published var isActivitiesPresented = false
     @Published var isCreatePresented = false
     

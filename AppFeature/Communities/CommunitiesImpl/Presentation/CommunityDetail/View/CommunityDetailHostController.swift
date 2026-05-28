@@ -15,6 +15,10 @@ final class CommunityDetailHostController: UIFeatureController<
     CommunityDetailFeature,
     CommunityDetailView
 > {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        hidesBottomBarWhenPushed = true
+    }
 
     override func handleEffect(_ effect: CommunityDetailSideEffect) {
         switch effect {

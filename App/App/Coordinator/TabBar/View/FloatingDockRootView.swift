@@ -77,7 +77,11 @@ struct FloatingDockRootView: View {
         }
         .frame(width: dockWidth, height: dockHeight,alignment: .bottom)
         .padding(8)
+        .offset(y: model.isHidden ? dockHeight + 40 : 0)
+        .opacity(model.isHidden ? 0 : 1)
+        .allowsHitTesting(!model.isHidden)
         .animation(badgeAnimation, value: model.badgeCount)
+        .animation(.spring(response: 0.32, dampingFraction: 0.82), value: model.isHidden)
     }
     
     private var homeButton: some View {

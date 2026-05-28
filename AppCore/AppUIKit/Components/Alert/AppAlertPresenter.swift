@@ -12,18 +12,20 @@ public enum AppAlertPresenter {
         onDismiss: (() -> Void)? = nil
     ) {
         let dismiss: (((() -> Void)?) -> Void) = { completion in
-            AppAlertPresenter.dismiss()
-            onDismiss?()
-            completion?()
+            AppAlertPresenter.dismiss(completion: {
+                onDismiss?()
+                completion?()
+            })
         }
 
         let rootView = AppAlertOverlayView(
             alert: alert,
-            dismiss: dismiss
+            dismiss: dismiss,
+            isVisible: false
         )
 
         if let hostingController {
-            hostingController.rootView = rootView
+            hostingController.rootView = rootView.visible()
             return
         }
 
@@ -34,9 +36,30 @@ public enum AppAlertPresenter {
         window.makeKeyAndVisible()
         overlayWindow = window
         hostingController = vc
+        DispatchQueue.main.async {
+            hostingController?.rootView = rootView.visible()
+        }
     }
 
     public static func dismiss() {
+        dismiss(completion: nil)
+    }
+
+    private static func dismiss(completion: (() -> Void)?) {
+        guard let hostingController else {
+            teardown()
+            completion?()
+            return
+        }
+
+        hostingController.rootView = hostingController.rootView.hidden()
+        DispatchQueue.main.asyncAfter(deadline: .now() + AppAlertOverlayView.animationDuration) {
+            teardown()
+            completion?()
+        }
+    }
+
+    private static func teardown() {
         hostingController = nil
         overlayWindow?.isHidden = true
         overlayWindow?.rootViewController = nil

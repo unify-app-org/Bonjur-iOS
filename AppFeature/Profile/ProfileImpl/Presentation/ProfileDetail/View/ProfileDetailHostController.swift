@@ -15,6 +15,11 @@ final class ProfileDetailHostController: UIFeatureController<
     ProfileDetailFeature,
     ProfileDetailView
 > {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        hidesBottomBarWhenPushed = true
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: animated)

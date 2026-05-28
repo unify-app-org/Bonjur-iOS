@@ -15,6 +15,10 @@ final class ClubDetailsHostController: UIFeatureController<
     ClubDetailsFeature,
     ClubDetailsView
 > {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        hidesBottomBarWhenPushed = true
+    }
 
     override func handleEffect(_ effect: ClubDetailsSideEffect) {
         switch effect {

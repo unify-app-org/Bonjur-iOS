@@ -129,6 +129,7 @@ struct DiscoverView: View {
                     eventsView(geometry: geometry)
                     hangoutsView(geometry: geometry)
                 }
+                .padding(.bottom, 55)
             }
             .coordinateSpace(name: "EndDetectionScrollView")
             .onPreferenceChange(OffsetPreferenceKey.self) { value in
@@ -138,7 +139,7 @@ struct DiscoverView: View {
             }
         }
     }
-
+    
     var offsetReader: some View {
         GeometryReader { proxy in
             Color.clear
@@ -150,10 +151,11 @@ struct DiscoverView: View {
         .frame(height: 0)
     }
 
+    @ViewBuilder
     private func communitiesView(geometry: GeometryProxy) -> some View {
         let communities = store.state.uiModel.communities
         
-        return activitySection(
+        activitySection(
             title: "Communities",
             type: .community,
             isEmpty: communities.isEmpty
@@ -184,10 +186,11 @@ struct DiscoverView: View {
         }
     }
 
+    @ViewBuilder
     private func clubsView(geometry: GeometryProxy) -> some View {
         let clubs = store.state.uiModel.clubs
         
-        return activitySection(
+        activitySection(
             title: "Clubs",
             type: .clubs,
             isEmpty: clubs.isEmpty,
@@ -233,10 +236,11 @@ struct DiscoverView: View {
         .padding()
     }
 
+    @ViewBuilder
     private func eventsView(geometry: GeometryProxy) -> some View {
         let uiModel = store.state.uiModel
         
-        return activitySection(
+        activitySection(
             title: "Events",
             type: .events,
             isEmpty: uiModel.events.isEmpty || uiModel.clubs.isEmpty,
@@ -268,10 +272,11 @@ struct DiscoverView: View {
         }
     }
 
+    @ViewBuilder
     private func hangoutsView(geometry: GeometryProxy) -> some View {
         let hangouts = store.state.uiModel.hangouts
         
-        return activitySection(
+        activitySection(
             title: "Hangouts",
             type: .hangOuts,
             isEmpty: hangouts.isEmpty,

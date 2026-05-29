@@ -56,6 +56,7 @@ struct HangoutListView: View {
                     }
                 }
                 .padding()
+                .padding(.bottom, 55)
             }
         } else {
             AppEmptyView(

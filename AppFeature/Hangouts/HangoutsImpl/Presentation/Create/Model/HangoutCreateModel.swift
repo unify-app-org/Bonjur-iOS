@@ -48,15 +48,12 @@ final class HangoutCreateViewState: UIFeatureState {
     @Published var visibility: AppPresentationModel.AccessType = .public
     @Published var name: String = ""
     @Published var ownerContact: String = ""
-    @Published var clubName: String = ""
-    @Published var clubOwnerContact: String = ""
     @Published var capacity: String = ""
     @Published var links: [AppLinkItem] = []
     @Published var rules: String = ""
     @Published var location: String = ""
     @Published var about: String = ""
     @Published var hangoutDate: Date = Date()
-    @Published var endDate: Date = Date()
     @Published var showCategoryPicker: Bool = false
     @Published var categorySections: [SelectCategoryView.Section] = []
     @Published var disabledName: Bool = false
@@ -70,8 +67,6 @@ final class HangoutCreateViewState: UIFeatureState {
     var isValid: Bool {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !ownerContact.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !clubName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !clubOwnerContact.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !selectedCategories.isEmpty &&
         !rules.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !location.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&

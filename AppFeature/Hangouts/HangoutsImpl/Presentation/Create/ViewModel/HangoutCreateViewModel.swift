@@ -84,8 +84,7 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
         state.visibility = prefillData.visibility
         state.name = prefillData.name
         state.ownerContact = prefillData.ownerContact
-        state.clubName = prefillData.clubName
-        state.clubOwnerContact = prefillData.clubOwnerContact
+    
         state.capacity = prefillData.capacity
         state.links = prefillData.links.map(\.appLinkItem)
         state.rules = prefillData.rules
@@ -94,9 +93,7 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
         if let hangoutDate = prefillData.hangoutDate {
             state.hangoutDate = hangoutDate
         }
-        if let endDate = prefillData.endDate {
-            state.endDate = endDate
-        }
+      
         selectPrefilledCategories(prefillData.categories)
     }
     

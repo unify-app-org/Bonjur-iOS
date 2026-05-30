@@ -25,8 +25,7 @@ struct HangoutCreateView: View {
                     textField("Hangout name", placeholder: "Study night at cafe", text: $store.state.name)
                         .disabled(store.state.disabledName)
                     textField("Owner contact", placeholder: "+994 123 45 67", text: $store.state.ownerContact)
-                    textField("Club name", placeholder: "Futbool Club", text: $store.state.clubName)
-                    textField("Owner contact", placeholder: "+994 123 45 67", text: $store.state.clubOwnerContact)
+                   
                     categoryField
                     linksField
                     textField(
@@ -38,7 +37,7 @@ struct HangoutCreateView: View {
                     )
                     textField("Location", placeholder: "Library", text: $store.state.location)
                     dateField
-                    endDateField
+                 
                     textArea("Rules", text: $store.state.rules)
                     textArea("About", text: $store.state.about)
                 }
@@ -174,28 +173,7 @@ struct HangoutCreateView: View {
         }
     }
     
-    private var endDateField: some View {
-        DatePickerTextField(
-            title: "End date",
-            text: store.state.endDate.toString(format: .dd_MM_yyyy),
-            placeholder: "dd/mm/yyyy"
-        ) {
-            isEndDatePickerPresented = true
-        }
-        .appSheet(
-            isPresented: $isEndDatePickerPresented,
-            detents: [.height(360)],
-            dragIndicator: .visible
-        ) {
-            DatePicker(
-                "End date",
-                selection: $store.state.endDate,
-                displayedComponents: [.date, .hourAndMinute]
-            )
-            .datePickerStyle(.graphical)
-            .padding()
-        }
-    }
+   
     
     private func visibilityOption(
         title: String,

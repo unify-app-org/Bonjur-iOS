@@ -35,6 +35,22 @@ public extension FilterView {
     }
 }
 
+public extension Array where Element == FilterView.Model {
+    func applyingSelectedItemIds(_ selectedItemIds: [Int]) -> [FilterView.Model] {
+        let selectedIds = Set(selectedItemIds)
+
+        return map { filter in
+            var updatedFilter = filter
+            updatedFilter.items = filter.items.map { item in
+                var updatedItem = item
+                updatedItem.selected = selectedIds.contains(item.id)
+                return updatedItem
+            }
+            return updatedFilter
+        }
+    }
+}
+
 public extension FilterView.Model {
     static var mock: [FilterView.Model] = [
         .init(

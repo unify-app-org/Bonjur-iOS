@@ -200,7 +200,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         
         switch results.filters {
         case .success(let filters):
-            state.uiModel.filters = filters
+            state.uiModel.filters = applySelectedCategoryIds(to: filters)
         case .failure(let error):
             firstError = firstError ?? error
         }
@@ -242,6 +242,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     
     private func filtersSelected(_ items: [FilterView.Items]) {
         selectedCategoryIds = items.map(\.id)
+        state.uiModel.filters = applySelectedCategoryIds(to: state.uiModel.filters)
         resetPagination()
         
         Task {
@@ -337,6 +338,12 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         )
     }
     
+    private func applySelectedCategoryIds(
+        to filters: [FilterView.Model]
+    ) -> [FilterView.Model] {
+        filters.applyingSelectedItemIds(selectedCategoryIds)
+    }
+
     private func loadMore(_ type: AppUIEntities.ActivityType) {
         switch type {
         case .community:

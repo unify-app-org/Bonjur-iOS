@@ -9,16 +9,46 @@ import AppPresentationModel
 import Foundation
 
 struct HangoutsDTOModel {
+    
+    // MARK: - Request
+    
     struct PaginationQuery: Encodable {
         let page: Int
         let size: Int
         let name: String?
     }
     
+    struct Request: Encodable {
+        let visibility: AppPresentationModel.AccessType
+        let name: String
+        let ownerContact: String
+        let categoriesId: [Int]
+        let capacity: Int
+        let links: [Link]
+        let rules: String
+        let location: String
+        let about: String
+        let hangoutDate: String
+    }
+    
+    // MARK: - Category
+    
     struct CategoryResponse: Decodable {
         let id: Int?
         let title: String?
     }
+    
+    struct CategoriesResponse: Decodable {
+        let type, title: String?
+        let subCategories: [SubCategoriesResponse]
+    }
+    
+    struct SubCategoriesResponse: Decodable {
+        let id: Int?
+        let title: String?
+    }
+    
+    // MARK: - Response
     
     struct Hangout: Decodable {
         let id: String?
@@ -37,6 +67,7 @@ struct HangoutsDTOModel {
         let capacity: Int?
         let rules: String?
         let location: String?
+        let ownerContact: String?
         let visibility: AppPresentationModel.AccessType?
         let hangoutDate: String?
         let links: [Link]?
@@ -54,7 +85,7 @@ struct HangoutsDTOModel {
         let title: String
     }
     
-    struct Link: Decodable {
+    struct Link: Codable {
         let type: String?
         let name: String?
         let url: String?

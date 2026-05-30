@@ -13,6 +13,17 @@ protocol HangoutsDataSource {
         query: [String: String]
     ) async throws(APIError) -> [HangoutsDTOModel.Hangout]
     
+    func createHangout(
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) -> Data
+    
+    func editHangout(
+        id: String,
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) -> Data
+    
+    func getCategories() async throws(APIError) -> [HangoutsDTOModel.CategoriesResponse]
+    
     func fetchHangoutsDetail(
         id: String
     ) async throws(APIError) -> HangoutsDTOModel.HangoutDetail
@@ -28,6 +39,23 @@ final class HangoutsDataSourceImpl: NetworkService<HangoutsEndPoint>, HangoutsDa
         query: [String: String]
     ) async throws(APIError) -> [HangoutsDTOModel.Hangout] {
         try await fetch(endPoint: .getHangouts(query))
+    }
+    
+    func createHangout(
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) -> Data {
+        try await fetchRawData(endPoint: .createHangout(request))
+    }
+    
+    func editHangout(
+        id: String,
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) -> Data {
+        try await fetchRawData(endPoint: .editHangout(id, request))
+    }
+    
+    func getCategories() async throws(APIError) -> [HangoutsDTOModel.CategoriesResponse] {
+        try await fetch(endPoint: .getCategories)
     }
     
     func fetchHangoutsDetail(

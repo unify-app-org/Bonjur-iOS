@@ -15,6 +15,17 @@ protocol HangoutRepo {
         query: HangoutsDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsCardView.Model]
     
+    func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
+    
+    func createHangout(
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) -> Void
+    
+    func editHangout(
+        id: String,
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) -> Void
+    
     func fetchDetailHangout(
         id: String
     ) async throws(APIError) -> HangoutDetails.UIModel
@@ -59,6 +70,38 @@ class HangoutRepoImpl: HangoutRepo {
         }
     }
     
+    func getCategories() async throws(APIError) -> [SelectCategoryView.Section] {
+        let data = try await dataSource.getCategories()
+        return data.map { item in
+            let categories: [CategoriesChipsView.Model] = item.subCategories.map { subCategory in
+                .init(
+                    id: subCategory.id ?? 0,
+                    title: subCategory.title ?? "",
+                    selected: false
+                )
+            }
+            
+            return .init(
+                type: item.type ?? "",
+                title: item.title ?? "",
+                categories: categories
+            )
+        }
+    }
+    
+    func createHangout(
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) {
+        let _ = try await dataSource.createHangout(request: request)
+    }
+    
+    func editHangout(
+        id: String,
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) {
+        let _ = try await dataSource.editHangout(id: id, request: request)
+    }
+    
     func fetchDetailHangout(
         id: String
     ) async throws(APIError) -> HangoutDetails.UIModel {
@@ -81,7 +124,7 @@ class HangoutRepoImpl: HangoutRepo {
                 title: "Event info",
                 subItems: [
                     .init(title: "Created/Updated Date", description: data.hangoutDate ?? "-"),
-                    .init(title: "Owner Contact", description: "-"),
+                    .init(title: "Owner Contact", description: data.ownerContact ?? "-"),
                     .init(title: "Capacity", description: capacity),
                     .init(title: "Rules", description: data.rules ?? "-"),
                     .init(title: "Location", description: data.location ?? "-")
@@ -99,6 +142,27 @@ class HangoutRepoImpl: HangoutRepo {
                 )
             )
         }
+        let editPrefillData = HangoutsCreate.PrefillData(
+            visibility: data.visibility ?? .public,
+            name: data.name,
+            ownerContact: data.ownerContact ?? "",
+            clubName: "",
+            clubOwnerContact: data.ownerContact ?? "",
+            categories: tags.map { .init(id: $0.id, label: $0.title) },
+            capacity: data.capacity.map(String.init) ?? "",
+            links: data.links?.map {
+                .init(
+                    type: $0.type ?? "",
+                    name: $0.name ?? "",
+                    url: $0.url ?? ""
+                )
+            } ?? [],
+            rules: data.rules ?? "",
+            location: data.location ?? "",
+            about: data.about ?? "",
+            hangoutDate: makeDate(from: data.hangoutDate),
+            endDate: nil
+        )
         let uiModel: HangoutDetails.UIModel = .init(
             name: data.name,
             communityName: data.community.name,
@@ -106,7 +170,8 @@ class HangoutRepoImpl: HangoutRepo {
             userActivityType: .member,
             accessType: data.visibility ?? .private,
             tags: tags,
-            infoData: info
+            infoData: info,
+            editPrefillData: editPrefillData
         )
         return uiModel
     }
@@ -125,5 +190,19 @@ class HangoutRepoImpl: HangoutRepo {
             )
         }
         return .init(users: users)
+    }
+    
+    private func makeDate(from value: String?) -> Date? {
+        guard let value else { return nil }
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [
+            .withInternetDateTime,
+            .withFractionalSeconds
+        ]
+        if let date = formatter.date(from: value) {
+            return date
+        }
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter.date(from: value)
     }
 }

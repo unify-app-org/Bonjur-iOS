@@ -11,6 +11,7 @@ import SwiftUI
 import Discover
 import Clubs
 import Groups
+import Hangouts
 import Profile
 import AppPresentationModel
 
@@ -20,6 +21,7 @@ final class AppTabBarHostController: UIViewController {
     private let discoverModule: DiscoverModule
     private let clubsModule: ClubsModule
     private let groupsModule: GroupsModule
+    private let hangoutsModule: HangoutsModule
     private let profileModule: ProfileModule
 
     private lazy var discoverRootViewController: UIViewController = {
@@ -61,12 +63,14 @@ final class AppTabBarHostController: UIViewController {
         discoverModule: DiscoverModule,
         clubsModule: ClubsModule,
         groupsModule: GroupsModule,
+        hangoutsModule: HangoutsModule,
         profileModule: ProfileModule
     ) {
         self.viewModel = viewModel
         self.discoverModule = discoverModule
         self.clubsModule = clubsModule
         self.groupsModule = groupsModule
+        self.hangoutsModule = hangoutsModule
         self.profileModule = profileModule
         super.init(nibName: nil, bundle: nil)
     }
@@ -155,7 +159,8 @@ final class AppTabBarHostController: UIViewController {
         case .event:
             break
         case .hangout:
-            break
+            let viewController = hangoutsModule.makeCreateVC() as! UIViewController
+            mainNavigationController.pushViewController(viewController, animated: true)
         }
     }
 }

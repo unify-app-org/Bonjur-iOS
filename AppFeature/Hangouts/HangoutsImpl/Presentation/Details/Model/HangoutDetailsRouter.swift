@@ -9,6 +9,7 @@ import UIKit
 
 enum HangoutDetailsRoute {
     case back
+    case edit(id: String, prefillData: HangoutsCreate.PrefillData)
 }
 
 protocol HangoutDetailsRouterProtocol {
@@ -24,6 +25,14 @@ final class HangoutDetailsRouter: HangoutDetailsRouterProtocol {
         switch route {
         case .back:
             view?.navigationController?.popViewController(animated: true)
+        case .edit(let id, let prefillData):
+            let viewController = HangoutCreateBuilder(
+                inputData: .init(
+                    id: id,
+                    prefillData: prefillData
+                )
+            ).build()
+            view?.navigationController?.pushViewController(viewController, animated: true)
         }
     }
 }

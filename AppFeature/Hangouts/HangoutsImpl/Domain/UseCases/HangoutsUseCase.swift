@@ -14,6 +14,17 @@ protocol HangoutsUseCase {
         query: HangoutsDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsCardView.Model]
     
+    func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
+    
+    func createHangout(
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) -> Void
+    
+    func editHangout(
+        id: String,
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) -> Void
+    
     func fetchDetailHangoutMembers(
         id: String
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
@@ -33,6 +44,23 @@ class HangoutsUseCaseImpl: HangoutsUseCase {
         query: HangoutsDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsCardView.Model] {
         try await repo.fetchHangouts(query: query)
+    }
+    
+    func getCategories() async throws(APIError) -> [SelectCategoryView.Section] {
+        try await repo.getCategories()
+    }
+    
+    func createHangout(
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) {
+        try await repo.createHangout(request: request)
+    }
+    
+    func editHangout(
+        id: String,
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) {
+        try await repo.editHangout(id: id, request: request)
     }
     
     func fetchDetailHangout(

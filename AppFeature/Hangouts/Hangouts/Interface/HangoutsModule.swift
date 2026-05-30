@@ -10,6 +10,13 @@ import Foundation
 public protocol HangoutsModule {
     func makeHangoutsList() -> AnyObject
     
+    func makeCreateVC() -> AnyObject
+    
+    func makeCreateVC(
+        id: String,
+        prefillData: HangoutsModuleModel.CreatePrefillData
+    ) -> AnyObject
+    
     func makeHangoutsCard(
         model: HangoutsModuleModel.CardInputData,
         onTap: @escaping (() -> Void),

@@ -69,6 +69,9 @@ struct HangoutDetailsView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Image(uiImage: UIImage.Icons.penLine)
                         .padding(.leading)
+                        .onTapGesture {
+                            store.send(.editTapped)
+                        }
                 }
             }
         }

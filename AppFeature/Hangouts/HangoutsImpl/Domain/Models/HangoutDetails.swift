@@ -20,6 +20,7 @@ enum HangoutDetails {
         let accessType: AppUIEntities.AccessType
         let tags: [AppUIEntities.Tags]
         let infoData: [Info]
+        let editPrefillData: HangoutsCreate.PrefillData
     }
     
     struct Info: Identifiable {
@@ -109,7 +110,24 @@ extension HangoutDetails.UIModel {
                     )
                 ]
             )
-        ]
+        ],
+        editPrefillData: .init(
+            visibility: .private,
+            name: "Basketball Event",
+            ownerContact: "+994 123 45 67",
+            clubName: "Futbool Club",
+            clubOwnerContact: "+994 123 45 67",
+            categories: [
+                .init(id: 1, label: "Messi")
+            ],
+            capacity: "200",
+            links: [],
+            rules: "Everyone can come",
+            location: "Cafetaria, 2nd floor",
+            about: "I want to have a coffee and then go to the film I have one free ticket to the concert for the Sunday evening if someone want just contact.",
+            hangoutDate: nil,
+            endDate: nil
+        )
     )
 }
 

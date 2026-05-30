@@ -32,6 +32,10 @@ protocol DiscoverRepo {
     func getCategories() async throws(APIError) -> [FilterView.Model]
     
     func getUser() async throws(APIError) -> UserModel
+    
+    func joinHangout(
+        request: DiscoverDTOModel.JoinHangoutRequest
+    ) async throws(APIError)
 }
 
 class DiscoverRepoImpl: DiscoverRepo {
@@ -161,5 +165,11 @@ class DiscoverRepoImpl: DiscoverRepo {
             profileImage: data.fileUrl ?? "",
             greeting: data.greeting ?? ""
         )
+    }
+    
+    func joinHangout(
+        request: DiscoverDTOModel.JoinHangoutRequest
+    ) async throws(APIError) {
+        let _ = try await dataSource.joinHangout(request: request)
     }
 }

@@ -27,6 +27,10 @@ protocol DiscoverDataSource {
     func getUser(
         userId: String
     ) async throws(APIError) -> AppPresentationModel.UserResponse
+    
+    func joinHangout(
+        request: Encodable
+    ) async throws(APIError) -> Data
 }
 
 final class DiscoverDataSourceImpl: NetworkService<DiscoverEndPoint>, DiscoverDataSource {
@@ -57,5 +61,11 @@ final class DiscoverDataSourceImpl: NetworkService<DiscoverEndPoint>, DiscoverDa
         userId: String
     ) async throws(APIError) -> AppPresentationModel.UserResponse {
         try await fetch(endPoint: .getUserById(userId))
+    }
+    
+    func joinHangout(
+        request: Encodable
+    ) async throws(APIError) -> Data {
+        try await fetchRawData(endPoint: .joinHangout(request))
     }
 }

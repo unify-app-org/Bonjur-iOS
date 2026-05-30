@@ -45,6 +45,7 @@ struct EventsListView: View {
                     }
                 }
                 .padding()
+                .padding(.bottom, 55)
             }
         } else {
             AppEmptyView(

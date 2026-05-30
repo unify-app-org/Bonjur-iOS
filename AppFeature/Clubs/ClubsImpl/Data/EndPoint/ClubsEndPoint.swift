@@ -14,6 +14,7 @@ enum ClubsEndPoint {
     case getClubById(Int)
     case getMembersByClubId(Int)
     case editClub(Int, MultipartFormData)
+    case joinClub(Int)
 }
 
 extension ClubsEndPoint: AppEndPoint {
@@ -32,12 +33,15 @@ extension ClubsEndPoint: AppEndPoint {
             "api/cs/v1/clubs/\(id)/members"
         case .editClub(let id, _):
             "api/cs/v1/clubs/\(id)"
+        case .joinClub(let id):
+            "api/cs/v1/clubs/\(id)/join-club"
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .createClub:
+        case .createClub,
+                .joinClub:
                 .post
         case .getCategories,
                 .getClubs,

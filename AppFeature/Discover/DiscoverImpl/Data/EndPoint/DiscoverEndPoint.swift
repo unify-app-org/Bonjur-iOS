@@ -14,6 +14,7 @@ enum DiscoverEndPoint {
     case getCategories
     case getUser
     case getUserById(String)
+    case joinHangout(Encodable)
 }
 
 extension DiscoverEndPoint: AppEndPoint {
@@ -32,6 +33,8 @@ extension DiscoverEndPoint: AppEndPoint {
             "api/us/v1/users/profile"
         case .getUserById(let id):
             "api/us/v1/users/\(id)"
+        case .joinHangout:
+            "api/hs/v1/hangouts/join"
         }
     }
     
@@ -46,6 +49,15 @@ extension DiscoverEndPoint: AppEndPoint {
         }
     }
     
+    var body: (any Encodable)? {
+        switch self {
+        case .joinHangout(let request):
+            request
+        default:
+            nil
+        }
+    }
+    
     var method: HTTPMethod {
         switch self {
         case .getHangouts,
@@ -55,6 +67,8 @@ extension DiscoverEndPoint: AppEndPoint {
                 .getUser,
                 .getUserById:
                 .get
+        case .joinHangout:
+                .post
         }
     }
 }

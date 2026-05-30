@@ -59,7 +59,29 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
             Task { @MainActor in
                 router.navigate(to: .userDetail(id))
             }
+        case .joinClubTapped:
+            Task {
+                await joinClub()
+            }
         }
+    }
+    
+    private func joinClub() async {
+        postEffect(.loading(true))
+        defer {
+            postEffect(.loading(false))
+        }
+        do {
+            _ = try await dependencies.useCase.joinClub(id: inputData.clubId)
+            await handleJoinClub()
+        } catch {
+            postEffect(.error(error))
+        }
+    }
+    
+    @MainActor
+    private func handleJoinClub() {
+        fetchData()
     }
     
     private func fetchData() {

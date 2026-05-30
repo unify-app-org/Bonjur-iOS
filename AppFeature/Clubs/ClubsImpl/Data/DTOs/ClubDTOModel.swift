@@ -54,6 +54,7 @@ struct ClubDTOModel {
         let backgroundUrl, logoUrl, modifiedAt: String?
         let backgroundColour: AppPresentationModel.BackgroundType?
         let clubUserRole: AppPresentationModel.UserActivityRole?
+        let requestType: AppPresentationModel.RequestType?
         let links: [Link]?
         let categories: [Category]
     }

@@ -95,4 +95,8 @@ struct DiscoverDTOModel {
             case background = "backgroundColour"
         }
     }
+    
+    struct JoinHangoutRequest: Encodable {
+        let hangoutId: String
+    }
 }

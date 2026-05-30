@@ -30,6 +30,10 @@ protocol DiscoverUseCase {
     func fetchHangoutsData(
         query: DiscoverDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsModuleModel.CardInputData]
+    
+    func joinHangout(
+        request: DiscoverDTOModel.JoinHangoutRequest
+    ) async throws(APIError)
 }
 
 class DiscoverUseCaseImpl: DiscoverUseCase {
@@ -68,5 +72,11 @@ class DiscoverUseCaseImpl: DiscoverUseCase {
         query: DiscoverDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsModuleModel.CardInputData] {
         try await repo.getHangout(query: query)
+    }
+    
+    func joinHangout(
+        request: DiscoverDTOModel.JoinHangoutRequest
+    ) async throws(APIError) {
+        try await repo.joinHangout(request: request)
     }
 }

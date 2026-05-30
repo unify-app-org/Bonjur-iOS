@@ -109,15 +109,16 @@ struct ClubDetailsView: View {
     
     @ViewBuilder
     private var joinButton: some View {
-        if !store.state.hasJoined {
+        if let button = store.state.uiModel?.joinButton {
             AppButton(
-                title: store.state.joinButtonTitle,
+                title: button.title,
                 model: .init(
                     contentSize: .fill
                 )
             ) {
-                
+                store.send(.joinClubTapped)
             }
+            .disabled(button.disabled)
             .padding(.horizontal)
         }
     }

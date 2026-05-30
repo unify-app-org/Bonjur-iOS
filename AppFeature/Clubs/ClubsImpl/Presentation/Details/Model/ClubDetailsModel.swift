@@ -41,16 +41,12 @@ final class ClubDetailsViewState: UIFeatureState {
     @Published var members: CommunitiesMemberModuleModel.GroupedMembersData?
     @Published var eventsData: [EventsModuleModel.CardInputData] = []
     @Published var selectedSegment: SegmentTypes = .about
-    @Published var joinButtonTitle: String = "Join"
     
     var isEditable: Bool {
         uiModel?.userActivityType == .visePresident || uiModel?.userActivityType == .president
     }
     var canCreateEvent: Bool {
         uiModel?.userActivityType != .member && uiModel?.userActivityType != .notJoined
-    }
-    var hasJoined: Bool {
-        uiModel?.userActivityType != .notJoined
     }
     var isPrivate: Bool {
         uiModel?.accessType == .private
@@ -72,6 +68,7 @@ enum ClubDetailsAction: UIFeatureAction {
     case backTapped
     case editTapped
     case userTapped(String)
+    case joinClubTapped
 }
 
 // MARK: - PreferenceKey

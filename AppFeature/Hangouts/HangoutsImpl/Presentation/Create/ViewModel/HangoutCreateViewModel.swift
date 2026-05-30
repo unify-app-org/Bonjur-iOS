@@ -184,9 +184,12 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
     }
     
     private func isoString(from date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        let formatter = ISO8601DateFormatter()
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.formatOptions = [
+            .withInternetDateTime,
+            .withFractionalSeconds
+        ]
         return formatter.string(from: date)
     }
 }

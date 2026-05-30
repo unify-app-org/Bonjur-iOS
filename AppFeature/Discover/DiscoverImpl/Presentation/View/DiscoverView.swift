@@ -112,8 +112,8 @@ struct DiscoverView: View {
     private var filterView: some View {
         FilterView(
             model: store.state.uiModel.filters,
-            selectedItems: { _ in
-                // do
+            selectedItems: { items in
+                store.send(.filtersSelected(items))
             }
         )
         .background(Color.Palette.white)

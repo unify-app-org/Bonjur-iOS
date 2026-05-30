@@ -60,6 +60,7 @@ final class DiscoverViewState: UIFeatureState {
 
 enum DiscoverAction: UIFeatureAction {
     case fetchData
+    case filtersSelected([FilterView.Items])
     case loadMore(AppUIEntities.ActivityType)
     case profileTapped
     case viewAllTapped(AppUIEntities.ActivityType)

@@ -15,7 +15,7 @@ import Communities
 protocol DiscoverUseCase {
     func fetchUserData() async throws(APIError) -> UserModel
     
-    func fetchFilterData() async throws(APIError) -> [FilterView.Model]
+    func fetchCategories() async throws(APIError) -> [FilterView.Model]
     
     func fetchCommunitiesData(
         query: DiscoverDTOModel.PaginationQuery
@@ -44,8 +44,8 @@ class DiscoverUseCaseImpl: DiscoverUseCase {
         try await repo.getUser()
     }
     
-    func fetchFilterData() async throws(APIError) -> [FilterView.Model] {
-        FilterView.Model.mock
+    func fetchCategories() async throws(APIError) -> [FilterView.Model] {
+        try await repo.getCategories()
     }
     
     func fetchCommunitiesData(

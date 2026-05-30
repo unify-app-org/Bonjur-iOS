@@ -35,6 +35,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     private var hasMoreClubs = true
     private var hasMoreEvents = true
     private var hasMoreHangouts = true
+    private var selectedCategoryIds: [Int] = []
     
     private struct InitialFetchResults {
         let user: APIResult<UserModel>
@@ -42,6 +43,12 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         let communities: APIResult<[CommunitiesModuleModel.CardInputData]>
         let clubs: APIResult<[ClubsModuleModel.CardInputData]>
         let events: APIResult<[EventsModuleModel.CardInputData]>
+        let hangouts: APIResult<[HangoutsModuleModel.CardInputData]>
+    }
+    
+    private struct FilteredFetchResults {
+        let communities: APIResult<[CommunitiesModuleModel.CardInputData]>
+        let clubs: APIResult<[ClubsModuleModel.CardInputData]>
         let hangouts: APIResult<[HangoutsModuleModel.CardInputData]>
     }
     
@@ -61,6 +68,8 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .filtersSelected(let items):
+            filtersSelected(items)
         case .loadMore(let activity):
             loadMore(activity)
         case .profileTapped:
@@ -112,16 +121,16 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             try await dependencies.useCase.fetchUserData()
         }
         async let filters = apiResult {
-            try await dependencies.useCase.fetchFilterData()
+            try await dependencies.useCase.fetchCategories()
         }
         async let communities = apiResult {
             try await dependencies.useCase.fetchCommunitiesData(
-                query: .init(page: 0, size: communitiesSize)
+                query: paginationQuery(size: communitiesSize)
             )
         }
         async let clubs = apiResult {
             try await dependencies.useCase.fetchClubsData(
-                query: .init(page: 0, size: clubsSize)
+                query: paginationQuery(size: clubsSize)
             )
         }
         async let events = apiResult {
@@ -129,7 +138,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         }
         async let hangouts = apiResult {
             try await dependencies.useCase.fetchHangoutsData(
-                query: .init(page: 0, size: hangoutsSize)
+                query: paginationQuery(size: hangoutsSize)
             )
         }
         
@@ -197,6 +206,103 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         return firstError
     }
     
+    private func filtersSelected(_ items: [FilterView.Items]) {
+        selectedCategoryIds = items.map(\.id)
+        resetPagination()
+        
+        Task {
+            postEffect(.loading(true))
+            defer {
+                postEffect(.loading(false))
+            }
+            
+            let results = await fetchFilteredData()
+            let firstError = applyFilteredFetchResults(results)
+            publishActivityCounts()
+            
+            if let firstError {
+                postEffect(.error(firstError))
+            }
+        }
+    }
+    
+    private func fetchFilteredData() async -> FilteredFetchResults {
+        async let communities = apiResult {
+            try await dependencies.useCase.fetchCommunitiesData(
+                query: paginationQuery(size: communitiesSize)
+            )
+        }
+        async let clubs = apiResult {
+            try await dependencies.useCase.fetchClubsData(
+                query: paginationQuery(size: clubsSize)
+            )
+        }
+        async let hangouts = apiResult {
+            try await dependencies.useCase.fetchHangoutsData(
+                query: paginationQuery(size: hangoutsSize)
+            )
+        }
+        
+        return await .init(
+            communities: communities,
+            clubs: clubs,
+            hangouts: hangouts
+        )
+    }
+    
+    private func applyFilteredFetchResults(
+        _ results: FilteredFetchResults
+    ) -> APIError? {
+        var firstError: APIError?
+        
+        switch results.communities {
+        case .success(let communities):
+            state.uiModel.communities = communities
+            hasMoreCommunities = communities.count >= communitiesSize
+        case .failure(let error):
+            firstError = firstError ?? error
+        }
+        
+        switch results.clubs {
+        case .success(let clubs):
+            state.uiModel.clubs = clubs
+            hasMoreClubs = clubs.count >= clubsSize
+        case .failure(let error):
+            firstError = firstError ?? error
+        }
+        
+        switch results.hangouts {
+        case .success(let hangouts):
+            state.uiModel.hangouts = hangouts
+            hasMoreHangouts = hangouts.count >= hangoutsSize
+        case .failure(let error):
+            firstError = firstError ?? error
+        }
+        
+        return firstError
+    }
+    
+    private func resetPagination() {
+        communitiesSize = paginationStep
+        clubsSize = paginationStep
+        eventsSize = paginationStep
+        hangoutsSize = paginationStep
+        hasMoreCommunities = true
+        hasMoreClubs = true
+        hasMoreEvents = true
+        hasMoreHangouts = true
+    }
+    
+    private func paginationQuery(
+        size: Int
+    ) -> DiscoverDTOModel.PaginationQuery {
+        .init(
+            page: 0,
+            size: size,
+            categoryIds: selectedCategoryIds.isEmpty ? nil : selectedCategoryIds
+        )
+    }
+    
     private func loadMore(_ type: AppUIEntities.ActivityType) {
         switch type {
         case .community:
@@ -223,7 +329,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             
             do {
                 let communities = try await dependencies.useCase.fetchCommunitiesData(
-                    query: .init(page: 0, size: communitiesSize)
+                    query: paginationQuery(size: communitiesSize)
                 )
                 hasMoreCommunities = communities.count > state.uiModel.communities.count
                 state.uiModel.communities = communities
@@ -247,7 +353,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             
             do {
                 let clubs = try await dependencies.useCase.fetchClubsData(
-                    query: .init(page: 0, size: clubsSize)
+                    query: paginationQuery(size: clubsSize)
                 )
                 hasMoreClubs = clubs.count > state.uiModel.clubs.count
                 state.uiModel.clubs = clubs
@@ -294,7 +400,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             
             do {
                 let hangouts = try await dependencies.useCase.fetchHangoutsData(
-                    query: .init(page: 0, size: hangoutsSize)
+                    query: paginationQuery(size: hangoutsSize)
                 )
                 hasMoreHangouts = hangouts.count > state.uiModel.hangouts.count
                 state.uiModel.hangouts = hangouts

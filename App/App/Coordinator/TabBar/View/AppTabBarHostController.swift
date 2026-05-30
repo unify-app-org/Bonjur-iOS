@@ -121,15 +121,17 @@ final class AppTabBarHostController: UIViewController {
     private var isOnDashboard: Bool {
         mainNavigationController.viewControllers.count == 1
     }
-    
+
     private func updateDockMode() {
         let isDockHidden = mainNavigationController.topViewController?.hidesBottomBarWhenPushed == true
         dockModel.isHidden = isDockHidden
 
+        // Critical line to avoid blocking touches
+        dockHostingController.view.isUserInteractionEnabled = !isDockHidden
+
         guard !isDockHidden else {
             return
         }
-
         dockModel.mode = (isOnDashboard) ? .home : .away
     }
     

@@ -34,6 +34,7 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
         
         if inputData.id != nil {
             state.disabledName = true
+            state.isEdit = true
         }
     }
     

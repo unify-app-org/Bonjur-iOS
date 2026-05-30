@@ -94,7 +94,7 @@ struct HangoutCreateView: View {
     
     private var topView: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Create new hangouts")
+            Text(self.store.state.topTitle)
                 .font(Font.Typography.TitleL.extraBold)
                 .foregroundStyle(Color.Palette.black)
             

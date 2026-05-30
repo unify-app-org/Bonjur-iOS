@@ -57,6 +57,7 @@ final class HangoutCreateViewState: UIFeatureState {
     @Published var showCategoryPicker: Bool = false
     @Published var categorySections: [SelectCategoryView.Section] = []
     @Published var disabledName: Bool = false
+    @Published var isEdit:Bool = false
     
     var selectedCategories: [CategoriesChipsView.Model] {
         categorySections
@@ -71,6 +72,13 @@ final class HangoutCreateViewState: UIFeatureState {
         !rules.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !location.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !about.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+    var topTitle:String{
+        if isEdit{
+          return  "Edit hangout"
+        }else{
+            return  "Create new hangouts"
+        }
     }
 }
 

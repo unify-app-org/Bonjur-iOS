@@ -51,7 +51,9 @@ struct HangoutDetailsView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Image(uiImage: UIImage.Icons.arrowLeft01)
-                    .onTapGesture {
+                    .toolbarItemBackground(
+                        isScrolled: isScrolled
+                    ) {
                         store.send(.backTapped)
                     }
             }
@@ -64,12 +66,16 @@ struct HangoutDetailsView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Image(uiImage: UIImage.Icons.ellipsis02)
+                    .toolbarItemBackground(
+                        isScrolled: isScrolled
+                    ) { }
             }
             if store.state.isEditable {
                 ToolbarItem(placement: .topBarTrailing) {
                     Image(uiImage: UIImage.Icons.penLine)
-                        .padding(.leading)
-                        .onTapGesture {
+                        .toolbarItemBackground(
+                            isScrolled: isScrolled
+                        ) {
                             store.send(.editTapped)
                         }
                 }

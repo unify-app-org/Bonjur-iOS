@@ -104,18 +104,16 @@ struct HangoutsCardView: View {
                 }
             }
             
-            if model.requestType != .joined {
-                AppButton(
-                    title: model.buttonTitle,
-                    model: .init(
-                        contentSize: .fill,
-                        size: .small
-                    )
-                ) {
-                    onButtonTap()
-                }
-                .disabled(model.requestType == .pending)
+            AppButton(
+                title: model.buttonTitle,
+                model: .init(
+                    contentSize: .fill,
+                    size: .small
+                )
+            ) {
+                onButtonTap()
             }
+            .disabled(model.buttonDisabled)
         }
     }
 }

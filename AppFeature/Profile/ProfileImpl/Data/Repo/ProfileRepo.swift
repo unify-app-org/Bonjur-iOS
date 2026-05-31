@@ -184,7 +184,7 @@ class ProfileRepoImpl: ProfileRepo {
         let userId = userId ?? myUserId
         let data = try await dataSource.fetchMyHangouts(id: userId).content
         return data.map { item in
-            let tags: [AppUIEntities.Tags] = item.categoryResponses.map { category in
+            let tags: [AppUIEntities.Tags] = item.categories.map { category in
                 .init(
                     id: category.id ?? 0,
                     type: "",
@@ -200,7 +200,7 @@ class ProfileRepoImpl: ProfileRepo {
                 totalCapacity: item.capacity,
                 tags: tags,
                 accessType: item.visibility ?? .private,
-                requestType: .none
+                requestType: item.status ?? .none
             )
         }
     }

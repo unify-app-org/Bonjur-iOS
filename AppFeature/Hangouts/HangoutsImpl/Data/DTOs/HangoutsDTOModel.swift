@@ -24,6 +24,8 @@ struct HangoutsDTOModel {
         let id: String?
         let name: String?
         let visibility: AppPresentationModel.AccessType?
+        let requestStatus: AppPresentationModel.RequestType?
+        let hangoutActivityStatus: AppPresentationModel.ActivityStatus?
         let about: String?
         let capacity: Int?
         let membersCount: Int?
@@ -34,10 +36,11 @@ struct HangoutsDTOModel {
         let id: String
         let name: String
         let about: String?
-        let capacity: Int?
+        let capacity, membersCount: Int?
         let rules: String?
         let location: String?
         let visibility: AppPresentationModel.AccessType?
+        let role: AppPresentationModel.UserActivityRole?
         let hangoutDate: String?
         let links: [Link]?
         let community: Community

@@ -35,6 +35,8 @@ struct DiscoverDTOModel {
         let about: String?
         let capacity: Int?
         let membersCount: Int?
+        let requestStatus: AppPresentationModel.RequestType?
+        let hangoutActivityStatus: AppPresentationModel.ActivityStatus?
         let categoryResponses: [CategoryResponse]
     }
     

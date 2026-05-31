@@ -54,7 +54,7 @@ class HangoutRepoImpl: HangoutRepo {
                 totalCapacity: item.capacity,
                 tags: tags,
                 accessType: item.visibility ?? .private,
-                requestType: .none
+                requestType: item.requestStatus ?? .none
             )
         }
     }
@@ -75,7 +75,7 @@ class HangoutRepoImpl: HangoutRepo {
                 ]
             )
         )
-        let capacity = "\(0)/\(data.capacity ?? 0) members"
+        let capacity = "\(data.membersCount ?? 0)/\(data.capacity ?? 0) members"
         info.append(
             .init(
                 title: "Event info",
@@ -102,8 +102,8 @@ class HangoutRepoImpl: HangoutRepo {
         let uiModel: HangoutDetails.UIModel = .init(
             name: data.name,
             communityName: data.community.name,
-            membersCount: 0,
-            userActivityType: .member,
+            membersCount: data.membersCount ?? 0,
+            userActivityType: data.role ?? .notJoined,
             accessType: data.visibility ?? .private,
             tags: tags,
             infoData: info

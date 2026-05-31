@@ -112,21 +112,20 @@ extension HangoutDetails.UIModel {
             )
         ],
         editPrefillData: .init(
-            visibility: .private,
-            name: "Basketball Event",
-            ownerContact: "+994 123 45 67",
-            clubName: "Futbool Club",
-            clubOwnerContact: "+994 123 45 67",
-            categories: [
-                .init(id: 1, label: "Messi")
-            ],
-            capacity: "200",
-            links: [],
-            rules: "Everyone can come",
-            location: "Cafetaria, 2nd floor",
-            about: "I want to have a coffee and then go to the film I have one free ticket to the concert for the Sunday evening if someone want just contact.",
-            hangoutDate: nil,
-            endDate: nil
+            values: [
+                .visibility: .radio(.private),
+                .hangoutName: .text("Basketball Event"),
+                .ownerContact: .text("+994 123 45 67"),
+                .category: .tags([
+                    .init(id: 1, label: "Messi")
+                ]),
+                .capacity: .text("200"),
+                .links: .links([]),
+                .location: .text("Cafetaria, 2nd floor"),
+                .hangoutDate: .date(Date()),
+                .rules: .text("Everyone can come"),
+                .about: .text("I want to have a coffee and then go to the film I have one free ticket to the concert for the Sunday evening if someone want just contact.")
+            ]
         )
     )
 }

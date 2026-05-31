@@ -150,25 +150,24 @@ class HangoutRepoImpl: HangoutRepo {
             )
         }
         let editPrefillData = HangoutsCreate.PrefillData(
-            visibility: data.visibility ?? .public,
-            name: data.name,
-            ownerContact: data.ownerContact ?? "",
-            clubName: "",
-            clubOwnerContact: data.ownerContact ?? "",
-            categories: tags.map { .init(id: $0.id, label: $0.title) },
-            capacity: data.capacity.map(String.init) ?? "",
-            links: data.links?.map {
-                .init(
-                    type: $0.type ?? "",
-                    name: $0.name ?? "",
-                    url: $0.url ?? ""
-                )
-            } ?? [],
-            rules: data.rules ?? "",
-            location: data.location ?? "",
-            about: data.about ?? "",
-            hangoutDate: makeDate(from: data.hangoutDate),
-            endDate: nil
+            values: [
+                .visibility: .radio(data.visibility ?? .public),
+                .hangoutName: .text(data.name),
+                .ownerContact: .text(data.ownerContact ?? ""),
+                .category: .tags(tags.map { .init(id: $0.id, label: $0.title) }),
+                .capacity: .text(data.capacity.map(String.init) ?? ""),
+                .links: .links(data.links?.map {
+                    .init(
+                        type: $0.type ?? "",
+                        name: $0.name ?? "",
+                        url: $0.url ?? ""
+                    )
+                } ?? []),
+                .location: .text(data.location ?? ""),
+                .hangoutDate: .date(makeDate(from: data.hangoutDate) ?? Date()),
+                .rules: .text(data.rules ?? ""),
+                .about: .text(data.about ?? "")
+            ]
         )
         let uiModel: HangoutDetails.UIModel = .init(
             name: data.name,

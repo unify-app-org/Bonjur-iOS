@@ -43,23 +43,22 @@ struct HangoutsModuleImpl: HangoutsModule {
             inputData: .init(
                 id: id,
                 prefillData: .init(
-                    visibility: prefillData.visibility,
-                    name: prefillData.name,
-                    ownerContact: prefillData.ownerContact,
-                    clubName: prefillData.clubName,
-                    clubOwnerContact: prefillData.clubOwnerContact,
-                    categories: prefillData.categories.map {
-                        .init(id: $0.id, label: $0.title)
-                    },
-                    capacity: prefillData.capacity,
-                    links: prefillData.links.map {
-                        .init(type: $0.type, name: $0.name, url: $0.url)
-                    },
-                    rules: prefillData.rules,
-                    location: prefillData.location,
-                    about: prefillData.about,
-                    hangoutDate: prefillData.hangoutDate,
-                    endDate: prefillData.endDate
+                    values: [
+                        .visibility: .radio(prefillData.visibility),
+                        .hangoutName: .text(prefillData.name),
+                        .ownerContact: .text(prefillData.ownerContact),
+                        .category: .tags(prefillData.categories.map {
+                            .init(id: $0.id, label: $0.title)
+                        }),
+                        .capacity: .text(prefillData.capacity),
+                        .links: .links(prefillData.links.map {
+                            .init(type: $0.type, name: $0.name, url: $0.url)
+                        }),
+                        .location: .text(prefillData.location),
+                        .hangoutDate: .date(prefillData.hangoutDate ?? Date()),
+                        .rules: .text(prefillData.rules),
+                        .about: .text(prefillData.about)
+                    ]
                 )
             )
         )

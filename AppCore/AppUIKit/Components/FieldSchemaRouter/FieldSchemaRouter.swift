@@ -462,7 +462,7 @@ private struct DateInputField: View {
                 isPresented = true
             } label: {
                 HStack {
-                    Text(value.toString(format: .dd_MM_yyyy))
+                    Text(value.toString(format: .ddMMyyyyHHmm))
                         .font(Font.Typography.BodyTextMd.regular)
                         .foregroundStyle(Color.Palette.blackHigh)
 

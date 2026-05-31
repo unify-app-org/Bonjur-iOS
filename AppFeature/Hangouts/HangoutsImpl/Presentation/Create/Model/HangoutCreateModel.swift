@@ -17,7 +17,7 @@ import AppPresentationModel
 struct HangoutCreateInputData {
     let id: String?
     let prefillData: HangoutsCreate.PrefillData?
-    
+
     init(
         id: String? = nil,
         prefillData: HangoutsCreate.PrefillData? = nil
@@ -45,40 +45,28 @@ typealias HangoutCreateFeature = UIFeatureDefinition<
 // MARK: - View State
 
 final class HangoutCreateViewState: UIFeatureState {
-    @Published var visibility: AppPresentationModel.AccessType = .public
-    @Published var name: String = ""
-    @Published var ownerContact: String = ""
-    @Published var capacity: String = ""
-    @Published var links: [AppLinkItem] = []
-    @Published var rules: String = ""
-    @Published var location: String = ""
-    @Published var about: String = ""
-    @Published var hangoutDate: Date = Date()
+    @Published var hangoutsCreateSchema: [HangoutsCreate.FieldSchema] = []
     @Published var showCategoryPicker: Bool = false
     @Published var categorySections: [SelectCategoryView.Section] = []
-    @Published var disabledName: Bool = false
-    @Published var isEdit:Bool = false
-    
+    @Published var disabledFieldIDs: Set<HangoutsCreate.FieldID> = []
+    @Published var isEdit: Bool = false
+    @Published var values: [HangoutsCreate.FieldID: HangoutsCreate.FieldValue] = [
+        .visibility: .radio(.public),
+        .hangoutDate: .date(Date())
+    ]
+
     var selectedCategories: [CategoriesChipsView.Model] {
         categorySections
             .flatMap(\.categories)
             .filter(\.selected)
     }
-    
+
     var isValid: Bool {
-        !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !ownerContact.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !selectedCategories.isEmpty &&
-        !rules.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !location.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !about.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        values.isValid(for: hangoutsCreateSchema)
     }
-    var topTitle:String{
-        if isEdit{
-          return  "Edit hangout"
-        }else{
-            return  "Create new hangouts"
-        }
+
+    var topTitle: String {
+        isEdit ? "Edit hangout" : "Create new hangouts"
     }
 }
 

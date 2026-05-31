@@ -14,22 +14,24 @@ protocol HangoutRepo {
     func fetchHangouts(
         query: HangoutsDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsCardView.Model]
-    
+
+    func fetchCreate() async throws(APIError) -> [HangoutsCreate.FieldSchema]
+
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
-    
+
     func createHangout(
         request: HangoutsDTOModel.Request
     ) async throws(APIError) -> Void
-    
+
     func editHangout(
         id: String,
         request: HangoutsDTOModel.Request
     ) async throws(APIError) -> Void
-    
+
     func fetchDetailHangout(
         id: String
     ) async throws(APIError) -> HangoutDetails.UIModel
-    
+
     func fetchDetailHangoutMembers(
         id: String
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
@@ -37,13 +39,13 @@ protocol HangoutRepo {
 
 class HangoutRepoImpl: HangoutRepo {
     private let dataSource: HangoutsDataSource
-    
+
     init(
         dataSource: HangoutsDataSource = resolve()
     ) {
         self.dataSource = dataSource
     }
-    
+
     func fetchHangouts(
         query: HangoutsDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsCardView.Model] {
@@ -69,7 +71,11 @@ class HangoutRepoImpl: HangoutRepo {
             )
         }
     }
-    
+
+    func fetchCreate() async throws(APIError) -> [HangoutsCreate.FieldSchema] {
+        try await dataSource.fetchCreate()
+    }
+
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section] {
         let data = try await dataSource.getCategories()
         return data.map { item in
@@ -80,7 +86,7 @@ class HangoutRepoImpl: HangoutRepo {
                     selected: false
                 )
             }
-            
+
             return .init(
                 type: item.type ?? "",
                 title: item.title ?? "",
@@ -88,20 +94,20 @@ class HangoutRepoImpl: HangoutRepo {
             )
         }
     }
-    
+
     func createHangout(
         request: HangoutsDTOModel.Request
     ) async throws(APIError) {
         let _ = try await dataSource.createHangout(request: request)
     }
-    
+
     func editHangout(
         id: String,
         request: HangoutsDTOModel.Request
     ) async throws(APIError) {
         let _ = try await dataSource.editHangout(id: id, request: request)
     }
-    
+
     func fetchDetailHangout(
         id: String
     ) async throws(APIError) -> HangoutDetails.UIModel {
@@ -176,7 +182,7 @@ class HangoutRepoImpl: HangoutRepo {
         )
         return uiModel
     }
-    
+
     func fetchDetailHangoutMembers(
         id: String
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
@@ -192,7 +198,7 @@ class HangoutRepoImpl: HangoutRepo {
         }
         return .init(users: users)
     }
-    
+
     private func makeDate(from value: String?) -> Date? {
         guard let value else { return nil }
         let formatter = ISO8601DateFormatter()

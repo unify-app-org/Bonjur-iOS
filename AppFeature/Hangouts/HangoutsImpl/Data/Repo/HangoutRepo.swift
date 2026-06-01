@@ -67,7 +67,7 @@ class HangoutRepoImpl: HangoutRepo {
                 totalCapacity: item.capacity,
                 tags: tags,
                 accessType: item.visibility ?? .private,
-                requestType: .none
+                requestType: item.requestStatus ?? .none
             )
         }
     }

@@ -52,18 +52,27 @@ extension HangoutsCardView {
         var buttonTitle: String {
             switch requestType {
             case .joined:
-                return ""
+                "Participating"
             case .rejected:
-                return "Rejected"
+                "Rejected"
             case .pending:
-                return "Request sent"
+                "Request sent"
             case .none:
                 switch accessType {
                 case .public:
-                    return "Join"
+                    "Join"
                 case .private:
-                    return "Request"
+                    "Request"
                 }
+            }
+        }
+        
+        var buttonDisabled: Bool {
+            switch requestType {
+            case .joined, .pending:
+                true
+            case .none, .rejected:
+                false
             }
         }
     }

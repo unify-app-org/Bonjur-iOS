@@ -33,10 +33,13 @@ struct GroupsDTOModel {
         let id: String?
         let name: String?
         let visibility: AppPresentationModel.AccessType?
+        let role: AppPresentationModel.UserActivityRole?
+        let hangoutActivityStatus: AppPresentationModel.ActivityStatus?
+        let status: AppPresentationModel.RequestType?
         let about: String?
         let capacity: Int?
         let membersCount: Int?
-        let categoryResponses: [CategoryResponse]
+        let categories: [CategoryResponse]
     }
     
     // MARK: - Club

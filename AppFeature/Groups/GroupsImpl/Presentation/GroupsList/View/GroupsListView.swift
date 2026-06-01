@@ -125,8 +125,8 @@ struct GroupsListView: View {
     private var clubsScrollView: some View {
         let clubs = store.state.uiModel.clubs
         
-        if !clubs.isEmpty {
             ScrollView {
+                if !clubs.isEmpty {
                 VStack(spacing: 20) {
                     ForEach(Array(clubs.enumerated()), id: \.element.uuid) { index, club in
                         if let view = clubsModule.makeCardView(
@@ -143,9 +143,9 @@ struct GroupsListView: View {
                     }
                 }
                 .padding()
-            }
-        } else {
-            emptyStateView(for: .clubs)
+            } else {
+               emptyStateView(for: .clubs)
+           }
         }
     }
     
@@ -153,8 +153,8 @@ struct GroupsListView: View {
     private var eventsScrollView: some View {
         let events = store.state.uiModel.events
         
-        if !events.isEmpty {
-            ScrollView {
+        ScrollView {
+            if !events.isEmpty {
                 VStack(spacing: 20) {
                     ForEach(events, id: \.uuid) { event in
                         if let view = eventsModule.makeEventsCard(
@@ -169,9 +169,9 @@ struct GroupsListView: View {
                     }
                 }
                 .padding()
+            } else {
+                emptyStateView(for: .events)
             }
-        } else {
-            emptyStateView(for: .events)
         }
     }
     
@@ -179,8 +179,8 @@ struct GroupsListView: View {
     private var hangoutsScrollView: some View {
         let hangouts = store.state.uiModel.hangouts
         
-        if !hangouts.isEmpty {
-            ScrollView {
+        ScrollView {
+            if !hangouts.isEmpty {
                 VStack(spacing: 20) {
                     ForEach(Array(hangouts.enumerated()), id: \.element.uuid) { index, hangout in
                         if let view = hangoutsModule.makeHangoutsCard(
@@ -198,9 +198,9 @@ struct GroupsListView: View {
                     }
                 }
                 .padding()
+            } else {
+                emptyStateView(for: .hangouts)
             }
-        } else {
-            emptyStateView(for: .hangouts)
         }
     }
     

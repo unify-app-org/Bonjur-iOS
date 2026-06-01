@@ -73,7 +73,7 @@ class DiscoverRepoImpl: DiscoverRepo {
                     totalCapacity: item.capacity ?? 0,
                     tags: tags,
                     accessType: item.visibility ?? .private,
-                    requestType: .none
+                    requestType: item.requestStatus ?? .none
                 )
         }
         return uiModel

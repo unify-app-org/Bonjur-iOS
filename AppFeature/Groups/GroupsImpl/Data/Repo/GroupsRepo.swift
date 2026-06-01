@@ -67,7 +67,7 @@ final class GroupsRepoImpl: GroupsRepo {
         ).content
         
         return data.map { item in
-            let tags: [AppUIEntities.Tags] = item.categoryResponses.map { category in
+            let tags: [AppUIEntities.Tags] = item.categories.map { category in
                 .init(
                     id: category.id ?? 0,
                     type: "",
@@ -83,7 +83,7 @@ final class GroupsRepoImpl: GroupsRepo {
                 totalCapacity: item.capacity,
                 tags: tags,
                 accessType: item.visibility ?? .private,
-                requestType: .joined
+                requestType: item.status ?? .none
             )
         }
     }

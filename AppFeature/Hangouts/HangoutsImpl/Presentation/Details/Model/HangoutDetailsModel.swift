@@ -65,6 +65,7 @@ final class HangoutDetailsViewState: UIFeatureState {
 enum HangoutDetailsAction: UIFeatureAction {
     case fetchData
     case backTapped
+    case editTapped
 }
 
 

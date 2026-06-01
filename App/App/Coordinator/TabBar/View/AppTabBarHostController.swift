@@ -11,6 +11,7 @@ import SwiftUI
 import Discover
 import Clubs
 import Groups
+import Hangouts
 import Profile
 import AppPresentationModel
 
@@ -20,6 +21,7 @@ final class AppTabBarHostController: UIViewController {
     private let discoverModule: DiscoverModule
     private let clubsModule: ClubsModule
     private let groupsModule: GroupsModule
+    private let hangoutsModule: HangoutsModule
     private let profileModule: ProfileModule
 
     private lazy var discoverRootViewController: UIViewController = {
@@ -61,12 +63,14 @@ final class AppTabBarHostController: UIViewController {
         discoverModule: DiscoverModule,
         clubsModule: ClubsModule,
         groupsModule: GroupsModule,
+        hangoutsModule: HangoutsModule,
         profileModule: ProfileModule
     ) {
         self.viewModel = viewModel
         self.discoverModule = discoverModule
         self.clubsModule = clubsModule
         self.groupsModule = groupsModule
+        self.hangoutsModule = hangoutsModule
         self.profileModule = profileModule
         super.init(nibName: nil, bundle: nil)
     }
@@ -117,15 +121,17 @@ final class AppTabBarHostController: UIViewController {
     private var isOnDashboard: Bool {
         mainNavigationController.viewControllers.count == 1
     }
-    
+
     private func updateDockMode() {
         let isDockHidden = mainNavigationController.topViewController?.hidesBottomBarWhenPushed == true
         dockModel.isHidden = isDockHidden
 
+        // Critical line to avoid blocking touches
+        dockHostingController.view.isUserInteractionEnabled = !isDockHidden
+
         guard !isDockHidden else {
             return
         }
-
         dockModel.mode = (isOnDashboard) ? .home : .away
     }
     
@@ -162,7 +168,8 @@ final class AppTabBarHostController: UIViewController {
         case .event:
             break
         case .hangout:
-            break
+            let viewController = hangoutsModule.makeCreateVC() as! UIViewController
+            mainNavigationController.pushViewController(viewController, animated: true)
         }
     }
 }

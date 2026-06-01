@@ -15,9 +15,30 @@ struct DiscoverDTOModel {
         let title: String?
     }
     
+    struct CategoriesResponse: Decodable {
+        let type, title: String?
+        let subCategories: [SubCategoriesResponse]
+    }
+    
+    struct SubCategoriesResponse: Decodable {
+        let id: Int?
+        let title: String?
+    }
+    
     public struct PaginationQuery: Encodable {
         let page: Int
         let size: Int
+        let categoryIds: [Int]?
+        
+        init(
+            page: Int,
+            size: Int,
+            categoryIds: [Int]? = nil
+        ) {
+            self.page = page
+            self.size = size
+            self.categoryIds = categoryIds
+        }
     }
     
     struct Member: Decodable {

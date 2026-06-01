@@ -14,11 +14,24 @@ protocol HangoutRepo {
     func fetchHangouts(
         query: HangoutsDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsCardView.Model]
-    
+
+    func fetchCreate() async throws(APIError) -> [HangoutsCreate.FieldSchema]
+
+    func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
+
+    func createHangout(
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) -> Void
+
+    func editHangout(
+        id: String,
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) -> Void
+
     func fetchDetailHangout(
         id: String
     ) async throws(APIError) -> HangoutDetails.UIModel
-    
+
     func fetchDetailHangoutMembers(
         id: String
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
@@ -26,13 +39,13 @@ protocol HangoutRepo {
 
 class HangoutRepoImpl: HangoutRepo {
     private let dataSource: HangoutsDataSource
-    
+
     init(
         dataSource: HangoutsDataSource = resolve()
     ) {
         self.dataSource = dataSource
     }
-    
+
     func fetchHangouts(
         query: HangoutsDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsCardView.Model] {
@@ -58,7 +71,43 @@ class HangoutRepoImpl: HangoutRepo {
             )
         }
     }
-    
+
+    func fetchCreate() async throws(APIError) -> [HangoutsCreate.FieldSchema] {
+        try await dataSource.fetchCreate()
+    }
+
+    func getCategories() async throws(APIError) -> [SelectCategoryView.Section] {
+        let data = try await dataSource.getCategories()
+        return data.map { item in
+            let categories: [CategoriesChipsView.Model] = item.subCategories.map { subCategory in
+                .init(
+                    id: subCategory.id ?? 0,
+                    title: subCategory.title ?? "",
+                    selected: false
+                )
+            }
+
+            return .init(
+                type: item.type ?? "",
+                title: item.title ?? "",
+                categories: categories
+            )
+        }
+    }
+
+    func createHangout(
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) {
+        let _ = try await dataSource.createHangout(request: request)
+    }
+
+    func editHangout(
+        id: String,
+        request: HangoutsDTOModel.Request
+    ) async throws(APIError) {
+        let _ = try await dataSource.editHangout(id: id, request: request)
+    }
+
     func fetchDetailHangout(
         id: String
     ) async throws(APIError) -> HangoutDetails.UIModel {
@@ -75,13 +124,14 @@ class HangoutRepoImpl: HangoutRepo {
                 ]
             )
         )
-        let capacity = "\(data.membersCount ?? 0)/\(data.capacity ?? 0) members"
+        let membersCount = data.membersCount ?? 0
+        let capacity = "\(membersCount)/\(data.capacity ?? 0) members"
         info.append(
             .init(
                 title: "Event info",
                 subItems: [
                     .init(title: "Created/Updated Date", description: data.hangoutDate ?? "-"),
-                    .init(title: "Owner Contact", description: "-"),
+                    .init(title: "Owner Contact", description: data.ownerContact ?? "-"),
                     .init(title: "Capacity", description: capacity),
                     .init(title: "Rules", description: data.rules ?? "-"),
                     .init(title: "Location", description: data.location ?? "-")
@@ -99,18 +149,39 @@ class HangoutRepoImpl: HangoutRepo {
                 )
             )
         }
+        let editPrefillData = HangoutsCreate.PrefillData(
+            values: [
+                .visibility: .radio(data.visibility ?? .public),
+                .hangoutName: .text(data.name),
+                .ownerContact: .text(data.ownerContact ?? ""),
+                .category: .tags(tags.map { .init(id: $0.id, label: $0.title) }),
+                .capacity: .text(data.capacity.map(String.init) ?? ""),
+                .links: .links(data.links?.map {
+                    .init(
+                        type: $0.type ?? "",
+                        name: $0.name ?? "",
+                        url: $0.url ?? ""
+                    )
+                } ?? []),
+                .location: .text(data.location ?? ""),
+                .hangoutDate: .date(makeDate(from: data.hangoutDate) ?? Date()),
+                .rules: .text(data.rules ?? ""),
+                .about: .text(data.about ?? "")
+            ]
+        )
         let uiModel: HangoutDetails.UIModel = .init(
             name: data.name,
             communityName: data.community.name,
-            membersCount: data.membersCount ?? 0,
+            membersCount: membersCount,
             userActivityType: data.role ?? .notJoined,
             accessType: data.visibility ?? .private,
             tags: tags,
-            infoData: info
+            infoData: info,
+            editPrefillData: editPrefillData
         )
         return uiModel
     }
-    
+
     func fetchDetailHangoutMembers(
         id: String
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
@@ -125,5 +196,19 @@ class HangoutRepoImpl: HangoutRepo {
             )
         }
         return .init(users: users)
+    }
+
+    private func makeDate(from value: String?) -> Date? {
+        guard let value else { return nil }
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [
+            .withInternetDateTime,
+            .withFractionalSeconds
+        ]
+        if let date = formatter.date(from: value) {
+            return date
+        }
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter.date(from: value)
     }
 }

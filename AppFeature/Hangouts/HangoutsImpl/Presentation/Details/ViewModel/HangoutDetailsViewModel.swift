@@ -44,6 +44,8 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
             }
         case .fetchData:
             fetchData()
+        case .editTapped:
+            editTapped()
         }
     }
     
@@ -133,5 +135,17 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
         _ data: CommunitiesMemberModuleModel.GroupedMembersData
     ) {
         state.membersData = data
+    }
+    
+    private func editTapped() {
+        guard let uiModel = state.uiModel else { return }
+        Task {
+            await router.navigate(
+                to: .edit(
+                    id: inputData.hangoutId,
+                    prefillData: uiModel.editPrefillData
+                )
+            )
+        }
     }
 }

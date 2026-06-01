@@ -29,6 +29,8 @@ protocol DiscoverRepo {
         query: DiscoverDTOModel.PaginationQuery
     ) async throws(APIError) -> [CommunitiesModuleModel.CardInputData]
     
+    func getCategories() async throws(APIError) -> [FilterView.Model]
+    
     func getUser() async throws(APIError) -> UserModel
     
     func joinHangout(
@@ -133,6 +135,24 @@ class DiscoverRepoImpl: DiscoverRepo {
                 )
         }
         return uiModel
+    }
+    
+    func getCategories() async throws(APIError) -> [FilterView.Model] {
+        let data = try await dataSource.getCategories()
+        return data.map { item in
+            let items = item.subCategories.map { subCategory in
+                FilterView.Items(
+                    title: subCategory.title ?? "",
+                    id: subCategory.id ?? 0
+                )
+            }
+            
+            return FilterView.Model(
+                title: item.title ?? "",
+                type: item.type ?? "",
+                items: items
+            )
+        }
     }
     
     func getUser() async throws(APIError) -> UserModel {

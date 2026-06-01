@@ -76,8 +76,6 @@ struct HangoutsDTOModel {
         let links: [Link]?
         let community: Community
         let categories: [Categories]
-        let membersCount: Int?
-        let role: AppPresentationModel.UserActivityRole?
     }
     
     struct Community: Decodable {

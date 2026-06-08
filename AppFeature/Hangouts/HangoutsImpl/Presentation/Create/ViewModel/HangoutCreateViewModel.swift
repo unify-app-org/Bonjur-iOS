@@ -153,7 +153,7 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
             )
             await router.navigate(to: .backTapped)
         } catch {
-            postEffect(.error(error as? APIError))
+            postEffect(.error(error))
         }
     }
 
@@ -170,7 +170,7 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
             )
             await router.navigate(to: .backTapped)
         } catch {
-            postEffect(.error(error as? APIError))
+            postEffect(.error(error))
         }
     }
 

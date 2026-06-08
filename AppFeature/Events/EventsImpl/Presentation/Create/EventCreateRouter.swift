@@ -8,6 +8,7 @@
 import UIKit
 
 enum EventCreateRoute {
+    case backTapped
 }
 
 protocol EventCreateRouterProtocol {
@@ -17,8 +18,12 @@ protocol EventCreateRouterProtocol {
 
 final class EventCreateRouter: EventCreateRouterProtocol {
     weak var view: UIViewController?
-    
+
     @MainActor
     func navigate(to route: EventCreateRoute) {
+        switch route {
+        case .backTapped:
+            self.view?.navigationController?.popViewController(animated: true)
+        }
     }
 }

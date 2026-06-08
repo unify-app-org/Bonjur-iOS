@@ -19,4 +19,11 @@ public protocol EventsModule {
     ) -> Any
     
     func makeEventsDetails(eventId: String) -> AnyObject
+
+    func makeCreateVC() -> AnyObject
+
+    func makeCreateVC(
+        eventId: String,
+        prefillData: EventsModuleModel.CreatePrefillData
+    ) -> AnyObject
 }

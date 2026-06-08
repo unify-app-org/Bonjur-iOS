@@ -9,6 +9,7 @@ import AppPresentationModel
 import AppUtils
 import SwiftUI
 import UIKit
+import UniformTypeIdentifiers
 
 public enum AppFieldSchema {
 
@@ -58,6 +59,20 @@ public enum AppFieldSchema {
         }
     }
 
+    public struct AttachmentItem: Identifiable, Equatable, Hashable {
+        public let id: UUID
+        public var name: String
+        public var url: URL
+        public var size: Int
+
+        public init(id: UUID = UUID(), name: String, url: URL, size: Int = 0) {
+            self.id = id
+            self.name = name
+            self.url = url
+            self.size = size
+        }
+    }
+
     public struct CoverItem {
         public let title: String
         public let description: String
@@ -74,6 +89,27 @@ public enum AppFieldSchema {
         }
     }
 
+    /// Reminder offsets offered by the reminder bottom sheet. Raw value matches the backend enum.
+    public enum ReminderOption: String, CaseIterable, Equatable {
+        case none = "NONE"
+        case atEventTime = "AT_EVENT_TIME"
+        case fifteenMinutesBefore = "FIFTEEN_MINUTES_BEFORE"
+        case thirtyMinutesBefore = "THIRTY_MINUTES_BEFORE"
+        case oneHourBefore = "ONE_HOUR_BEFORE"
+        case oneDayBefore = "ONE_DAY_BEFORE"
+
+        public var label: String {
+            switch self {
+            case .none: return "None"
+            case .atEventTime: return "At time of event"
+            case .fifteenMinutesBefore: return "15 minutes before"
+            case .thirtyMinutesBefore: return "30 minutes before"
+            case .oneHourBefore: return "1 hour before"
+            case .oneDayBefore: return "1 day before"
+            }
+        }
+    }
+
     public enum FieldValue: Equatable {
         case text(String)
         case tags([TagItem])
@@ -81,6 +117,8 @@ public enum AppFieldSchema {
         case cover(AppUIEntities.BackgroundType)
         case radio(AppPresentationModel.AccessType)
         case date(Date)
+        case reminder(ReminderOption)
+        case attachments([AttachmentItem])
     }
 
     public enum FieldType {
@@ -91,6 +129,8 @@ public enum AppFieldSchema {
         case chipInput(placeholder: String)
         case linkInput(placeholder: String)
         case date(placeholder: String)
+        case reminder(placeholder: String, options: [ReminderOption] = ReminderOption.allCases)
+        case attachment(placeholder: String, description: String = "")
     }
 
     public struct RadioOption: Identifiable {
@@ -135,12 +175,17 @@ public extension AppFieldSchema.FieldID {
     static let visibility: Self = "visibility"
     static let clubName: Self = "clubName"
     static let hangoutName: Self = "hangoutName"
+    static let eventName: Self = "eventName"
     static let ownerContact: Self = "ownerContact"
     static let category: Self = "category"
     static let capacity: Self = "capacity"
     static let links: Self = "links"
     static let location: Self = "location"
     static let hangoutDate: Self = "hangoutDate"
+    static let eventDate: Self = "eventDate"
+    static let reminder: Self = "reminder"
+    static let attachment: Self = "attachment"
+    static let club: Self = "club"
     static let rules: Self = "rules"
     static let about: Self = "about"
 }
@@ -241,6 +286,28 @@ public struct FieldSchemaRouter: View {
                     set: { values[field.id] = .date($0) }
                 )
             )
+
+        case .reminder(let placeholder, let options):
+            ReminderField(
+                field: field,
+                placeholder: placeholder,
+                options: options,
+                selected: Binding(
+                    get: { values.reminder(field.id) },
+                    set: { values[field.id] = .reminder($0) }
+                )
+            )
+
+        case .attachment(let placeholder, let description):
+            AttachmentField(
+                field: field,
+                placeholder: placeholder,
+                description: description,
+                attachments: Binding(
+                    get: { values.attachments(field.id) },
+                    set: { values[field.id] = .attachments($0) }
+                )
+            )
         }
     }
 }
@@ -277,6 +344,16 @@ public extension Dictionary where Key == AppFieldSchema.FieldID, Value == AppFie
         return Date()
     }
 
+    func reminder(_ id: AppFieldSchema.FieldID) -> AppFieldSchema.ReminderOption {
+        if case .reminder(let value) = self[id] { return value }
+        return .none
+    }
+
+    func attachments(_ id: AppFieldSchema.FieldID) -> [AppFieldSchema.AttachmentItem] {
+        if case .attachments(let value) = self[id] { return value }
+        return []
+    }
+
     func isValid(for schema: [AppFieldSchema.Field]) -> Bool {
         schema.filter(\.required).allSatisfy { field in
             switch field.type {
@@ -286,7 +363,7 @@ public extension Dictionary where Key == AppFieldSchema.FieldID, Value == AppFie
                 return !tags(field.id).isEmpty
             case .linkInput:
                 return !links(field.id).isEmpty
-            case .coverPicker, .radioGroup, .date:
+            case .coverPicker, .radioGroup, .date, .reminder, .attachment:
                 return true
             }
         }
@@ -502,6 +579,218 @@ private struct DateInputField: View {
             .datePickerStyle(.graphical)
             .padding()
         }
+    }
+}
+
+private struct ReminderField: View {
+    let field: AppFieldSchema.Field
+    let placeholder: String
+    let options: [AppFieldSchema.ReminderOption]
+    @Binding var selected: AppFieldSchema.ReminderOption
+    @State private var isPresented = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            FieldLabel(field: field)
+
+            Button {
+                isPresented = true
+            } label: {
+                HStack {
+                    Text(selected == .none ? placeholder : selected.label)
+                        .font(Font.Typography.BodyTextMd.regular)
+                        .foregroundStyle(
+                            selected == .none
+                                ? Color.Palette.blackMedium
+                                : Color.Palette.blackHigh
+                        )
+
+                    Spacer()
+
+                    Image(uiImage: UIImage.Icons.bell)
+                        .renderingMode(.template)
+                        .foregroundStyle(Color.Palette.blackHigh)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 16)
+                .background(Color.clear)
+                .contentShape(Capsule())
+                .clipShape(Capsule())
+                .overlay(
+                    Capsule().stroke(
+                        Color.Palette.graySecondary,
+                        lineWidth: 0.5
+                    )
+                )
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, 16)
+        .padding(.bottom, 14)
+        .appSheet(
+            isPresented: $isPresented,
+            detents: [.medium],
+            dragIndicator: .visible
+        ) {
+            ReminderOptionsList(
+                title: field.label,
+                options: options,
+                selected: $selected,
+                isPresented: $isPresented
+            )
+        }
+    }
+}
+
+private struct ReminderOptionsList: View {
+    let title: String
+    let options: [AppFieldSchema.ReminderOption]
+    @Binding var selected: AppFieldSchema.ReminderOption
+    @Binding var isPresented: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(title)
+                .font(Font.Typography.HeadingMd.medium)
+                .foregroundStyle(Color.Palette.blackHigh)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 16)
+
+            ForEach(options, id: \.self) { option in
+                Button {
+                    selected = option
+                    isPresented = false
+                } label: {
+                    HStack {
+                        Text(option.label)
+                            .font(Font.Typography.BodyTextMd.regular)
+                            .foregroundStyle(Color.Palette.blackHigh)
+
+                        Spacer()
+
+                        ZStack {
+                            Circle()
+                                .stroke(
+                                    selected == option
+                                        ? Color.Palette.green900
+                                        : Color.Palette.grayTeritary,
+                                    lineWidth: 2
+                                )
+                                .frame(width: 20, height: 20)
+
+                            if selected == option {
+                                Circle()
+                                    .fill(Color.Palette.green900)
+                                    .frame(width: 10, height: 10)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 16)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+}
+
+private struct AttachmentField: View {
+    let field: AppFieldSchema.Field
+    let placeholder: String
+    let description: String
+    @Binding var attachments: [AppFieldSchema.AttachmentItem]
+    @State private var isImporterPresented = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            FieldLabel(field: field)
+
+            if !description.isEmpty {
+                Text(description)
+                    .font(Font.Typography.BodyTextSm.regular)
+                    .foregroundStyle(Color.Palette.blackMedium)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            ForEach(attachments) { item in
+                attachmentRow(item)
+            }
+
+            addButton
+        }
+        .padding(.horizontal, 16)
+        .padding(.bottom, 14)
+        .fileImporter(
+            isPresented: $isImporterPresented,
+            allowedContentTypes: [.item],
+            allowsMultipleSelection: true
+        ) { result in
+            if case .success(let urls) = result {
+                let new = urls.map { url in
+                    AppFieldSchema.AttachmentItem(
+                        name: url.deletingPathExtension().lastPathComponent,
+                        url: url,
+                        size: Self.fileSize(of: url)
+                    )
+                }
+                attachments.append(contentsOf: new)
+            }
+        }
+    }
+
+    private func attachmentRow(_ item: AppFieldSchema.AttachmentItem) -> some View {
+        HStack(spacing: 16) {
+            Image(uiImage: UIImage.Icons.fileAttachment)
+                .renderingMode(.template)
+                .foregroundStyle(Color.Palette.blackHigh)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(item.name)
+                    .font(Font.Typography.BodyTextMd.medium)
+                    .foregroundStyle(Color.Palette.blackHigh)
+                    .lineLimit(1)
+
+                Text(Self.formatSize(item.size))
+                    .font(Font.Typography.BodyTextSm.regular)
+                    .foregroundStyle(Color.Palette.blackMedium)
+            }
+
+            Spacer(minLength: 0)
+
+            Button {
+                attachments.removeAll { $0.id == item.id }
+            } label: {
+                Image(uiImage: UIImage.Icons.trash)
+                    .renderingMode(.template)
+                    .foregroundStyle(Color.Palette.cardBgRed)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 16)
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.Palette.graySecondary, lineWidth: 0.5))
+    }
+
+    private var addButton: some View {
+        AppButton(
+            title: placeholder,
+            model: .init(type: .secondary, style: .default, contentSize: .fill)
+        ) {
+            isImporterPresented = true
+        }
+    }
+
+    private static func fileSize(of url: URL) -> Int {
+        let didAccess = url.startAccessingSecurityScopedResource()
+        defer { if didAccess { url.stopAccessingSecurityScopedResource() } }
+        let values = try? url.resourceValues(forKeys: [.fileSizeKey])
+        return values?.fileSize ?? 0
+    }
+
+    private static func formatSize(_ bytes: Int) -> String {
+        ByteCountFormatter.string(fromByteCount: Int64(bytes), countStyle: .file)
     }
 }
 

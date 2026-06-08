@@ -8,22 +8,26 @@
 import AppNetwork
 
 enum EventsEndPoint {
-    case test
+    case clubsForEvents
+    case getCategories
 }
 
 extension EventsEndPoint: AppEndPoint {
-    
+
     var path: String {
         switch self {
-        case .test:
-            "test/test"
+        case .clubsForEvents:
+            "api/cs/v1/clubs/forEvents"
+        case .getCategories:
+            "api/sd/v1/categories"
         }
     }
-    
+
     var method: HTTPMethod {
         switch self {
-        case .test:
-                .post
+        case .clubsForEvents,
+                .getCategories:
+                .get
         }
     }
 }

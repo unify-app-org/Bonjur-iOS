@@ -6,7 +6,9 @@
 //
 
 import AppFoundation
+import AppNetwork
 import AppUIKit
+import Foundation
 
 final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
 
@@ -17,7 +19,6 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
     private let router: EventCreateRouterProtocol
     private let inputData: EventCreateInputData
     private let dependencies: EventCreateViewModel.Dependencies
-    private var didApplyPrefillData = false
 
     init(
         state: EventCreateFeature.State,
@@ -73,11 +74,9 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
     }
 
     private func applyPrefillData() {
-        guard !didApplyPrefillData,
-              let prefill = inputData.prefillData else {
+        guard let prefill = inputData.prefillData else {
             return
         }
-        didApplyPrefillData = true
         state.selectedClubId = prefill.selectedClubId
         state.values.merge(prefill.values) { _, new in new }
         selectPrefilledCategories(state.values.tags(.category))
@@ -135,37 +134,97 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
     // MARK: - Submit
 
     private func continueTapped() {
-        guard let request = buildRequest() else { return }
+        guard let clubId = state.selectedClubId else { return }
         Task {
             postEffect(.loading(true))
             defer { postEffect(.loading(false)) }
+
+            guard let coverURL = state.coverURL,
+                  let backgroundData = await downloadData(from: coverURL) else {
+                postEffect(.error(nil))
+                return
+            }
+
+            let multipart = buildMultipart(clubId: clubId, background: backgroundData)
             do {
-                try await dependencies.useCase.createEvent(request: request)
+                try await dependencies.useCase.createEvent(request: multipart)
                 await router.navigate(to: .backTapped)
             } catch {
+                postEffect(.error(error as? APIError))
             }
         }
     }
 
-    private func buildRequest() -> EventsCreate.Request? {
-        guard let clubId = state.selectedClubId else { return nil }
+    private func buildMultipart(clubId: Int, background: Data) -> MultipartFormData {
         let values = state.values
-        let links: [EventsCreate.Request.Link] = values.links(.links).map {
+        let links: [EventCreateRequest.Link] = values.links(.links).map {
             .init(type: $0.type, name: $0.name, url: $0.url)
         }
-        return EventsCreate.Request(
+        let rule = values.text(.rules)
+        let request = EventCreateRequest(
             clubId: clubId,
             name: values.text(.eventName),
             about: values.text(.about),
             location: values.text(.location),
             ownerContact: values.text(.ownerContact),
             capacity: Int(values.text(.capacity)),
-            rules: values.text(.rules).isEmpty ? nil : values.text(.rules),
+            rule: rule.isEmpty ? nil : rule,
             visibility: values.radio(.visibility) == .public ? "PUBLIC" : "PRIVATE",
-            eventDate: values.date(.eventDate),
-            reminder: values.reminder(.reminder).rawValue,
+            eventDate: Self.isoFormatter.string(from: values.date(.eventDate)),
+            reminderTime: values.reminder(.reminder).rawValue,
             categoryIds: values.tags(.category).map(\.id),
-            links: links
+            links: links,
+            userIds: []
         )
+
+        var multipart = MultipartFormData()
+        multipart.addJSONField(name: "request", encodable: request)
+        multipart.addFile(
+            name: "background",
+            fileName: "background.jpg",
+            mimeType: "image/jpeg",
+            data: background
+        )
+        for item in values.attachments(.attachment) {
+            guard let data = readFileData(at: item.url) else { continue }
+            multipart.addFile(
+                name: "attachments",
+                fileName: item.name,
+                mimeType: mimeType(for: item.url),
+                data: data
+            )
+        }
+        return multipart
+    }
+
+    // MARK: - File helpers
+
+    private static let isoFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
+    }()
+
+    private func downloadData(from url: URL) async -> Data? {
+        if url.isFileURL {
+            return readFileData(at: url)
+        }
+        return try? await URLSession.shared.data(from: url).0
+    }
+
+    private func readFileData(at url: URL) -> Data? {
+        let scoped = url.startAccessingSecurityScopedResource()
+        defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+        return try? Data(contentsOf: url)
+    }
+
+    private func mimeType(for url: URL) -> String {
+        switch url.pathExtension.lowercased() {
+        case "png": return "image/png"
+        case "jpg", "jpeg": return "image/jpeg"
+        case "pdf": return "application/pdf"
+        case "doc", "docx": return "application/msword"
+        default: return "application/octet-stream"
+        }
     }
 }

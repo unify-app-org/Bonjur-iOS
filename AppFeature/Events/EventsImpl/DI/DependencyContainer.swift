@@ -40,6 +40,7 @@ enum EventsDependencyContainer {
         registerModule()
         registerHelpers()
         registerDataSource()
+        registerRepo()
         registerUseCase()
     }
     
@@ -54,7 +55,13 @@ enum EventsDependencyContainer {
             EventsDataSourceImpl()
         }
     }
-    
+
+    private static func registerRepo() {
+        register(EventsRepo.self) {
+            EventsRepoImpl()
+        }
+    }
+
     private static func registerUseCase() {
         register(EventsUseCase.self) {
             EventsUseCaseImpl()

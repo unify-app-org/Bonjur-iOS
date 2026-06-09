@@ -28,7 +28,11 @@ protocol DiscoverRepo {
     func getCommunities(
         query: DiscoverDTOModel.PaginationQuery
     ) async throws(APIError) -> [CommunitiesModuleModel.CardInputData]
-    
+
+    func getEvents(
+        query: DiscoverDTOModel.PaginationQuery
+    ) async throws(APIError) -> [EventsModuleModel.CardInputData]
+
     func getCategories() async throws(APIError) -> [FilterView.Model]
     
     func getUser() async throws(APIError) -> UserModel
@@ -137,6 +141,34 @@ class DiscoverRepoImpl: DiscoverRepo {
         return uiModel
     }
     
+    func getEvents(
+        query: DiscoverDTOModel.PaginationQuery
+    ) async throws(APIError) -> [EventsModuleModel.CardInputData] {
+        let data = try await dataSource.getEvents(query: query.toDictionary())
+        let uiModel: [EventsModuleModel.CardInputData] = data.map { item in
+            let tags: [AppPresentationModel.Tags] = item.categoryResponses.map { category in
+                .init(
+                    id: category.id ?? 0,
+                    type: "",
+                    title: category.title ?? "-"
+                )
+            }
+            return .init(
+                id: item.id ?? "-",
+                name: item.name ?? "-",
+                coverimageURL: item.background,
+                memberCount: item.membersCount ?? 0,
+                totalCapacity: item.capacity ?? 0,
+                club: .init(name: "", id: 0),
+                tags: tags,
+                bgType: .primary,
+                requestType: item.requestStatus ?? .none,
+                accessType: item.visibility ?? .private
+            )
+        }
+        return uiModel
+    }
+
     func getCategories() async throws(APIError) -> [FilterView.Model] {
         let data = try await dataSource.getCategories()
         return data.map { item in

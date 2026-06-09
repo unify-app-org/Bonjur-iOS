@@ -130,27 +130,4 @@ enum EventsCreate {
             )
         ]
     }
-
-    /// Assembled create payload. Reminder is the backend enum raw value (`NONE`, `AT_EVENT_TIME`, …).
-    /// Attachments are files uploaded separately (multipart) — not part of this JSON.
-    struct Request: Encodable {
-        let clubId: Int
-        let name: String
-        let about: String
-        let location: String
-        let ownerContact: String
-        let capacity: Int?
-        let rules: String?
-        let visibility: String
-        let eventDate: Date
-        let reminder: String
-        let categoryIds: [Int]
-        let links: [Link]
-
-        struct Link: Encodable {
-            let type: String
-            let name: String
-            let url: String
-        }
-    }
 }

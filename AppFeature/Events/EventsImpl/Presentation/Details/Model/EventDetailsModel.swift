@@ -6,6 +6,8 @@
 //
 
 import AppFoundation
+import AppNetwork
+import Communities
 import SwiftUI
 
 // MARK: - EventDetails input
@@ -18,6 +20,7 @@ struct EventDetailsInputData {
 
 enum EventDetailsSideEffect: UISideEffect {
     case loading(Bool)
+    case error(APIError?)
 }
 
 // MARK: - Feature Definition
@@ -33,6 +36,7 @@ typealias EventDetailsFeature = UIFeatureDefinition<
 final class EventDetailsViewState: UIFeatureState {
     
     @Published var uiModel: EventsDetailsModel.UIModel?
+    @Published var members: CommunitiesMemberModuleModel.GroupedMembersData?
     @Published var selectedSegment: SegmentTypes = .about
     @Published var isFileUploadReachedMaxLimit = false
     

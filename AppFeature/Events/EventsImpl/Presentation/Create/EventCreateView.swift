@@ -46,7 +46,7 @@ struct EventCreateView: View {
                     }
             }
         }
-        .onAppear {
+        .onFirstAppear {
             store.send(.fetchData)
         }
         .dismissKeyboardOnTap()

@@ -25,8 +25,10 @@ protocol DiscoverUseCase {
         query: DiscoverDTOModel.PaginationQuery
     ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
     
-    func fetchEventsData() async throws(APIError) -> [EventsModuleModel.CardInputData]
-    
+    func fetchEventsData(
+        query: DiscoverDTOModel.PaginationQuery
+    ) async throws(APIError) -> [EventsModuleModel.CardInputData]
+
     func fetchHangoutsData(
         query: DiscoverDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsModuleModel.CardInputData]
@@ -64,8 +66,10 @@ class DiscoverUseCaseImpl: DiscoverUseCase {
         try await repo.getClubs(query: query)
     }
     
-    func fetchEventsData() async throws(APIError) -> [EventsModuleModel.CardInputData] {
-        EventsModuleModel.CardInputData.previewMock
+    func fetchEventsData(
+        query: DiscoverDTOModel.PaginationQuery
+    ) async throws(APIError) -> [EventsModuleModel.CardInputData] {
+        try await repo.getEvents(query: query)
     }
     
     func fetchHangoutsData(

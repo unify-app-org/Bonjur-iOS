@@ -6,6 +6,7 @@
 //
 
 import AppFoundation
+import AppNetwork
 import AppUIKit
 import Foundation
 
@@ -28,6 +29,7 @@ struct EventCreateInputData {
 
 enum EventCreateSideEffect: UISideEffect {
     case loading(Bool)
+    case error(APIError?)
 }
 
 // MARK: - Feature Definition

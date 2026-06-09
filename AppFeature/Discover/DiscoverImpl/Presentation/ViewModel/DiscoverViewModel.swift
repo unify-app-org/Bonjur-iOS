@@ -167,7 +167,9 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             )
         }
         async let events = apiResult {
-            try await dependencies.useCase.fetchEventsData()
+            try await dependencies.useCase.fetchEventsData(
+                query: paginationQuery(size: eventsSize)
+            )
         }
         async let hangouts = apiResult {
             try await dependencies.useCase.fetchHangoutsData(
@@ -224,7 +226,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         switch results.events {
         case .success(let events):
             state.uiModel.events = events
-            hasMoreEvents = events.count > state.uiModel.events.count
+            hasMoreEvents = events.count >= eventsSize
         case .failure(let error):
             firstError = firstError ?? error
         }
@@ -417,10 +419,11 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             }
             
             do {
-                let events = try await dependencies.useCase.fetchEventsData()
-                let visibleEvents = Array(events.prefix(eventsSize))
-                hasMoreEvents = events.count > visibleEvents.count
-                state.uiModel.events = visibleEvents
+                let events = try await dependencies.useCase.fetchEventsData(
+                    query: paginationQuery(size: eventsSize)
+                )
+                hasMoreEvents = events.count > state.uiModel.events.count
+                state.uiModel.events = events
             } catch {
                 eventsSize = previousSize
                 postEffect(.error(error as? APIError))

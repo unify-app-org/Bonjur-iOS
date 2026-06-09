@@ -21,9 +21,15 @@ enum EventsDetailsModel {
         let tags: [AppUIEntities.Tags]
         let infoData: [Info]
         let attachments: [AttachmentItemView.Model]
-        let membersData: CommunitiesMemberModuleModel.GroupedMembersData
+        var membersData: CommunitiesMemberModuleModel.GroupedMembersData
+        var joinButton: JoinButton? = nil
     }
-    
+
+    struct JoinButton {
+        let title: String
+        let disabled: Bool
+    }
+
     struct Info: Identifiable {
         let id = UUID()
         let title: String

@@ -21,7 +21,11 @@ protocol DiscoverDataSource {
     func getCommunities(
         query: [String: String]
     ) async throws(APIError) -> [DiscoverDTOModel.Community]
-    
+
+    func getEvents(
+        query: [String: String]
+    ) async throws(APIError) -> [DiscoverDTOModel.Event]
+
     func getCategories() async throws(APIError) -> [DiscoverDTOModel.CategoriesResponse]
     
     func getUser(
@@ -53,6 +57,12 @@ final class DiscoverDataSourceImpl: NetworkService<DiscoverEndPoint>, DiscoverDa
         try await fetch(endPoint: .getCommunities(query))
     }
     
+    func getEvents(
+        query: [String : String]
+    ) async throws(APIError) -> [DiscoverDTOModel.Event] {
+        try await fetch(endPoint: .getEvents(query))
+    }
+
     func getCategories() async throws(APIError) -> [DiscoverDTOModel.CategoriesResponse] {
         try await fetch(endPoint: .getCategories)
     }

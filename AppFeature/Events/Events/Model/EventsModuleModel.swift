@@ -130,6 +130,11 @@ public enum EventsModuleModel {
         public struct Club {
             public let name: String
             public let id: Int
+
+            public init(name: String, id: Int) {
+                self.name = name
+                self.id = id
+            }
         }
     }
 }

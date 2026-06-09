@@ -104,16 +104,19 @@ struct EventDetailsView: View {
                 }
             }
             .coordinateSpace(name: "scroll")
-            
-            AppButton(
-                title: "Join",
-                model: .init(
-                    contentSize: .fill
-                )
-            ) {
-                
+
+            if let joinButton = store.state.uiModel?.joinButton {
+                AppButton(
+                    title: joinButton.title,
+                    model: .init(
+                        contentSize: .fill
+                    )
+                ) {
+
+                }
+                .disabled(joinButton.disabled)
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
         }
     }
     

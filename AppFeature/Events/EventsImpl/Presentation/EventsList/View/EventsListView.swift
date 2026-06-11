@@ -38,7 +38,7 @@ struct EventsListView: View {
                 VStack(spacing: 20) {
                     ForEach(events, id: \.uuid) { item in
                         EventsCardView(model: item) {
-                            
+                            store.send(.joinEvent(id: item.id))
                         } onTap: {
                             store.send(.eventItemTapped(id: item.id))
                         }

@@ -30,7 +30,9 @@ class GroupsUseCaseImpl: GroupsUseCase {
     }
 
     func fetchEvents() async throws(APIError) -> [EventsModuleModel.CardInputData] {
-        EventsModuleModel.CardInputData.previewMock
+        try await repo.fetchJoinedEvents(
+            query: .init(page: 0, size: 50, name: nil)
+        )
     }
     
     func fetchClubs(

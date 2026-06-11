@@ -74,15 +74,13 @@ struct EventDetailsView: View {
                         
                     }
             }
-            if !isScrolled {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Image(uiImage: UIImage.Icons.camera)
-                        .toolbarItemBackground(
-                            isScrolled: isScrolled
-                        ) {
-                            
-                        }
-                }
+            ToolbarItem(placement: .topBarTrailing) {
+                Image(uiImage: UIImage.Icons.penLine)
+                    .toolbarItemBackground(
+                        isScrolled: isScrolled
+                    ) {
+                        store.send(.editTapped)
+                    }
             }
         }
         .enableSwipeBack()
@@ -153,24 +151,6 @@ struct EventDetailsView: View {
         }
     }
     
-    // MARK: - Logo
-    
-    private var cameraButton: some View {
-        Button {} label: {
-            Image(uiImage: UIImage.Icons.camera)
-                .resizable()
-                .renderingMode(.template)
-                .frame(width: 18, height: 18)
-                .foregroundStyle(Color.Palette.blackMedium)
-                .padding(7)
-                .background(Color.Palette.grayQuaternary)
-                .clipShape(Circle())
-                .overlay(
-                    Circle().stroke(Color.Palette.whiteHigh, lineWidth: 2)
-                )
-        }
-    }
-    
     // MARK: - Bottom Content
     
     private var bottomView: some View {
@@ -196,74 +176,44 @@ struct EventDetailsView: View {
         .padding(.top)
     }
     
+    @ViewBuilder
     private var attachmentsView: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            let attachments = store.state.uiModel?.attachments ?? []
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Attachments")
-                    .font(Font.Typography.HeadingXl.medium)
-                    .foregroundStyle(Color.Palette.black)
-                    .frame(alignment: .leading)
-                    .multilineTextAlignment(.leading)
-                if !attachments.isEmpty {
-                    Text("You can upload files up to 15 MB total for this event.")
-                        .font(Font.Typography.BodyTextSm.regular)
-                        .foregroundStyle(Color.Palette.blackMedium)
-                        .frame(alignment: .leading)
-                        .multilineTextAlignment(.leading)
-                }
-            }
+        let attachments = store.state.uiModel?.attachments ?? []
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Attachments")
+                .font(Font.Typography.HeadingXl.medium)
+                .foregroundStyle(Color.Palette.black)
+                .frame(alignment: .leading)
+                .multilineTextAlignment(.leading)
             if !attachments.isEmpty {
                 ForEach(attachments, id: \.uuid) { attachment in
                     AttachmentItemView(model: attachment)
                 }
-                if !store.state.isFileUploadReachedMaxLimit {
-                    AppButton(
-                        title: "Add +",
-                        model: .init(
-                            type: .secondary,
-                            contentSize: .fill,
-                            size: .small,
-                        )
-                    ) {
-                        
-                    }
-                }
             } else {
-                AppEmptyView(model:
-                        .init(
-                            icon: nil,
-                            text: "You can upload files up to 15 MB total for this event.",
-                            buttonTitle: "Add +"
-                        )
+                AppEmptyView(
+                    model: .init(
+                        icon: nil,
+                        text: "You can upload files up to 15 MB total for this event.",
+                        buttonTitle: "Add +"
+                    )
                 ) {
-                    
+                    store.send(.editTapped)
                 }
             }
         }
     }
     
     private var clubNameText: some View {
-        HStack {
-            Text(store.state.uiModel?.name ?? "")
-                .font(Font.Typography.TitleL.extraBold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .onGeometryChange(for: CGFloat.self) {
-                    $0.frame(in: .named("scroll")).minY
-                } action: { minY in
-                    withAnimation {
-                        isNameVisible = minY > 0
-                    }
+        Text(store.state.uiModel?.name ?? "")
+            .font(Font.Typography.TitleL.extraBold)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .onGeometryChange(for: CGFloat.self) {
+                $0.frame(in: .named("scroll")).minY
+            } action: { minY in
+                withAnimation {
+                    isNameVisible = minY > 0
                 }
-            
-            Spacer()
-            
-            Button {
-                
-            } label: {
-                Image(uiImage: UIImage.Icons.penLine)
             }
-        }
     }
     
     private var clubMetadata: some View {

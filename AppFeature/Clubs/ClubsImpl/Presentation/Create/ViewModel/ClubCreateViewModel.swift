@@ -8,6 +8,7 @@
 import AppFoundation
 import AppNetwork
 import AppStorage
+import AppUIKit
 import AppPresentationModel
 
 final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
@@ -154,8 +155,13 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
                 id: id,
                 request: buildRequest()
             )
+            AppSnackBar.show(
+                title: "Club updated successfully",
+                subtitle: state.values.text(.clubName),
+                style: .success
+            )
         } catch {
-            
+
         }
     }
     
@@ -166,8 +172,13 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
         }
         do {
             try await dependencies.useCase.createClub(request: buildRequest())
+            AppSnackBar.show(
+                title: "Club created successfully",
+                subtitle: state.values.text(.clubName),
+                style: .success
+            )
         } catch {
-            
+
         }
     }
     

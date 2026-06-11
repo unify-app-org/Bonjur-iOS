@@ -53,6 +53,7 @@ final class EventDetailsViewState: UIFeatureState {
 enum EventDetailsAction: UIFeatureAction {
     case fetchData
     case backTapped
+    case editTapped
 }
 
 // MARK: - PreferenceKey

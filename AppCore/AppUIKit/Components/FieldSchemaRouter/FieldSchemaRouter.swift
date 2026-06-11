@@ -117,7 +117,7 @@ public enum AppFieldSchema {
         case cover(AppUIEntities.BackgroundType)
         case radio(AppPresentationModel.AccessType)
         case date(Date)
-        case reminder(ReminderOption)
+        case reminders([ReminderOption])
         case attachments([AttachmentItem])
     }
 
@@ -129,7 +129,7 @@ public enum AppFieldSchema {
         case chipInput(placeholder: String)
         case linkInput(placeholder: String)
         case date(placeholder: String)
-        case reminder(placeholder: String, options: [ReminderOption] = ReminderOption.allCases)
+        case reminder(placeholder: String, description: String = "", options: [ReminderOption] = ReminderOption.allCases)
         case attachment(placeholder: String, description: String = "")
     }
 
@@ -287,14 +287,15 @@ public struct FieldSchemaRouter: View {
                 )
             )
 
-        case .reminder(let placeholder, let options):
+        case .reminder(let placeholder, let description, let options):
             ReminderField(
                 field: field,
                 placeholder: placeholder,
+                description: description,
                 options: options,
                 selected: Binding(
-                    get: { values.reminder(field.id) },
-                    set: { values[field.id] = .reminder($0) }
+                    get: { values.reminders(field.id) },
+                    set: { values[field.id] = .reminders($0) }
                 )
             )
 
@@ -344,9 +345,9 @@ public extension Dictionary where Key == AppFieldSchema.FieldID, Value == AppFie
         return Date()
     }
 
-    func reminder(_ id: AppFieldSchema.FieldID) -> AppFieldSchema.ReminderOption {
-        if case .reminder(let value) = self[id] { return value }
-        return .none
+    func reminders(_ id: AppFieldSchema.FieldID) -> [AppFieldSchema.ReminderOption] {
+        if case .reminders(let value) = self[id] { return value }
+        return []
     }
 
     func attachments(_ id: AppFieldSchema.FieldID) -> [AppFieldSchema.AttachmentItem] {
@@ -585,25 +586,43 @@ private struct DateInputField: View {
 private struct ReminderField: View {
     let field: AppFieldSchema.Field
     let placeholder: String
+    let description: String
     let options: [AppFieldSchema.ReminderOption]
-    @Binding var selected: AppFieldSchema.ReminderOption
+    @Binding var selected: [AppFieldSchema.ReminderOption]
     @State private var isPresented = false
+
+    private var activeSelection: [AppFieldSchema.ReminderOption] {
+        selected.filter { $0 != .none }
+    }
+
+    private var collapsedLabel: String {
+        let active = activeSelection
+        return active.isEmpty ? placeholder : active.map(\.label).joined(separator: ", ")
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             FieldLabel(field: field)
 
+            if !description.isEmpty {
+                Text(description)
+                    .font(Font.Typography.BodyTextSm.regular)
+                    .foregroundStyle(Color.Palette.blackMedium)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
             Button {
                 isPresented = true
             } label: {
                 HStack {
-                    Text(selected == .none ? placeholder : selected.label)
+                    Text(collapsedLabel)
                         .font(Font.Typography.BodyTextMd.regular)
                         .foregroundStyle(
-                            selected == .none
+                            activeSelection.isEmpty
                                 ? Color.Palette.blackMedium
                                 : Color.Palette.blackHigh
                         )
+                        .lineLimit(1)
 
                     Spacer()
 
@@ -630,11 +649,12 @@ private struct ReminderField: View {
         .padding(.bottom, 14)
         .appSheet(
             isPresented: $isPresented,
-            detents: [.medium],
+            detents: [.large],
             dragIndicator: .visible
         ) {
             ReminderOptionsList(
                 title: field.label,
+                description: description,
                 options: options,
                 selected: $selected,
                 isPresented: $isPresented
@@ -643,56 +663,112 @@ private struct ReminderField: View {
     }
 }
 
+/// Multi-select reminder list. "None" is exclusive: picking it clears the offsets and
+/// vice-versa. Confirm commits the selection (empty selection collapses to `.none`).
 private struct ReminderOptionsList: View {
     let title: String
+    let description: String
     let options: [AppFieldSchema.ReminderOption]
-    @Binding var selected: AppFieldSchema.ReminderOption
+    @Binding var selected: [AppFieldSchema.ReminderOption]
     @Binding var isPresented: Bool
+
+    @State private var draft: Set<AppFieldSchema.ReminderOption> = []
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(title)
-                .font(Font.Typography.HeadingMd.medium)
+                .font(Font.Typography.HeadingMd.bold)
                 .foregroundStyle(Color.Palette.blackHigh)
                 .padding(.horizontal, 24)
-                .padding(.vertical, 16)
+                .padding(.top, 24)
+                .padding(.bottom, 8)
 
-            ForEach(options, id: \.self) { option in
-                Button {
-                    selected = option
-                    isPresented = false
-                } label: {
-                    HStack {
-                        Text(option.label)
-                            .font(Font.Typography.BodyTextMd.regular)
-                            .foregroundStyle(Color.Palette.blackHigh)
+            if !description.isEmpty {
+                Text(description)
+                    .font(Font.Typography.BodyTextSm.regular)
+                    .foregroundStyle(Color.Palette.blackMedium)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 16)
+            }
 
-                        Spacer()
-
-                        ZStack {
-                            Circle()
-                                .stroke(
-                                    selected == option
-                                        ? Color.Palette.green900
-                                        : Color.Palette.grayTeritary,
-                                    lineWidth: 2
-                                )
-                                .frame(width: 20, height: 20)
-
-                            if selected == option {
-                                Circle()
-                                    .fill(Color.Palette.green900)
-                                    .frame(width: 10, height: 10)
-                            }
+            ScrollView {
+                VStack(spacing: 0) {
+                    ForEach(Array(options.enumerated()), id: \.offset) { index, option in
+                        row(for: option)
+                        if index < options.count - 1 {
+                            Divider().padding(.horizontal, 24)
                         }
                     }
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 16)
-                    .contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
             }
+
+            AppButton(
+                title: "Confirm",
+                model: .init(contentSize: .fill)
+            ) {
+                commit()
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 16)
         }
+        .onAppear {
+            draft = Set(selected.filter { $0 != .none })
+        }
+    }
+
+    private func row(for option: AppFieldSchema.ReminderOption) -> some View {
+        let isChecked = option == .none ? draft.isEmpty : draft.contains(option)
+        return Button {
+            toggle(option)
+        } label: {
+            HStack(spacing: 16) {
+                checkbox(isChecked: isChecked)
+                Text(option.label)
+                    .font(Font.Typography.BodyTextMd.regular)
+                    .foregroundStyle(Color.Palette.blackHigh)
+                Spacer()
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 16)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func checkbox(isChecked: Bool) -> some View {
+        RoundedRectangle(cornerRadius: 6)
+            .fill(isChecked ? Color.Palette.black : Color.Palette.white)
+            .frame(width: 24, height: 24)
+            .overlay(
+                RoundedRectangle(cornerRadius: 6)
+                    .stroke(
+                        isChecked ? Color.Palette.black : Color.Palette.grayTeritary,
+                        lineWidth: 1.5
+                    )
+            )
+            .overlay(
+                Image(systemName: "checkmark")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(Color.Palette.white)
+                    .opacity(isChecked ? 1 : 0)
+            )
+    }
+
+    private func toggle(_ option: AppFieldSchema.ReminderOption) {
+        if option == .none {
+            draft.removeAll()
+        } else if draft.contains(option) {
+            draft.remove(option)
+        } else {
+            draft.insert(option)
+        }
+    }
+
+    private func commit() {
+        let ordered = options.filter { $0 != .none && draft.contains($0) }
+        selected = ordered.isEmpty ? [.none] : ordered
+        isPresented = false
     }
 }
 

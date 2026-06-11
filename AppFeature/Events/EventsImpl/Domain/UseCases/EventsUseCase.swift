@@ -12,11 +12,13 @@ import Communities
 
 protocol EventsUseCase {
     func fetchEvents() async throws(APIError) -> [EventsCardView.Model]
+    func joinEvent(eventId: String) async throws(APIError)
     func fetchEventDetail(eventId: String) async throws(APIError) -> EventsDetailsModel.UIModel
     func fetchEventMembers(
         eventId: String
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
     func createEvent(request: MultipartFormData) async throws(APIError)
+    func editEvent(eventId: String, request: MultipartFormData) async throws(APIError)
     func fetchClubsForEvents() async throws(APIError) -> [EventsCreate.SelectableClub]
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
 }
@@ -30,7 +32,11 @@ class EventsUseCaseImpl: EventsUseCase {
     }
 
     func fetchEvents() async throws(APIError) -> [EventsCardView.Model] {
-        EventsCardView.Model.previewMock
+        try await repo.fetchEvents().map(EventsCardView.Model.init(from:))
+    }
+
+    func joinEvent(eventId: String) async throws(APIError) {
+        try await repo.joinEvent(eventId: eventId)
     }
 
     func fetchEventDetail(
@@ -47,6 +53,10 @@ class EventsUseCaseImpl: EventsUseCase {
 
     func createEvent(request: MultipartFormData) async throws(APIError) {
         try await repo.createEvent(request: request)
+    }
+
+    func editEvent(eventId: String, request: MultipartFormData) async throws(APIError) {
+        try await repo.editEvent(eventId: eventId, request: request)
     }
 
     func fetchClubsForEvents() async throws(APIError) -> [EventsCreate.SelectableClub] {

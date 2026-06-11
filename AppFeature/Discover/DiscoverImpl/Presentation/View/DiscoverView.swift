@@ -44,7 +44,7 @@ struct DiscoverView: View {
             filterView
             scrollView
         }
-        .onAppear {
+        .onFirstAppear {
             store.send(.fetchData)
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -53,7 +53,7 @@ struct DiscoverView: View {
                 profileButton
             }
             if #available(iOS 26.0, *) {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .title) {
                     greetingView
                 }.sharedBackgroundVisibility(.hidden)
             } else {
@@ -73,8 +73,7 @@ struct DiscoverView: View {
 
         Button{
             store.send(.profileTapped)
-        }label: {
-            
+        } label: {
             CachedAsyncImage(url: url) { image in
                 image
                     .resizable()
@@ -91,12 +90,12 @@ struct DiscoverView: View {
     }
 
     private var greetingView: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .center, spacing: 2) {
             Text(store.state.uiModel.user.greeting)
                 .font(Font.Typography.TextMd.regular)
                 .foregroundStyle(Color.Palette.grayPrimary)
             Text(store.state.uiModel.user.name)
-                .font(Font.Typography.BodyTextSm.medium)
+                .font(Font.Typography.BodyTextMd.bold)
                 .foregroundStyle(Color.Palette.black)
         }
         .fixedSize()
@@ -137,6 +136,10 @@ struct DiscoverView: View {
                     offset = value
                 }
             }
+            .refreshable {
+                store.send(.fetchData)
+            }
+            .clipped()
         }
     }
     

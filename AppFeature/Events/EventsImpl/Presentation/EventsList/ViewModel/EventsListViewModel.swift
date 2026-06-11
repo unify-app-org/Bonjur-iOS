@@ -37,18 +37,35 @@ final class EventsListViewModel: UIFeatureViewModel<EventsListFeature> {
             Task {
                 await router.navigate(to: .showDetails(id: id))
             }
+        case .joinEvent(let id):
+            Task {
+                await joinEvent(id: id)
+            }
         }
     }
-    
+
     private func fetchData() {
         Task {
             await getEventsData()
         }
     }
-    
+
     private func getEventsData() async {
         do {
             state.uiModel.events = try await dependencies.useCase.fetchEvents()
+        } catch {
+            postEffect(.error(error))
+        }
+    }
+
+    private func joinEvent(id: String) async {
+        postEffect(.loading(true))
+        defer {
+            postEffect(.loading(false))
+        }
+        do {
+            try await dependencies.useCase.joinEvent(eventId: id)
+            await getEventsData()
         } catch {
             postEffect(.error(error))
         }

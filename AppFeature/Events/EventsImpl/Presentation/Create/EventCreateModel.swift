@@ -48,24 +48,16 @@ final class EventCreateViewState: UIFeatureState {
     @Published var values: [EventsCreate.FieldID: EventsCreate.FieldValue] = [
         .visibility: .radio(.public),
         .eventDate: .date(Date()),
-        .reminder: .reminder(.none)
+        .reminder: .reminders([.none])
     ]
 
     @Published var clubs: [EventsCreate.SelectableClub] = []
-    @Published var selectedClubId: Int?
     @Published var showClubPicker: Bool = false
 
     @Published var categorySections: [SelectCategoryView.Section] = []
     @Published var showCategoryPicker: Bool = false
 
-    var selectedClub: EventsCreate.SelectableClub? {
-        clubs.first { $0.clubId == selectedClubId }
-    }
-
-    /// Read-only cover: the selected club's official photo.
-    var coverURL: URL? {
-        selectedClub?.profileURL
-    }
+    @Published var selectedClub: EventsCreate.SelectableClub?
 
     var selectedCategories: [CategoriesChipsView.Model] {
         categorySections
@@ -76,7 +68,7 @@ final class EventCreateViewState: UIFeatureState {
     var isValid: Bool {
         values.isValid(for: schema)
             && !values.text(.eventName).trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            && selectedClubId != nil
+            && selectedClub != nil
     }
 
     var topTitle: String {
@@ -92,7 +84,7 @@ enum EventCreateAction: UIFeatureAction {
     case continueTapped
     case selectClubTapped
     case dismissClubPicker
-    case selectClub(Int)
+    case selectClub(EventsCreate.SelectableClub)
     case addCategoryTapped
     case removeCategory(Int)
     case dismissCategoryPicker

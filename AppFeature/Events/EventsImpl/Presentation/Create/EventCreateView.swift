@@ -12,17 +12,21 @@ import AppUIKit
 struct EventCreateView: View {
     @ObservedObject var store: StoreOf<EventCreateFeature>
 
+    @State private var isScrolled = false
+    @State private var baseHeight: CGFloat = 200
+
     var body: some View {
         GeometryReader { proxy in
             VStack(spacing: 0) {
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 0) {
-                        coverHeader
+                        stretchableHeader
                         fieldView
                             .padding(.top, 20)
                             .padding(.bottom, 24)
                     }
                 }
+                .coordinateSpace(name: "scroll")
 
                 AppButton(
                     title: "Continue",
@@ -31,17 +35,23 @@ struct EventCreateView: View {
                     store.send(.continueTapped)
                 }
                 .disabled(!store.state.isValid)
-                .padding(.bottom, min(proxy.safeAreaInsets.bottom, 34))
+                .padding(.bottom, proxy.safeAreaInsets.bottom)
+                .padding(.top)
                 .padding(.horizontal)
             }
             .ignoresSafeArea(edges: .top)
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { newValue in
+                baseHeight = newValue / 4
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
+        .toolbar(.visible)
+        .toolbarBackground(isScrolled ? .automatic : .hidden, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Image(uiImage: UIImage.Icons.arrowLeft01)
-                    .toolbarItemBackground(isScrolled: true) {
+                    .toolbarItemBackground(isScrolled: isScrolled) {
                         store.send(.backTapped)
                     }
             }
@@ -49,6 +59,7 @@ struct EventCreateView: View {
         .onFirstAppear {
             store.send(.fetchData)
         }
+        .enableSwipeBack()
         .dismissKeyboardOnTap()
         .appSheet(
             isPresented: Binding(
@@ -60,7 +71,7 @@ struct EventCreateView: View {
         ) {
             SelectClubView(
                 clubs: store.state.clubs,
-                selectedClubId: store.state.selectedClubId,
+                selectedClubId: store.state.selectedClub?.clubId,
                 onSelect: { store.send(.selectClub($0)) }
             )
         }
@@ -80,34 +91,42 @@ struct EventCreateView: View {
 
     // MARK: - Cover header (read-only club cover)
 
-    private var coverHeader: some View {
-        ZStack {
-            if let coverURL = store.state.coverURL {
-                CachedAsyncImage(url: coverURL) { image in
-                    image.resizable().scaledToFill()
-                } placeholder: {
-                    Color.Palette.grayQuaternary
+    private var stretchableHeader: some View {
+        GeometryReader { geo in
+            let minY = geo.frame(in: .named("scroll")).minY
+            let pullDown = max(minY, 0)
+            let height = baseHeight + pullDown
+            let scale = 1 + (pullDown / 350)
+
+            coverContent
+                .frame(height: height)
+                .scaleEffect(scale, anchor: .center)
+                .clipped()
+                .offset(y: minY > 0 ? -minY : 0)
+                .onChange(of: minY) { newValue in
+                    withAnimation {
+                        isScrolled = newValue < -30
+                    }
                 }
-            } else {
-                Color.Palette.grayQuaternary
-            }
-
-            VStack(spacing: 8) {
-                Image(systemName: "lock.fill")
-                    .foregroundStyle(Color.Palette.white)
-                    .font(.system(size: 20, weight: .semibold))
-
-                Text("This event will use the official club cover photo.")
-                    .font(Font.Typography.BodyTextSm.regular)
-                    .foregroundStyle(Color.Palette.white)
-                    .multilineTextAlignment(.center)
-            }
-            .padding(.horizontal, 24)
         }
-        .frame(height: 200)
+        .frame(height: baseHeight)
+    }
+
+    private var coverContent: some View {
+        ZStack {
+            CardBackgroundView(cardType: .club) {
+                if let coverURL = store.state.selectedClub?.backgroundURL {
+                    AsyncImage(url: coverURL) { image in
+                        image.resizable().scaledToFill()
+                    } placeholder: {
+                        EmptyView()
+                    }
+                }
+            }
+            .backgroundType(store.state.selectedClub?.background ?? .primary)
+            .cornerRadius(.zero)
+        }
         .frame(maxWidth: .infinity)
-        .clipped()
-        .overlay(Color.Palette.black.opacity(store.state.coverURL == nil ? 0 : 0.25))
     }
 
     // MARK: - Fields
@@ -125,7 +144,17 @@ struct EventCreateView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 16)
 
-            clubSelector
+            AppSelectorField(
+                title: "Choose club",
+                isRequired: true,
+                imageURL: store.state.selectedClub?.profileURL,
+                value: store.state.selectedClub?.clubName ?? "",
+                placeholder: "Select club",
+                isDisabled: store.state.isEdit,
+                onTap: { store.send(.selectClubTapped) }
+            )
+            .padding(.horizontal, 16)
+            .padding(.bottom, 14)
 
             ForEach(store.state.schema) { field in
                 FieldSchemaRouter(
@@ -138,50 +167,10 @@ struct EventCreateView: View {
                     onAddCategory: { store.send(.addCategoryTapped) },
                     onRemoveCategory: { store.send(.removeCategory($0)) }
                 )
+                // Club + event name are immutable once the event exists.
+                .disabled(store.state.isEdit && field.id == .eventName)
             }
         }
     }
 
-    private var clubSelector: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 2) {
-                Text("Club")
-                    .font(Font.Typography.HeadingMd.medium)
-                    .foregroundStyle(Color.Palette.blackHigh)
-                Text("*")
-                    .font(Font.Typography.HeadingMd.medium)
-                    .foregroundStyle(Color.Palette.green900)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            Button {
-                store.send(.selectClubTapped)
-            } label: {
-                HStack {
-                    Text(store.state.selectedClub?.clubName ?? "Select club")
-                        .font(Font.Typography.BodyTextMd.regular)
-                        .foregroundStyle(
-                            store.state.selectedClub == nil
-                                ? Color.Palette.blackMedium
-                                : Color.Palette.blackHigh
-                        )
-
-                    Spacer()
-
-                    Image(uiImage: UIImage.Icons.chevronDown02)
-                        .renderingMode(.template)
-                        .foregroundStyle(Color.Palette.blackHigh)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, 24)
-                .padding(.vertical, 16)
-                .contentShape(Capsule())
-                .clipShape(Capsule())
-                .overlay(Capsule().stroke(Color.Palette.graySecondary, lineWidth: 0.5))
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 14)
-    }
 }

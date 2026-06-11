@@ -42,8 +42,24 @@ struct GroupsDTOModel {
         let categories: [CategoryResponse]
     }
     
+    // MARK: - Event
+
+    struct Event: Decodable {
+        let id: String?
+        let name: String?
+        let visibility: AppPresentationModel.AccessType?
+        let about: String?
+        let capacity: Int?
+        let membersCount: Int?
+        let background: String?
+        let requestStatus: AppPresentationModel.RequestType?
+        let eventActivityStatus: AppPresentationModel.ActivityStatus?
+        let role: AppPresentationModel.UserActivityRole?
+        let categoryResponses: [CategoryResponse]
+    }
+
     // MARK: - Club
-    
+
     struct Club: Decodable {
         let id: Int?
         let name: String?

@@ -9,6 +9,7 @@ import AppFoundation
 import AppUIKit
 import AppNetwork
 import Clubs
+import Events
 import Hangouts
 
 final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
@@ -24,6 +25,7 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
     private struct InitialFetchResults {
         let user: APIResult<ProfileDetail.UIModel>
         let clubs: APIResult<[ClubsModuleModel.CardInputData]>
+        let events: APIResult<[EventsModuleModel.CardInputData]>
         let hangouts: APIResult<[HangoutsModuleModel.CardInputData]>
     }
 
@@ -116,15 +118,19 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
                 userId: inputData.userId
             )
         }
+        async let events = apiResult {
+            try await dependencies.useCase.getMyEvents()
+        }
         async let hangouts = apiResult {
             try await dependencies.useCase.getMyHangouts(
                 userId: inputData.userId
             )
         }
-        
+
         return await .init(
             user: user,
             clubs: clubs,
+            events: events,
             hangouts: hangouts
         )
     }
@@ -151,7 +157,16 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
         case .failure(let error):
             firstError = firstError ?? error
         }
-        
+
+        switch results.events {
+        case .success(let events):
+            // `events/my` returns the logged-in user's events only,
+            // so hide them when viewing another user's profile.
+            state.events = inputData.userId == nil ? events : []
+        case .failure(let error):
+            firstError = firstError ?? error
+        }
+
         switch results.hangouts {
         case .success(let clubs):
             state.hangouts = clubs
@@ -174,8 +189,13 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
                 multiPart: nil,
                 queryData: request
             )
+            AppSnackBar.show(
+                title: "Cover updated successfully",
+                subtitle: "Your changes are saved",
+                style: .success
+            )
         } catch {
-            
+
         }
     }
     

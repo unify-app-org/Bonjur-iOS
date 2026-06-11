@@ -39,7 +39,7 @@ typealias ProfileDetailFeature = UIFeatureDefinition<
 final class ProfileDetailViewState: UIFeatureState {
     @Published var uiModel: ProfileDetail.UIModel?
     @Published var clubs: [ClubsModuleModel.CardInputData] = []
-    @Published var events: [EventsModuleModel.CardInputData] = EventsModuleModel.CardInputData.previewMock
+    @Published var events: [EventsModuleModel.CardInputData] = []
     @Published var hangouts: [HangoutsModuleModel.CardInputData] = []
     @Published var selectedSegment: SegmentTypes = .clubs
     @Published var navigationTitle = "Profile"

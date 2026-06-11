@@ -44,6 +44,18 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
             Task {
                 await router.navigate(to: .backTapped)
             }
+        case .editTapped:
+            guard let prefillData = state.uiModel?.editPrefillData else {
+                return
+            }
+            Task {
+                await router.navigate(
+                    to: .editEvent(
+                        id: inputData.eventId,
+                        prefillData: prefillData
+                    )
+                )
+            }
         }
     }
 

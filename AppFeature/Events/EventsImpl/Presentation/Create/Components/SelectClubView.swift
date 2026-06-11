@@ -11,7 +11,7 @@ import AppUIKit
 struct SelectClubView: View {
     let clubs: [EventsCreate.SelectableClub]
     let selectedClubId: Int?
-    let onSelect: (Int) -> Void
+    let onSelect: (EventsCreate.SelectableClub) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -43,15 +43,21 @@ struct SelectClubView: View {
 
     private func row(for club: EventsCreate.SelectableClub) -> some View {
         Button {
-            onSelect(club.clubId)
+            onSelect(club)
         } label: {
             HStack(spacing: 16) {
                 avatar(for: club)
 
-                Text(club.clubName)
-                    .font(Font.Typography.BodyTextMd.regular)
-                    .foregroundStyle(Color.Palette.blackHigh)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(club.clubName)
+                        .font(Font.Typography.BodyTextMd.regular)
+                        .foregroundStyle(Color.Palette.blackHigh)
+
+                    Text(club.role.title)
+                        .font(Font.Typography.BodyTextSm.regular)
+                        .foregroundStyle(Color.Palette.blackMedium)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 radio(isSelected: club.clubId == selectedClubId)
             }

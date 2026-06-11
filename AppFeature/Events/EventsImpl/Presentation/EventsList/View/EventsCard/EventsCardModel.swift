@@ -51,7 +51,7 @@ extension EventsCardView {
         var buttonTitle: String {
             switch requestType {
             case .joined:
-                return ""
+                return "Participating"
             case .rejected:
                 return "Rejected"
             case .pending:
@@ -63,6 +63,15 @@ extension EventsCardView {
                 case .private:
                     return "Request"
                 }
+            }
+        }
+
+        var buttonDisabled: Bool {
+            switch requestType {
+            case .joined, .pending:
+                true
+            case .none, .rejected:
+                false
             }
         }
         

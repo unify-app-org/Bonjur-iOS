@@ -7,7 +7,9 @@ import ProjectDescription
 
 let packageSettings = PackageSettings(
     productTypes: [
-        "MSAL": .framework
+        "MSAL": .framework,
+        "SDWebImage": .framework,
+        "SDWebImageSwiftUI": .framework
     ]
 )
 #endif
@@ -18,6 +20,14 @@ let package = Package(
         .package(
             url: "https://github.com/AzureAD/microsoft-authentication-library-for-objc",
             .upToNextMajor(from: "1.4.0")
+        ),
+        .package(
+            url: "https://github.com/SDWebImage/SDWebImage",
+            .upToNextMajor(from: "5.18.0")
+        ),
+        .package(
+            url: "https://github.com/SDWebImage/SDWebImageSwiftUI",
+            .upToNextMajor(from: "3.0.0")
         )
     ]
 )

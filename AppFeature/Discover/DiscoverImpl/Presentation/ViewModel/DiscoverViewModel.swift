@@ -49,6 +49,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     private struct FilteredFetchResults {
         let communities: APIResult<[CommunitiesModuleModel.CardInputData]>
         let clubs: APIResult<[ClubsModuleModel.CardInputData]>
+        let events: APIResult<[EventsModuleModel.CardInputData]>
         let hangouts: APIResult<[HangoutsModuleModel.CardInputData]>
     }
     
@@ -274,15 +275,21 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
                 query: paginationQuery(size: clubsSize)
             )
         }
+        async let events = apiResult {
+            try await dependencies.useCase.fetchEventsData(
+                query: paginationQuery(size: eventsSize)
+            )
+        }
         async let hangouts = apiResult {
             try await dependencies.useCase.fetchHangoutsData(
                 query: paginationQuery(size: hangoutsSize)
             )
         }
-        
+
         return await .init(
             communities: communities,
             clubs: clubs,
+            events: events,
             hangouts: hangouts
         )
     }
@@ -307,7 +314,15 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         case .failure(let error):
             firstError = firstError ?? error
         }
-        
+
+        switch results.events {
+        case .success(let events):
+            state.uiModel.events = events
+            hasMoreEvents = events.count >= eventsSize
+        case .failure(let error):
+            firstError = firstError ?? error
+        }
+
         switch results.hangouts {
         case .success(let hangouts):
             state.uiModel.hangouts = hangouts
@@ -315,10 +330,10 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         case .failure(let error):
             firstError = firstError ?? error
         }
-        
+
         return firstError
     }
-    
+
     private func resetPagination() {
         communitiesSize = paginationStep
         clubsSize = paginationStep

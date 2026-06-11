@@ -24,6 +24,9 @@ enum EventsCreate {
         let clubId: Int
         let clubName: String
         let profileURL: URL?
+        let backgroundURL: URL?
+        let role: AppPresentationModel.UserActivityRole
+        let background: AppPresentationModel.BackgroundType
 
         var id: Int { clubId }
     }
@@ -69,25 +72,28 @@ enum EventsCreate {
                 id: .ownerContact,
                 label: "Owner contact",
                 type: .text(placeholder: "Enter owner contact"),
+                required: true
+            ),
+            FieldSchema(
+                id: .attachment,
+                label: "Attachment",
+                type: .attachment(
+                    placeholder: "Add",
+                    description: "You can upload files up to 15 MB total for this event."
+                ),
                 required: false
             ),
             FieldSchema(
                 id: .about,
                 label: "About",
                 type: .textArea(placeholder: "About", maxLength: 500),
-                required: false
+                required: true
             ),
             FieldSchema(
                 id: .category,
                 label: "Category",
                 type: .chipInput(placeholder: "Add category"),
-                required: false
-            ),
-            FieldSchema(
-                id: .location,
-                label: "Location",
-                type: .text(placeholder: "Enter location"),
-                required: false
+                required: true
             ),
             FieldSchema(
                 id: .eventDate,
@@ -98,7 +104,16 @@ enum EventsCreate {
             FieldSchema(
                 id: .reminder,
                 label: "Reminder",
-                type: .reminder(placeholder: "None"),
+                type: .reminder(
+                    placeholder: "None",
+                    description: "Members will receive a notification to remind them about the event start time."
+                ),
+                required: false
+            ),
+            FieldSchema(
+                id: .location,
+                label: "Location",
+                type: .text(placeholder: "Enter location"),
                 required: false
             ),
             FieldSchema(
@@ -111,15 +126,6 @@ enum EventsCreate {
                 id: .links,
                 label: "Add link",
                 type: .linkInput(placeholder: "Add link"),
-                required: false
-            ),
-            FieldSchema(
-                id: .attachment,
-                label: "Attachment",
-                type: .attachment(
-                    placeholder: "Add",
-                    description: "You can upload files up to 15 MB total for this event."
-                ),
                 required: false
             ),
             FieldSchema(

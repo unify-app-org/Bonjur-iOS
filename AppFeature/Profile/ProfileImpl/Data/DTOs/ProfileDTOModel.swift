@@ -86,4 +86,20 @@ struct ProfileDTOModel {
         let id: Int?
         let title: String?
     }
+
+    //MARK: - Events
+
+    struct MyEventResponse: Decodable {
+        let id: String?
+        let name: String?
+        let visibility: AppPresentationModel.AccessType?
+        let about: String?
+        let capacity: Int?
+        let membersCount: Int?
+        let background: String?
+        let requestStatus: AppPresentationModel.RequestType?
+        let eventActivityStatus: AppPresentationModel.ActivityStatus?
+        let role: AppPresentationModel.UserActivityRole?
+        let categoryResponses: [CategoryResponse]
+    }
 }

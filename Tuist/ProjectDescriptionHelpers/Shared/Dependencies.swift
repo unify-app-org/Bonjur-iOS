@@ -184,6 +184,8 @@ public extension TargetDependency {
     
     enum AppPackage {
         public static let MSAL: TargetDependency = .external(name: "MSAL")
+        public static let SDWebImage: TargetDependency = .external(name: "SDWebImage")
+        public static let SDWebImageSwiftUI: TargetDependency = .external(name: "SDWebImageSwiftUI")
     }
     
     enum TestHelpers {

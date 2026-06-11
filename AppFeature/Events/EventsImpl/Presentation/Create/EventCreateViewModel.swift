@@ -48,8 +48,8 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
             state.showClubPicker = true
         case .dismissClubPicker:
             state.showClubPicker = false
-        case .selectClub(let clubId):
-            state.selectedClubId = clubId
+        case .selectClub(let club):
+            state.selectedClub = club
             state.showClubPicker = false
         case .addCategoryTapped:
             state.showCategoryPicker = true
@@ -77,7 +77,9 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
         guard let prefill = inputData.prefillData else {
             return
         }
-        state.selectedClubId = prefill.selectedClubId
+        state.selectedClub = state.clubs.first { item in
+            prefill.selectedClubId == item.clubId
+        }
         state.values.merge(prefill.values) { _, new in new }
         selectPrefilledCategories(state.values.tags(.category))
     }
@@ -98,6 +100,9 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
     private func fetchClubs() async {
         do {
             state.clubs = try await dependencies.useCase.fetchClubsForEvents()
+            if state.selectedClub == nil {
+                state.selectedClub = state.clubs.first
+            }
         } catch {
             state.clubs = []
         }
@@ -134,20 +139,32 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
     // MARK: - Submit
 
     private func continueTapped() {
-        guard let clubId = state.selectedClubId else { return }
+        guard let clubId = state.selectedClub?.clubId else { return }
         Task {
             postEffect(.loading(true))
             defer { postEffect(.loading(false)) }
-
-            guard let coverURL = state.coverURL,
-                  let backgroundData = await downloadData(from: coverURL) else {
-                postEffect(.error(nil))
-                return
-            }
-
-            let multipart = buildMultipart(clubId: clubId, background: backgroundData)
+            
+            let multipart = await buildMultipart(clubId: clubId)
+            let name = state.values.text(.eventName)
             do {
-                try await dependencies.useCase.createEvent(request: multipart)
+                if let eventId = inputData.eventId {
+                    try await dependencies.useCase.editEvent(
+                        eventId: eventId,
+                        request: multipart
+                    )
+                    AppSnackBar.show(
+                        title: "Event updated successfully",
+                        subtitle: name,
+                        style: .success
+                    )
+                } else {
+                    try await dependencies.useCase.createEvent(request: multipart)
+                    AppSnackBar.show(
+                        title: "Event created successfully",
+                        subtitle: "\(name) · now active",
+                        style: .success
+                    )
+                }
                 await router.navigate(to: .backTapped)
             } catch {
                 postEffect(.error(error as? APIError))
@@ -155,7 +172,7 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
         }
     }
 
-    private func buildMultipart(clubId: Int, background: Data) -> MultipartFormData {
+    private func buildMultipart(clubId: Int) async -> MultipartFormData {
         let values = state.values
         let links: [EventCreateRequest.Link] = values.links(.links).map {
             .init(type: $0.type, name: $0.name, url: $0.url)
@@ -171,22 +188,26 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
             rule: rule.isEmpty ? nil : rule,
             visibility: values.radio(.visibility) == .public ? "PUBLIC" : "PRIVATE",
             eventDate: Self.isoFormatter.string(from: values.date(.eventDate)),
-            reminderTime: values.reminder(.reminder).rawValue,
+            reminderTimes: values.reminders(.reminder).map(\.rawValue),
             categoryIds: values.tags(.category).map(\.id),
             links: links,
             userIds: []
         )
-
         var multipart = MultipartFormData()
         multipart.addJSONField(name: "request", encodable: request)
-        multipart.addFile(
-            name: "background",
-            fileName: "background.jpg",
-            mimeType: "image/jpeg",
-            data: background
-        )
+        let coverURL = state.selectedClub?.backgroundURL
+        if let coverURL, let data = await downloadData(from: coverURL) {
+            multipart.addFile(
+                name: "background",
+                fileName: "background.jpg",
+                mimeType: "image/jpeg",
+                data: data
+            )
+        }
+        // In edit mode the prefilled attachments arrive as remote URLs, so download
+        // them (and freshly-picked local files) before re-uploading to the same field.
         for item in values.attachments(.attachment) {
-            guard let data = readFileData(at: item.url) else { continue }
+            guard let data = await downloadData(from: item.url) else { continue }
             multipart.addFile(
                 name: "attachments",
                 fileName: item.name,

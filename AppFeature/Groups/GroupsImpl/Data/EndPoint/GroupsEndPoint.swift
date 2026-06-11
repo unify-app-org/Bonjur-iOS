@@ -10,6 +10,7 @@ import AppNetwork
 enum GroupsEndPoint {
     case joinedClubs([String: String])
     case joinedHangouts([String: String])
+    case joinedEvents([String: String])
 }
 
 extension GroupsEndPoint: AppEndPoint {
@@ -20,21 +21,25 @@ extension GroupsEndPoint: AppEndPoint {
             "api/cs/v1/clubs/joined"
         case .joinedHangouts:
             "api/hs/v1/hangouts/get-joined"
+        case .joinedEvents:
+            "api/es/v1/events/joined"
         }
     }
-    
+
     var method: HTTPMethod {
         switch self {
         case .joinedClubs,
-                .joinedHangouts:
+                .joinedHangouts,
+                .joinedEvents:
                 .get
         }
     }
-    
+
     var queryParameters: [String: String]? {
         switch self {
         case .joinedClubs(let query),
-                .joinedHangouts(let query):
+                .joinedHangouts(let query),
+                .joinedEvents(let query):
             query
         }
     }

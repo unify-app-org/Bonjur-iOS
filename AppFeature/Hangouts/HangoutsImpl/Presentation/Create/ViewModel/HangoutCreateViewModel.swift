@@ -151,6 +151,11 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
             try await dependencies.useCase.createHangout(
                 request: buildRequest()
             )
+            AppSnackBar.show(
+                title: "Hangout created successfully",
+                subtitle: state.values.text(.hangoutName),
+                style: .success
+            )
             await router.navigate(to: .backTapped)
         } catch {
             postEffect(.error(error))
@@ -167,6 +172,11 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
             try await dependencies.useCase.editHangout(
                 id: id,
                 request: buildRequest()
+            )
+            AppSnackBar.show(
+                title: "Hangout updated successfully",
+                subtitle: state.values.text(.hangoutName),
+                style: .success
             )
             await router.navigate(to: .backTapped)
         } catch {

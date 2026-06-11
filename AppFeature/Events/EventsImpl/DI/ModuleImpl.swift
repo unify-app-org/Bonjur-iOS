@@ -66,8 +66,8 @@ struct EventsModuleImpl: EventsModule {
                         }),
                         .location: .text(prefillData.location),
                         .eventDate: .date(prefillData.eventDate),
-                        .reminder: .reminder(
-                            AppFieldSchema.ReminderOption(rawValue: prefillData.reminder) ?? .none
+                        .reminder: .reminders(
+                            [AppFieldSchema.ReminderOption(rawValue: prefillData.reminder) ?? .none]
                         ),
                         .capacity: .text(prefillData.capacity),
                         .links: .links(prefillData.links.map {

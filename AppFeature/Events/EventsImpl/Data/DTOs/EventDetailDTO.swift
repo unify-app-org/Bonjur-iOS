@@ -45,6 +45,21 @@ struct EventDetailDTO: Decodable {
     }
 }
 
+/// `GET api/ds/v1/events` (discover feed, returns a JSON array)
+struct EventDiscoverDTO: Decodable {
+    let id: String?
+    let name: String?
+    let visibility: AppPresentationModel.AccessType?
+    let about: String?
+    let capacity: Int?
+    let membersCount: Int?
+    let background: String?
+    let requestStatus: AppPresentationModel.RequestType?
+    let eventActivityStatus: AppPresentationModel.ActivityStatus?
+    let role: AppPresentationModel.UserActivityRole?
+    let categoryResponses: [EventDetailDTO.Category]
+}
+
 /// `GET api/es/v1/events/{eventId}/members` (paginated)
 struct EventMembersResponse: Decodable {
     let content: [Member]

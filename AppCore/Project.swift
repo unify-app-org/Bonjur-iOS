@@ -47,7 +47,9 @@ let appUIKitTarget = Target.createFrameworkTarget(
     name: "AppUIKit",
     dependencies: [
         .AppCore.AppUtils,
-        .AppCore.AppPresentationModel
+        .AppCore.AppPresentationModel,
+        .AppPackage.SDWebImage,
+        .AppPackage.SDWebImageSwiftUI
     ]
 ).add(to: &frameworkTargets)
 

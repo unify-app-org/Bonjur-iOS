@@ -13,6 +13,9 @@ enum EventsEndPoint {
     case createEvent(MultipartFormData)
     case eventDetail(String)
     case eventMembers(String, [String: String])
+    case discoverEvents([String: String])
+    case joinEvent(String)
+    case editEvent(String, MultipartFormData)
 }
 
 extension EventsEndPoint: AppEndPoint {
@@ -29,6 +32,12 @@ extension EventsEndPoint: AppEndPoint {
             "api/es/v1/events/\(id)"
         case .eventMembers(let id, _):
             "api/es/v1/events/\(id)/members"
+        case .discoverEvents:
+            "api/ds/v1/events"
+        case .joinEvent(let id):
+            "api/es/v1/events/\(id)/join"
+        case .editEvent(let id, _):
+            "api/es/v1/events/\(id)"
         }
     }
 
@@ -37,16 +46,22 @@ extension EventsEndPoint: AppEndPoint {
         case .clubsForEvents,
                 .getCategories,
                 .eventDetail,
-                .eventMembers:
+                .eventMembers,
+                .discoverEvents:
                 .get
-        case .createEvent:
+        case .createEvent,
+                .joinEvent:
                 .post
+        case .editEvent:
+                .put
         }
     }
 
     var queryParameters: [String: String]? {
         switch self {
         case .eventMembers(_, let query):
+            query
+        case .discoverEvents(let query):
             query
         default:
             nil
@@ -57,6 +72,8 @@ extension EventsEndPoint: AppEndPoint {
         switch self {
         case .createEvent(let multiPart):
             multiPart
+        case .editEvent(_, let multiPart):
+            multiPart
         default:
             nil
         }
@@ -64,7 +81,8 @@ extension EventsEndPoint: AppEndPoint {
 
     var contentType: ContentType {
         switch self {
-        case .createEvent:
+        case .createEvent,
+                .editEvent:
                 .formData
         default:
                 .json

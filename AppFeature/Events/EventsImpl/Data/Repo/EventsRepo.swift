@@ -5,6 +5,7 @@
 //  Created by Codex on 10.06.26.
 //
 
+import Events
 import AppUIKit
 import Foundation
 import AppNetwork
@@ -12,7 +13,10 @@ import Communities
 import AppPresentationModel
 
 protocol EventsRepo {
+    func fetchEvents() async throws(APIError) -> [EventsModuleModel.CardInputData]
+    func joinEvent(eventId: String) async throws(APIError) -> Void
     func createEvent(request: MultipartFormData) async throws(APIError) -> Void
+    func editEvent(eventId: String, request: MultipartFormData) async throws(APIError) -> Void
     func fetchClubsForEvents() async throws(APIError) -> [EventsCreate.SelectableClub]
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
     func fetchEventDetail(
@@ -31,17 +35,51 @@ final class EventsRepoImpl: EventsRepo {
         self.dataSource = dataSource
     }
 
+    func fetchEvents() async throws(APIError) -> [EventsModuleModel.CardInputData] {
+        let data = try await dataSource.fetchDiscoverEvents(
+            query: ["page": "0", "size": "50"]
+        )
+        return data.map { item in
+            let tags: [AppPresentationModel.Tags] = item.categoryResponses.map { category in
+                .init(id: category.id ?? 0, type: "", title: category.title ?? "-")
+            }
+            return .init(
+                id: item.id ?? "-",
+                name: item.name ?? "-",
+                coverimageURL: item.background,
+                memberCount: item.membersCount ?? 0,
+                totalCapacity: item.capacity,
+                club: .init(name: "-", id: 0),
+                tags: tags,
+                bgType: .primary,
+                requestType: item.requestStatus ?? .none,
+                accessType: item.visibility ?? .private
+            )
+        }
+    }
+
+    func joinEvent(eventId: String) async throws(APIError) {
+        _ = try await dataSource.joinEvent(eventId: eventId)
+    }
+
     func createEvent(request: MultipartFormData) async throws(APIError) {
         _ = try await dataSource.createEvent(request: request)
     }
 
+    func editEvent(eventId: String, request: MultipartFormData) async throws(APIError) {
+        _ = try await dataSource.editEvent(eventId: eventId, request: request)
+    }
+
     func fetchClubsForEvents() async throws(APIError) -> [EventsCreate.SelectableClub] {
-        let data = try await dataSource.fetchClubsForEvents()
+        let data = try await dataSource.fetchClubsForEvents().content
         return data.map { dto in
             EventsCreate.SelectableClub(
-                clubId: dto.clubId,
-                clubName: dto.clubName ?? "",
-                profileURL: dto.profileUrl.flatMap { URL(string: $0) }
+                clubId: dto.id,
+                clubName: dto.name ?? "",
+                profileURL: dto.clubProfile.flatMap { URL(string: $0) },
+                backgroundURL: dto.backgroundUrl.flatMap { URL(string: $0) },
+                role: dto.role ?? .member,
+                background: dto.background ?? .primary
             )
         }
     }
@@ -79,7 +117,8 @@ final class EventsRepoImpl: EventsRepo {
             infoData: mapInfo(data),
             attachments: mapAttachments(data.attachments ?? []),
             membersData: .init(users: []),
-            joinButton: mapButtonModel(data)
+            joinButton: mapButtonModel(data),
+            editPrefillData: mapPrefillData(data, tags)
         )
     }
 
@@ -113,6 +152,37 @@ private extension EventsRepoImpl {
         guard role == .notJoined else { return nil }
         let title = data.visibility == .public ? "Join" : "Request"
         return .init(title: title, disabled: false)
+    }
+
+    /// Build edit-mode prefill from the detail DTO. Mirrors `ClubRepoImpl.mapPrefilData`.
+    /// Note: `eventDate`/`reminder` are not returned by the detail endpoint, so the
+    /// create-form defaults stay. Existing attachments arrive as remote URLs; they are
+    /// re-uploaded on save by `EventCreateViewModel.buildMultipart` (it re-downloads them).
+    func mapPrefillData(
+        _ data: EventDetailDTO,
+        _ tags: [AppPresentationModel.Tags]
+    ) -> EventsCreate.PrefillData {
+        let attachments: [AppFieldSchema.AttachmentItem] = (data.attachments ?? []).compactMap { urlString in
+            guard let url = URL(string: urlString) else { return nil }
+            return .init(name: url.lastPathComponent, url: url, size: 0)
+        }
+        return EventsCreate.PrefillData(
+            selectedClubId: data.club?.id ?? 0,
+            values: [
+                .visibility: .radio(data.visibility ?? .private),
+                .eventName: .text(data.name ?? ""),
+                .ownerContact: .text(data.ownerContact ?? ""),
+                .about: .text(data.about ?? ""),
+                .category: .tags(tags.map { .init(id: $0.id, label: $0.title) }),
+                .location: .text(data.location ?? ""),
+                .capacity: .text(data.capacity.map(String.init) ?? ""),
+                .links: .links((data.links ?? []).map {
+                    .init(type: $0.type ?? "", name: $0.name ?? "", url: $0.url ?? "")
+                }),
+                .attachment: .attachments(attachments),
+                .rules: .text(data.rule ?? "")
+            ]
+        )
     }
 
     func mapAttachments(_ urls: [String]) -> [AttachmentItemView.Model] {

@@ -27,6 +27,7 @@ protocol ProfileRepo {
     ) -> [ProfileSettingsViewState.SettingsSection]
     func getMyClubs(userId: String?) async throws(APIError) -> [ClubsModuleModel.CardInputData]
     func getMyHangouts(userId: String?) async throws(APIError) -> [HangoutsModuleModel.CardInputData]
+    func getMyEvents() async throws(APIError) -> [EventsModuleModel.CardInputData]
 }
 
 class ProfileRepoImpl: ProfileRepo {
@@ -201,6 +202,31 @@ class ProfileRepoImpl: ProfileRepo {
                 tags: tags,
                 accessType: item.visibility ?? .private,
                 requestType: item.status ?? .none
+            )
+        }
+    }
+
+    func getMyEvents() async throws(APIError) -> [EventsModuleModel.CardInputData] {
+        let data = try await dataSource.fetchMyEvents().content
+        return data.map { item in
+            let tags: [AppPresentationModel.Tags] = item.categoryResponses.map { category in
+                .init(
+                    id: category.id ?? 0,
+                    type: "",
+                    title: category.title ?? "-"
+                )
+            }
+            return .init(
+                id: item.id ?? "-",
+                name: item.name ?? "-",
+                coverimageURL: item.background,
+                memberCount: item.membersCount ?? 0,
+                totalCapacity: item.capacity,
+                club: .init(name: "-", id: 0),
+                tags: tags,
+                bgType: .primary,
+                requestType: item.requestStatus ?? .none,
+                accessType: item.visibility ?? .private
             )
         }
     }

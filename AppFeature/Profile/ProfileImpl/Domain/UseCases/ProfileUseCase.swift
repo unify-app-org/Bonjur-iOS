@@ -10,6 +10,7 @@ import AppNetwork
 import UIKit
 import AppUIKit
 import Clubs
+import Events
 import Hangouts
 
 protocol ProfileUseCase {
@@ -24,6 +25,7 @@ protocol ProfileUseCase {
     func deleteAccount() async throws(APIError) -> Data
     func getMyClubs(userId: String?) async throws(APIError) -> [ClubsModuleModel.CardInputData]
     func getMyHangouts(userId: String?) async throws(APIError) -> [HangoutsModuleModel.CardInputData]
+    func getMyEvents() async throws(APIError) -> [EventsModuleModel.CardInputData]
 }
 
 class ProfileUseCaseImpl: ProfileUseCase {
@@ -78,5 +80,9 @@ class ProfileUseCaseImpl: ProfileUseCase {
         userId: String?
     ) async throws(APIError) -> [HangoutsModuleModel.CardInputData] {
         try await repo.getMyHangouts(userId: userId)
+    }
+
+    func getMyEvents() async throws(APIError) -> [EventsModuleModel.CardInputData] {
+        try await repo.getMyEvents()
     }
 }

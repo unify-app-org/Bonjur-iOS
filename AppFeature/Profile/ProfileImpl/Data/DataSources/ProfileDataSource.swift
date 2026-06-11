@@ -26,6 +26,7 @@ protocol ProfileDataSource {
     func fetchMyHangouts(
         id: String
     ) async throws(APIError) -> PageNationResponse<[ProfileDTOModel.HangoutItem]>
+    func fetchMyEvents() async throws(APIError) -> PageNationResponse<[ProfileDTOModel.MyEventResponse]>
 }
 
 final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataSource {
@@ -130,5 +131,9 @@ final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataS
         id: String
     ) async throws(APIError) -> PageNationResponse<[ProfileDTOModel.HangoutItem]> {
         try await fetch(endPoint: .myHangouts(id))
+    }
+
+    func fetchMyEvents() async throws(APIError) -> PageNationResponse<[ProfileDTOModel.MyEventResponse]> {
+        try await fetch(endPoint: .myEvents)
     }
 }

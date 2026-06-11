@@ -23,6 +23,7 @@ enum EventsDetailsModel {
         let attachments: [AttachmentItemView.Model]
         var membersData: CommunitiesMemberModuleModel.GroupedMembersData
         var joinButton: JoinButton? = nil
+        var editPrefillData: EventsCreate.PrefillData? = nil
     }
 
     struct JoinButton {

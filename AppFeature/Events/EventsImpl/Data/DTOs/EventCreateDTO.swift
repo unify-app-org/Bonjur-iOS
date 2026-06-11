@@ -6,12 +6,17 @@
 //
 
 import Foundation
+import AppPresentationModel
 
-/// Club the user can create an event under. `GET api/cs/v1/clubs/forEvents`.
 struct ClubForEventDTO: Decodable {
-    let clubId: Int
-    let clubName: String?
-    let profileUrl: String?
+    let communityName: String?
+    let requestStatus: AppPresentationModel.RequestType?
+    let count, id: Int
+    let backgroundUrl, clubProfile: String?
+    let visibility: AppPresentationModel.AccessType?
+    let role: AppPresentationModel.UserActivityRole?
+    let background: AppPresentationModel.BackgroundType?
+    let name: String?
 }
 
 /// Category group. `GET api/sd/v1/categories` (shared with clubs).
@@ -36,7 +41,7 @@ struct EventCreateRequest: Encodable {
     let rule: String?
     let visibility: String
     let eventDate: String
-    let reminderTime: String
+    let reminderTimes: [String]
     let categoryIds: [Int]
     let links: [Link]
     let userIds: [String]

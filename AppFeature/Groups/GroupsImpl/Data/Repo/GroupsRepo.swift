@@ -8,6 +8,7 @@
 import AppNetwork
 import AppUIKit
 import Clubs
+import Events
 import Foundation
 import Hangouts
 
@@ -15,10 +16,14 @@ protocol GroupsRepo {
     func fetchJoinedClubs(
         query: GroupsDTOModel.PaginationQuery
     ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
-    
+
     func fetchJoinedHangouts(
         query: GroupsDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsModuleModel.CardInputData]
+
+    func fetchJoinedEvents(
+        query: GroupsDTOModel.PaginationQuery
+    ) async throws(APIError) -> [EventsModuleModel.CardInputData]
 }
 
 final class GroupsRepoImpl: GroupsRepo {
@@ -84,6 +89,37 @@ final class GroupsRepoImpl: GroupsRepo {
                 tags: tags,
                 accessType: item.visibility ?? .private,
                 requestType: item.status ?? .none
+            )
+        }
+    }
+
+    func fetchJoinedEvents(
+        query: GroupsDTOModel.PaginationQuery
+    ) async throws(APIError) -> [EventsModuleModel.CardInputData] {
+        let data = try await dataSource.fetchJoinedEvents(
+            query: query.toDictionary()
+        ).content
+
+        return data.map { item in
+            let tags: [AppUIEntities.Tags] = item.categoryResponses.map { category in
+                .init(
+                    id: category.id ?? 0,
+                    type: "",
+                    title: category.title ?? "-"
+                )
+            }
+
+            return .init(
+                id: item.id ?? "-",
+                name: item.name ?? "-",
+                coverimageURL: item.background,
+                memberCount: item.membersCount ?? 0,
+                totalCapacity: item.capacity,
+                club: .init(name: "-", id: 0),
+                tags: tags,
+                bgType: .primary,
+                requestType: item.requestStatus ?? .none,
+                accessType: item.visibility ?? .private
             )
         }
     }

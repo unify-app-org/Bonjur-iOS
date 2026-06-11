@@ -105,6 +105,11 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
                 multiPart: request.0,
                 queryData: request.1
             )
+            AppSnackBar.show(
+                title: "Profile updated successfully",
+                subtitle: "Your changes are saved",
+                style: .success
+            )
             await handleEdit()
         } catch {
             postEffect(

@@ -44,4 +44,5 @@ final class EventsListViewState: UIFeatureState {
 enum EventsListAction: UIFeatureAction {
     case fetchData
     case eventItemTapped(id: String)
+    case joinEvent(id: String)
 }

@@ -46,6 +46,41 @@ public final class FilterViewModel: ObservableObject {
     func selectItem(_ item: FilterView.Model?) {
         selectedItem = selectedItem?.id == item?.id ? nil : item
     }
+
+    /// Chip tap: toggles the whole category — selects/deselects ALL its sub-items,
+    /// so the backend receives every sub-item id of the category.
+    func toggleCategory(_ item: FilterView.Model) {
+        let shouldSelect = !isCategorySelected(item)
+        model = model.map { section in
+            var updated = section
+            if section.id == item.id {
+                updated.items = section.items.map { subItem in
+                    var updatedSubItem = subItem
+                    updatedSubItem.selected = shouldSelect
+                    return updatedSubItem
+                }
+            }
+            return updated
+        }
+        sortFilters()
+        notifySelectedItems()
+    }
+
+    func isCategorySelected(_ item: FilterView.Model) -> Bool {
+        !item.items.isEmpty && item.items.allSatisfy(\.selected)
+    }
+
+    /// "All" chip is active when no filter is applied anywhere.
+    var isAllActive: Bool {
+        !model.contains { $0.items.contains(where: \.selected) }
+    }
+
+    /// "All" chip tap: clears every selection (no filter = everything).
+    func selectAll() {
+        model = model.map { deselectAllItems(in: $0) }
+        sortFilters()
+        notifySelectedItems()
+    }
     
     func isSelected(_ item: FilterView.Model) -> Bool {
         selectedItem?.id == item.id

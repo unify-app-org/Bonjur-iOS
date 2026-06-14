@@ -162,7 +162,8 @@ struct GroupsListView: View {
                             onTap: {
                                 store.send(.eventItemTapped(id: event.id))
                             },
-                            onButtonTap: { }
+                            onButtonTap: { },
+                            onClubTap: nil
                         ) as? AnyView {
                             view
                         }

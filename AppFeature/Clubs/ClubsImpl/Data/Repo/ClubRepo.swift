@@ -67,7 +67,8 @@ class ClubRepoImpl: ClubRepo {
                 members: members,
                 bgType: item.background ?? .primary,
                 accessType: item.visibility ?? .private,
-                requestType: .none
+                requestType: (item.joined ?? false) ? .joined : .none,
+                role: item.clubUserRole
             )
         }
     }

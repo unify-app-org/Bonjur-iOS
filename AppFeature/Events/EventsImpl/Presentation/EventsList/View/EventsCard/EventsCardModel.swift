@@ -23,7 +23,13 @@ extension EventsCardView {
         let bgType: AppUIEntities.BackgroundType
         let requestType: AppUIEntities.RequestType
         let accessType: AppUIEntities.AccessType
-        
+        let role: AppUIEntities.UserActivityRole?
+        // Static placeholders until backend exposes these fields
+        let time: String
+        let location: String
+        let dateDay: String
+        let dateMonth: String
+
         init(
             id: String,
             name: String,
@@ -34,7 +40,12 @@ extension EventsCardView {
             tags: [AppUIEntities.Tags],
             bgType: AppUIEntities.BackgroundType,
             requestType: AppUIEntities.RequestType,
-            accessType: AppUIEntities.AccessType
+            accessType: AppUIEntities.AccessType,
+            role: AppUIEntities.UserActivityRole? = nil,
+            time: String = "18:00",
+            location: String = "Campus, Room 204",
+            dateDay: String = "14",
+            dateMonth: String = "JUN"
         ) {
             self.id = id
             self.name = name
@@ -46,14 +57,22 @@ extension EventsCardView {
             self.bgType = bgType
             self.requestType = requestType
             self.accessType = accessType
+            self.role = role
+            self.time = time
+            self.location = location
+            self.dateDay = dateDay
+            self.dateMonth = dateMonth
         }
+
+        /// President is treated as the owner of the event's club.
+        var isOwner: Bool { role == .president }
         
         var buttonTitle: String {
             switch requestType {
             case .joined:
                 return "Participating"
             case .rejected:
-                return "Rejected"
+                return "Request again"
             case .pending:
                 return "Request sent"
             case .none:
@@ -74,10 +93,10 @@ extension EventsCardView {
                 false
             }
         }
-        
+
         var memberCountText: String {
             if let totalCapacity {
-                return "\(memberCount)/\(totalCapacity) members"
+                return "\(memberCount) of \(totalCapacity)"
             } else {
                 return "\(memberCount) members"
             }
@@ -106,7 +125,8 @@ extension EventsCardView.Model {
             tags: from.tags,
             bgType: from.bgType,
             requestType: from.requestType,
-            accessType: from.accessType
+            accessType: from.accessType,
+            role: from.role
         )
     }
 }

@@ -173,7 +173,8 @@ class ProfileRepoImpl: ProfileRepo {
                 members: members,
                 bgType: item.background ?? .primary,
                 accessType: item.visibility ?? .private,
-                requestType: .none
+                requestType: item.requestStatus ?? .none,
+                role: item.role ?? .notJoined
             )
         }
     }
@@ -226,7 +227,8 @@ class ProfileRepoImpl: ProfileRepo {
                 tags: tags,
                 bgType: .primary,
                 requestType: item.requestStatus ?? .none,
-                accessType: item.visibility ?? .private
+                accessType: item.visibility ?? .private,
+                role: item.role ?? .notJoined
             )
         }
     }

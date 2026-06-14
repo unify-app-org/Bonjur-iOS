@@ -108,8 +108,9 @@ class DiscoverRepoImpl: DiscoverRepo {
                     community: item.communityName ?? "-",
                     members: members,
                     bgType: item.background ?? .primary,
-                    accessType: .private,
-                    requestType: .joined
+                    accessType: item.visibility ?? .private,
+                    requestType: item.requestStatus ?? .none,
+                    role: item.role ?? .notJoined
                 )
         }
         return uiModel
@@ -163,7 +164,8 @@ class DiscoverRepoImpl: DiscoverRepo {
                 tags: tags,
                 bgType: .primary,
                 requestType: item.requestStatus ?? .none,
-                accessType: item.visibility ?? .private
+                accessType: item.visibility ?? .private,
+                role: item.role ?? .notJoined
             )
         }
         return uiModel

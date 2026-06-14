@@ -59,7 +59,8 @@ final class GroupsRepoImpl: GroupsRepo {
                 members: members,
                 bgType: item.background ?? .primary,
                 accessType: item.visibility ?? .private,
-                requestType: .joined
+                requestType: item.status ?? .none,
+                role: item.role ?? .notJoined
             )
         }
     }
@@ -119,7 +120,8 @@ final class GroupsRepoImpl: GroupsRepo {
                 tags: tags,
                 bgType: .primary,
                 requestType: item.requestStatus ?? .none,
-                accessType: item.visibility ?? .private
+                accessType: item.visibility ?? .private,
+                role: item.role ?? .notJoined
             )
         }
     }

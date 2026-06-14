@@ -90,6 +90,22 @@ public enum AppPresentationModel {
         case visePresident = "VICE_PRESIDENT"
         case eventCreator = "EVENT_CREATOR"
         case notJoined
+
+        /// Human-readable label for chips/badges.
+        public var displayTitle: String {
+            switch self {
+            case .member: return "Member"
+            case .president: return "President"
+            case .visePresident: return "Vice president"
+            case .eventCreator: return "Creator"
+            case .notJoined: return ""
+            }
+        }
+
+        /// `true` when the role represents an actual membership worth showing.
+        public var isJoinedRole: Bool {
+            self != .notJoined
+        }
     }
     
     // MARK: - Activity Types

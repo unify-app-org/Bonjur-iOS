@@ -23,7 +23,10 @@ extension ClubCardView {
         let bgType: AppUIEntities.BackgroundType
         let accessType: AppUIEntities.AccessType
         let requestType: AppUIEntities.RequestType
-        
+        let role: AppUIEntities.UserActivityRole?
+        let upcomingEventsCount: Int
+        let categories: [String]
+
         public init(
             id: Int,
             name: String,
@@ -36,6 +39,9 @@ extension ClubCardView {
             bgType: AppUIEntities.BackgroundType,
             accessType: AppUIEntities.AccessType,
             requestType: AppUIEntities.RequestType,
+            role: AppUIEntities.UserActivityRole? = nil,
+            upcomingEventsCount: Int = 2,
+            categories: [String] = ["Sport", "Tournament"]
         ) {
             self.id = id
             self.name = name
@@ -47,7 +53,10 @@ extension ClubCardView {
             self.bgType = bgType
             self.accessType = accessType
             self.requestType = requestType
+            self.role = role
             self.community = community
+            self.upcomingEventsCount = upcomingEventsCount
+            self.categories = categories
         }
     }
 }
@@ -66,7 +75,8 @@ extension ClubCardView.Model {
             members: model.members,
             bgType: model.bgType,
             accessType: model.accessType,
-            requestType: model.requestType
+            requestType: model.requestType,
+            role: model.role
         )
     }
 }

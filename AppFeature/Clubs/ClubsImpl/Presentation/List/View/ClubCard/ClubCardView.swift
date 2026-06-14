@@ -12,6 +12,25 @@ struct ClubCardView: View {
     private let model: Model
     private let onTap: (() -> Void)
     
+    private var statusChipTitle: String? {
+        switch model.requestType {
+        case .joined: return "✓ Joined"
+        case .pending: return "⏳ Pending"
+        case .rejected, .none: return nil
+        }
+    }
+
+    private var joinedRole: AppUIEntities.UserActivityRole? {
+        guard let role = model.role, role.isJoinedRole else { return nil }
+        return role
+    }
+
+    private func roleBadgeText(
+        _ role: AppUIEntities.UserActivityRole
+    ) -> String {
+        role == .president ? "👑 Owner" : role.displayTitle
+    }
+    
     init(
         model: Model,
         onTap: @escaping (() -> Void)
@@ -22,7 +41,7 @@ struct ClubCardView: View {
     
     var body: some View {
         CardBackgroundView(cardType: .club) {
-            VStack(spacing: 27) {
+            VStack(spacing: 8) {
                 topLeftView
                 bottomView
             }
@@ -38,20 +57,65 @@ struct ClubCardView: View {
     
     private var topLeftView: some View {
         VStack(alignment: .leading) {
-            logoImage
+            HStack(alignment: .top) {
+                logoImage
+                Spacer()
+                accessChip
+            }
             Text(model.name)
                 .font(Font.Typography.TitleMd.bold)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
                 .foregroundStyle(model.bgType.foregroundColor)
-            Text(model.communityName)
-                .font(Font.Typography.TextMd.regular)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .multilineTextAlignment(.leading)
-                .foregroundStyle(model.bgType.foregroundColor)
+            upCommingEventsCountView
+            categoriesRow
         }
     }
+
+    private var categoriesRow: some View {
+        HStack(spacing: 6) {
+            ForEach(model.categories, id: \.self) { category in
+                Text(category)
+                    .font(Font.Typography.TextSm.medium)
+                    .lineLimit(1)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 3)
+                    .foregroundStyle(Color.Palette.blackHigh)
+                    .background(Color.Palette.whiteMedium)
+                    .clipShape(Capsule())
+            }
+        }
+        .padding(.top, 2)
+    }
     
+    private var upCommingEventsCountView: some View {
+        HStack(spacing: 4) {
+            Text(model.communityName)
+            Text("•")
+            let text = model.upcomingEventsCount == 1
+            ? "1 event"
+            : "\(model.upcomingEventsCount) events"
+            Image(systemName: "calendar")
+            Text(text)
+            if let role = joinedRole {
+                Text("•")
+                Text(roleBadgeText(role))
+            }
+        }
+        .foregroundStyle(model.bgType.foregroundColor)
+        .font(Font.Typography.TextSm.medium)
+    }
+    
+    private var accessChip: some View {
+        Text(model.accessType == .private ? "Private" : "Public")
+            .font(Font.Typography.TextSm.medium)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .foregroundStyle(Color.Palette.blackHigh)
+            .background(Color.Palette.whiteHigh)
+            .clipShape(Capsule())
+    }
+
     @ViewBuilder
     private var logoImage: some View {
         let url = URL(string: model.logoURL)
@@ -120,11 +184,15 @@ struct ClubCardView: View {
                     .zIndex(Double(3 - index))
                 }
             }
-            Text("\(model.memberCount) members")
-                .font(Font.Typography.TextMd.regular)
-                .foregroundColor(model.bgType.foregroundColor)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .multilineTextAlignment(.leading)
+            Text(
+                model.totalCapacity > 0
+                ? "\(model.memberCount) of \(model.totalCapacity) members"
+                : "\(model.memberCount) members"
+            )
+            .font(Font.Typography.TextMd.regular)
+            .foregroundColor(model.bgType.foregroundColor)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .multilineTextAlignment(.leading)
         }
     }
 }

@@ -153,7 +153,8 @@ class CommunityRepoImpl: CommunityRepo {
                     members: members,
                     bgType: item.background ?? .primary,
                     accessType: .private,
-                    requestType: .joined
+                    requestType: .none,
+                    role: item.role ?? .notJoined
                 )
         }
         return uiModel

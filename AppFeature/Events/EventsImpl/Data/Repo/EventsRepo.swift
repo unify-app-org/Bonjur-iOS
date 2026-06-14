@@ -53,7 +53,8 @@ final class EventsRepoImpl: EventsRepo {
                 tags: tags,
                 bgType: .primary,
                 requestType: item.requestStatus ?? .none,
-                accessType: item.visibility ?? .private
+                accessType: item.visibility ?? .private,
+                role: item.role ?? .notJoined
             )
         }
     }
@@ -162,9 +163,9 @@ private extension EventsRepoImpl {
         _ data: EventDetailDTO,
         _ tags: [AppPresentationModel.Tags]
     ) -> EventsCreate.PrefillData {
-        let attachments: [AppFieldSchema.AttachmentItem] = (data.attachments ?? []).compactMap { urlString in
-            guard let url = URL(string: urlString) else { return nil }
-            return .init(name: url.lastPathComponent, url: url, size: 0)
+        let attachments: [AppFieldSchema.AttachmentItem] = (data.attachments ?? []).compactMap { attachment in
+            guard let url = URL(string: attachment.url ?? "") else { return nil }
+            return .init(name: attachment.name ?? "", url: url, size: attachment.size ?? "")
         }
         return EventsCreate.PrefillData(
             selectedClubId: data.club?.id ?? 0,
@@ -185,10 +186,9 @@ private extension EventsRepoImpl {
         )
     }
 
-    func mapAttachments(_ urls: [String]) -> [AttachmentItemView.Model] {
-        urls.enumerated().map { index, urlString in
-            let name = URL(string: urlString)?.lastPathComponent ?? "Attachment"
-            return .init(id: index, name: name, size: "")
+    func mapAttachments(_ urls: [EventDetailDTO.Attachments]) -> [AttachmentItemView.Model] {
+        urls.enumerated().map { index, attachment in
+            return .init(id: index, name: attachment.name ?? "", size: attachment.size ?? "")
         }
     }
 

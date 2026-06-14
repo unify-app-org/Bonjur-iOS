@@ -204,8 +204,6 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
                 data: data
             )
         }
-        // In edit mode the prefilled attachments arrive as remote URLs, so download
-        // them (and freshly-picked local files) before re-uploading to the same field.
         for item in values.attachments(.attachment) {
             guard let data = await downloadData(from: item.url) else { continue }
             multipart.addFile(

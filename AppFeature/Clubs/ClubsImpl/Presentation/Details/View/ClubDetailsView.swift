@@ -423,7 +423,8 @@ struct ClubDetailsView: View {
                     if let view = eventsModule.makeEventsCard(
                         model: item,
                         onTap: {},
-                        onButtonTap: {}
+                        onButtonTap: {},
+                        onClubTap: nil
                     ) as? AnyView {
                         view
                     }

@@ -63,9 +63,9 @@ public enum AppFieldSchema {
         public let id: UUID
         public var name: String
         public var url: URL
-        public var size: Int
+        public var size: String
 
-        public init(id: UUID = UUID(), name: String, url: URL, size: Int = 0) {
+        public init(id: UUID = UUID(), name: String, url: URL, size: String = "0 Kb") {
             self.id = id
             self.name = name
             self.url = url
@@ -828,7 +828,7 @@ private struct AttachmentField: View {
                     .foregroundStyle(Color.Palette.blackHigh)
                     .lineLimit(1)
 
-                Text(Self.formatSize(item.size))
+                Text(item.size)
                     .font(Font.Typography.BodyTextSm.regular)
                     .foregroundStyle(Color.Palette.blackMedium)
             }
@@ -858,11 +858,11 @@ private struct AttachmentField: View {
         }
     }
 
-    private static func fileSize(of url: URL) -> Int {
+    private static func fileSize(of url: URL) -> String {
         let didAccess = url.startAccessingSecurityScopedResource()
         defer { if didAccess { url.stopAccessingSecurityScopedResource() } }
         let values = try? url.resourceValues(forKeys: [.fileSizeKey])
-        return values?.fileSize ?? 0
+        return "\(values?.fileSize ?? 0)"
     }
 
     private static func formatSize(_ bytes: Int) -> String {

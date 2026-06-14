@@ -66,6 +66,8 @@ struct GroupsDTOModel {
         let communityName: String?
         let background: AppPresentationModel.BackgroundType?
         let visibility: AppPresentationModel.AccessType?
+        let role: AppPresentationModel.UserActivityRole?
+        let status: AppPresentationModel.RequestType?
         let clubProfile: String?
         let backgroundUrl: String?
         let about: String?

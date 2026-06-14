@@ -55,11 +55,12 @@ struct ProfileDTOModel {
         let communityName: String?
         let background: AppPresentationModel.BackgroundType?
         let visibility: AppPresentationModel.AccessType?
+        let role: AppPresentationModel.UserActivityRole?
+        let requestStatus: AppPresentationModel.RequestType?
         let clubProfile: String?
         let backgroundUrl: String?
         let about: String?
         let count, capacity: Int?
-        let joined: Bool?
         let members: [ListMember]?
         
         struct ListMember: Decodable {

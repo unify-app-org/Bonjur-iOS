@@ -16,7 +16,8 @@ struct EventsModuleImpl: EventsModule {
     func makeEventsCard(
         model: EventsModuleModel.CardInputData,
         onTap: @escaping (() -> Void),
-        onButtonTap: @escaping (() -> Void)
+        onButtonTap: @escaping (() -> Void),
+        onClubTap: ((Int) -> Void)?
     ) -> Any {
         AnyView(
             EventsCardView(
@@ -24,7 +25,8 @@ struct EventsModuleImpl: EventsModule {
                     from: model
                 ),
                 onButtonTap: onButtonTap,
-                onTap: onTap
+                onTap: onTap,
+                onClubTap: onClubTap
             )
         )
     }

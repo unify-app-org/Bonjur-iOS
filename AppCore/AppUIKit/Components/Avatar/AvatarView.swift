@@ -25,17 +25,17 @@ public struct AvatarView: View {
 
     public var body: some View {
         imageView
-        .frame(width: 88, height: 88)
-        .background(Color.Palette.grayQuaternary)
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(
-                    Color.Palette.grayTeritary.opacity(0.3),
-                    lineWidth: 3
-                )
-        )
-        .padding(.horizontal, 16)
+            .frame(width: 88, height: 88)
+            .background(Color.Palette.grayQuaternary)
+            .clipShape(RoundedRectangle(cornerRadius: 20))
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(
+                        Color.Palette.grayTeritary.opacity(0.3),
+                        lineWidth: 3
+                    )
+            )
+            .padding(.horizontal, 16)
     }
 
     @ViewBuilder

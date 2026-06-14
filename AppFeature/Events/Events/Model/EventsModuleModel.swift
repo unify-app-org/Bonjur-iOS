@@ -81,9 +81,9 @@ public enum EventsModuleModel {
     public struct Attachment {
         public let name: String
         public let url: URL
-        public let size: Int
+        public let size: String
 
-        public init(name: String, url: URL, size: Int) {
+        public init(name: String, url: URL, size: String) {
             self.name = name
             self.url = url
             self.size = size
@@ -102,7 +102,8 @@ public enum EventsModuleModel {
         public let bgType: AppPresentationModel.BackgroundType
         public let requestType: AppPresentationModel.RequestType
         public let accessType: AppPresentationModel.AccessType
-        
+        public let role: AppPresentationModel.UserActivityRole
+
         public init(
             id: String,
             name: String,
@@ -113,7 +114,8 @@ public enum EventsModuleModel {
             tags: [AppPresentationModel.Tags],
             bgType: AppPresentationModel.BackgroundType,
             requestType: AppPresentationModel.RequestType,
-            accessType: AppPresentationModel.AccessType
+            accessType: AppPresentationModel.AccessType,
+            role: AppPresentationModel.UserActivityRole
         ) {
             self.id = id
             self.name = name
@@ -125,6 +127,7 @@ public enum EventsModuleModel {
             self.bgType = bgType
             self.requestType = requestType
             self.accessType = accessType
+            self.role = role
         }
         
         public struct Club {
@@ -170,7 +173,8 @@ public extension EventsModuleModel.CardInputData {
             ],
             bgType: .primary,
             requestType: .none,
-            accessType: .public
+            accessType: .public,
+            role: .eventCreator
         ),
         .init(
             id: UUID().uuidString,
@@ -201,7 +205,8 @@ public extension EventsModuleModel.CardInputData {
             ],
             bgType: .secondary,
             requestType: .none,
-            accessType: .private
+            accessType: .private,
+            role: .notJoined
         ),
         .init(
             id: UUID().uuidString,
@@ -232,7 +237,8 @@ public extension EventsModuleModel.CardInputData {
             ],
             bgType: .teritary,
             requestType: .pending,
-            accessType: .public
+            accessType: .public,
+            role: .president
         )
     ]
 }

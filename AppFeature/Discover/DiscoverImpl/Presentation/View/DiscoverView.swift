@@ -264,7 +264,10 @@ struct DiscoverView: View {
                         store.send(.eventItemOnTap(id: item.id))
                     },
                     onButtonTap: {
-                        
+
+                    },
+                    onClubTap: { clubId in
+                        store.send(.clubItemOnTap(id: clubId))
                     }
                 ) as? AnyView {
                     view

@@ -30,7 +30,7 @@ struct ProfileDetailBuilder {
         let controller = ProfileDetailHostController(
             viewModel: viewModel
         ) { store in
-            ProfileDetailView(store: store)
+            ProfileDetailViewV2(store: store)
         }
         
         router.view = controller

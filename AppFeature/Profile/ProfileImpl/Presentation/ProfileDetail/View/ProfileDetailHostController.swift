@@ -13,7 +13,7 @@ import AppFoundation
 
 final class ProfileDetailHostController: UIFeatureController<
     ProfileDetailFeature,
-    ProfileDetailView
+    ProfileDetailViewV2
 > {
     override func viewDidLoad() {
         super.viewDidLoad()

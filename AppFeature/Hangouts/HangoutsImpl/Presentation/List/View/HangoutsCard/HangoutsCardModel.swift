@@ -20,7 +20,12 @@ extension HangoutsCardView {
         let tags: [AppUIEntities.Tags]
         let accessType: AppUIEntities.AccessType
         let requestType: AppUIEntities.RequestType
-        
+        // Static placeholders until backend exposes these; nil hides the UI
+        let dateDay: String?
+        let dateMonth: String?
+        let time: String?
+        let location: String?
+
         init(
             id: String,
             name: String,
@@ -29,7 +34,11 @@ extension HangoutsCardView {
             totalCapacity: Int?,
             tags: [AppUIEntities.Tags],
             accessType: AppUIEntities.AccessType,
-            requestType: AppUIEntities.RequestType
+            requestType: AppUIEntities.RequestType,
+            dateDay: String? = "14",
+            dateMonth: String? = "JUN",
+            time: String? = "18:00",
+            location: String? = "Campus, Room 204"
         ) {
             self.id = id
             self.name = name
@@ -39,22 +48,26 @@ extension HangoutsCardView {
             self.tags = tags
             self.accessType = accessType
             self.requestType = requestType
+            self.dateDay = dateDay
+            self.dateMonth = dateMonth
+            self.time = time
+            self.location = location
         }
         
         var memberCountText: String {
             if let totalCapacity {
-                return "\(memberCount)/\(totalCapacity) members"
+                return "\(memberCount) of \(totalCapacity)"
             } else {
                 return "\(memberCount) members"
             }
         }
-        
+
         var buttonTitle: String {
             switch requestType {
             case .joined:
                 "Participating"
             case .rejected:
-                "Rejected"
+                "Request again"
             case .pending:
                 "Request sent"
             case .none:

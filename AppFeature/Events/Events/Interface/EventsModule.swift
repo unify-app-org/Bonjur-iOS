@@ -15,7 +15,8 @@ public protocol EventsModule {
     func makeEventsCard(
         model: EventsModuleModel.CardInputData,
         onTap: @escaping (() -> Void),
-        onButtonTap: @escaping (() -> Void)
+        onButtonTap: @escaping (() -> Void),
+        onClubTap: ((Int) -> Void)?
     ) -> Any
     
     func makeEventsDetails(eventId: String) -> AnyObject

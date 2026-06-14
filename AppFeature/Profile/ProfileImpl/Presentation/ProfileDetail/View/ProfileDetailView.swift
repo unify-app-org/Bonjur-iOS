@@ -293,7 +293,8 @@ struct ProfileDetailView: View {
                         },
                         onButtonTap: {
                             // Handle button tap
-                        }
+                        },
+                        onClubTap: nil
                     ) as? AnyView {
                         view
                     }

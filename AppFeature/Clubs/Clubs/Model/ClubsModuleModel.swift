@@ -87,7 +87,8 @@ public struct ClubsModuleModel {
         public let bgType: AppPresentationModel.BackgroundType
         public let accessType: AppPresentationModel.AccessType
         public let requestType: AppPresentationModel.RequestType
-        
+        public let role: AppPresentationModel.UserActivityRole?
+
         public init(
             id: Int,
             name: String,
@@ -100,6 +101,7 @@ public struct ClubsModuleModel {
             bgType: AppPresentationModel.BackgroundType,
             accessType: AppPresentationModel.AccessType,
             requestType: AppPresentationModel.RequestType,
+            role: AppPresentationModel.UserActivityRole
         ) {
             self.id = id
             self.name = name
@@ -112,6 +114,7 @@ public struct ClubsModuleModel {
             self.accessType = accessType
             self.requestType = requestType
             self.community = community
+            self.role = role
         }
     }
 }
@@ -143,7 +146,8 @@ public extension ClubsModuleModel.CardInputData {
             ],
             bgType: .orange,
             accessType: .private,
-            requestType: .none
+            requestType: .none,
+            role: .notJoined
         ),
         .init(
             id: 1,
@@ -169,7 +173,8 @@ public extension ClubsModuleModel.CardInputData {
             ],
             bgType: .primary,
             accessType: .public,
-            requestType: .pending
+            requestType: .pending,
+            role: .notJoined
         ),
         .init(
             id: 1,
@@ -195,7 +200,8 @@ public extension ClubsModuleModel.CardInputData {
             ],
             bgType: .secondary,
             accessType: .private,
-            requestType: .none
+            requestType: .none,
+            role: .notJoined
         ),
         .init(
             id: 1,
@@ -221,7 +227,8 @@ public extension ClubsModuleModel.CardInputData {
             ],
             bgType: .red,
             accessType: .private,
-            requestType: .none
+            requestType: .none,
+            role: .notJoined
         )
     ]
 }

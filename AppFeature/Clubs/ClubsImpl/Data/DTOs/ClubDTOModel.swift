@@ -81,6 +81,7 @@ struct ClubDTOModel {
         let about: String?
         let count, capacity: Int?
         let joined: Bool?
+        let clubUserRole: AppPresentationModel.UserActivityRole?
         let members: [ListMember]?
     }
 

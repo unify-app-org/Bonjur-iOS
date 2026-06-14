@@ -21,7 +21,9 @@ extension CommunityCardView {
         let type: AppUIEntities.ActivityType = .community
         let members: [AppUIEntities.Member]
         let bgType: AppUIEntities.BackgroundType
-        
+        // Static placeholder until backend exposes this field
+        let clubsCount: Int
+
         init(
             id: Int,
             name: String,
@@ -29,7 +31,8 @@ extension CommunityCardView {
             logoURL: String,
             memberCount: Int,
             members: [AppUIEntities.Member],
-            bgType: AppUIEntities.BackgroundType
+            bgType: AppUIEntities.BackgroundType,
+            clubsCount: Int = 12
         ) {
             self.id = id
             self.subTitle = subTitle
@@ -38,6 +41,7 @@ extension CommunityCardView {
             self.memberCount = memberCount
             self.members = members
             self.bgType = bgType
+            self.clubsCount = clubsCount
         }
     }
 }

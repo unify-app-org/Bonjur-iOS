@@ -14,7 +14,7 @@ struct EventDetailDTO: Decodable {
     let visibility: AppPresentationModel.AccessType?
     let name: String?
     let ownerContact: String?
-    let location: String?
+    let location, eventDate: String?
     let about: String?
     let rule: String?
     let capacity: Int?
@@ -22,12 +22,18 @@ struct EventDetailDTO: Decodable {
     let backgroundUrl: String?
     let membersCount: Int?
     let eventUserRole: AppPresentationModel.UserActivityRole?
-    let attachments: [String]?
+    let attachments: [Attachments]?
     let links: [Link]?
     let categories: [Category]?
     let isDeleted: Bool?
     let modifiedAt: String?
 
+    struct Attachments: Decodable {
+        let url: String?
+        let name: String?
+        let size: String?
+    }
+    
     struct Club: Decodable {
         let id: Int?
         let name: String?

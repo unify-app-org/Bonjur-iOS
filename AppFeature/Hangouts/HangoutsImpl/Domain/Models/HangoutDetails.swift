@@ -15,6 +15,7 @@ enum HangoutDetails {
     struct UIModel {
         let name: String
         let communityName: String
+        let communityId: Int
         let membersCount: Int
         let userActivityType: AppUIEntities.UserActivityRole
         let accessType: AppUIEntities.AccessType
@@ -34,15 +35,19 @@ enum HangoutDetails {
         let title: String?
         let description: String
         let isLink: Bool
-        
+        /// When set, the row is tappable and offers Call/Copy for this phone number.
+        let phoneNumber: String?
+
         init(
             title: String?,
             description: String,
-            isLink: Bool = false
+            isLink: Bool = false,
+            phoneNumber: String? = nil
         ) {
             self.title = title
             self.isLink = isLink
             self.description = description
+            self.phoneNumber = phoneNumber
         }
     }
 }
@@ -51,6 +56,7 @@ extension HangoutDetails.UIModel {
     static let mockData: Self = .init(
         name: "Basketball Event",
         communityName: "UFAZ Community",
+        communityId: 0,
         membersCount: 5,
         userActivityType: .notJoined,
         accessType: .private,

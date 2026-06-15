@@ -7,6 +7,7 @@
 
 import Foundation
 import Clubs
+import AppUtils
 import AppPresentationModel
 import AppNetwork
 import AppUIKit
@@ -44,38 +45,24 @@ class CommunityRepoImpl: CommunityRepo {
                 .init(id: category.id, type: "", title: category.title)
         }
         var info: [CommunityDetails.Info] = []
-        info.append(
-            .init(
-                title: "About",
-                subItems: [
-                    .init(title: nil, description: data.about)
-                ]
-            )
-        )
-        let capacity = "\(2)/\(data.capacity ?? 0) members"
-        info.append(
-            .init(
-                title: "Event info",
-                subItems: [
-                    .init(title: "Created/Updated Date", description: data.modifiedAt ?? "-"),
-                    .init(title: "Owner Contact", description: data.ownerContact),
-                    .init(title: "Capacity", description: capacity),
-                    .init(title: "Rules", description: data.rule ?? "-"),
-                    .init(title: "Location", description: data.location ?? "-")
-                ]
-            )
-        )
-        if let links = data.links, !links.isEmpty {
-            let subItem: [CommunityDetails.SubInfo] = links.map { link in
-                    .init(title: link.name, description: link.url, isLink: true)
-            }
-            info.append(
-                .init(
-                    title: "Links",
-                    subItems: subItem
-                )
-            )
+
+        appendSection(&info, title: "About", rows: [
+            row(title: nil, value: data.about)
+        ])
+
+        appendSection(&info, title: "Event info", rows: [
+            row(title: "Created/Updated Date", value: modifiedDate(data.modifiedAt)),
+            row(title: "Owner Contact", value: cleaned(data.ownerContact),
+                phoneNumber: phoneNumber(data.ownerContact)),
+            row(title: "Capacity", value: capacityText(members: data.membersCount, capacity: data.capacity)),
+            row(title: "Rules", value: data.rule),
+            row(title: "Location", value: data.location)
+        ])
+
+        let linkRows = (data.links ?? []).map { link in
+            row(title: link.name, value: link.url, isLink: true)
         }
+        appendSection(&info, title: "Links", rows: linkRows)
         let logoURL = data.logoUrl.flatMap { URL(string: $0) }
         let coverURL = data.backgroundUrl.flatMap { URL(string: $0) }
         let editPrefillData = ClubsModuleModel.CreatePrefillData(
@@ -98,7 +85,7 @@ class CommunityRepoImpl: CommunityRepo {
         )
         let uiModel: CommunityDetails.UIModel = .init(
             name: data.name,
-            membersCount: data.capacity ?? 0,
+            membersCount: data.membersCount ?? 0,
             logo: logoURL,
             coverImage: coverURL,
             coverColorType: data.backgroundColour ?? .primary,
@@ -158,6 +145,58 @@ class CommunityRepoImpl: CommunityRepo {
                 )
         }
         return uiModel
+    }
+}
+
+// MARK: - Info builders
+
+private extension CommunityRepoImpl {
+    /// Trim + treat empty / `"-"` / `"None"` as absent, so empty rows are dropped.
+    func cleaned(_ value: String?) -> String? {
+        guard let v = value?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !v.isEmpty, v != "-", v.lowercased() != "none" else { return nil }
+        return v
+    }
+
+    func row(
+        title: String?,
+        value: String?,
+        isLink: Bool = false,
+        phoneNumber: String? = nil
+    ) -> CommunityDetails.SubInfo? {
+        guard let value = cleaned(value) else { return nil }
+        return .init(title: title, description: value, isLink: isLink, phoneNumber: phoneNumber)
+    }
+
+    func appendSection(
+        _ info: inout [CommunityDetails.Info],
+        title: String,
+        rows: [CommunityDetails.SubInfo?]
+    ) {
+        let items = rows.compactMap { $0 }
+        guard !items.isEmpty else { return }
+        info.append(.init(title: title, subItems: items))
+    }
+
+    func capacityText(members: Int?, capacity: Int?) -> String? {
+        guard let capacity, capacity > 0 else { return nil }
+        return "\(members ?? 0)/\(capacity) members"
+    }
+
+    /// `dd-MM-yyyy HH:mm:ss` audit stamp → date-only display.
+    func modifiedDate(_ value: String?) -> String? {
+        guard let v = cleaned(value) else { return nil }
+        let formatted = v.date(from: .ddMMyyyyHHmmss, to: .dMMMMYYYY)
+        return formatted.isEmpty ? v : formatted
+    }
+
+    /// Returns the contact only when it looks like a dialable phone number.
+    func phoneNumber(_ value: String?) -> String? {
+        guard let v = cleaned(value) else { return nil }
+        let allowed = CharacterSet(charactersIn: "+0123456789 -()")
+        let digits = v.filter { $0.isNumber }
+        guard v.unicodeScalars.allSatisfy({ allowed.contains($0) }), digits.count >= 7 else { return nil }
+        return v
     }
 }
 

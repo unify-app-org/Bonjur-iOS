@@ -25,7 +25,7 @@ struct CommunityCardView: View {
             VStack(spacing: 48) {
                 topView
                 HStack {
-                    clubsCountView
+                    clubsCountView 
                     Spacer()
                     membersView
                 }
@@ -97,14 +97,15 @@ struct CommunityCardView: View {
     
     private var clubsCountView: some View {
         HStack(spacing: 5) {
-            Image(systemName: "person.3")
+            Image(uiImage: UIImage.Icons.usersGroup)
+                .renderingMode(.template)
                 .font(.system(size: 11, weight: .semibold))
             Text(
                 model.clubsCount == 1
                     ? "1 club"
                     : "\(model.clubsCount) clubs"
             )
-                .font(Font.Typography.TextMd.regular)
+                .font(Font.Typography.TextMd.semiBold)
         }
         .foregroundStyle(model.bgType.foregroundColor)
     }

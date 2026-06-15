@@ -142,6 +142,7 @@ struct EventsCardView: View {
                     Capsule()
                         .stroke(Color.Palette.blackHigh, lineWidth: 0.5)
                 )
+            Spacer()
         }
     }
     

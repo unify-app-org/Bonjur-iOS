@@ -7,6 +7,7 @@
 
 import AppNetwork
 import AppUIKit
+import AppUtils
 import Clubs
 import Events
 import Foundation
@@ -116,12 +117,14 @@ final class GroupsRepoImpl: GroupsRepo {
                 coverimageURL: item.background,
                 memberCount: item.membersCount ?? 0,
                 totalCapacity: item.capacity,
-                club: .init(name: "-", id: 0),
+                club: .init(name: item.club?.name ?? "-", id: item.club?.id ?? 0),
                 tags: tags,
                 bgType: .primary,
                 requestType: item.requestStatus ?? .none,
                 accessType: item.visibility ?? .private,
-                role: item.role ?? .notJoined
+                role: item.role ?? .notJoined,
+                location: item.location ?? "-",
+                eventDate: Date.fromISO8601(item.eventDate) ?? Date()
             )
         }
     }

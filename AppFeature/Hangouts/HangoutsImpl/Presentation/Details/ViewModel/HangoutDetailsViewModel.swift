@@ -46,6 +46,11 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
             fetchData()
         case .editTapped:
             editTapped()
+        case .communityTapped:
+            guard let communityId = state.uiModel?.communityId, communityId != 0 else { return }
+            Task {
+                await router.navigate(to: .communityDetail(id: communityId))
+            }
         }
     }
     

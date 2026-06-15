@@ -87,6 +87,7 @@ let profileTarget = Target.createFeatureModule(
     name: "Profile",
     implConfig: .init(
         dependencies: [
+            .AppFeature.Groups,
             .AppFeature.Clubs,
             .AppFeature.Events,
             .AppFeature.Hangouts

@@ -69,31 +69,17 @@ struct GroupsListView: View {
         .navigationTitle("My activities")
         .ignoresSafeArea(edges: .bottom)
         .dismissKeyboardOnTap()
-        .toolbar{
-            ToolbarItem(placement: .topBarTrailing) {
-                Image(uiImage: UIImage.Icons.chevronDown02)
-                    .toolbarItemBackground(
-                        isScrolled: true
-                    ) {
-                        if let onDismiss {
-                            onDismiss()
-                        } else {
-                            dismiss()
-                        }
-                    }
-            }
-        }
     }
 
     // MARK: - Top View
 
     @ViewBuilder
     private var topView: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 12) {
             searchAndSegmentView
         }
         .background(Color.Palette.white)
-        .padding(.top,12)
+        .padding(.top, 8)
     }
 
     private var searchAndSegmentView: some View {
@@ -128,6 +114,7 @@ struct GroupsListView: View {
             ScrollView {
                 if !clubs.isEmpty {
                 VStack(spacing: 20) {
+                    tabCaption(.clubs)
                     ForEach(Array(clubs.enumerated()), id: \.element.uuid) { index, club in
                         if let view = clubsModule.makeCardView(
                             inputData: club,
@@ -156,6 +143,7 @@ struct GroupsListView: View {
         ScrollView {
             if !events.isEmpty {
                 VStack(spacing: 20) {
+                    tabCaption(.events)
                     ForEach(events, id: \.uuid) { event in
                         if let view = eventsModule.makeEventsCard(
                             model: event,
@@ -183,6 +171,7 @@ struct GroupsListView: View {
         ScrollView {
             if !hangouts.isEmpty {
                 VStack(spacing: 20) {
+                    tabCaption(.hangouts)
                     ForEach(Array(hangouts.enumerated()), id: \.element.uuid) { index, hangout in
                         if let view = hangoutsModule.makeHangoutsCard(
                             model: hangout,
@@ -205,17 +194,36 @@ struct GroupsListView: View {
         }
     }
     
+    // MARK: - Tab Caption
+
+    /// Short description of what the active tab lists, shown above its cards.
+    private func tabCaption(_ segment: GroupsListViewState.SegmentType) -> some View {
+        Text(segment.caption)
+            .font(Font.Typography.TextSm.medium)
+            .foregroundStyle(Color.Palette.blackMedium)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .multilineTextAlignment(.leading)
+    }
+
     // MARK: - Empty State
-    
+
     private func emptyStateView(for segmentType: GroupsListViewState.SegmentType) -> some View {
         AppEmptyView(
             model: .init(
-                icon: UIImage.Icons.twoUsers,
-                text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
-                buttonTitle: "Create a club +"
+                icon: emptyIcon(for: segmentType),
+                text: segmentType.emptyText,
+                buttonTitle: segmentType.emptyButtonTitle
             )
         ) { }
         .padding()
+    }
+
+    private func emptyIcon(for segment: GroupsListViewState.SegmentType) -> UIImage? {
+        switch segment {
+        case .clubs: return UIImage.Icons.usersGroup
+        case .events: return UIImage.Icons.calendar
+        case .hangouts: return UIImage.Icons.twoUsers
+        }
     }
     
     private func loadMoreClubsIfNeeded(index: Int, count: Int) {

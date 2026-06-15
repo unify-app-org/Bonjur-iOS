@@ -24,7 +24,7 @@ extension EventsCardView {
         let requestType: AppUIEntities.RequestType
         let accessType: AppUIEntities.AccessType
         let role: AppUIEntities.UserActivityRole?
-        // Static placeholders until backend exposes these fields
+        // Defaults are fallbacks; real values come from the discover feed via `init(from:)`
         let time: String
         let location: String
         let dateDay: String
@@ -112,6 +112,7 @@ extension EventsCardView {
 extension EventsCardView.Model {
     
     init(from: EventsModuleModel.CardInputData) {
+        let parts = Self.dateParts(from: from.eventDate)
         self.init(
             id: from.id,
             name: from.name,
@@ -126,8 +127,30 @@ extension EventsCardView.Model {
             bgType: from.bgType,
             requestType: from.requestType,
             accessType: from.accessType,
-            role: from.role
+            role: from.role,
+            time: parts.time,
+            location: from.location,
+            dateDay: parts.day,
+            dateMonth: parts.month
         )
+    }
+
+    /// Split an event date into the badge/meta strings the card renders.
+    /// Returns `"-"` placeholders when the date is missing.
+    private static func dateParts(
+        from date: Date?
+    ) -> (day: String, month: String, time: String) {
+        guard let date else { return ("-", "-", "-") }
+        let day = String(Calendar.current.component(.day, from: date))
+        let monthFormatter = DateFormatter()
+        monthFormatter.locale = Locale(identifier: "en_US_POSIX")
+        monthFormatter.dateFormat = "MMM"
+        let month = monthFormatter.string(from: date).uppercased()
+        let timeFormatter = DateFormatter()
+        timeFormatter.locale = Locale(identifier: "en_US_POSIX")
+        timeFormatter.dateFormat = "HH:mm"
+        let time = timeFormatter.string(from: date)
+        return (day, month, time)
     }
 }
 

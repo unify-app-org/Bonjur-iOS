@@ -9,12 +9,14 @@ import UIKit
 import Events
 import Hangouts
 import Clubs
+import Groups
 
 enum ProfileDetailRoute {
     case clubsDetails(id: Int)
     case eventsDetails(id: String)
     case hangoutsDetails(id: String)
     case settings
+    case activities
     case editProfile(EditProfileInputData)
     case studentCard(StudentCardInputData)
 }
@@ -30,17 +32,20 @@ final class ProfileDetailRouter: ProfileDetailRouterProtocol {
     private var eventModule: EventsModule
     private var hangoutModule: HangoutsModule
     private var clubModule: ClubsModule
-    
+    private var groupsModule: GroupsModule
+
     init(
         view: UIViewController? = nil,
         eventModule: EventsModule = resolve(),
         hangoutModule: HangoutsModule = resolve(),
-        clubModule: ClubsModule = resolve()
+        clubModule: ClubsModule = resolve(),
+        groupsModule: GroupsModule = resolve()
     ) {
         self.view = view
         self.eventModule = eventModule
         self.hangoutModule = hangoutModule
         self.clubModule = clubModule
+        self.groupsModule = groupsModule
     }
     
     @MainActor
@@ -62,6 +67,15 @@ final class ProfileDetailRouter: ProfileDetailRouterProtocol {
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .settings:
             let vc = ProfileSettingsBuilder(inputData: .init()).build()
+            self.view?.navigationController?.pushViewController(vc, animated: true)
+        case .activities:
+            let vc = groupsModule.makeGroups(
+                inputData: .init(
+                    onDismiss: { [weak view] in
+                        view?.navigationController?.popViewController(animated: true)
+                    }
+                )
+            ) as! UIViewController
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .studentCard(let inputData):
             let studentCardBuilder = StudentCardBuilder(inputData: inputData)

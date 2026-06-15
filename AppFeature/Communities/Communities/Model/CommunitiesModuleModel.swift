@@ -17,6 +17,7 @@ public enum CommunitiesModuleModel {
         public let subTitle: String
         public let logoURL: String
         public let memberCount: Int
+        public let clubCount: Int
         public let type: AppPresentationModel.ActivityType = .community
         public let members: [AppPresentationModel.Member]
         public let bgType: AppPresentationModel.BackgroundType
@@ -27,11 +28,13 @@ public enum CommunitiesModuleModel {
             subTitle: String,
             logoURL: String,
             memberCount: Int,
+            clubCount: Int,
             members: [AppPresentationModel.Member],
             bgType: AppPresentationModel.BackgroundType
         ) {
             self.id = id
             self.subTitle = subTitle
+            self.clubCount = clubCount
             self.name = name
             self.logoURL = logoURL
             self.memberCount = memberCount
@@ -51,6 +54,7 @@ public extension CommunitiesModuleModel.CardInputData {
             subTitle: "Community",
             logoURL: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
             memberCount: 123,
+            clubCount: 23,
             members: [
                 .init(
                     id: "1",
@@ -73,6 +77,7 @@ public extension CommunitiesModuleModel.CardInputData {
             subTitle: "Community",
             logoURL: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
             memberCount: 1675,
+            clubCount: 0,
             members: [
                 .init(
                     id: "1",

@@ -42,15 +42,19 @@ struct ClubsDetailsModel {
         let title: String?
         let description: String
         let isLink: Bool
-        
+        /// When set, the row is tappable and offers Call/Copy for this phone number.
+        let phoneNumber: String?
+
         init(
             title: String?,
             description: String,
-            isLink: Bool = false
+            isLink: Bool = false,
+            phoneNumber: String? = nil
         ) {
             self.title = title
             self.isLink = isLink
             self.description = description
+            self.phoneNumber = phoneNumber
         }
     }
 }

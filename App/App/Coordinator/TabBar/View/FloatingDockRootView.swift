@@ -11,48 +11,36 @@ import AppUIKit
 
 struct FloatingDockRootView: View {
     @ObservedObject var model: FloatingDockModel
-    
+
     let onHomeTap: () -> Void
     let onActivitiesTap: () -> Void
-    let makeActivitiesNavigationController: () -> UINavigationController
     let onCreateTap: () -> Void
     let onCreateSelected: (CreateType) -> Void
-    
+
     @State private var activitiesButtonSize = CGSize(width: 120, height: 44)
     @State private var measuredSideButtonSize = CGSize(width: 46, height: 46)
-    
+
     private let sideButtonSize: CGFloat = 46
     private let horizontalSpacing: CGFloat = 12
-    
+
     private let homeSlideAnimation = Animation.spring(duration: 0.3, bounce: 0.4, blendDuration: 0.4)
- 
+
     private let badgeAnimation = Animation.spring(response: 0.34, dampingFraction: 0.68)
-    
+
     private var sideButtonOffset: CGFloat {
         (activitiesButtonSize.width / 2) + horizontalSpacing + (measuredSideButtonSize.width / 2)
     }
-    
+
     private var dockWidth: CGFloat {
         activitiesButtonSize.width + (measuredSideButtonSize.width * 2) + (horizontalSpacing * 2)
     }
-    
+
     private var dockHeight: CGFloat {
         max(activitiesButtonSize.height, measuredSideButtonSize.height)
     }
-    
+
     var body: some View {
         dockContent
-        .appSwipeableSheet(
-            isPresented: $model.isActivitiesPresented
-        ) { _ in
-            ActivitiesNavigationControllerHost(
-                makeNavigationController: makeActivitiesNavigationController
-            )
-            .ignoresSafeArea()
-        } background: {
-            Color.Palette.white
-                .ignoresSafeArea()
-        }
         .appSheet(
             isPresented: $model.isCreatePresented,
             detents: [.fraction(0.4)],
@@ -64,16 +52,16 @@ struct FloatingDockRootView: View {
             }
         }
     }
-    
+
     private var dockContent: some View {
         ZStack {
             homeButton
-            
+
             activitiesButton
-              
+
             plusButton
                 .offset(x: sideButtonOffset)
-                
+
         }
         .frame(width: dockWidth, height: dockHeight,alignment: .bottom)
         .padding(8)
@@ -83,7 +71,7 @@ struct FloatingDockRootView: View {
         .animation(badgeAnimation, value: model.badgeCount)
         .animation(.spring(response: 0.32, dampingFraction: 0.82), value: model.isHidden)
     }
-    
+
     private var homeButton: some View {
         dockCircleButton(
             image: UIImage.Icons.home,
@@ -101,7 +89,7 @@ struct FloatingDockRootView: View {
             value: model.mode
         )
     }
-    
+
     private var plusButton: some View {
         dockCircleButton(
             image: UIImage.Icons.plus,
@@ -113,15 +101,15 @@ struct FloatingDockRootView: View {
             measuredSideButtonSize = newValue
         }
     }
-    
+
     private var activitiesButton: some View {
         Button(action: onActivitiesTap) {
             HStack(spacing: 10) {
                 Image(uiImage: UIImage.Icons.clipboardList)
                     .renderingMode(.template)
-                   
-                
-                Text("My plans")
+
+
+                Text("My Activities")
                     .font(Font.Typography.BodyTextSm.medium)
             }
             .padding(.horizontal, 14)
@@ -138,7 +126,7 @@ struct FloatingDockRootView: View {
             }
         }
         .buttonStyle(.plain)
-       
+
         .onGeometryChange(for: CGSize.self) { proxy in
             proxy.size
         } action: { newValue in
@@ -158,11 +146,11 @@ struct FloatingDockRootView: View {
                 .frame(width: sideButtonSize, height: sideButtonSize)
                 .background(Color.Palette.black, in: Circle())
                 .foregroundStyle(Color.Palette.white)
-             
+
         }
         .buttonStyle(.plain)
     }
-    
+
     private func badgeView(count: Int) -> some View {
         Text("\(count)")
             .font(Font.Typography.CaptionSm.medium)
@@ -182,14 +170,13 @@ struct FloatingDockRootView: View {
     return ZStack {
         Color(.systemGroupedBackground)
             .ignoresSafeArea()
-        
+
         VStack {
             Spacer()
             FloatingDockRootView(
                 model: model,
                 onHomeTap: {},
                 onActivitiesTap: {},
-                makeActivitiesNavigationController: { UINavigationController() },
                 onCreateTap: {},
                 onCreateSelected: { _ in }
             )
@@ -203,7 +190,7 @@ struct FloatingDockRootView: View {
     model.mode = .away
     model.joinedEventsCount = 2
     model.joinedHangoutsCount = 3
-    
+
     return ZStack {
         LinearGradient(
             colors: [
@@ -214,29 +201,17 @@ struct FloatingDockRootView: View {
             endPoint: .bottom
         )
         .ignoresSafeArea()
-        
+
         VStack {
             Spacer()
             FloatingDockRootView(
                 model: model,
                 onHomeTap: {},
                 onActivitiesTap: {},
-                makeActivitiesNavigationController: { UINavigationController() },
                 onCreateTap: {},
                 onCreateSelected: { _ in }
             )
         }
         .padding(.bottom, 24)
-    }
-}
-
-private struct ActivitiesNavigationControllerHost: UIViewControllerRepresentable {
-    let makeNavigationController: () -> UINavigationController
-
-    func makeUIViewController(context: Context) -> UINavigationController {
-        makeNavigationController()
-    }
-
-    func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {
     }
 }

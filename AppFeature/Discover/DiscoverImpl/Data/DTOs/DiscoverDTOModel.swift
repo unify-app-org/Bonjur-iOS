@@ -87,11 +87,18 @@ struct DiscoverDTOModel {
         let about: String?
         let capacity: Int?
         let membersCount: Int?
-        let background: String?
+        let background, location: String?
+        let club: Club?
+        let eventDate: String?
         let requestStatus: AppPresentationModel.RequestType?
         let eventActivityStatus: AppPresentationModel.ActivityStatus?
         let role: AppPresentationModel.UserActivityRole?
         let categoryResponses: [CategoryResponse]
+        
+        struct Club: Decodable {
+            let id: Int?
+            let name: String?
+        }
     }
 
     // MARK: - Community
@@ -99,7 +106,7 @@ struct DiscoverDTOModel {
     struct Community: Decodable {
         let id: Int?
         let name: String?
-        let membersCount: Int?
+        let membersCount, clubCount: Int?
         let profile, backgroundUrl: String?
         let members: [Member]?
         let background: AppPresentationModel.BackgroundType?
@@ -111,6 +118,7 @@ struct DiscoverDTOModel {
             case profile
             case backgroundUrl
             case members
+            case clubCount
             case background = "backgroundColour"
         }
     }

@@ -80,8 +80,40 @@ final class GroupsListViewState: UIFeatureState {
         case clubs = "Clubs"
         case events = "Events"
         case hangouts = "Hangouts"
-        
+
         var id: Self { self }
+
+        /// One-line explanation of what this tab lists.
+        var caption: String {
+            switch self {
+            case .clubs:
+                return "Clubs you belong to or run. Members organise events and meet up."
+            case .events:
+                return "Events you've joined or requested. Each one is hosted by a club."
+            case .hangouts:
+                return "Casual, one-off meetups — no club needed. Anyone can start one."
+            }
+        }
+
+        /// Copy shown when this tab has no items.
+        var emptyText: String {
+            switch self {
+            case .clubs:
+                return "You haven't joined or created any clubs yet. Explore communities or start your own."
+            case .events:
+                return "No events yet. Join a club to discover its events, or request to attend one."
+            case .hangouts:
+                return "No hangouts yet. They're casual meetups — start one and invite friends."
+            }
+        }
+
+        var emptyButtonTitle: String {
+            switch self {
+            case .clubs: return "Explore clubs"
+            case .events: return "Explore events"
+            case .hangouts: return "Start a hangout +"
+            }
+        }
     }
 }
 

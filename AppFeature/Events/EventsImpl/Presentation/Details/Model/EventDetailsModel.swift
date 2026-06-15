@@ -54,6 +54,7 @@ enum EventDetailsAction: UIFeatureAction {
     case fetchData
     case backTapped
     case editTapped
+    case clubTapped
 }
 
 // MARK: - PreferenceKey

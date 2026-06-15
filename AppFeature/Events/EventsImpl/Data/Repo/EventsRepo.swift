@@ -7,6 +7,7 @@
 
 import Events
 import AppUIKit
+import AppUtils
 import Foundation
 import AppNetwork
 import Communities
@@ -49,12 +50,14 @@ final class EventsRepoImpl: EventsRepo {
                 coverimageURL: item.background,
                 memberCount: item.membersCount ?? 0,
                 totalCapacity: item.capacity,
-                club: .init(name: "-", id: 0),
+                club: .init(name: item.club?.name ?? "-", id: item.club?.id ?? 0),
                 tags: tags,
                 bgType: .primary,
                 requestType: item.requestStatus ?? .none,
                 accessType: item.visibility ?? .private,
-                role: item.role ?? .notJoined
+                role: item.role ?? .notJoined,
+                location: item.location ?? "-",
+                eventDate: Date.fromISO8601(item.eventDate) ?? Date()
             )
         }
     }
@@ -109,6 +112,7 @@ final class EventsRepoImpl: EventsRepo {
         return .init(
             name: data.name ?? "-",
             communityName: data.club?.name ?? "-",
+            clubId: data.club?.id ?? 0,
             membersCount: data.membersCount ?? 0,
             coverImage: data.backgroundUrl.flatMap { URL(string: $0) },
             coverColorType: .primary,
@@ -181,7 +185,8 @@ private extension EventsRepoImpl {
                     .init(type: $0.type ?? "", name: $0.name ?? "", url: $0.url ?? "")
                 }),
                 .attachment: .attachments(attachments),
-                .rules: .text(data.rule ?? "")
+                .rules: .text(data.rule ?? ""),
+                .reminder: .reminders(data.reminderTimes ?? [])
             ]
         )
     }
@@ -194,33 +199,98 @@ private extension EventsRepoImpl {
 
     func mapInfo(_ data: EventDetailDTO) -> [EventsDetailsModel.Info] {
         var info: [EventsDetailsModel.Info] = []
-        info.append(
-            .init(
-                title: "About",
-                subItems: [
-                    .init(title: nil, description: data.about ?? "-")
-                ]
-            )
-        )
-        let capacity = "\(data.membersCount ?? 0)/\(data.capacity ?? 0) members"
-        info.append(
-            .init(
-                title: "Event info",
-                subItems: [
-                    .init(title: "Created/Updated Date", description: data.modifiedAt ?? "-"),
-                    .init(title: "Owner Contact", description: data.ownerContact ?? "-"),
-                    .init(title: "Capacity", description: capacity),
-                    .init(title: "Rules", description: data.rule ?? "-"),
-                    .init(title: "Location", description: data.location ?? "-")
-                ]
-            )
-        )
-        if let links = data.links, !links.isEmpty {
-            let subItems: [EventsDetailsModel.SubInfo] = links.map { link in
-                .init(title: link.name, description: link.url ?? "-", isLink: true)
-            }
-            info.append(.init(title: "Links", subItems: subItems))
+
+        appendSection(&info, title: "About", rows: [
+            row(title: nil, value: data.about)
+        ])
+
+        var eventRows: [EventsDetailsModel.SubInfo?] = [
+            row(title: "Date", value: meetupDate(data.eventDate)),
+            row(title: "Created/Updated Date", value: modifiedDate(data.modifiedAt)),
+            row(title: "Owner Contact", value: cleaned(data.ownerContact),
+                phoneNumber: phoneNumber(data.ownerContact)),
+            row(title: "Capacity", value: capacityText(members: data.membersCount, capacity: data.capacity)),
+            row(title: "Rules", value: data.rule),
+            row(title: "Location", value: data.location)
+        ]
+        // Reminders are an organiser broadcast config — only organisers see them.
+        if isOrganizer(data.eventUserRole), let reminders = reminderText(data.reminderTimes) {
+            eventRows.append(row(title: "Reminders", value: reminders))
         }
+        appendSection(&info, title: "Event info", rows: eventRows)
+
+        let linkRows = (data.links ?? []).map { link in
+            row(title: link.name, value: link.url, isLink: true)
+        }
+        appendSection(&info, title: "Links", rows: linkRows)
+
         return info
+    }
+
+    // MARK: - Info builders
+    
+    func cleaned(_ value: String?) -> String? {
+        guard let v = value?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !v.isEmpty, v != "-", v.lowercased() != "none" else { return nil }
+        return v
+    }
+
+    func row(
+        title: String?,
+        value: String?,
+        isLink: Bool = false,
+        phoneNumber: String? = nil
+    ) -> EventsDetailsModel.SubInfo? {
+        guard let value = cleaned(value) else { return nil }
+        return .init(title: title, description: value, isLink: isLink, phoneNumber: phoneNumber)
+    }
+
+    func appendSection(
+        _ info: inout [EventsDetailsModel.Info],
+        title: String,
+        rows: [EventsDetailsModel.SubInfo?]
+    ) {
+        let items = rows.compactMap { $0 }
+        guard !items.isEmpty else { return }
+        info.append(.init(title: title, subItems: items))
+    }
+
+    func capacityText(members: Int?, capacity: Int?) -> String? {
+        guard let capacity, capacity > 0 else { return nil }
+        return "\(members ?? 0)/\(capacity) members"
+    }
+
+    /// Meetup date+time, rendered in device-local time.
+    func meetupDate(_ iso: String?) -> String? {
+        guard let date = Date.fromISO8601(iso) else { return nil }
+        return date.toString(format: .dMMMMyyyyHHmm)
+    }
+
+    /// `dd-MM-yyyy HH:mm:ss` audit stamp → date-only display.
+    func modifiedDate(_ value: String?) -> String? {
+        guard let v = cleaned(value) else { return nil }
+        let formatted = v.date(from: .ddMMyyyyHHmmss, to: .dMMMMYYYY)
+        return formatted.isEmpty ? v : formatted
+    }
+
+    /// Returns the contact only when it looks like a dialable phone number.
+    func phoneNumber(_ value: String?) -> String? {
+        guard let v = cleaned(value) else { return nil }
+        let allowed = CharacterSet(charactersIn: "+0123456789 -()")
+        let digits = v.filter { $0.isNumber }
+        guard v.unicodeScalars.allSatisfy({ allowed.contains($0) }), digits.count >= 7 else { return nil }
+        return v
+    }
+
+    func isOrganizer(_ role: AppPresentationModel.UserActivityRole?) -> Bool {
+        guard let role else { return false }
+        return [.president, .visePresident, .eventCreator].contains(role)
+    }
+
+    func reminderText(_ values: [AppPresentationModel.ReminderOption]?) -> String? {
+        guard let values, !values.isEmpty else { return nil }
+        return values.map{ item in
+            item.label
+        }.joined(separator: ", ")
     }
 }

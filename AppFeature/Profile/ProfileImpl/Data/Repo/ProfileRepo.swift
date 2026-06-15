@@ -228,7 +228,10 @@ class ProfileRepoImpl: ProfileRepo {
                 bgType: .primary,
                 requestType: item.requestStatus ?? .none,
                 accessType: item.visibility ?? .private,
-                role: item.role ?? .notJoined
+                role: item.role ?? .notJoined,
+                // `MyEventResponse` doesn't return club/location/eventDate yet — placeholders until it does.
+                location: "-",
+                eventDate: Date()
             )
         }
     }

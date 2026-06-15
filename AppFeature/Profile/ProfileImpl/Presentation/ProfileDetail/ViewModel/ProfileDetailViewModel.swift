@@ -70,6 +70,10 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
             Task {
                 await router.navigate(to: .settings)
             }
+        case .activitiesTapped:
+            Task {
+                await router.navigate(to: .activities)
+            }
         case .userCardTapped:
             guard let userCardModel = self.state.uiModel?.userCardModel else {
                 return

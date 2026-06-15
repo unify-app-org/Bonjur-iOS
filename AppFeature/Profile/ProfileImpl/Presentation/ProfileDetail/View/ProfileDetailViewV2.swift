@@ -232,18 +232,40 @@ struct ProfileDetailViewV2: View {
 
     // MARK: - Activity Summary Card
 
+    @ViewBuilder
     private var activitySummaryCard: some View {
+        if store.state.isOtherUser {
+            activitySummaryCardContent
+        } else {
+            Button {
+                store.send(.activitiesTapped)
+            } label: {
+                activitySummaryCardContent
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private var activitySummaryCardContent: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
                 Text("Your activities")
                     .font(Font.Typography.HeadingMd.medium)
                     .foregroundStyle(Color.Palette.green900)
                 Spacer()
+                if !store.state.isOtherUser {
+                    Image(uiImage: UIImage.Icons.chevronRight)
+                        .renderingMode(.original)
+                        .resizable()
+                        .frame(width: 18, height: 18)
+                }
             }
 
             Text("Clubs, events & hangouts you've joined or created")
                 .font(Font.Typography.TextSm.regular)
                 .foregroundStyle(Color.Palette.green900.opacity(0.8))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .multilineTextAlignment(.leading)
 
             HStack(spacing: 8) {
                 countCell(value: store.state.clubs.count, label: "Clubs")

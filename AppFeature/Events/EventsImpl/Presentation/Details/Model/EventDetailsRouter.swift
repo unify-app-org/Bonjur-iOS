@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import Clubs
 
 enum EventDetailsRoute {
     case backTapped
     case editEvent(id: String, prefillData: EventsCreate.PrefillData)
+    case clubDetail(id: Int)
 }
 
 protocol EventDetailsRouterProtocol {
@@ -19,7 +21,12 @@ protocol EventDetailsRouterProtocol {
 
 final class EventDetailsRouter: EventDetailsRouterProtocol {
     weak var view: UIViewController?
-    
+    private let clubsModule: ClubsModule
+
+    init(clubsModule: ClubsModule = resolve()) {
+        self.clubsModule = clubsModule
+    }
+
     @MainActor
     func navigate(to route: EventDetailsRoute) {
         switch route {
@@ -32,6 +39,9 @@ final class EventDetailsRouter: EventDetailsRouterProtocol {
                     prefillData: prefillData
                 )
             ).build()
+            view?.navigationController?.pushViewController(vc, animated: true)
+        case .clubDetail(let id):
+            guard let vc = clubsModule.makeClubsDetailsVC(clubId: id) as? UIViewController else { return }
             view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

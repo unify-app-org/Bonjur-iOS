@@ -27,6 +27,7 @@ struct EventDetailDTO: Decodable {
     let categories: [Category]?
     let isDeleted: Bool?
     let modifiedAt: String?
+    let reminderTimes: [AppPresentationModel.ReminderOption]?
 
     struct Attachments: Decodable {
         let url: String?
@@ -57,9 +58,12 @@ struct EventDiscoverDTO: Decodable {
     let name: String?
     let visibility: AppPresentationModel.AccessType?
     let about: String?
+    let location: String?
+    let eventDate: String?
     let capacity: Int?
     let membersCount: Int?
     let background: String?
+    let club: EventDetailDTO.Club?
     let requestStatus: AppPresentationModel.RequestType?
     let eventActivityStatus: AppPresentationModel.ActivityStatus?
     let role: AppPresentationModel.UserActivityRole?

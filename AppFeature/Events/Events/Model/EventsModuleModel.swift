@@ -103,6 +103,8 @@ public enum EventsModuleModel {
         public let requestType: AppPresentationModel.RequestType
         public let accessType: AppPresentationModel.AccessType
         public let role: AppPresentationModel.UserActivityRole
+        public let location: String
+        public let eventDate: Date?
 
         public init(
             id: String,
@@ -115,7 +117,9 @@ public enum EventsModuleModel {
             bgType: AppPresentationModel.BackgroundType,
             requestType: AppPresentationModel.RequestType,
             accessType: AppPresentationModel.AccessType,
-            role: AppPresentationModel.UserActivityRole
+            role: AppPresentationModel.UserActivityRole,
+            location: String,
+            eventDate: Date
         ) {
             self.id = id
             self.name = name
@@ -128,6 +132,8 @@ public enum EventsModuleModel {
             self.requestType = requestType
             self.accessType = accessType
             self.role = role
+            self.location = location
+            self.eventDate = eventDate
         }
         
         public struct Club {
@@ -174,7 +180,9 @@ public extension EventsModuleModel.CardInputData {
             bgType: .primary,
             requestType: .none,
             accessType: .public,
-            role: .eventCreator
+            role: .eventCreator,
+            location: "Campus, Room 204",
+            eventDate: Date()
         ),
         .init(
             id: UUID().uuidString,
@@ -206,7 +214,9 @@ public extension EventsModuleModel.CardInputData {
             bgType: .secondary,
             requestType: .none,
             accessType: .private,
-            role: .notJoined
+            role: .notJoined,
+            location: "Campus, Room 204",
+            eventDate: Date()
         ),
         .init(
             id: UUID().uuidString,
@@ -238,7 +248,9 @@ public extension EventsModuleModel.CardInputData {
             bgType: .teritary,
             requestType: .pending,
             accessType: .public,
-            role: .president
+            role: .president,
+            location: "Campus, Room 204",
+            eventDate: Date()
         )
     ]
 }

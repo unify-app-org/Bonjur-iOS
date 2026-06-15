@@ -108,6 +108,27 @@ public enum AppPresentationModel {
         }
     }
     
+    // MARK: - ReminderOption
+    public enum ReminderOption: String, CaseIterable, Equatable, Codable {
+        case none = "NONE"
+        case atEventTime = "AT_EVENT_TIME"
+        case fifteenMinutesBefore = "FIFTEEN_MINUTES_BEFORE"
+        case thirtyMinutesBefore = "THIRTY_MINUTES_BEFORE"
+        case oneHourBefore = "ONE_HOUR_BEFORE"
+        case oneDayBefore = "ONE_DAY_BEFORE"
+
+        public var label: String {
+            switch self {
+            case .none: return "None"
+            case .atEventTime: return "At time of event"
+            case .fifteenMinutesBefore: return "15 minutes before"
+            case .thirtyMinutesBefore: return "30 minutes before"
+            case .oneHourBefore: return "1 hour before"
+            case .oneDayBefore: return "1 day before"
+            }
+        }
+    }
+    
     // MARK: - Activity Types
     
     public enum ActivityType: Codable, Hashable {

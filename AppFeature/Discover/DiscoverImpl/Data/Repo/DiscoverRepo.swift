@@ -9,6 +9,7 @@ import Clubs
 import Events
 import Hangouts
 import AppUIKit
+import AppUtils
 import AppStorage
 import Foundation
 import AppNetwork
@@ -135,6 +136,7 @@ class DiscoverRepoImpl: DiscoverRepo {
                     subTitle: "Community",
                     logoURL: item.profile ?? "",
                     memberCount: item.membersCount ?? 0,
+                    clubCount: item.clubCount ?? 0,
                     members: members ,
                     bgType: item.background ?? .primary
                 )
@@ -160,12 +162,14 @@ class DiscoverRepoImpl: DiscoverRepo {
                 coverimageURL: item.background,
                 memberCount: item.membersCount ?? 0,
                 totalCapacity: item.capacity ?? 0,
-                club: .init(name: "", id: 0),
+                club: .init(name: item.club?.name ?? "-", id: item.club?.id ?? 0),
                 tags: tags,
                 bgType: .primary,
                 requestType: item.requestStatus ?? .none,
                 accessType: item.visibility ?? .private,
-                role: item.role ?? .notJoined
+                role: item.role ?? .notJoined,
+                location: item.location ?? "-",
+                eventDate: Date.fromISO8601(item.eventDate) ?? Date()
             )
         }
         return uiModel

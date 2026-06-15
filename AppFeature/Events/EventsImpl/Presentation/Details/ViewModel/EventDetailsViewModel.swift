@@ -56,6 +56,11 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
                     )
                 )
             }
+        case .clubTapped:
+            guard let clubId = state.uiModel?.clubId, clubId != 0 else { return }
+            Task {
+                await router.navigate(to: .clubDetail(id: clubId))
+            }
         }
     }
 

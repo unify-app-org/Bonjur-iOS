@@ -89,27 +89,6 @@ public enum AppFieldSchema {
         }
     }
 
-    /// Reminder offsets offered by the reminder bottom sheet. Raw value matches the backend enum.
-    public enum ReminderOption: String, CaseIterable, Equatable {
-        case none = "NONE"
-        case atEventTime = "AT_EVENT_TIME"
-        case fifteenMinutesBefore = "FIFTEEN_MINUTES_BEFORE"
-        case thirtyMinutesBefore = "THIRTY_MINUTES_BEFORE"
-        case oneHourBefore = "ONE_HOUR_BEFORE"
-        case oneDayBefore = "ONE_DAY_BEFORE"
-
-        public var label: String {
-            switch self {
-            case .none: return "None"
-            case .atEventTime: return "At time of event"
-            case .fifteenMinutesBefore: return "15 minutes before"
-            case .thirtyMinutesBefore: return "30 minutes before"
-            case .oneHourBefore: return "1 hour before"
-            case .oneDayBefore: return "1 day before"
-            }
-        }
-    }
-
     public enum FieldValue: Equatable {
         case text(String)
         case tags([TagItem])
@@ -117,7 +96,7 @@ public enum AppFieldSchema {
         case cover(AppUIEntities.BackgroundType)
         case radio(AppPresentationModel.AccessType)
         case date(Date)
-        case reminders([ReminderOption])
+        case reminders([AppPresentationModel.ReminderOption])
         case attachments([AttachmentItem])
     }
 
@@ -129,7 +108,7 @@ public enum AppFieldSchema {
         case chipInput(placeholder: String)
         case linkInput(placeholder: String)
         case date(placeholder: String)
-        case reminder(placeholder: String, description: String = "", options: [ReminderOption] = ReminderOption.allCases)
+        case reminder(placeholder: String, description: String = "", options: [AppPresentationModel.ReminderOption] = AppPresentationModel.ReminderOption.allCases)
         case attachment(placeholder: String, description: String = "")
     }
 
@@ -345,7 +324,7 @@ public extension Dictionary where Key == AppFieldSchema.FieldID, Value == AppFie
         return Date()
     }
 
-    func reminders(_ id: AppFieldSchema.FieldID) -> [AppFieldSchema.ReminderOption] {
+    func reminders(_ id: AppFieldSchema.FieldID) -> [AppPresentationModel.ReminderOption] {
         if case .reminders(let value) = self[id] { return value }
         return []
     }
@@ -587,11 +566,11 @@ private struct ReminderField: View {
     let field: AppFieldSchema.Field
     let placeholder: String
     let description: String
-    let options: [AppFieldSchema.ReminderOption]
-    @Binding var selected: [AppFieldSchema.ReminderOption]
+    let options: [AppPresentationModel.ReminderOption]
+    @Binding var selected: [AppPresentationModel.ReminderOption]
     @State private var isPresented = false
 
-    private var activeSelection: [AppFieldSchema.ReminderOption] {
+    private var activeSelection: [AppPresentationModel.ReminderOption] {
         selected.filter { $0 != .none }
     }
 
@@ -668,11 +647,11 @@ private struct ReminderField: View {
 private struct ReminderOptionsList: View {
     let title: String
     let description: String
-    let options: [AppFieldSchema.ReminderOption]
-    @Binding var selected: [AppFieldSchema.ReminderOption]
+    let options: [AppPresentationModel.ReminderOption]
+    @Binding var selected: [AppPresentationModel.ReminderOption]
     @Binding var isPresented: Bool
 
-    @State private var draft: Set<AppFieldSchema.ReminderOption> = []
+    @State private var draft: Set<AppPresentationModel.ReminderOption> = []
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -717,7 +696,7 @@ private struct ReminderOptionsList: View {
         }
     }
 
-    private func row(for option: AppFieldSchema.ReminderOption) -> some View {
+    private func row(for option: AppPresentationModel.ReminderOption) -> some View {
         let isChecked = option == .none ? draft.isEmpty : draft.contains(option)
         return Button {
             toggle(option)
@@ -755,7 +734,7 @@ private struct ReminderOptionsList: View {
             )
     }
 
-    private func toggle(_ option: AppFieldSchema.ReminderOption) {
+    private func toggle(_ option: AppPresentationModel.ReminderOption) {
         if option == .none {
             draft.removeAll()
         } else if draft.contains(option) {

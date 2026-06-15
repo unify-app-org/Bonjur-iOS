@@ -45,9 +45,6 @@ final class AppTabBarHostController: UIViewController {
             onActivitiesTap: { [weak self] in
                 self?.handleActivitiesTap()
             },
-            makeActivitiesNavigationController: { [weak self] in
-                self?.makeActivitiesNavigationController() ?? UINavigationController()
-            },
             onCreateTap: { [weak self] in
                 self?.handleCreateTap()
             },
@@ -144,20 +141,14 @@ final class AppTabBarHostController: UIViewController {
     }
     
     private func handleActivitiesTap() {
-        dockModel.isActivitiesPresented = true
-    }
-
-    private func makeActivitiesNavigationController() -> UINavigationController {
         let groupsViewController = groupsModule.makeGroups(
             inputData: .init(
                 onDismiss: { [weak self] in
-                    self?.dockModel.isActivitiesPresented = false
+                    self?.mainNavigationController.popViewController(animated: true)
                 }
             )
         ) as! UIViewController
-        let navigationController = UINavigationController(rootViewController: groupsViewController)
-        navigationController.view.backgroundColor = .white
-        return navigationController
+        mainNavigationController.pushViewController(groupsViewController, animated: true)
     }
     
     private func handleCreateTap() {

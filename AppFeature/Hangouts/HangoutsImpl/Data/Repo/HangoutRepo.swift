@@ -7,6 +7,7 @@
 
 import AppNetwork
 import AppUIKit
+import AppUtils
 import Communities
 import Foundation
 
@@ -115,40 +116,26 @@ class HangoutRepoImpl: HangoutRepo {
         let tags: [AppUIEntities.Tags] = data.categories.map { category in
                 .init(id: category.id, type: "", title: category.title)
         }
-        var info: [HangoutDetails.Info] = []
-        info.append(
-            .init(
-                title: "About",
-                subItems: [
-                    .init(title: nil, description: data.about ?? "-")
-                ]
-            )
-        )
         let membersCount = data.membersCount ?? 0
-        let capacity = "\(membersCount)/\(data.capacity ?? 0) members"
-        info.append(
-            .init(
-                title: "Event info",
-                subItems: [
-                    .init(title: "Created/Updated Date", description: data.hangoutDate ?? "-"),
-                    .init(title: "Owner Contact", description: data.ownerContact ?? "-"),
-                    .init(title: "Capacity", description: capacity),
-                    .init(title: "Rules", description: data.rules ?? "-"),
-                    .init(title: "Location", description: data.location ?? "-")
-                ]
-            )
-        )
-        if let links = data.links, !links.isEmpty {
-            let subItem: [HangoutDetails.SubInfo] = links.map { link in
-                    .init(title: link.name, description: link.url ?? "-", isLink: true)
-            }
-            info.append(
-                .init(
-                    title: "Links",
-                    subItems: subItem
-                )
-            )
+        var info: [HangoutDetails.Info] = []
+
+        appendSection(&info, title: "About", rows: [
+            row(title: nil, value: data.about)
+        ])
+
+        appendSection(&info, title: "Event info", rows: [
+            row(title: "Date", value: meetupDate(data.hangoutDate)),
+            row(title: "Owner Contact", value: cleaned(data.ownerContact),
+                phoneNumber: phoneNumber(data.ownerContact)),
+            row(title: "Capacity", value: capacityText(members: data.membersCount, capacity: data.capacity)),
+            row(title: "Rules", value: data.rules),
+            row(title: "Location", value: data.location)
+        ])
+
+        let linkRows = (data.links ?? []).map { link in
+            row(title: link.name, value: link.url, isLink: true)
         }
+        appendSection(&info, title: "Links", rows: linkRows)
         let editPrefillData = HangoutsCreate.PrefillData(
             values: [
                 .visibility: .radio(data.visibility ?? .public),
@@ -164,7 +151,7 @@ class HangoutRepoImpl: HangoutRepo {
                     )
                 } ?? []),
                 .location: .text(data.location ?? ""),
-                .hangoutDate: .date(makeDate(from: data.hangoutDate) ?? Date()),
+                .hangoutDate: .date(Date.fromISO8601(data.hangoutDate) ?? Date()),
                 .rules: .text(data.rules ?? ""),
                 .about: .text(data.about ?? "")
             ]
@@ -172,6 +159,7 @@ class HangoutRepoImpl: HangoutRepo {
         let uiModel: HangoutDetails.UIModel = .init(
             name: data.name,
             communityName: data.community.name,
+            communityId: data.community.id,
             membersCount: membersCount,
             userActivityType: data.role ?? .notJoined,
             accessType: data.visibility ?? .private,
@@ -197,18 +185,55 @@ class HangoutRepoImpl: HangoutRepo {
         }
         return .init(users: users)
     }
+}
 
-    private func makeDate(from value: String?) -> Date? {
-        guard let value else { return nil }
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [
-            .withInternetDateTime,
-            .withFractionalSeconds
-        ]
-        if let date = formatter.date(from: value) {
-            return date
-        }
-        formatter.formatOptions = [.withInternetDateTime]
-        return formatter.date(from: value)
+// MARK: - Info builders
+
+private extension HangoutRepoImpl {
+    /// Trim + treat empty / `"-"` / `"None"` as absent, so empty rows are dropped.
+    func cleaned(_ value: String?) -> String? {
+        guard let v = value?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !v.isEmpty, v != "-", v.lowercased() != "none" else { return nil }
+        return v
+    }
+
+    func row(
+        title: String?,
+        value: String?,
+        isLink: Bool = false,
+        phoneNumber: String? = nil
+    ) -> HangoutDetails.SubInfo? {
+        guard let value = cleaned(value) else { return nil }
+        return .init(title: title, description: value, isLink: isLink, phoneNumber: phoneNumber)
+    }
+
+    func appendSection(
+        _ info: inout [HangoutDetails.Info],
+        title: String,
+        rows: [HangoutDetails.SubInfo?]
+    ) {
+        let items = rows.compactMap { $0 }
+        guard !items.isEmpty else { return }
+        info.append(.init(title: title, subItems: items))
+    }
+
+    func capacityText(members: Int?, capacity: Int?) -> String? {
+        guard let capacity, capacity > 0 else { return nil }
+        return "\(members ?? 0)/\(capacity) members"
+    }
+
+    /// Meetup date+time, rendered in device-local time.
+    func meetupDate(_ iso: String?) -> String? {
+        guard let date = Date.fromISO8601(iso) else { return nil }
+        return date.toString(format: .dMMMMyyyyHHmm)
+    }
+
+    /// Returns the contact only when it looks like a dialable phone number.
+    func phoneNumber(_ value: String?) -> String? {
+        guard let v = cleaned(value) else { return nil }
+        let allowed = CharacterSet(charactersIn: "+0123456789 -()")
+        let digits = v.filter { $0.isNumber }
+        guard v.unicodeScalars.allSatisfy({ allowed.contains($0) }), digits.count >= 7 else { return nil }
+        return v
     }
 }

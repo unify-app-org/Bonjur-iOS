@@ -16,7 +16,7 @@ enum EventsCreate {
     typealias FieldType = AppUIKit.AppFieldSchema.FieldType
     typealias FieldSchema = AppUIKit.AppFieldSchema.Field
     typealias RadioOption = AppUIKit.AppFieldSchema.RadioOption
-    typealias ReminderOption = AppUIKit.AppFieldSchema.ReminderOption
+    typealias ReminderOption = AppPresentationModel.ReminderOption
     typealias TagItem = AppUIKit.AppFieldSchema.TagItem
 
     /// A club the event can be created under (`GET api/cs/v1/clubs/forEvents`).

@@ -5,6 +5,7 @@
 //  Created by Huseyn Hasanov on 01.02.26.
 //
 
+import UIKit
 import Clubs
 import SwiftUI
 import AppUIKit
@@ -17,6 +18,7 @@ struct EventDetailsView: View {
     @State private var isScrolled = false
     @State private var isNameVisible = true
     @State private var isSegmentSticky = false
+    @State private var contactPhone: String?
     @State private var baseHeight: CGFloat = 164
     @State private var tabHeights: [EventDetailsViewState.SegmentTypes: CGFloat] = [:]
     
@@ -238,7 +240,9 @@ struct EventDetailsView: View {
     }
     
     private var communityLink: some View {
-        Button {} label: {
+        Button {
+            store.send(.clubTapped)
+        } label: {
             Text(store.state.uiModel?.communityName ?? "")
                 .font(Font.Typography.TextL.medium)
                 .foregroundStyle(Color.Palette.appBlue)
@@ -367,7 +371,7 @@ struct EventDetailsView: View {
                         .font(Font.Typography.HeadingMd.medium)
                         .foregroundStyle(Color.Palette.blackHigh)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    
+
                     ForEach(item.subItems, id: \.id) { subItem in
                         infoSubItem(subItem)
                     }
@@ -377,10 +381,35 @@ struct EventDetailsView: View {
         .padding(.top)
         .padding(.bottom, 60)
         .padding(.horizontal, 4)
+        .confirmationDialog(
+            contactPhone ?? "",
+            isPresented: phoneDialogBinding,
+            titleVisibility: .visible
+        ) {
+            if let phone = contactPhone {
+                Button("Call") { callPhone(phone) }
+                Button("Copy") { UIPasteboard.general.string = phone }
+            }
+            Button("Cancel", role: .cancel) {}
+        }
     }
-    
+
+    private var phoneDialogBinding: Binding<Bool> {
+        Binding(
+            get: { contactPhone != nil },
+            set: { if !$0 { contactPhone = nil } }
+        )
+    }
+
+    private func callPhone(_ number: String) {
+        let dialable = number.filter { $0.isNumber || $0 == "+" }
+        guard let url = URL(string: "tel://\(dialable)") else { return }
+        UIApplication.shared.open(url)
+    }
+
     private func infoSubItem(_ subItem: EventsDetailsModel.SubInfo) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
+        let isActionable = subItem.isLink || subItem.phoneNumber != nil
+        return VStack(alignment: .leading, spacing: 6) {
             if let title = subItem.title {
                 Text(title)
                     .font(Font.Typography.TextMd.regular)
@@ -390,9 +419,16 @@ struct EventDetailsView: View {
             Text(subItem.description)
                 .font(Font.Typography.BodyTextSm.regular)
                 .foregroundStyle(
-                    subItem.isLink ? Color.Palette.appBlue : Color.Palette.blackHigh
+                    isActionable ? Color.Palette.appBlue : Color.Palette.blackHigh
                 )
                 .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if let phone = subItem.phoneNumber {
+                contactPhone = phone
+            }
         }
     }
 

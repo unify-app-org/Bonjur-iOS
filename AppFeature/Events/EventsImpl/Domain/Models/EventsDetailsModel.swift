@@ -13,6 +13,7 @@ enum EventsDetailsModel {
     struct UIModel {
         let name: String
         let communityName: String
+        let clubId: Int
         let membersCount: Int
         let coverImage: URL?
         let coverColorType: AppUIEntities.BackgroundType
@@ -42,15 +43,19 @@ enum EventsDetailsModel {
         let title: String?
         let description: String
         let isLink: Bool
-        
+        /// When set, the row is tappable and offers Call/Copy for this phone number.
+        let phoneNumber: String?
+
         init(
             title: String?,
             description: String,
-            isLink: Bool = false
+            isLink: Bool = false,
+            phoneNumber: String? = nil
         ) {
             self.title = title
             self.isLink = isLink
             self.description = description
+            self.phoneNumber = phoneNumber
         }
     }
 }
@@ -60,6 +65,7 @@ extension EventsDetailsModel.UIModel {
     static let mockData: Self = .init(
         name: "Basketball Event",
         communityName: "Sports Club",
+        clubId: 0,
         membersCount: 5,
         coverImage: nil,
         coverColorType: .secondary,

@@ -70,9 +70,11 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
     
     private func fetchData() {
         Task {
+            postEffect(.loading(true))
             await getClubs()
             await getEvents()
             await getHangouts()
+            postEffect(.loading(false))
         }
     }
     

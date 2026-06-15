@@ -9,6 +9,7 @@
 import SwiftUI
 import Communities
 import Foundation
+import AppUIKit
 
 struct MemberListView: View {
     let sections: [MemberListSectionViewData]
@@ -17,14 +18,20 @@ struct MemberListView: View {
     let onSelectGroupTap: (MemberListSectionViewData) -> Void
     let showsScrollView: Bool
     let horizontalPadding: Bool
-    
+    let previewLimit: Int?
+    let totalCount: Int?
+    let onSeeAllTapped: (() -> Void)?
+
     init(
         sections: [MemberListSectionViewData],
         onRowTap: @escaping (MemberCellViewData) -> Void,
         onAccessoryTap: @escaping (MemberCellViewData) -> Void,
         onSelectGroupTap: @escaping (MemberListSectionViewData) -> Void,
         showsScrollView: Bool = true,
-        horizontalPadding: Bool = true
+        horizontalPadding: Bool = true,
+        previewLimit: Int? = nil,
+        totalCount: Int? = nil,
+        onSeeAllTapped: (() -> Void)? = nil
     ) {
         self.sections = sections
         self.onRowTap = onRowTap
@@ -32,8 +39,11 @@ struct MemberListView: View {
         self.onSelectGroupTap = onSelectGroupTap
         self.showsScrollView = showsScrollView
         self.horizontalPadding = horizontalPadding
+        self.previewLimit = previewLimit
+        self.totalCount = totalCount
+        self.onSeeAllTapped = onSeeAllTapped
     }
-    
+
     var body: some View {
         Group {
             if showsScrollView {
@@ -45,10 +55,45 @@ struct MemberListView: View {
             }
         }
     }
-    
+
+    /// Total members across all loaded sections.
+    private var loadedCount: Int {
+        sections.reduce(0) { $0 + $1.rows.count }
+    }
+
+    /// Sections capped to `previewLimit` rows, taken in role/section order. Returns the full
+    /// sections when no preview limit is set.
+    private var visibleSections: [MemberListSectionViewData] {
+        guard let previewLimit else { return sections }
+        var remaining = previewLimit
+        var result: [MemberListSectionViewData] = []
+        for section in sections {
+            guard remaining > 0 else { break }
+            let rows = Array(section.rows.prefix(remaining))
+            remaining -= rows.count
+            result.append(
+                MemberListSectionViewData(
+                    id: section.id,
+                    title: section.title,
+                    memberCountText: section.memberCountText,
+                    rows: rows,
+                    showsSelectGroup: section.showsSelectGroup,
+                    isGroupSelected: section.isGroupSelected
+                )
+            )
+        }
+        return result
+    }
+
+    /// True when a preview limit is set, a handler exists, and the real total exceeds the limit.
+    private var showsSeeAll: Bool {
+        guard let previewLimit, onSeeAllTapped != nil else { return false }
+        return (totalCount ?? loadedCount) > previewLimit
+    }
+
     private var content: some View {
         LazyVStack(spacing: 20) {
-            ForEach(sections) { section in
+            ForEach(visibleSections) { section in
                 VStack(alignment: .leading, spacing: 12) {
                     MemberSectionHeaderView(
                         title: section.title,
@@ -57,7 +102,7 @@ struct MemberListView: View {
                         isGroupSelected: section.isGroupSelected,
                         onSelectGroupTap: { onSelectGroupTap(section) }
                     )
-                    
+
                     VStack(spacing: 10) {
                         ForEach(section.rows) { row in
                             MemberCellView(
@@ -69,9 +114,32 @@ struct MemberListView: View {
                     }
                 }
             }
+
+            if showsSeeAll {
+                seeAllButton
+            }
         }
         .padding(.vertical,16)
         .padding(.horizontal,horizontalPadding ? 16:0)
+    }
+
+    private var seeAllButton: some View {
+        Button {
+            onSeeAllTapped?()
+        } label: {
+            HStack(spacing: 6) {
+                Text("See all \(totalCount ?? loadedCount) members")
+                    .font(Font.Typography.TextL.bold)
+                Image(uiImage: .Icons.chevronRight)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 16, height: 16)
+            }
+            .foregroundStyle(Color.Palette.appBlue)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+        }
+        .buttonStyle(.plain)
     }
 }
 

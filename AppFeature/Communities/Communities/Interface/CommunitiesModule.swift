@@ -118,4 +118,17 @@ public protocol CommunitiesModule {
         input: CommunitiesMemberModuleModel.ClubMembersInput
     ) -> Any
 
+
+    /// Builds the standalone, self-paginating members screen.
+    ///
+    /// Unlike `makeMembersListView`, this screen owns its own paginated requests through the
+    /// input's `loadPage` provider, so callers must not pre-fetch the full member list. Use it
+    /// as the "See all" destination from an activity detail screen.
+    ///
+    /// - Parameter input: Title, role-title overrides, page size, page provider, and row tap callback.
+    /// - Returns: A view controller-like object that can be pushed or presented by the caller.
+    func makeMembersListScreen(
+        input: CommunitiesMemberModuleModel.MembersListInput
+    ) -> AnyObject
+
 }

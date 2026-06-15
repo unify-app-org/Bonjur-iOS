@@ -21,7 +21,13 @@ protocol CommunityRepo {
     func fetchClubMemberById(
         id: Int
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
-    
+
+    func fetchCommunityMembersPage(
+        id: Int,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
+
     func getClubs(
         communityId: Int,
         query: CommunityDTO.PaginationQuery
@@ -45,6 +51,7 @@ class CommunityRepoImpl: CommunityRepo {
                 .init(id: category.id, type: "", title: category.title)
         }
         var info: [CommunityDetails.Info] = []
+        let membersCount = data.membersCount ?? 0
 
         appendSection(&info, title: "About", rows: [
             row(title: nil, value: data.about)
@@ -54,7 +61,7 @@ class CommunityRepoImpl: CommunityRepo {
             row(title: "Created/Updated Date", value: modifiedDate(data.modifiedAt)),
             row(title: "Owner Contact", value: cleaned(data.ownerContact),
                 phoneNumber: phoneNumber(data.ownerContact)),
-            row(title: "Capacity", value: capacityText(members: data.membersCount, capacity: data.capacity)),
+            row(title: "Capacity", value: capacityText(members: membersCount, capacity: data.capacity)),
             row(title: "Rules", value: data.rule),
             row(title: "Location", value: data.location)
         ])
@@ -85,7 +92,7 @@ class CommunityRepoImpl: CommunityRepo {
         )
         let uiModel: CommunityDetails.UIModel = .init(
             name: data.name,
-            membersCount: data.membersCount ?? 0,
+            membersCount: membersCount,
             logo: logoURL,
             coverImage: coverURL,
             coverColorType: data.backgroundColour ?? .primary,
@@ -100,19 +107,33 @@ class CommunityRepoImpl: CommunityRepo {
     func fetchClubMemberById(
         id: Int
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
-        let data = try await dataSource.fetchClubMemberById(id: id).content
-        let users = data.map { member in
-            CommunitiesMemberModuleModel.MemberCellModel(
-                id: member.userId ?? "-",
-                name: member.fullName ?? "-",
-                avatarURL: URL(string: member.profileUrl ?? ""),
-                subtitle: "\(member.degree ?? "-"), \(member.specialization ?? "-"), \(member.entryYear ?? 0)",
-                role: member.role
-            )
-        }
+        let data = try await dataSource.fetchClubMemberById(id: id, page: 0, size: 10).content
+        let users = data.map(Self.mapMember)
         return .init(users: users)
     }
-    
+
+    func fetchCommunityMembersPage(
+        id: Int,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
+        let data = try await dataSource.fetchClubMemberById(id: id, page: page, size: size).content
+        let users = data.map(Self.mapMember)
+        return .init(members: users, hasMore: users.count >= size)
+    }
+
+    private static func mapMember(
+        _ member: CommunityDTO.MemberResponse.Member
+    ) -> CommunitiesMemberModuleModel.MemberCellModel {
+        CommunitiesMemberModuleModel.MemberCellModel(
+            id: member.userId ?? "-",
+            name: member.fullName ?? "-",
+            avatarURL: URL(string: member.profileUrl ?? ""),
+            subtitle: "\(member.degree ?? "-"), \(member.specialization ?? "-"), \(member.entryYear ?? 0)",
+            role: member.role
+        )
+    }
+
     func getClubs(
         communityId: Int,
         query: CommunityDTO.PaginationQuery

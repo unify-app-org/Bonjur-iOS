@@ -83,7 +83,7 @@ struct HangoutsCardView: View {
                     .multilineTextAlignment(.leading)
                 Text(model.description)
                     .font(Font.Typography.TextL.regular)
-                    .lineLimit(2)
+                    .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
                     .foregroundStyle(Color.Palette.blackHigh)

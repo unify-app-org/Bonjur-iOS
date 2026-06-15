@@ -10,7 +10,7 @@ import AppNetwork
 
 protocol CommunityDataSource {
     func fetchClubById(id: Int) async throws(APIError) -> CommunityDTO.Response
-    func fetchClubMemberById(id: Int) async throws(APIError) -> CommunityDTO.MemberResponse
+    func fetchClubMemberById(id: Int, page: Int, size: Int) async throws(APIError) -> CommunityDTO.MemberResponse
     func getClubs(
         query: [String: String]
     ) async throws(APIError) -> [CommunityDTO.ClubResponse]
@@ -24,9 +24,13 @@ final class CommunityDataSourceImpl: NetworkService<CommunityEndPoint>, Communit
     }
     
     func fetchClubMemberById(
-        id: Int
+        id: Int,
+        page: Int,
+        size: Int
     ) async throws(AppNetwork.APIError) -> CommunityDTO.MemberResponse {
-        try await fetch(endPoint: .getMembersByClubId(id))
+        try await fetch(
+            endPoint: .getMembersByClubId(id, ["page": "\(page)", "size": "\(size)"])
+        )
     }
     
     func getClubs(

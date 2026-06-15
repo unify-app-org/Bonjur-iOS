@@ -13,6 +13,11 @@ import Clubs
 protocol CommunityUseCase {
     func fetchCommunityData(id: Int) async throws -> CommunityDetails.UIModel
     func fetchCommunityMembers(id: Int) async throws -> CommunitiesMemberModuleModel.GroupedMembersData
+    func fetchCommunityMembersPage(
+        id: Int,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
     func fetchClubs(
         communityId: Int,
         query: CommunityDTO.PaginationQuery
@@ -42,6 +47,14 @@ class CommunityUseCaseImpl: CommunityUseCase {
         try await repo.getClubs(
             communityId: communityId,
             query: query
+        )
+    }
+    
+    func fetchCommunityMembersPage(id: Int, page: Int, size: Int) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
+        try await repo.fetchCommunityMembersPage(
+            id: id,
+            page: page,
+            size: size
         )
     }
 }

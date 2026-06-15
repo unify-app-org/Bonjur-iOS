@@ -14,7 +14,7 @@ enum HangoutsEndPoint {
     case editHangout(String, HangoutsDTOModel.Request)
     case getCategories
     case hangoutDetail(String)
-    case members(String)
+    case members(String, [String: String])
 }
 
 extension HangoutsEndPoint: AppEndPoint {
@@ -31,7 +31,7 @@ extension HangoutsEndPoint: AppEndPoint {
             "api/sd/v1/categories"
         case .hangoutDetail(let id):
             "api/hs/v1/hangouts/\(id)"
-        case .members(let id):
+        case .members(let id, _):
             "api/hs/v1/hangouts/\(id)/members"
         }
     }
@@ -64,6 +64,8 @@ extension HangoutsEndPoint: AppEndPoint {
     var queryParameters: [String: String]? {
         switch self {
         case .getHangouts(let query):
+            query
+        case .members(_, let query):
             query
         default:
             nil

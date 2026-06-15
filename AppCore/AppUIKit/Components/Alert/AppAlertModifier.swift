@@ -38,6 +38,7 @@ private struct AppAlertModifier: ViewModifier {
 
 
 
+
 public extension View {
     func appAlert(
         isPresented: Binding<Bool>,
@@ -50,7 +51,7 @@ public extension View {
             )
         )
     }
-    
+
     func appErrorAlert(
         alert: Binding<AppAlert.Config?>,
         buttonTitle: String = "Got it"

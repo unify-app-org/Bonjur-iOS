@@ -69,6 +69,7 @@ enum ClubDetailsAction: UIFeatureAction {
     case editTapped
     case userTapped(String)
     case joinClubTapped
+    case seeAllMembersTapped
 }
 
 // MARK: - PreferenceKey

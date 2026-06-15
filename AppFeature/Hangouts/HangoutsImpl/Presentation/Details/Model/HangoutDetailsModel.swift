@@ -67,6 +67,8 @@ enum HangoutDetailsAction: UIFeatureAction {
     case backTapped
     case editTapped
     case communityTapped
+    case userTapped(String)
+    case seeAllMembersTapped
 }
 
 

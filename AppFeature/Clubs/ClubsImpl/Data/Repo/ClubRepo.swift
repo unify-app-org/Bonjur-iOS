@@ -23,6 +23,11 @@ protocol ClubRepo {
         clubId: Int
     ) async throws(APIError) -> ClubsDetailsModel.UIModel
     func fetchClubMemberById(id: Int) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
+    func fetchClubMembersPage(
+        id: Int,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
     func editClub(
         id: Int,
         request: MultipartFormData
@@ -137,19 +142,33 @@ class ClubRepoImpl: ClubRepo {
     func fetchClubMemberById(
         id: Int
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
-        let data = try await dataSource.fetchClubMemberById(id: id).content
-        let users = data.map { member in
-            CommunitiesMemberModuleModel.MemberCellModel(
-                id: member.userId ?? "-",
-                name: member.fullName ?? "-",
-                avatarURL: URL(string: member.profileUrl ?? ""),
-                subtitle: "\(member.degree ?? "-"), \(member.specialization ?? "-"), \(member.entryYear ?? 0)",
-                role: member.role
-            )
-        }
+        let data = try await dataSource.fetchClubMemberById(id: id, page: 0, size: 10).content
+        let users = data.map(Self.mapMember)
         return .init(users: users)
     }
-    
+
+    func fetchClubMembersPage(
+        id: Int,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
+        let data = try await dataSource.fetchClubMemberById(id: id, page: page, size: size).content
+        let users = data.map(Self.mapMember)
+        return .init(members: users, hasMore: users.count >= size)
+    }
+
+    private static func mapMember(
+        _ member: ClubDTOModel.MemberResponse.Member
+    ) -> CommunitiesMemberModuleModel.MemberCellModel {
+        CommunitiesMemberModuleModel.MemberCellModel(
+            id: member.userId ?? "-",
+            name: member.fullName ?? "-",
+            avatarURL: URL(string: member.profileUrl ?? ""),
+            subtitle: "\(member.degree ?? "-"), \(member.specialization ?? "-"), \(member.entryYear ?? 0)",
+            role: member.role
+        )
+    }
+
     func joinClub(
         id: Int
     ) async throws(APIError) {

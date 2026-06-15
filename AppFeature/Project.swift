@@ -47,7 +47,8 @@ let eventsTarget = Target.createFeatureModule(
     implConfig: .init(
         dependencies: [
             .AppFeature.Clubs,
-            .AppFeature.Communities
+            .AppFeature.Communities,
+            .AppFeature.Profile
         ]
     )
 ).add(to: &frameworkTargets)
@@ -56,7 +57,8 @@ let hangoutsTarget = Target.createFeatureModule(
     name: "Hangouts",
     implConfig: .init(
         dependencies: [
-            .AppFeature.Communities
+            .AppFeature.Communities,
+            .AppFeature.Profile
         ]
     )
 ).add(to: &frameworkTargets)

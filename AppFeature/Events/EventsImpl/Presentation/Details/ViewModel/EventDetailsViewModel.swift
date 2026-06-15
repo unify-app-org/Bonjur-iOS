@@ -61,6 +61,37 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
             Task {
                 await router.navigate(to: .clubDetail(id: clubId))
             }
+        case .userTapped(let id):
+            Task { @MainActor in
+                router.navigate(to: .userDetail(id))
+            }
+        case .seeAllMembersTapped:
+            presentMembersList()
+        }
+    }
+
+    private func presentMembersList() {
+        let eventId = inputData.eventId
+        let useCase = dependencies.useCase
+        let input = CommunitiesMemberModuleModel.MembersListInput(
+            title: "Members",
+            titleOverrides: [.president: "Owner"],
+            pageSize: 20,
+            loadPage: { page, size in
+                try await useCase.fetchEventMembersPage(
+                    eventId: eventId,
+                    page: page,
+                    size: size
+                )
+            },
+            onMemberTapped: { [weak self] member in
+                Task { @MainActor in
+                    self?.router.navigate(to: .userDetail(member.id))
+                }
+            }
+        )
+        Task { @MainActor in
+            router.navigate(to: .membersList(input))
         }
     }
 

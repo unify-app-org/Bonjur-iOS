@@ -63,6 +63,32 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
             Task {
                 await joinClub()
             }
+        case .seeAllMembersTapped:
+            presentMembersList()
+        }
+    }
+
+    private func presentMembersList() {
+        let clubId = inputData.clubId
+        let useCase = dependencies.useCase
+        let input = CommunitiesMemberModuleModel.MembersListInput(
+            title: "Members",
+            pageSize: 20,
+            loadPage: { page, size in
+                try await useCase.fetchClubMembersPage(
+                    id: clubId,
+                    page: page,
+                    size: size
+                )
+            },
+            onMemberTapped: { [weak self] member in
+                Task { @MainActor in
+                    self?.router.navigate(to: .userDetail(member.id))
+                }
+            }
+        )
+        Task { @MainActor in
+            router.navigate(to: .membersList(input))
         }
     }
     

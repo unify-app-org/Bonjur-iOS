@@ -26,6 +26,11 @@ protocol EventsRepo {
     func fetchEventMembers(
         eventId: String
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
+    func fetchEventMembersPage(
+        eventId: String,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
 }
 
 final class EventsRepoImpl: EventsRepo {
@@ -134,16 +139,39 @@ final class EventsRepoImpl: EventsRepo {
             eventId: eventId,
             query: ["page": "0", "size": "100"]
         ).content
-        let users = data.map { member in
-            CommunitiesMemberModuleModel.MemberCellModel(
-                id: member.userId ?? "-",
-                name: member.fullName ?? "-",
-                avatarURL: URL(string: member.profileUrl ?? ""),
-                subtitle: "\(member.degree ?? "-"), \(member.specialization ?? "-"), \(member.entryYear ?? 0)",
-                role: member.role ?? .member
-            )
+        let users = data.map(Self.mapMember)
+        return .init(users: users, titleOverrides: [.president: "Owner"])
+    }
+
+    func fetchEventMembersPage(
+        eventId: String,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
+        let response = try await dataSource.fetchEventMembers(
+            eventId: eventId,
+            query: ["page": "\(page)", "size": "\(size)"]
+        )
+        let users = response.content.map(Self.mapMember)
+        let hasMore: Bool
+        if let totalPages = response.totalPages {
+            hasMore = page + 1 < totalPages
+        } else {
+            hasMore = users.count >= size
         }
-        return .init(users: users)
+        return .init(members: users, hasMore: hasMore)
+    }
+
+    private static func mapMember(
+        _ member: EventMembersResponse.Member
+    ) -> CommunitiesMemberModuleModel.MemberCellModel {
+        CommunitiesMemberModuleModel.MemberCellModel(
+            id: member.userId ?? "-",
+            name: member.fullName ?? "-",
+            avatarURL: URL(string: member.profileUrl ?? ""),
+            subtitle: "\(member.degree ?? "-"), \(member.specialization ?? "-"), \(member.entryYear ?? 0)",
+            role: member.role ?? .member
+        )
     }
 }
 

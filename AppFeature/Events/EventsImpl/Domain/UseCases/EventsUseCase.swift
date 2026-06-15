@@ -17,6 +17,11 @@ protocol EventsUseCase {
     func fetchEventMembers(
         eventId: String
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
+    func fetchEventMembersPage(
+        eventId: String,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
     func createEvent(request: MultipartFormData) async throws(APIError)
     func editEvent(eventId: String, request: MultipartFormData) async throws(APIError)
     func fetchClubsForEvents() async throws(APIError) -> [EventsCreate.SelectableClub]
@@ -49,6 +54,14 @@ class EventsUseCaseImpl: EventsUseCase {
         eventId: String
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
         try await repo.fetchEventMembers(eventId: eventId)
+    }
+
+    func fetchEventMembersPage(
+        eventId: String,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
+        try await repo.fetchEventMembersPage(eventId: eventId, page: page, size: size)
     }
 
     func createEvent(request: MultipartFormData) async throws(APIError) {

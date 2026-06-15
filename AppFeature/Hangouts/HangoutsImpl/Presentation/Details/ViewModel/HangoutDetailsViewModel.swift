@@ -51,6 +51,37 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
             Task {
                 await router.navigate(to: .communityDetail(id: communityId))
             }
+        case .userTapped(let id):
+            Task { @MainActor in
+                router.navigate(to: .userDetail(id))
+            }
+        case .seeAllMembersTapped:
+            presentMembersList()
+        }
+    }
+
+    private func presentMembersList() {
+        let hangoutId = inputData.hangoutId
+        let useCase = dependencies.useCase
+        let input = CommunitiesMemberModuleModel.MembersListInput(
+            title: "Members",
+            titleOverrides: [.president: "Owner"],
+            pageSize: 20,
+            loadPage: { page, size in
+                try await useCase.fetchHangoutMembersPage(
+                    id: hangoutId,
+                    page: page,
+                    size: size
+                )
+            },
+            onMemberTapped: { [weak self] member in
+                Task { @MainActor in
+                    self?.router.navigate(to: .userDetail(member.id))
+                }
+            }
+        )
+        Task { @MainActor in
+            router.navigate(to: .membersList(input))
         }
     }
     

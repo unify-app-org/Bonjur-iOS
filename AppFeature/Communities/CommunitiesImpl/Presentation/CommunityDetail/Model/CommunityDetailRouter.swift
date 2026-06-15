@@ -8,12 +8,14 @@
 import UIKit
 import Clubs
 import Profile
+import Communities
 
 enum CommunityDetailRoute {
+    case back
     case clubsDetails(id: Int)
     case userDetails(id: String)
     case edit(id: Int, prefillData: ClubsModuleModel.CreatePrefillData)
-    case back
+    case membersList(CommunitiesMemberModuleModel.MembersListInput)
 }
 
 protocol CommunityDetailRouterProtocol {
@@ -25,15 +27,18 @@ final class CommunityDetailRouter: CommunityDetailRouterProtocol {
     weak var view: UIViewController?
     private var clubModule: ClubsModule
     private var profileModule: ProfileModule
+    private var communitiesModule: CommunitiesModule
     
     init(
         view: UIViewController? = nil,
         clubModule: ClubsModule = resolve(),
-        profileModule: ProfileModule = resolve()
+        profileModule: ProfileModule = resolve(),
+        communitiesModule: CommunitiesModule = resolve()
     ) {
         self.view = view
         self.clubModule = clubModule
         self.profileModule = profileModule
+        self.communitiesModule = communitiesModule
     }
     
     @MainActor
@@ -52,6 +57,9 @@ final class CommunityDetailRouter: CommunityDetailRouterProtocol {
             self.view?.navigationController?.popViewController(animated: true)
         case .userDetails(let id):
             let vc = profileModule.makeProfileViewController(userId: id) as! UIViewController
+            view?.navigationController?.pushViewController(vc, animated: true)
+        case .membersList(let input):
+            guard let vc = communitiesModule.makeMembersListScreen(input: input) as? UIViewController else { return }
             view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

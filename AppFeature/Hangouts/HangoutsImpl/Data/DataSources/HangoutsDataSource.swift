@@ -33,7 +33,9 @@ protocol HangoutsDataSource {
     ) async throws(APIError) -> HangoutsDTOModel.HangoutDetail
 
     func fetchMembers(
-        id: String
+        id: String,
+        page: Int,
+        size: Int
     ) async throws(APIError) -> PageNationResponse<[HangoutsDTOModel.MemberResponse]>
 }
 
@@ -137,8 +139,12 @@ final class HangoutsDataSourceImpl: NetworkService<HangoutsEndPoint>, HangoutsDa
     }
 
     func fetchMembers(
-        id: String
+        id: String,
+        page: Int,
+        size: Int
     ) async throws(APIError) -> PageNationResponse<[HangoutsDTOModel.MemberResponse]> {
-        try await fetch(endPoint: .members(id))
+        try await fetch(
+            endPoint: .members(id, ["page": "\(page)", "size": "\(size)"])
+        )
     }
 }

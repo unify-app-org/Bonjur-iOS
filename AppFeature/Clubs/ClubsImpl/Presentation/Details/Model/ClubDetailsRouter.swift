@@ -7,11 +7,13 @@
 
 import UIKit
 import Profile
+import Communities
 
 enum ClubDetailsRoute {
     case backTapped
     case editClub(id: Int, prefillData: ClubsCreate.PrefillData)
     case userDetail(String)
+    case membersList(CommunitiesMemberModuleModel.MembersListInput)
 }
 
 protocol ClubDetailsRouterProtocol {
@@ -22,13 +24,16 @@ protocol ClubDetailsRouterProtocol {
 final class ClubDetailsRouter: ClubDetailsRouterProtocol {
     weak var view: UIViewController?
     private let profile: ProfileModule
-    
+    private let communitiesModule: CommunitiesModule
+
     init(
         view: UIViewController? = nil,
-        profile: ProfileModule = resolve()
+        profile: ProfileModule = resolve(),
+        communitiesModule: CommunitiesModule = resolve()
     ) {
         self.view = view
         self.profile = profile
+        self.communitiesModule = communitiesModule
     }
     
     @MainActor
@@ -46,6 +51,9 @@ final class ClubDetailsRouter: ClubDetailsRouterProtocol {
             view?.navigationController?.pushViewController(vc, animated: true)
         case .userDetail(let id):
             let vc = profile.makeProfileViewController(userId: id) as! UIViewController
+            view?.navigationController?.pushViewController(vc, animated: true)
+        case .membersList(let input):
+            guard let vc = communitiesModule.makeMembersListScreen(input: input) as? UIViewController else { return }
             view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

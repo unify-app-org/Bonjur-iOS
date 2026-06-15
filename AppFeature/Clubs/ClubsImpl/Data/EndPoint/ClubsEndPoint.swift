@@ -12,7 +12,7 @@ enum ClubsEndPoint {
     case getCategories
     case getClubs([String: String])
     case getClubById(Int)
-    case getMembersByClubId(Int)
+    case getMembersByClubId(Int, [String: String])
     case editClub(Int, MultipartFormData)
     case joinClub(Int)
 }
@@ -29,7 +29,7 @@ extension ClubsEndPoint: AppEndPoint {
             "api/ds/v1/clubs"
         case .getClubById(let id):
             "api/cs/v1/clubs/\(id)"
-        case .getMembersByClubId(let id):
+        case .getMembersByClubId(let id, _):
             "api/cs/v1/clubs/\(id)/members"
         case .editClub(let id, _):
             "api/cs/v1/clubs/\(id)"
@@ -66,6 +66,8 @@ extension ClubsEndPoint: AppEndPoint {
     var queryParameters: [String: String]? {
         switch self {
         case .getClubs(let query):
+            query
+        case .getMembersByClubId(_, let query):
             query
         default:
             nil

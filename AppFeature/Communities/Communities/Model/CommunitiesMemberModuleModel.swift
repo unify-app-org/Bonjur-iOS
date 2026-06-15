@@ -49,8 +49,11 @@ public enum CommunitiesMemberModuleModel {
         public init(sections: [MemberListSection]) {
             self.sections = sections
         }
-
-        public init(users: [MemberCellModel]) {
+        
+        public init(
+            users: [MemberCellModel],
+            titleOverrides: [AppPresentationModel.UserActivityRole: String] = [:]
+        ) {
             let groupedUsers = Dictionary(grouping: users, by: \.role)
             let sections = groupedUsers
                 .sorted { lhs, rhs in
@@ -58,7 +61,7 @@ public enum CommunitiesMemberModuleModel {
                 }
                 .map { role, users in
                     MemberListSection(
-                        title: role.title,
+                        title: titleOverrides[role] ?? role.title,
                         memberCount: users.count,
                         members: users.sorted { lhs, rhs in
                             lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
@@ -259,27 +262,83 @@ public extension CommunitiesMemberModuleModel {
         public let sections: [MemberListSection]
         public let onOptionsTapped: (MemberCellModel) -> Void
         public let onMemberTapped: (MemberCellModel) -> Void
+        /// When set, the embedded list renders at most this many member rows (by role order)
+        /// and shows a "See all" affordance once the total exceeds the limit.
+        public let previewLimit: Int
+        /// Total member count used for the "See all (N)" label and the preview threshold.
+        /// Falls back to the loaded row count when `nil`.
+        public let totalCount: Int?
+        /// Called when the "See all" affordance is tapped. `nil` hides the affordance.
+        public let onSeeAllTapped: (() -> Void)?
 
         public init(
             sections: [MemberListSection],
             onOptionsTapped: @escaping (MemberCellModel) -> Void,
-            onMemberTapped: @escaping (MemberCellModel) -> Void
+            onMemberTapped: @escaping (MemberCellModel) -> Void,
+            previewLimit: Int = 5,
+            totalCount: Int? = nil,
+            onSeeAllTapped: (() -> Void)? = nil
         ) {
             self.sections = sections
             self.onOptionsTapped = onOptionsTapped
             self.onMemberTapped = onMemberTapped
+            self.previewLimit = previewLimit
+            self.totalCount = totalCount
+            self.onSeeAllTapped = onSeeAllTapped
         }
 
         public init(
             data: GroupedMembersData,
             onOptionsTapped: @escaping (MemberCellModel) -> Void,
-            onMemberTapped: @escaping (MemberCellModel) -> Void
+            onMemberTapped: @escaping (MemberCellModel) -> Void,
+            previewLimit: Int = 5,
+            totalCount: Int? = nil,
+            onSeeAllTapped: (() -> Void)? = nil
         ) {
             self.init(
                 sections: data.sections,
                 onOptionsTapped: onOptionsTapped,
-                onMemberTapped: onMemberTapped
+                onMemberTapped: onMemberTapped,
+                previewLimit: previewLimit,
+                totalCount: totalCount,
+                onSeeAllTapped: onSeeAllTapped
             )
+        }
+    }
+
+    /// One page of members plus whether more pages remain. Returned by a `MembersListInput`
+    /// page provider so the paginated members screen can drive infinite scroll.
+    struct MembersPage: Sendable {
+        public let members: [MemberCellModel]
+        public let hasMore: Bool
+
+        public init(members: [MemberCellModel], hasMore: Bool) {
+            self.members = members
+            self.hasMore = hasMore
+        }
+    }
+
+    /// Input for the standalone, self-paginating members screen. The screen owns its own
+    /// requests via `loadPage` (page, size) so callers never pre-fetch the full list.
+    struct MembersListInput {
+        public let title: String
+        public let titleOverrides: [AppPresentationModel.UserActivityRole: String]
+        public let pageSize: Int
+        public let loadPage: (Int, Int) async throws -> MembersPage
+        public let onMemberTapped: (MemberCellModel) -> Void
+
+        public init(
+            title: String,
+            titleOverrides: [AppPresentationModel.UserActivityRole: String] = [:],
+            pageSize: Int = 20,
+            loadPage: @escaping (Int, Int) async throws -> MembersPage,
+            onMemberTapped: @escaping (MemberCellModel) -> Void
+        ) {
+            self.title = title
+            self.titleOverrides = titleOverrides
+            self.pageSize = pageSize
+            self.loadPage = loadPage
+            self.onMemberTapped = onMemberTapped
         }
     }
 }

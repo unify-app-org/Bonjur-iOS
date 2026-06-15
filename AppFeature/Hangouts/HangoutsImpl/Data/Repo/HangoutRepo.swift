@@ -36,6 +36,12 @@ protocol HangoutRepo {
     func fetchDetailHangoutMembers(
         id: String
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
+
+    func fetchHangoutMembersPage(
+        id: String,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
 }
 
 class HangoutRepoImpl: HangoutRepo {
@@ -173,17 +179,37 @@ class HangoutRepoImpl: HangoutRepo {
     func fetchDetailHangoutMembers(
         id: String
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
-        let data = try await dataSource.fetchMembers(id: id).content
-        let users = data.map { member in
-            CommunitiesMemberModuleModel.MemberCellModel(
-                id: member.userId ?? "-",
-                name: member.fullName ?? "-",
-                avatarURL: URL(string: member.profileUrl ?? ""),
-                subtitle: "\(member.degree ?? "-"), \(member.specialization ?? "-"), \(member.entryYear ?? 0)",
-                role: member.role
-            )
+        let data = try await dataSource.fetchMembers(id: id, page: 0, size: 10).content
+        let users = data.map(Self.mapMember)
+        return .init(users: users, titleOverrides: [.president: "Owner"])
+    }
+
+    func fetchHangoutMembersPage(
+        id: String,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
+        let response = try await dataSource.fetchMembers(id: id, page: page, size: size)
+        let users = response.content.map(Self.mapMember)
+        let hasMore: Bool
+        if let totalPages = response.totalPages {
+            hasMore = page + 1 < totalPages
+        } else {
+            hasMore = users.count >= size
         }
-        return .init(users: users)
+        return .init(members: users, hasMore: hasMore)
+    }
+
+    private static func mapMember(
+        _ member: HangoutsDTOModel.MemberResponse
+    ) -> CommunitiesMemberModuleModel.MemberCellModel {
+        CommunitiesMemberModuleModel.MemberCellModel(
+            id: member.userId ?? "-",
+            name: member.fullName ?? "-",
+            avatarURL: URL(string: member.profileUrl ?? ""),
+            subtitle: "\(member.degree ?? "-"), \(member.specialization ?? "-"), \(member.entryYear ?? 0)",
+            role: member.role
+        )
     }
 }
 

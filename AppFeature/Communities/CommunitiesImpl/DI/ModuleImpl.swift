@@ -112,9 +112,26 @@ struct CommunitiesModuleImpl: CommunitiesModule {
                 },
                 onSelectGroupTap: { _ in },
                 showsScrollView: false,
-                horizontalPadding: false
+                horizontalPadding: false,
+                previewLimit: input.previewLimit,
+                totalCount: input.totalCount,
+                onSeeAllTapped: input.onSeeAllTapped
             )
         )
+    }
+
+    func makeMembersListScreen(
+        input: CommunitiesMemberModuleModel.MembersListInput
+    ) -> AnyObject {
+        MembersListBuilder(
+            inputData: .init(
+                title: input.title,
+                titleOverrides: input.titleOverrides,
+                pageSize: input.pageSize,
+                loadPage: input.loadPage,
+                onMemberTapped: input.onMemberTapped
+            )
+        ).build()
     }
 
     func makeCommunityCard(

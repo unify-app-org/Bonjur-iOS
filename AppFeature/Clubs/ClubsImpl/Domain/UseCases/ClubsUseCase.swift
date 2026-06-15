@@ -20,6 +20,11 @@ protocol ClubsUseCase {
     func fetchClubMemberById(
         id: Int
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
+    func fetchClubMembersPage(
+        id: Int,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
     func editClub(
         id: Int,
         request: MultipartFormData
@@ -68,6 +73,14 @@ class ClubsUseCaseImpl: ClubsUseCase {
         try await repo.editClub(id: id, request: request)
     }
     
+    func fetchClubMembersPage(
+        id: Int,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
+        try await repo.fetchClubMembersPage(id: id, page: page, size: size)
+    }
+
     func fetchClubMemberById(
         id: Int
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {

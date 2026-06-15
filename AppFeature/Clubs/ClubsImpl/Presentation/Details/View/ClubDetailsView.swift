@@ -18,7 +18,6 @@ struct ClubDetailsView: View {
     @State private var isScrolled = false
     @State private var isNameVisible = true
     @State private var isSegmentSticky = false
-    @State private var contactPhone: String?
     @State private var baseHeight: CGFloat = 164
     @State private var tabHeights: [ClubDetailsViewState.SegmentTypes: CGFloat] = [:]
     
@@ -253,12 +252,9 @@ struct ClubDetailsView: View {
     }
     
     private var communityLink: some View {
-        Button {} label: {
-            Text(store.state.uiModel?.communityName ?? "")
-                .font(Font.Typography.TextL.medium)
-                .foregroundStyle(Color.Palette.appBlue)
-                .underline()
-        }
+        Text(store.state.uiModel?.communityName ?? "")
+            .font(Font.Typography.TextL.medium)
+            .foregroundStyle(Color.Palette.blackHigh)
     }
     
     private var memberCount: some View {
@@ -397,35 +393,39 @@ struct ClubDetailsView: View {
         .padding(.top)
         .padding(.bottom, 60)
         .padding(.horizontal, 4)
-        .confirmationDialog(
-            contactPhone ?? "",
-            isPresented: phoneDialogBinding,
-            titleVisibility: .visible
-        ) {
-            if let phone = contactPhone {
-                Button("Call") { callPhone(phone) }
-                Button("Copy") { UIPasteboard.general.string = phone }
-            }
-            Button("Cancel", role: .cancel) {}
-        }
     }
 
-    private var phoneDialogBinding: Binding<Bool> {
-        Binding(
-            get: { contactPhone != nil },
-            set: { if !$0 { contactPhone = nil } }
-        )
-    }
-
-    private func callPhone(_ number: String) {
-        let dialable = number.filter { $0.isNumber || $0 == "+" }
-        guard let url = URL(string: "tel://\(dialable)") else { return }
+    private func openLink(_ string: String) {
+        guard let url = URL(string: string) else { return }
         UIApplication.shared.open(url)
     }
 
+    private func handleTap(on subItem: ClubsDetailsModel.SubInfo) {
+        if let phone = subItem.phoneNumber {
+            UIPasteboard.general.string = phone
+            AppSnackBar.show(title: "Copied to clipboard")
+        } else if subItem.isLink {
+            openLink(subItem.description)
+        }
+    }
+
+    @ViewBuilder
     private func infoSubItem(_ subItem: ClubsDetailsModel.SubInfo) -> some View {
         let isActionable = subItem.isLink || subItem.phoneNumber != nil
-        return VStack(alignment: .leading, spacing: 6) {
+        if isActionable {
+            Button {
+                handleTap(on: subItem)
+            } label: {
+                subItemContent(subItem, isActionable: true)
+            }
+            .buttonStyle(RowHighlightButtonStyle())
+        } else {
+            subItemContent(subItem, isActionable: false)
+        }
+    }
+
+    private func subItemContent(_ subItem: ClubsDetailsModel.SubInfo, isActionable: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
             if let title = subItem.title {
                 Text(title)
                     .font(Font.Typography.TextMd.regular)
@@ -441,11 +441,6 @@ struct ClubDetailsView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(Rectangle())
-        .onTapGesture {
-            if let phone = subItem.phoneNumber {
-                contactPhone = phone
-            }
-        }
     }
     
     @ViewBuilder
@@ -486,6 +481,10 @@ struct ClubDetailsView: View {
                    onOptionsTapped: { _ in },
                    onMemberTapped: { member in
                        store.send(.userTapped(member.id))
+                   },
+                   totalCount: store.state.uiModel?.membersCount,
+                   onSeeAllTapped: {
+                       store.send(.seeAllMembersTapped)
                    }
                )
            ) as? AnyView {

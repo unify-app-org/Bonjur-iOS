@@ -120,6 +120,14 @@ struct CommunitiesModuleImpl: CommunitiesModule {
         )
     }
 
+    func makeMemberOptionsSheet(
+        input: CommunitiesMemberModuleModel.MemberOptionsInput
+    ) -> Any {
+        AnyView(
+            MemberOptionsSheet(input: input)
+        )
+    }
+
     func makeMembersListScreen(
         input: CommunitiesMemberModuleModel.MembersListInput
     ) -> AnyObject {
@@ -129,7 +137,8 @@ struct CommunitiesModuleImpl: CommunitiesModule {
                 titleOverrides: input.titleOverrides,
                 pageSize: input.pageSize,
                 loadPage: input.loadPage,
-                onMemberTapped: input.onMemberTapped
+                onMemberTapped: input.onMemberTapped,
+                options: input.options
             )
         ).build()
     }

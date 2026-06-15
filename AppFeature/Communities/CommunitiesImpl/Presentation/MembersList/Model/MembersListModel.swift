@@ -18,6 +18,7 @@ struct MembersListInputData {
     let pageSize: Int
     let loadPage: (Int, Int) async throws -> CommunitiesMemberModuleModel.MembersPage
     let onMemberTapped: (CommunitiesMemberModuleModel.MemberCellModel) -> Void
+    let options: CommunitiesMemberModuleModel.MemberOptionsConfig?
 }
 
 // MARK: - Side effects
@@ -43,6 +44,8 @@ final class MembersListViewState: UIFeatureState {
     @Published var isLoadingMore: Bool = false
     @Published var hasMore: Bool = true
     @Published var isEmpty: Bool = false
+    /// Non-nil when the 3-dot options menu is enabled for this list.
+    @Published var optionsConfig: CommunitiesMemberModuleModel.MemberOptionsConfig?
 }
 
 // MARK: - Feature Action
@@ -51,4 +54,6 @@ enum MembersListAction: UIFeatureAction {
     case onAppear
     case loadMore
     case memberTapped(MemberCellViewData)
+    /// Reload from the first page (e.g. after a role change).
+    case reload
 }

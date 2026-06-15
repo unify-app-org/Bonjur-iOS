@@ -8,6 +8,7 @@
 import AppUIKit
 import AppNetwork
 import Communities
+import AppPresentationModel
 
 protocol ClubsUseCase {
     func fetchClubsData(
@@ -31,6 +32,11 @@ protocol ClubsUseCase {
     ) async throws(APIError)
     func joinClub(
         id: Int
+    ) async throws(APIError)
+    func assignRole(
+        clubId: Int,
+        userId: String,
+        role: AppPresentationModel.UserActivityRole
     ) async throws(APIError)
 }
 
@@ -89,5 +95,13 @@ class ClubsUseCaseImpl: ClubsUseCase {
     
     func joinClub(id: Int) async throws(APIError) {
         try await repo.joinClub(id: id)
+    }
+
+    func assignRole(
+        clubId: Int,
+        userId: String,
+        role: AppPresentationModel.UserActivityRole
+    ) async throws(APIError) {
+        try await repo.assignRole(clubId: clubId, userId: userId, role: role)
     }
 }

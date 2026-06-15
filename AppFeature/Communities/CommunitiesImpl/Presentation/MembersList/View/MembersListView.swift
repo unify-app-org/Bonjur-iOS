@@ -8,10 +8,13 @@
 import SwiftUI
 import AppFoundation
 import AppUIKit
+import AppPresentationModel
 import Communities
 
 struct MembersListView: View {
     @ObservedObject var store: StoreOf<MembersListFeature>
+
+    @State private var optionsMember: CommunitiesMemberModuleModel.MemberCellModel?
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -25,7 +28,10 @@ struct MembersListView: View {
                 MemberListView(
                     sections: store.state.sections,
                     onRowTap: { store.send(.memberTapped($0)) },
-                    onAccessoryTap: { _ in },
+                    onAccessoryTap: { row in
+                        guard store.state.optionsConfig != nil else { return }
+                        optionsMember = row.member
+                    },
                     onSelectGroupTap: { _ in },
                     showsScrollView: false
                 )
@@ -41,10 +47,46 @@ struct MembersListView: View {
             }
         }
         .background(Color.Palette.grayQuaternary.opacity(0.2))
+        .appSheet(item: $optionsMember) { member in
+            memberOptionsSheet(for: member)
+        }
         .navigationTitle(store.state.title)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             store.send(.onAppear)
+        }
+    }
+
+    @ViewBuilder
+    private func memberOptionsSheet(
+        for member: CommunitiesMemberModuleModel.MemberCellModel
+    ) -> some View {
+        if let config = store.state.optionsConfig {
+            let isSelf = member.id == config.currentUserId
+            MemberOptionsSheet(
+                input: .init(
+                    memberName: member.name,
+                    currentRole: member.role,
+                    assignableRoles: AppPresentationModel.MemberOptionsPolicy
+                        .assignableRoles(viewer: config.viewerRole),
+                    showChangeRole: AppPresentationModel.MemberOptionsPolicy
+                        .canChangeRole(viewer: config.viewerRole, activity: config.activity, isSelf: isSelf),
+                    showReport: AppPresentationModel.MemberOptionsPolicy
+                        .canReport(isSelf: isSelf),
+                    onAssignRole: { role in
+                        let ok = await config.onAssignRole(member.id, role)
+                        if ok {
+                            await MainActor.run { store.send(.reload) }
+                        }
+                        return ok
+                    },
+                    onReport: { reason in
+                        await config.onReport(member.id, reason)
+                    }
+                )
+            )
+        } else {
+            EmptyView()
         }
     }
 

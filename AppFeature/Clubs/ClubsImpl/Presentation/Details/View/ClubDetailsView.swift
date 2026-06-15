@@ -9,28 +9,34 @@ import UIKit
 import SwiftUI
 import AppFoundation
 import AppUIKit
+import AppStorage
+import AppPresentationModel
 import Events
 import Communities
 
 struct ClubDetailsView: View {
     @ObservedObject var store: StoreOf<ClubDetailsFeature>
-    
+
     @State private var isScrolled = false
     @State private var isNameVisible = true
     @State private var isSegmentSticky = false
     @State private var baseHeight: CGFloat = 164
     @State private var tabHeights: [ClubDetailsViewState.SegmentTypes: CGFloat] = [:]
-    
+    @State private var optionsMember: CommunitiesMemberModuleModel.MemberCellModel?
+
     private let eventsModule: EventsModule
     private let communitiesModule: CommunitiesModule
-    
+    private let keychain: KeychainProtocol
+
     init(
         store: StoreOf<ClubDetailsFeature>,
         eventsModule: EventsModule = resolve(),
-        communitiesModule: CommunitiesModule = resolve()
+        communitiesModule: CommunitiesModule = resolve(),
+        keychain: KeychainProtocol = KeychainImpl()
     ) {
         self.eventsModule = eventsModule
         self.communitiesModule = communitiesModule
+        self.keychain = keychain
         self.store = store
     }
     
@@ -46,6 +52,9 @@ struct ClubDetailsView: View {
         }
         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { newValue in
             baseHeight = newValue / 4
+        }
+        .appSheet(item: $optionsMember) { member in
+            memberOptionsSheet(for: member)
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
@@ -478,7 +487,9 @@ struct ClubDetailsView: View {
            let view = communitiesModule.makeMembersListView(
                input: .init(
                    data: clubMembers,
-                   onOptionsTapped: { _ in },
+                   onOptionsTapped: { member in
+                       optionsMember = member
+                   },
                    onMemberTapped: { member in
                        store.send(.userTapped(member.id))
                    },
@@ -489,6 +500,42 @@ struct ClubDetailsView: View {
                )
            ) as? AnyView {
             view
+        } else {
+            EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    private func memberOptionsSheet(
+        for member: CommunitiesMemberModuleModel.MemberCellModel
+    ) -> some View {
+        let viewer = store.state.uiModel?.userActivityType ?? .notJoined
+        let isSelf = member.id == keychain.getString(key: .userId)
+        let input = CommunitiesMemberModuleModel.MemberOptionsInput(
+            memberName: member.name,
+            currentRole: member.role,
+            assignableRoles: AppPresentationModel.MemberOptionsPolicy
+                .assignableRoles(viewer: viewer),
+            showChangeRole: AppPresentationModel.MemberOptionsPolicy
+                .canChangeRole(viewer: viewer, activity: .clubs, isSelf: isSelf),
+            showReport: AppPresentationModel.MemberOptionsPolicy
+                .canReport(isSelf: isSelf),
+            onAssignRole: { role in
+                await MainActor.run {
+                    store.send(.assignRole(userId: member.id, role: role))
+                }
+                return true
+            },
+            onReport: { _ in
+                await MainActor.run {
+                    AppSnackBar.show(title: "Report submitted", style: .success)
+                }
+                return true
+            }
+        )
+
+        if let sheet = communitiesModule.makeMemberOptionsSheet(input: input) as? AnyView {
+            sheet
         } else {
             EmptyView()
         }

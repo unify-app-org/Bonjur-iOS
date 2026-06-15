@@ -14,6 +14,7 @@ protocol CommunityDataSource {
     func getClubs(
         query: [String: String]
     ) async throws(APIError) -> [CommunityDTO.ClubResponse]
+    func assignRole(id: Int, request: CommunityDTO.RoleAssignRequest) async throws(APIError) -> Data
 }
 
 final class CommunityDataSourceImpl: NetworkService<CommunityEndPoint>, CommunityDataSource {
@@ -37,5 +38,12 @@ final class CommunityDataSourceImpl: NetworkService<CommunityEndPoint>, Communit
         query: [String: String]
     ) async throws(APIError) -> [CommunityDTO.ClubResponse] {
         try await fetch(endPoint: .getClubs(query))
+    }
+
+    func assignRole(
+        id: Int,
+        request: CommunityDTO.RoleAssignRequest
+    ) async throws(APIError) -> Data {
+        try await fetchRawData(endPoint: .assignRole(id, request))
     }
 }

@@ -119,6 +119,18 @@ public protocol CommunitiesModule {
     ) -> Any
 
 
+    /// Builds the shared member 3-dot options sheet content (Change role / Report
+    /// user / Share). Embed the returned view inside an `.appSheet { ... }`; the
+    /// sheet handles its own internal navigation and dismissal.
+    ///
+    /// - Parameter input: Target member, precomputed visibility flags, assignable
+    ///   roles, and async callbacks for the role change / report network work.
+    /// - Returns: A type-erased SwiftUI view.
+    func makeMemberOptionsSheet(
+        input: CommunitiesMemberModuleModel.MemberOptionsInput
+    ) -> Any
+
+
     /// Builds the standalone, self-paginating members screen.
     ///
     /// Unlike `makeMembersListView`, this screen owns its own paginated requests through the

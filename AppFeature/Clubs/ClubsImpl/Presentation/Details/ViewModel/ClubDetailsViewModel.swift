@@ -8,6 +8,9 @@
 import AppFoundation
 import Communities
 import AppNetwork
+import AppUIKit
+import AppStorage
+import AppPresentationModel
 
 final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
     
@@ -65,12 +68,43 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
             }
         case .seeAllMembersTapped:
             presentMembersList()
+        case .assignRole(let userId, let role):
+            Task {
+                await assignRole(userId: userId, role: role)
+            }
+        }
+    }
+
+    private func assignRole(
+        userId: String,
+        role: AppPresentationModel.UserActivityRole
+    ) async {
+        do {
+            try await dependencies.useCase.assignRole(
+                clubId: inputData.clubId,
+                userId: userId,
+                role: role
+            )
+            await MainActor.run {
+                AppSnackBar.show(title: "Role updated", style: .success)
+            }
+            fetchData()
+        } catch {
+            await MainActor.run {
+                AppSnackBar.show(
+                    title: "Could not update role",
+                    subtitle: "Please try again.",
+                    style: .error
+                )
+            }
         }
     }
 
     private func presentMembersList() {
         let clubId = inputData.clubId
         let useCase = dependencies.useCase
+        let viewerRole = state.uiModel?.userActivityType ?? .notJoined
+        let currentUserId = KeychainImpl().getString(key: .userId)
         let input = CommunitiesMemberModuleModel.MembersListInput(
             title: "Members",
             pageSize: 20,
@@ -85,7 +119,28 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
                 Task { @MainActor in
                     self?.router.navigate(to: .userDetail(member.id))
                 }
-            }
+            },
+            options: .init(
+                viewerRole: viewerRole,
+                activity: .clubs,
+                currentUserId: currentUserId,
+                onAssignRole: { userId, role in
+                    do {
+                        try await useCase.assignRole(clubId: clubId, userId: userId, role: role)
+                        await MainActor.run { AppSnackBar.show(title: "Role updated", style: .success) }
+                        return true
+                    } catch {
+                        await MainActor.run {
+                            AppSnackBar.show(title: "Could not update role", subtitle: "Please try again.", style: .error)
+                        }
+                        return false
+                    }
+                },
+                onReport: { _, _ in
+                    await MainActor.run { AppSnackBar.show(title: "Report submitted", style: .success) }
+                    return true
+                }
+            )
         )
         Task { @MainActor in
             router.navigate(to: .membersList(input))

@@ -9,7 +9,14 @@ import Foundation
 import AppPresentationModel
 
 struct CommunityDTO {
-    
+
+    /// Body for `POST /v1/clubs/{clubId}/role`. A community is modeled as a
+    /// club server-side, so the community id is sent as the club id.
+    struct RoleAssignRequest: Encodable {
+        let userId: String
+        let role: AppPresentationModel.UserActivityRole
+    }
+
     struct Response: Decodable {
         let communityId: Int?
         let visibility: AppPresentationModel.AccessType?

@@ -11,6 +11,7 @@ import Foundation
 import AppNetwork
 import AppStorage
 import Communities
+import AppPresentationModel
 
 protocol ClubRepo {
     func fetchClubs(
@@ -33,6 +34,11 @@ protocol ClubRepo {
         request: MultipartFormData
     ) async throws(APIError) -> Void
     func joinClub(id: Int) async throws(APIError) -> Void
+    func assignRole(
+        clubId: Int,
+        userId: String,
+        role: AppPresentationModel.UserActivityRole
+    ) async throws(APIError) -> Void
 }
 
 class ClubRepoImpl: ClubRepo {
@@ -173,6 +179,17 @@ class ClubRepoImpl: ClubRepo {
         id: Int
     ) async throws(APIError) {
         let _ = try await dataSource.joinClub(id: id)
+    }
+
+    func assignRole(
+        clubId: Int,
+        userId: String,
+        role: AppPresentationModel.UserActivityRole
+    ) async throws(APIError) {
+        let _ = try await dataSource.assignRole(
+            id: clubId,
+            request: .init(userId: userId, role: role)
+        )
     }
 }
 

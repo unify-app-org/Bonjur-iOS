@@ -18,6 +18,13 @@ struct ClubDTOModel {
         let name: String?
     }
 
+    /// Body for `POST /v1/clubs/{clubId}/role`. Communities reuse the same
+    /// route — the community id is passed as the club id.
+    struct RoleAssignRequest: Encodable {
+        let userId: String
+        let role: AppPresentationModel.UserActivityRole
+    }
+
     struct Request: Encodable {
         let communityId: Int
         let name: String

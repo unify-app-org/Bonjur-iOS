@@ -9,6 +9,7 @@ import Foundation
 import Communities
 import AppNetwork
 import Clubs
+import AppPresentationModel
 
 protocol CommunityUseCase {
     func fetchCommunityData(id: Int) async throws -> CommunityDetails.UIModel
@@ -22,6 +23,11 @@ protocol CommunityUseCase {
         communityId: Int,
         query: CommunityDTO.PaginationQuery
     ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
+    func assignRole(
+        communityId: Int,
+        userId: String,
+        role: AppPresentationModel.UserActivityRole
+    ) async throws(APIError)
 }
 
 class CommunityUseCaseImpl: CommunityUseCase {
@@ -55,6 +61,18 @@ class CommunityUseCaseImpl: CommunityUseCase {
             id: id,
             page: page,
             size: size
+        )
+    }
+
+    func assignRole(
+        communityId: Int,
+        userId: String,
+        role: AppPresentationModel.UserActivityRole
+    ) async throws(APIError) {
+        try await repo.assignRole(
+            communityId: communityId,
+            userId: userId,
+            role: role
         )
     }
 }

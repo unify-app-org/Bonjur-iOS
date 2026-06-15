@@ -8,6 +8,9 @@
 import AppFoundation
 import AppNetwork
 import Communities
+import AppUIKit
+import AppStorage
+import AppPresentationModel
 
 final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
 
@@ -88,7 +91,17 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
                 Task { @MainActor in
                     self?.router.navigate(to: .userDetail(member.id))
                 }
-            }
+            },
+            options: .init(
+                viewerRole: .notJoined,
+                activity: .events,
+                currentUserId: KeychainImpl().getString(key: .userId),
+                onAssignRole: { _, _ in false },
+                onReport: { _, _ in
+                    await MainActor.run { AppSnackBar.show(title: "Report submitted", style: .success) }
+                    return true
+                }
+            )
         )
         Task { @MainActor in
             router.navigate(to: .membersList(input))

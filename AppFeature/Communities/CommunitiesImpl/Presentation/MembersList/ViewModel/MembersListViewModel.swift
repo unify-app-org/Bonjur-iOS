@@ -42,11 +42,23 @@ final class MembersListViewModel: UIFeatureViewModel<MembersListFeature> {
             loadMore()
         case .memberTapped(let row):
             inputData.onMemberTapped(row.member)
+        case .reload:
+            reload()
+        }
+    }
+
+    private func reload() {
+        guard !state.isLoading else { return }
+        state.isLoading = true
+        Task {
+            await load(page: 0, replacing: true)
+            await MainActor.run { state.isLoading = false }
         }
     }
 
     private func onAppear() {
         state.title = inputData.title
+        state.optionsConfig = inputData.options
         guard users.isEmpty, !state.isLoading else { return }
         state.isLoading = true
         postEffect(.loading(true))
@@ -97,8 +109,11 @@ final class MembersListViewModel: UIFeatureViewModel<MembersListFeature> {
             users: users,
             titleOverrides: inputData.titleOverrides
         )
+        let showsOptions = inputData.options != nil
         state.sections = grouped.sections.enumerated().map { index, section in
-            .browse(id: "section-\(index)", section: section)
+            showsOptions
+                ? .browseOptions(id: "section-\(index)", section: section)
+                : .browse(id: "section-\(index)", section: section)
         }
         state.isEmpty = users.isEmpty
     }

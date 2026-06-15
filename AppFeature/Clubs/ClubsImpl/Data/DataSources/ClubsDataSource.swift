@@ -17,6 +17,7 @@ protocol ClubsDataSource {
     func fetchClubMemberById(id: Int, page: Int, size: Int) async throws(APIError) -> ClubDTOModel.MemberResponse
     func editClub(id: Int, request: MultipartFormData) async throws(APIError) -> Data
     func joinClub(id: Int) async throws(APIError) -> Data
+    func assignRole(id: Int, request: ClubDTOModel.RoleAssignRequest) async throws(APIError) -> Data
 }
 
 final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource {
@@ -131,5 +132,12 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
     
     func joinClub(id: Int) async throws(APIError) -> Data {
         try await fetchRawData(endPoint: .joinClub(id))
+    }
+
+    func assignRole(
+        id: Int,
+        request: ClubDTOModel.RoleAssignRequest
+    ) async throws(APIError) -> Data {
+        try await fetchRawData(endPoint: .assignRole(id, request))
     }
 }

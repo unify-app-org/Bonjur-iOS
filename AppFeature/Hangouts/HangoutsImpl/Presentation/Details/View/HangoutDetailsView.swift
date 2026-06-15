@@ -9,6 +9,8 @@ import UIKit
 import SwiftUI
 import AppFoundation
 import AppUIKit
+import AppStorage
+import AppPresentationModel
 import Communities
 
 struct HangoutDetailsView: View {
@@ -18,14 +20,18 @@ struct HangoutDetailsView: View {
     @State private var isScrolled = false
     @State private var isSegmentSticky = false
     @State private var tabHeights: [HangoutDetailsViewState.SegmentTypes: CGFloat] = [:]
-    
+    @State private var optionsMember: CommunitiesMemberModuleModel.MemberCellModel?
+
     private let communitiesModule: CommunitiesModule
+    private let keychain: KeychainProtocol
 
     init(
         store: StoreOf<HangoutDetailsFeature>,
-        communitiesModule: CommunitiesModule = resolve()
+        communitiesModule: CommunitiesModule = resolve(),
+        keychain: KeychainProtocol = KeychainImpl()
     ) {
         self.communitiesModule = communitiesModule
+        self.keychain = keychain
         self.store = store
     }
     
@@ -43,6 +49,9 @@ struct HangoutDetailsView: View {
                 segmentViewSticky
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
+        }
+        .appSheet(item: $optionsMember) { member in
+            memberOptionsSheet(for: member)
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
@@ -361,7 +370,9 @@ struct HangoutDetailsView: View {
            let view = communitiesModule.makeMembersListView(
                input: .init(
                    data: membersData,
-                   onOptionsTapped: { _ in },
+                   onOptionsTapped: { member in
+                       optionsMember = member
+                   },
                    onMemberTapped: { member in
                        store.send(.userTapped(member.id))
                    },
@@ -372,6 +383,33 @@ struct HangoutDetailsView: View {
                )
            ) as? AnyView {
             view
+        } else {
+            EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    private func memberOptionsSheet(
+        for member: CommunitiesMemberModuleModel.MemberCellModel
+    ) -> some View {
+        let isSelf = member.id == keychain.getString(key: .userId)
+        let input = CommunitiesMemberModuleModel.MemberOptionsInput(
+            memberName: member.name,
+            currentRole: member.role,
+            assignableRoles: [],
+            showChangeRole: false,
+            showReport: AppPresentationModel.MemberOptionsPolicy.canReport(isSelf: isSelf),
+            onAssignRole: { _ in false },
+            onReport: { _ in
+                await MainActor.run {
+                    AppSnackBar.show(title: "Report submitted", style: .success)
+                }
+                return true
+            }
+        )
+
+        if let sheet = communitiesModule.makeMemberOptionsSheet(input: input) as? AnyView {
+            sheet
         } else {
             EmptyView()
         }

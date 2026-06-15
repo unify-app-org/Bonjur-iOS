@@ -11,6 +11,7 @@ import Events
 import AppUIKit
 import Communities
 import AppNetwork
+import AppPresentationModel
 
 // MARK: - ClubDetails input
 
@@ -70,6 +71,7 @@ enum ClubDetailsAction: UIFeatureAction {
     case userTapped(String)
     case joinClubTapped
     case seeAllMembersTapped
+    case assignRole(userId: String, role: AppPresentationModel.UserActivityRole)
 }
 
 // MARK: - PreferenceKey

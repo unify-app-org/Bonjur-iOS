@@ -32,6 +32,12 @@ protocol CommunityRepo {
         communityId: Int,
         query: CommunityDTO.PaginationQuery
     ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
+
+    func assignRole(
+        communityId: Int,
+        userId: String,
+        role: AppPresentationModel.UserActivityRole
+    ) async throws(APIError) -> Void
 }
 
 class CommunityRepoImpl: CommunityRepo {
@@ -166,6 +172,17 @@ class CommunityRepoImpl: CommunityRepo {
                 )
         }
         return uiModel
+    }
+
+    func assignRole(
+        communityId: Int,
+        userId: String,
+        role: AppPresentationModel.UserActivityRole
+    ) async throws(APIError) {
+        let _ = try await dataSource.assignRole(
+            id: communityId,
+            request: .init(userId: userId, role: role)
+        )
     }
 }
 

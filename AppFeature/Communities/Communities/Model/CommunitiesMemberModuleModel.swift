@@ -9,7 +9,46 @@ import Foundation
 import AppPresentationModel
 
 public enum CommunitiesMemberModuleModel {
-    public struct MemberCellModel: Hashable, Sendable {
+
+    /// Input for the shared member 3-dot options sheet (Change role / Report / Share).
+    /// The sheet is pure UI: the caller computes visibility via
+    /// `AppPresentationModel.MemberOptionsPolicy` and supplies the network work
+    /// through the async callbacks (which return `true` on success).
+    public struct MemberOptionsInput {
+        public let memberName: String
+        public let currentRole: AppPresentationModel.UserActivityRole
+        /// Roles selectable in the picker, already filtered for the viewer.
+        public let assignableRoles: [AppPresentationModel.UserActivityRole]
+        /// Whether to show the "Change role" row.
+        public let showChangeRole: Bool
+        /// Whether to show the "Report user" row.
+        public let showReport: Bool
+        /// Performs the role change. Returns `true` when it succeeded so the
+        /// sheet can dismiss; `false` keeps the picker open.
+        public let onAssignRole: (AppPresentationModel.UserActivityRole) async -> Bool
+        /// Submits a report. Returns `true` on success.
+        public let onReport: (AppPresentationModel.ReportReason) async -> Bool
+
+        public init(
+            memberName: String,
+            currentRole: AppPresentationModel.UserActivityRole,
+            assignableRoles: [AppPresentationModel.UserActivityRole],
+            showChangeRole: Bool,
+            showReport: Bool,
+            onAssignRole: @escaping (AppPresentationModel.UserActivityRole) async -> Bool,
+            onReport: @escaping (AppPresentationModel.ReportReason) async -> Bool
+        ) {
+            self.memberName = memberName
+            self.currentRole = currentRole
+            self.assignableRoles = assignableRoles
+            self.showChangeRole = showChangeRole
+            self.showReport = showReport
+            self.onAssignRole = onAssignRole
+            self.onReport = onReport
+        }
+    }
+
+    public struct MemberCellModel: Hashable, Sendable, Identifiable {
         public let id: String
         public let name: String
         public let avatarURL: URL?
@@ -318,6 +357,32 @@ public extension CommunitiesMemberModuleModel {
         }
     }
 
+    /// Enables the 3-dot member options menu on a members list. Carries everything
+    /// the shared options sheet needs that the list itself can't compute: the
+    /// viewer's role, the activity kind, the current user id (for the self-check),
+    /// and the async network callbacks. When `nil`, rows are plain (no menu).
+    public struct MemberOptionsConfig {
+        public let viewerRole: AppPresentationModel.UserActivityRole
+        public let activity: AppPresentationModel.ActivityType
+        public let currentUserId: String
+        public let onAssignRole: (String, AppPresentationModel.UserActivityRole) async -> Bool
+        public let onReport: (String, AppPresentationModel.ReportReason) async -> Bool
+
+        public init(
+            viewerRole: AppPresentationModel.UserActivityRole,
+            activity: AppPresentationModel.ActivityType,
+            currentUserId: String,
+            onAssignRole: @escaping (String, AppPresentationModel.UserActivityRole) async -> Bool,
+            onReport: @escaping (String, AppPresentationModel.ReportReason) async -> Bool
+        ) {
+            self.viewerRole = viewerRole
+            self.activity = activity
+            self.currentUserId = currentUserId
+            self.onAssignRole = onAssignRole
+            self.onReport = onReport
+        }
+    }
+
     /// Input for the standalone, self-paginating members screen. The screen owns its own
     /// requests via `loadPage` (page, size) so callers never pre-fetch the full list.
     struct MembersListInput {
@@ -326,19 +391,23 @@ public extension CommunitiesMemberModuleModel {
         public let pageSize: Int
         public let loadPage: (Int, Int) async throws -> MembersPage
         public let onMemberTapped: (MemberCellModel) -> Void
+        /// When set, rows show the 3-dot options menu backed by this config.
+        public let options: MemberOptionsConfig?
 
         public init(
             title: String,
             titleOverrides: [AppPresentationModel.UserActivityRole: String] = [:],
             pageSize: Int = 20,
             loadPage: @escaping (Int, Int) async throws -> MembersPage,
-            onMemberTapped: @escaping (MemberCellModel) -> Void
+            onMemberTapped: @escaping (MemberCellModel) -> Void,
+            options: MemberOptionsConfig? = nil
         ) {
             self.title = title
             self.titleOverrides = titleOverrides
             self.pageSize = pageSize
             self.loadPage = loadPage
             self.onMemberTapped = onMemberTapped
+            self.options = options
         }
     }
 }

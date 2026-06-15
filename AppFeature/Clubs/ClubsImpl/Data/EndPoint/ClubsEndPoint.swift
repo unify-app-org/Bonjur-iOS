@@ -15,6 +15,7 @@ enum ClubsEndPoint {
     case getMembersByClubId(Int, [String: String])
     case editClub(Int, MultipartFormData)
     case joinClub(Int)
+    case assignRole(Int, ClubDTOModel.RoleAssignRequest)
 }
 
 extension ClubsEndPoint: AppEndPoint {
@@ -35,13 +36,16 @@ extension ClubsEndPoint: AppEndPoint {
             "api/cs/v1/clubs/\(id)"
         case .joinClub(let id):
             "api/cs/v1/clubs/\(id)/join-club"
+        case .assignRole(let id, _):
+            "api/cs/v1/clubs/\(id)/role"
         }
     }
-    
+
     var method: HTTPMethod {
         switch self {
         case .createClub,
-                .joinClub:
+                .joinClub,
+                .assignRole:
                 .post
         case .getCategories,
                 .getClubs,
@@ -69,6 +73,15 @@ extension ClubsEndPoint: AppEndPoint {
             query
         case .getMembersByClubId(_, let query):
             query
+        default:
+            nil
+        }
+    }
+
+    var body: Encodable? {
+        switch self {
+        case .assignRole(_, let request):
+            request
         default:
             nil
         }

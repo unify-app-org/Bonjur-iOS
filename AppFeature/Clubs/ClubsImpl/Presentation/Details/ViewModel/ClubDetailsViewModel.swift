@@ -72,6 +72,95 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
             Task {
                 await assignRole(userId: userId, role: role)
             }
+        case .exitTapped:
+            Task { @MainActor in
+                presentExitConfirm()
+            }
+        }
+    }
+
+    // MARK: - Exit flow
+
+    @MainActor
+    private func presentExitConfirm() {
+        AppAlertPresenter.present(
+            .init(
+                config: .init(
+                    title: "Exit Club?",
+                    subtitle: "Are you sure you want to leave this club? You will no longer be able to participate in events or see club updates."
+                ),
+                actions: {
+                    AppAlert.Action(title: "Exit club", style: .destructive) { [weak self] in
+                        self?.handleExitConfirmed()
+                    }
+                    AppAlert.Action(title: "Cancel", style: .primary)
+                }
+            )
+        )
+    }
+
+    private func handleExitConfirmed() {
+        let role = state.uiModel?.userActivityType ?? .notJoined
+        Task {
+            postEffect(.loading(true))
+            // President must hand off ownership: gate exit on an existing VP.
+            if role == .president {
+                do {
+                    let hasVicePresident = try await dependencies.useCase
+                        .clubHasVicePresident(id: inputData.clubId)
+                    if !hasVicePresident {
+                        postEffect(.loading(false))
+                        await MainActor.run { self.presentTransferOwnership() }
+                        return
+                    }
+                } catch {
+                    postEffect(.loading(false))
+                    await showExitError()
+                    return
+                }
+            }
+            await performExit()
+        }
+    }
+
+    private func performExit() async {
+        defer { postEffect(.loading(false)) }
+        do {
+            try await dependencies.useCase.exitClub(id: inputData.clubId)
+            await MainActor.run {
+                AppSnackBar.show(title: "You left the club", style: .success)
+                router.navigate(to: .backTapped)
+            }
+        } catch {
+            await showExitError()
+        }
+    }
+
+    @MainActor
+    private func presentTransferOwnership() {
+        AppAlertPresenter.present(
+            .init(
+                config: .init(
+                    title: "Transfer Ownership Required",
+                    subtitle: "You are the owner of this club. Before leaving, you must assign the vice president role to another member to ensure the group remains active."
+                ),
+                actions: {
+                    AppAlert.Action(title: "Cancel", style: .secondary)
+                    AppAlert.Action(title: "Assign", style: .primary) { [weak self] in
+                        self?.presentMembersList()
+                    }
+                }
+            )
+        )
+    }
+
+    private func showExitError() async {
+        await MainActor.run {
+            AppSnackBar.show(
+                title: "Could not leave club",
+                subtitle: "Please try again.",
+                style: .error
+            )
         }
     }
 

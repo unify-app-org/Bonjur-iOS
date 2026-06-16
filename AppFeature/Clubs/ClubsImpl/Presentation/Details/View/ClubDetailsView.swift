@@ -23,6 +23,7 @@ struct ClubDetailsView: View {
     @State private var baseHeight: CGFloat = 164
     @State private var tabHeights: [ClubDetailsViewState.SegmentTypes: CGFloat] = [:]
     @State private var optionsMember: CommunitiesMemberModuleModel.MemberCellModel?
+    @State private var optionsToken: ClubOptionsToken?
 
     private let eventsModule: EventsModule
     private let communitiesModule: CommunitiesModule
@@ -56,6 +57,9 @@ struct ClubDetailsView: View {
         .appSheet(item: $optionsMember) { member in
             memberOptionsSheet(for: member)
         }
+        .appSheet(item: $optionsToken) { _ in
+            clubOptionsSheet
+        }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar(.visible)
@@ -81,7 +85,7 @@ struct ClubDetailsView: View {
                 Image(uiImage: UIImage.Icons.ellipsis02)
                     .toolbarItemBackground(
                         isScrolled: isScrolled
-                    ) { }
+                    ) { optionsToken = ClubOptionsToken() }
             }
             if store.state.isEditable {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -487,6 +491,7 @@ struct ClubDetailsView: View {
            let view = communitiesModule.makeMembersListView(
                input: .init(
                    data: clubMembers,
+                   currentUserId: keychain.getString(key: .userId),
                    onOptionsTapped: { member in
                        optionsMember = member
                    },
@@ -503,6 +508,22 @@ struct ClubDetailsView: View {
         } else {
             EmptyView()
         }
+    }
+
+    @ViewBuilder
+    private var clubOptionsSheet: some View {
+        ClubOptionsSheet(
+            input: .init(
+                viewerRole: store.state.uiModel?.userActivityType ?? .notJoined,
+                onExit: { store.send(.exitTapped) },
+                onReport: { _ in
+                    await MainActor.run {
+                        AppSnackBar.show(title: "Report submitted", style: .success)
+                    }
+                    return true
+                }
+            )
+        )
     }
 
     @ViewBuilder

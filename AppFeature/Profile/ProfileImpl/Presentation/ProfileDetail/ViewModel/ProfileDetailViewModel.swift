@@ -16,6 +16,7 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
     
     struct Dependencies {
         let useCase: ProfileUseCase
+        let tokenManager: TokenManager
     }
     
     private let router: ProfileDetailRouterProtocol
@@ -147,9 +148,12 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
         switch results.user {
         case .success(let user):
             state.uiModel = user
-            if inputData.userId != nil {
-                state.navigationTitle = "About user"
-                state.isOtherUser = true
+            Task {
+                let myId = await dependencies.tokenManager.getUserId()
+                if let id = inputData.userId, id != myId {
+                    state.navigationTitle = "About user"
+                    state.isOtherUser = true
+                }
             }
         case .failure(let error):
             firstError = firstError ?? error

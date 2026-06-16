@@ -18,6 +18,7 @@ protocol ClubsDataSource {
     func editClub(id: Int, request: MultipartFormData) async throws(APIError) -> Data
     func joinClub(id: Int) async throws(APIError) -> Data
     func assignRole(id: Int, request: ClubDTOModel.RoleAssignRequest) async throws(APIError) -> Data
+    func exitClub(id: Int) async throws(APIError) -> Data
 }
 
 final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource {
@@ -139,5 +140,9 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
         request: ClubDTOModel.RoleAssignRequest
     ) async throws(APIError) -> Data {
         try await fetchRawData(endPoint: .assignRole(id, request))
+    }
+
+    func exitClub(id: Int) async throws(APIError) -> Data {
+        try await fetchRawData(endPoint: .exitClub(id))
     }
 }

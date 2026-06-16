@@ -39,6 +39,11 @@ protocol ClubRepo {
         userId: String,
         role: AppPresentationModel.UserActivityRole
     ) async throws(APIError) -> Void
+    func exitClub(id: Int) async throws(APIError) -> Void
+    /// Pages through the member list and returns `true` as soon as a member
+    /// holding the vice-president role is found. Used to gate the president
+    /// owner-transfer flow on exit.
+    func clubHasVicePresident(id: Int) async throws(APIError) -> Bool
 }
 
 class ClubRepoImpl: ClubRepo {
@@ -190,6 +195,25 @@ class ClubRepoImpl: ClubRepo {
             id: clubId,
             request: .init(userId: userId, role: role)
         )
+    }
+
+    func exitClub(id: Int) async throws(APIError) {
+        let _ = try await dataSource.exitClub(id: id)
+    }
+
+    func clubHasVicePresident(id: Int) async throws(APIError) -> Bool {
+        let pageSize = 50
+        var page = 0
+        while true {
+            let content = try await dataSource
+                .fetchClubMemberById(id: id, page: page, size: pageSize)
+                .content
+            if content.contains(where: { $0.role == .visePresident }) {
+                return true
+            }
+            guard content.count >= pageSize else { return false }
+            page += 1
+        }
     }
 }
 

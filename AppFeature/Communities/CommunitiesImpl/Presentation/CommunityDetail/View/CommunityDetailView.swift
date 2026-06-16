@@ -23,6 +23,7 @@ struct CommunityDetailView: View {
     @State private var baseHeight: CGFloat = 164
     @State private var tabHeights: [CommunityDetailViewState.SegmentTypes: CGFloat] = [:]
     @State private var optionsMember: CommunitiesMemberModuleModel.MemberCellModel?
+    @State private var optionsToken: CommunityOptionsToken?
 
     private let clubsModule: ClubsModule
     private let keychain: KeychainProtocol
@@ -53,6 +54,9 @@ struct CommunityDetailView: View {
         .appSheet(item: $optionsMember) { member in
             memberOptionsSheet(for: member)
         }
+        .appSheet(item: $optionsToken) { _ in
+            CommunityOptionsSheet()
+        }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .enableSwipeBack()
@@ -73,12 +77,6 @@ struct CommunityDetailView: View {
                         .font(Font.Typography.HeadingXl.bold)
                         .lineLimit(1)
                 }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Image(uiImage: UIImage.Icons.ellipsis02)
-                    .toolbarItemBackground(
-                        isScrolled: isScrolled
-                    ) { }
             }
             if store.state.isEditable {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -421,6 +419,7 @@ struct CommunityDetailView: View {
         if let membersData = store.state.membersData {
             let input = CommunitiesMemberModuleModel.ClubMembersInput(
                 data: membersData,
+                currentUserId: keychain.getString(key: .userId),
                 onOptionsTapped: { member in
                     optionsMember = member
                 },
@@ -444,7 +443,10 @@ struct CommunityDetailView: View {
                 },
                 showsScrollView: false,
                 horizontalPadding: false,
-                totalCount: store.state.uiModel?.membersCount ?? 0
+                totalCount: store.state.uiModel?.membersCount ?? 0,
+                onSeeAllTapped: {
+                    store.send(.seeAllMembersTapped)
+                }
             )
             .padding(.top)
             .padding(.bottom, 34)

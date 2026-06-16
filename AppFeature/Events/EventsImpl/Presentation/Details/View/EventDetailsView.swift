@@ -23,6 +23,7 @@ struct EventDetailsView: View {
     @State private var baseHeight: CGFloat = 164
     @State private var tabHeights: [EventDetailsViewState.SegmentTypes: CGFloat] = [:]
     @State private var optionsMember: CommunitiesMemberModuleModel.MemberCellModel?
+    @State private var optionsToken: EventOptionsToken?
 
     private let clubsModule: ClubsModule
     private let communitiesModule: CommunitiesModule
@@ -56,6 +57,9 @@ struct EventDetailsView: View {
         .appSheet(item: $optionsMember) { member in
             memberOptionsSheet(for: member)
         }
+        .appSheet(item: $optionsToken) { _ in
+            eventOptionsSheet
+        }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbarRole(.editor)
@@ -81,7 +85,7 @@ struct EventDetailsView: View {
                     .toolbarItemBackground(
                         isScrolled: isScrolled
                     ) {
-                        
+                        optionsToken = EventOptionsToken()
                     }
             }
             ToolbarItem(placement: .topBarTrailing) {
@@ -445,6 +449,7 @@ struct EventDetailsView: View {
            let view = communitiesModule.makeMembersListView(
                input: .init(
                    data: membersData,
+                   currentUserId: keychain.getString(key: .userId),
                    onOptionsTapped: { member in
                        optionsMember = member
                    },
@@ -461,6 +466,21 @@ struct EventDetailsView: View {
         } else {
             EmptyView()
         }
+    }
+
+    private var eventOptionsSheet: some View {
+        EventOptionsSheet(
+            input: .init(
+                viewerRole: store.state.uiModel?.userActivityType ?? .notJoined,
+                onExit: { store.send(.exitTapped) },
+                onReport: { _ in
+                    await MainActor.run {
+                        AppSnackBar.show(title: "Report submitted", style: .success)
+                    }
+                    return true
+                }
+            )
+        )
     }
 
     @ViewBuilder

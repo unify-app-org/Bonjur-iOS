@@ -166,7 +166,7 @@ These controllers are live on the backend. iOS has no `AppEndPoint` case calling
 
 | Method | Path | Backend handler | Purpose | Maps to iOS screen |
 |---|---|---|---|---|
-| DELETE | `/{clubId}/exit` | `exitUser` | Leave a club | Club Details "exit" (with owner-transfer gate) |
+| DELETE | `/{clubId}/exit` | `exitUser` | Leave a club | ✅ Connected — Club Details 3-dot → Exit (president owner-transfer gate via VP scan) |
 | POST | `/{clubId}/role` | `changeUserRole` (body `ChangeRoleRequest`) | Assign member role | Member Management — assign role |
 | GET | `/join-requests` | `getJoinRequests` (paged) | List pending join requests | Private club — owner approval inbox |
 | POST | `/join-requests/status` | `updateJoinRequestStatus` (body `UpdateJoinRequestStatusRequest`) | Approve/reject join request | Private club — approve/reject |
@@ -179,7 +179,7 @@ These controllers are live on the backend. iOS has no `AppEndPoint` case calling
 | DELETE | `/{hangoutId}` | `delete` | Delete hangout | Hangout Details — owner delete |
 | POST | `/requests/{hangoutId}` | `handleJoinRequest` (body `JoinRequestDecisionDto`) | Approve/reject hangout join | Private hangout — owner approval |
 | GET | `/join-requests` | `getPendingJoinRequests` (paged) | List pending hangout join requests | Hangout owner — request inbox |
-| DELETE | `/exit/{hangoutId}` | `leaveHangout` | Leave hangout | Hangout Details — exit |
+| DELETE | `/exit/{hangoutId}` | `leaveHangout` | Leave hangout | ✅ Connected — Hangout Details 3-dot → Exit |
 
 ### auth-service (`api/as/v1/auth`)
 
@@ -195,7 +195,7 @@ These controllers are live on the backend. iOS has no `AppEndPoint` case calling
 
 | Capability | Backend ready | iOS connected | Gap |
 |---|---|---|---|
-| Leave club / hangout | ✅ | ❌ | add `exit` endpoint cases |
+| Leave club / hangout / event | ✅ | ✅ | Connected via Activity 3-dot → Exit (event uses `DELETE /es/v1/events/{id}/exit`) |
 | Delete club / hangout | ✅ | ❌ | add `delete` cases (owner action) |
 | Role management | ✅ (club) | ❌ | add `changeUserRole` |
 | Join-request approval flow | ✅ (club + hangout) | ❌ | add list + status/decision cases |

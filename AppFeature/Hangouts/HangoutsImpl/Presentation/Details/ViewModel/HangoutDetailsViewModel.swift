@@ -60,6 +60,52 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
             }
         case .seeAllMembersTapped:
             presentMembersList()
+        case .exitTapped:
+            Task { @MainActor in
+                presentExitConfirm()
+            }
+        }
+    }
+
+    // MARK: - Exit flow
+
+    @MainActor
+    private func presentExitConfirm() {
+        AppAlertPresenter.present(
+            .init(
+                config: .init(
+                    title: "Exit hangout?",
+                    subtitle: "Are you sure you want to leave this hangout? You will no longer be able to participate or see updates."
+                ),
+                actions: {
+                    AppAlert.Action(title: "Exit hangout", style: .destructive) { [weak self] in
+                        self?.performExit()
+                    }
+                    AppAlert.Action(title: "Cancel", style: .primary)
+                }
+            )
+        )
+    }
+
+    private func performExit() {
+        Task {
+            postEffect(.loading(true))
+            defer { postEffect(.loading(false)) }
+            do {
+                try await dependencies.useCase.exitHangout(id: inputData.hangoutId)
+                await MainActor.run {
+                    AppSnackBar.show(title: "You left the hangout", style: .success)
+                }
+                await router.navigate(to: .back)
+            } catch {
+                await MainActor.run {
+                    AppSnackBar.show(
+                        title: "Could not leave hangout",
+                        subtitle: "Please try again.",
+                        style: .error
+                    )
+                }
+            }
         }
     }
 

@@ -16,6 +16,7 @@ import AppPresentationModel
 protocol EventsRepo {
     func fetchEvents() async throws(APIError) -> [EventsModuleModel.CardInputData]
     func joinEvent(eventId: String) async throws(APIError) -> Void
+    func exitEvent(eventId: String) async throws(APIError) -> Void
     func createEvent(request: MultipartFormData) async throws(APIError) -> Void
     func editEvent(eventId: String, request: MultipartFormData) async throws(APIError) -> Void
     func fetchClubsForEvents() async throws(APIError) -> [EventsCreate.SelectableClub]
@@ -69,6 +70,10 @@ final class EventsRepoImpl: EventsRepo {
 
     func joinEvent(eventId: String) async throws(APIError) {
         _ = try await dataSource.joinEvent(eventId: eventId)
+    }
+
+    func exitEvent(eventId: String) async throws(APIError) {
+        _ = try await dataSource.exitEvent(eventId: eventId)
     }
 
     func createEvent(request: MultipartFormData) async throws(APIError) {

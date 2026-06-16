@@ -70,6 +70,52 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
             }
         case .seeAllMembersTapped:
             presentMembersList()
+        case .exitTapped:
+            Task { @MainActor in
+                presentExitConfirm()
+            }
+        }
+    }
+
+    // MARK: - Exit flow
+
+    @MainActor
+    private func presentExitConfirm() {
+        AppAlertPresenter.present(
+            .init(
+                config: .init(
+                    title: "Leave event?",
+                    subtitle: "Are you sure you want to leave this event? You will no longer be able to participate or see updates."
+                ),
+                actions: {
+                    AppAlert.Action(title: "Leave event", style: .destructive) { [weak self] in
+                        self?.performExit()
+                    }
+                    AppAlert.Action(title: "Cancel", style: .primary)
+                }
+            )
+        )
+    }
+
+    private func performExit() {
+        Task {
+            postEffect(.loading(true))
+            defer { postEffect(.loading(false)) }
+            do {
+                try await dependencies.useCase.exitEvent(eventId: inputData.eventId)
+                await MainActor.run {
+                    AppSnackBar.show(title: "You left the event", style: .success)
+                }
+                await router.navigate(to: .backTapped)
+            } catch {
+                await MainActor.run {
+                    AppSnackBar.show(
+                        title: "Could not leave event",
+                        subtitle: "Please try again.",
+                        style: .error
+                    )
+                }
+            }
         }
     }
 

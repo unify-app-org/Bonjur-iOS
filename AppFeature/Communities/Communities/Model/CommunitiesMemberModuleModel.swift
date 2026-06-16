@@ -299,6 +299,8 @@ public extension CommunitiesMemberModuleModel {
 
     struct ClubMembersInput {
         public let sections: [MemberListSection]
+        /// Current user id, so the embedded list can hide the 3-dot on your own row.
+        public let currentUserId: String?
         public let onOptionsTapped: (MemberCellModel) -> Void
         public let onMemberTapped: (MemberCellModel) -> Void
         /// When set, the embedded list renders at most this many member rows (by role order)
@@ -312,6 +314,7 @@ public extension CommunitiesMemberModuleModel {
 
         public init(
             sections: [MemberListSection],
+            currentUserId: String? = nil,
             onOptionsTapped: @escaping (MemberCellModel) -> Void,
             onMemberTapped: @escaping (MemberCellModel) -> Void,
             previewLimit: Int = 5,
@@ -319,6 +322,7 @@ public extension CommunitiesMemberModuleModel {
             onSeeAllTapped: (() -> Void)? = nil
         ) {
             self.sections = sections
+            self.currentUserId = currentUserId
             self.onOptionsTapped = onOptionsTapped
             self.onMemberTapped = onMemberTapped
             self.previewLimit = previewLimit
@@ -328,6 +332,7 @@ public extension CommunitiesMemberModuleModel {
 
         public init(
             data: GroupedMembersData,
+            currentUserId: String? = nil,
             onOptionsTapped: @escaping (MemberCellModel) -> Void,
             onMemberTapped: @escaping (MemberCellModel) -> Void,
             previewLimit: Int = 5,
@@ -336,6 +341,7 @@ public extension CommunitiesMemberModuleModel {
         ) {
             self.init(
                 sections: data.sections,
+                currentUserId: currentUserId,
                 onOptionsTapped: onOptionsTapped,
                 onMemberTapped: onMemberTapped,
                 previewLimit: previewLimit,

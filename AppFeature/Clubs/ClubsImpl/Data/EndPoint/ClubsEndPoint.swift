@@ -16,6 +16,7 @@ enum ClubsEndPoint {
     case editClub(Int, MultipartFormData)
     case joinClub(Int)
     case assignRole(Int, ClubDTOModel.RoleAssignRequest)
+    case exitClub(Int)
 }
 
 extension ClubsEndPoint: AppEndPoint {
@@ -38,6 +39,8 @@ extension ClubsEndPoint: AppEndPoint {
             "api/cs/v1/clubs/\(id)/join-club"
         case .assignRole(let id, _):
             "api/cs/v1/clubs/\(id)/role"
+        case .exitClub(let id):
+            "api/cs/v1/clubs/\(id)/exit"
         }
     }
 
@@ -54,6 +57,8 @@ extension ClubsEndPoint: AppEndPoint {
                 .get
         case .editClub:
                 .put
+        case .exitClub:
+                .delete
         }
     }
     

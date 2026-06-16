@@ -23,15 +23,17 @@ extension MemberListSectionViewData {
     }
 
     /// Same as `browse` but rows show the 3-dot options menu instead of a disclosure.
+    /// The current user's own row gets no 3-dot.
     static func browseOptions(
         id: String,
-        section: CommunitiesMemberModuleModel.MemberListSection
+        section: CommunitiesMemberModuleModel.MemberListSection,
+        currentUserId: String?
     ) -> Self {
         .init(
             id: id,
             title: section.title,
             memberCountText: section.memberCount.map { "\($0) student\($0 == 1 ? "" : "s")" },
-            rows: section.members.map(MemberCellViewData.options(from:)),
+            rows: section.members.map { .options(from: $0, currentUserId: currentUserId) },
             showsSelectGroup: false,
             isGroupSelected: false
         )
@@ -48,7 +50,7 @@ extension Array where Element == MemberListSectionViewData {
                 title: section.title,
                 memberCountText: section.memberCount.map { "\($0)" },
                 rows: section.members.map {
-                    .options(from: $0)
+                    .options(from: $0, currentUserId: input.currentUserId)
                 },
                 showsSelectGroup: false,
                 isGroupSelected: false

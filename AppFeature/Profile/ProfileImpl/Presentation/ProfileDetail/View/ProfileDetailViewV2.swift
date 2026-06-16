@@ -34,28 +34,35 @@ struct ProfileDetailViewV2: View {
     }
 
     var body: some View {
-        mainScrollView
-            .animation(.easeInOut, value: store.state.selectedSegment)
-            .onAppear {
-                store.send(.fetchData)
+        ZStack(alignment: .top) {
+            mainScrollView
+            
+            if isSegmentSticky {
+                segmentViewSticky
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
-            .navigationTitle(store.state.navigationTitle)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(.visible)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    if !store.state.isOtherUser {
-                        Button {
-                            store.send(.settingsTapped)
-                        } label: {
-                            Image(uiImage: UIImage.Icons.settings01)
-                                .renderingMode(.template)
-                        }
-                        .foregroundStyle(Color.Palette.black)
+        }
+        .animation(.easeInOut, value: store.state.selectedSegment)
+        .onAppear {
+            store.send(.fetchData)
+        }
+        .navigationTitle(store.state.navigationTitle)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if !store.state.isOtherUser {
+                    Button {
+                        store.send(.settingsTapped)
+                    } label: {
+                        Image(uiImage: UIImage.Icons.settings01)
+                            .renderingMode(.template)
                     }
+                    .foregroundStyle(Color.Palette.black)
                 }
             }
-            .enableSwipeBack()
+        }
+        .enableSwipeBack()
     }
 
     // MARK: - Main Components
@@ -65,7 +72,8 @@ struct ProfileDetailViewV2: View {
             VStack(spacing: 22) {
                 compactHeaderView
                 aboutBoxView
-                activitySummaryCard
+                segmentView
+                tabView
             }
             .padding(.horizontal)
             .padding(.top, 8)
@@ -108,8 +116,10 @@ struct ProfileDetailViewV2: View {
                     .multilineTextAlignment(.center)
                     .padding(.top, 3)
 
-                cardChip
-                    .padding(.top, 14)
+                if !store.state.isOtherUser {
+                    cardChip
+                        .padding(.top, 14)
+                }
             }
             .frame(maxWidth: .infinity)
         }
@@ -295,5 +305,171 @@ struct ProfileDetailViewV2: View {
         .padding(.vertical, 11)
         .background(Color.Palette.white)
         .clipShape(RoundedRectangle(cornerRadius: 14))
+    }
+    
+    // MARK: - Segments
+    
+    @ViewBuilder
+    private var segmentView: some View {
+        segmentPicker
+            .background(Color.white)
+            .opacity(isSegmentSticky ? 0 : 1)
+            .onGeometryChange(for: CGFloat.self) {
+                $0.frame(in: .named("scroll")).minY
+            } action: { minY in
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isSegmentSticky = minY <= 0
+                }
+            }
+    }
+    
+    @ViewBuilder
+    private var segmentViewSticky: some View {
+        segmentPicker
+            .padding(.horizontal, 16)
+            .padding(.vertical, 4)
+            .mask(
+                Rectangle().padding(.bottom, -10)
+            )
+    }
+    
+    private var segmentPicker: some View {
+        CapsuleSegmentedPicker(
+            selection: Binding(
+                get: { store.state.selectedSegment },
+                set: { newValue in
+                    withAnimation(.easeInOut) {
+                        store.state.selectedSegment = newValue
+                    }
+                }
+            )
+        )
+    }
+    
+    // MARK: - Tabs
+    
+    @ViewBuilder
+    private var tabView: some View {
+        TabView(
+            selection: Binding(
+                get: { store.state.selectedSegment },
+                set: { newValue in
+                    withAnimation(.easeInOut) {
+                        store.state.selectedSegment = newValue
+                    }
+                }
+            )
+        ) {
+            tabContent(for: .clubs, content: clubsTab)
+            tabContent(for: .events, content: eventsTab)
+            tabContent(for: .hangouts, content: hangoutsTab)
+        }
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .frame(height: tabHeights[store.state.selectedSegment] ?? 300)
+        .animation(.spring(response: 0.1, dampingFraction: 1), value: tabHeights[store.state.selectedSegment])
+        .onPreferenceChange(TabHeightPreferenceKey.self) { heights in
+            tabHeights.merge(heights) { _, new in new }
+        }
+    }
+    
+    private func tabContent<Content: View>(
+        for segment: ProfileDetailViewState.SegmentTypes,
+        content: Content
+    ) -> some View {
+        content
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+            .background(
+                GeometryReader { geo in
+                    Color.clear.preference(
+                        key: TabHeightPreferenceKey.self,
+                        value: [segment: geo.size.height]
+                    )
+                }
+            )
+            .tag(segment)
+    }
+    
+    // MARK: - Tab Contents
+    
+    @ViewBuilder
+    private var clubsTab: some View {
+        let clubs = store.state.clubs
+        VStack(spacing: 16) {
+            if clubs.isEmpty {
+                emptyStateView(message: "No clubs yet")
+            } else {
+                ForEach(Array(clubs.enumerated()), id: \.element.uuid) { index, item in
+                    if let view = clubsModule.makeCardView(
+                        inputData: item,
+                        onTap: {
+                            store.send(.clubsItemTapped(item.id))
+                        }
+                    ) as? AnyView {
+                        view
+                            .frame(height: 220)
+                    }
+                }
+            }
+        }
+        .padding(.bottom, 60)
+    }
+    
+    @ViewBuilder
+    private var eventsTab: some View {
+        let events = store.state.events
+        VStack(spacing: 16) {
+            if events.isEmpty {
+                emptyStateView(message: "No events yet")
+            } else {
+                ForEach(Array(events.enumerated()), id: \.element.uuid) { index, item in
+                    if let view = eventsModule.makeEventsCard(
+                        model: item,
+                        onTap: {
+                            store.send(.eventsItemTapped(item.id))
+                        },
+                        onButtonTap: {
+                            // Handle button tap
+                        },
+                        onClubTap: nil
+                    ) as? AnyView {
+                        view
+                    }
+                }
+            }
+        }
+        .padding(.bottom, 60)
+    }
+    
+    @ViewBuilder
+    private var hangoutsTab: some View {
+        let hangouts = store.state.hangouts
+        VStack(spacing: 16) {
+            if hangouts.isEmpty {
+                emptyStateView(message: "No hangouts yet")
+            } else {
+                ForEach(Array(hangouts.enumerated()), id: \.element.uuid) { index, item in
+                    if let view = hangoutsModule.makeHangoutsCard(
+                        model: item,
+                        onTap: {
+                            store.send(.hangoutsItemTapped(item.id))
+                        },
+                        onButtonTap: {
+                            // Handle button tap
+                        }
+                    ) as? AnyView {
+                        view
+                    }
+                }
+            }
+        }
+        .padding(.bottom, 60)
+    }
+    
+    private func emptyStateView(message: String) -> some View {
+        Text(message)
+            .font(Font.Typography.BodyTextSm.regular)
+            .foregroundStyle(Color.Palette.blackMedium)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 40)
     }
 }

@@ -109,10 +109,10 @@ final class MembersListViewModel: UIFeatureViewModel<MembersListFeature> {
             users: users,
             titleOverrides: inputData.titleOverrides
         )
-        let showsOptions = inputData.options != nil
+        let currentUserId = inputData.options?.currentUserId
         state.sections = grouped.sections.enumerated().map { index, section in
-            showsOptions
-                ? .browseOptions(id: "section-\(index)", section: section)
+            currentUserId != nil
+                ? .browseOptions(id: "section-\(index)", section: section, currentUserId: currentUserId)
                 : .browse(id: "section-\(index)", section: section)
         }
         state.isEmpty = users.isEmpty

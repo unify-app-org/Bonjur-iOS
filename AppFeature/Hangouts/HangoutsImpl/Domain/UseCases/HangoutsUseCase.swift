@@ -38,6 +38,8 @@ protocol HangoutsUseCase {
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
 
     func fetchDetailHangout(id: String) async throws(APIError) -> HangoutDetails.UIModel
+
+    func exitHangout(id: String) async throws(APIError) -> Void
 }
 
 class HangoutsUseCaseImpl: HangoutsUseCase {
@@ -93,5 +95,9 @@ class HangoutsUseCaseImpl: HangoutsUseCase {
         size: Int
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
         try await repo.fetchHangoutMembersPage(id: id, page: page, size: size)
+    }
+
+    func exitHangout(id: String) async throws(APIError) {
+        try await repo.exitHangout(id: id)
     }
 }

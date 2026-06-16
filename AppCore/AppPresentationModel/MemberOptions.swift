@@ -42,6 +42,33 @@ public extension AppPresentationModel {
         }
     }
 
+    // MARK: - Activity Report Reason
+
+    /// Report reasons for an activity itself (club / event / hangout), as opposed
+    /// to reporting a member. The report API is not built yet; submitting is a
+    /// no-op stub at the call site until the backend provides an endpoint.
+    enum ActivityReportReason: String, Codable, Hashable, CaseIterable, Identifiable {
+        case inappropriateContent = "INAPPROPRIATE_CONTENT"
+        case spam = "SPAM"
+        case scamAndCommercial = "SCAM_AND_COMMERCIAL"
+        case harassment = "HARASSMENT"
+        case misleadingInfo = "MISLEADING_INFO"
+        case other = "OTHER"
+
+        public var id: String { rawValue }
+
+        public var displayTitle: String {
+            switch self {
+            case .inappropriateContent: return "Inappropriate content"
+            case .spam: return "Spam"
+            case .scamAndCommercial: return "Scam and commercial"
+            case .harassment: return "Harassment or hate speech"
+            case .misleadingInfo: return "Misleading information"
+            case .other: return "Other"
+            }
+        }
+    }
+
     // MARK: - Member Options Policy
 
     /// Single source of truth for who may change roles and which roles they may
@@ -83,6 +110,20 @@ public extension AppPresentationModel {
         /// Whether the "Report user" row should be shown. Everyone but yourself.
         public static func canReport(isSelf: Bool) -> Bool {
             !isSelf
+        }
+
+        /// Whether the "Report <activity>" row should be shown in the activity
+        /// (club / event / hangout) options sheet. Everyone may report the
+        /// activity except its creator/owner — you can't report your own.
+        public static func canReportActivity(
+            viewer: UserActivityRole
+        ) -> Bool {
+            switch viewer {
+            case .president, .eventCreator:
+                return false
+            case .member, .visePresident, .notJoined:
+                return true
+            }
         }
     }
 }

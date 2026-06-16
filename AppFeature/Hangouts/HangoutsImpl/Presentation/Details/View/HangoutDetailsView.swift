@@ -21,6 +21,7 @@ struct HangoutDetailsView: View {
     @State private var isSegmentSticky = false
     @State private var tabHeights: [HangoutDetailsViewState.SegmentTypes: CGFloat] = [:]
     @State private var optionsMember: CommunitiesMemberModuleModel.MemberCellModel?
+    @State private var optionsToken: HangoutOptionsToken?
 
     private let communitiesModule: CommunitiesModule
     private let keychain: KeychainProtocol
@@ -53,6 +54,9 @@ struct HangoutDetailsView: View {
         .appSheet(item: $optionsMember) { member in
             memberOptionsSheet(for: member)
         }
+        .appSheet(item: $optionsToken) { _ in
+            hangoutOptionsSheet
+        }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar(.visible)
@@ -78,7 +82,7 @@ struct HangoutDetailsView: View {
                 Image(uiImage: UIImage.Icons.ellipsis02)
                     .toolbarItemBackground(
                         isScrolled: isScrolled
-                    ) { }
+                    ) { optionsToken = HangoutOptionsToken() }
             }
             if store.state.isEditable {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -370,6 +374,7 @@ struct HangoutDetailsView: View {
            let view = communitiesModule.makeMembersListView(
                input: .init(
                    data: membersData,
+                   currentUserId: keychain.getString(key: .userId),
                    onOptionsTapped: { member in
                        optionsMember = member
                    },
@@ -386,6 +391,21 @@ struct HangoutDetailsView: View {
         } else {
             EmptyView()
         }
+    }
+
+    private var hangoutOptionsSheet: some View {
+        HangoutOptionsSheet(
+            input: .init(
+                viewerRole: store.state.uiModel?.userActivityType ?? .notJoined,
+                onExit: { store.send(.exitTapped) },
+                onReport: { _ in
+                    await MainActor.run {
+                        AppSnackBar.show(title: "Report submitted", style: .success)
+                    }
+                    return true
+                }
+            )
+        )
     }
 
     @ViewBuilder

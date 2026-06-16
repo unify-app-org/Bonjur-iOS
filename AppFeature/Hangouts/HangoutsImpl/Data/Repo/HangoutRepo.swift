@@ -42,6 +42,8 @@ protocol HangoutRepo {
         page: Int,
         size: Int
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
+
+    func exitHangout(id: String) async throws(APIError) -> Void
 }
 
 class HangoutRepoImpl: HangoutRepo {
@@ -198,6 +200,10 @@ class HangoutRepoImpl: HangoutRepo {
             hasMore = users.count >= size
         }
         return .init(members: users, hasMore: hasMore)
+    }
+
+    func exitHangout(id: String) async throws(APIError) {
+        let _ = try await dataSource.exitHangout(id: id)
     }
 
     private static func mapMember(

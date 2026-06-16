@@ -16,6 +16,7 @@ enum EventsEndPoint {
     case discoverEvents([String: String])
     case joinEvent(String)
     case editEvent(String, MultipartFormData)
+    case exitEvent(String)
 }
 
 extension EventsEndPoint: AppEndPoint {
@@ -38,6 +39,8 @@ extension EventsEndPoint: AppEndPoint {
             "api/es/v1/events/\(id)/join"
         case .editEvent(let id, _):
             "api/es/v1/events/\(id)"
+        case .exitEvent(let id):
+            "api/es/v1/events/\(id)/exit"
         }
     }
 
@@ -54,6 +57,8 @@ extension EventsEndPoint: AppEndPoint {
                 .post
         case .editEvent:
                 .put
+        case .exitEvent:
+                .delete
         }
     }
 

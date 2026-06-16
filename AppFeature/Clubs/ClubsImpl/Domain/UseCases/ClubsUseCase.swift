@@ -38,6 +38,8 @@ protocol ClubsUseCase {
         userId: String,
         role: AppPresentationModel.UserActivityRole
     ) async throws(APIError)
+    func exitClub(id: Int) async throws(APIError)
+    func clubHasVicePresident(id: Int) async throws(APIError) -> Bool
 }
 
 class ClubsUseCaseImpl: ClubsUseCase {
@@ -103,5 +105,13 @@ class ClubsUseCaseImpl: ClubsUseCase {
         role: AppPresentationModel.UserActivityRole
     ) async throws(APIError) {
         try await repo.assignRole(clubId: clubId, userId: userId, role: role)
+    }
+
+    func exitClub(id: Int) async throws(APIError) {
+        try await repo.exitClub(id: id)
+    }
+
+    func clubHasVicePresident(id: Int) async throws(APIError) -> Bool {
+        try await repo.clubHasVicePresident(id: id)
     }
 }

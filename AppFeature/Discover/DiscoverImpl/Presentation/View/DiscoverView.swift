@@ -15,7 +15,6 @@ import Communities
 
 struct DiscoverView: View {
     @ObservedObject var store: StoreOf<DiscoverFeature>
-    @State private var offset: CGFloat = 0
     @State private var currentCommunitiesPage = 0
     
     private let clubsModule: ClubsModule
@@ -25,13 +24,11 @@ struct DiscoverView: View {
 
     init(
         store: StoreOf<DiscoverFeature>,
-        offset: CGFloat = 0,
         clubsModule: ClubsModule = resolve(),
         eventsModule: EventsModule = resolve(),
         hangoutsModule: HangoutsModule = resolve(),
         communitiesModule: CommunitiesModule = resolve()
     ) {
-        self.offset = offset
         self.store = store
         self.clubsModule = clubsModule
         self.eventsModule = eventsModule
@@ -122,7 +119,6 @@ struct DiscoverView: View {
         GeometryReader { geometry in
             ScrollView {
                 LazyVStack {
-                    offsetReader
                     communitiesView(geometry: geometry)
                     clubsView(geometry: geometry)
                     eventsView(geometry: geometry)
@@ -131,27 +127,11 @@ struct DiscoverView: View {
                 .padding(.bottom, 55)
             }
             .coordinateSpace(name: "EndDetectionScrollView")
-            .onPreferenceChange(OffsetPreferenceKey.self) { value in
-                withAnimation {
-                    offset = value
-                }
-            }
             .refreshable {
                 store.send(.fetchData)
             }
             .clipped()
         }
-    }
-    
-    var offsetReader: some View {
-        GeometryReader { proxy in
-            Color.clear
-                .preference(
-                    key: OffsetPreferenceKey.self,
-                    value: proxy.frame(in: .named("EndDetectionScrollView")).maxY
-                )
-        }
-        .frame(height: 0)
     }
 
     @ViewBuilder
@@ -418,9 +398,4 @@ struct DiscoverView: View {
         let text: String
         let buttonTitle: String
     }
-}
-
-struct OffsetPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat = .zero
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {}
 }

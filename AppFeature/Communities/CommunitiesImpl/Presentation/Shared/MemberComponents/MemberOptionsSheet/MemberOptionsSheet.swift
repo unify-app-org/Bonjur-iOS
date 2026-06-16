@@ -42,7 +42,6 @@ struct MemberOptionsSheet: View {
     private var detents: Set<PresentationDetent> {
         switch screen {
         case .report:
-            // Long list — let it take a tall, scrollable detent.
             return [.large]
         case .menu, .assignRole:
             return [.height(contentHeight)]
@@ -101,8 +100,7 @@ struct MemberOptionsSheet: View {
             ) {}
         }
         .padding(.horizontal, 20)
-        .padding(.top, 12)
-        .padding(.bottom, 24)
+        .padding(.vertical)
     }
 
     private var rowDivider: some View {
@@ -212,13 +210,12 @@ private struct AssignRoleScreen: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 16) {
             SheetHeader(title: "Assign role", onBack: onBack)
 
             Text("Choose a role for this member")
                 .font(Font.Typography.BodyTextMd.regular)
                 .foregroundStyle(Color.Palette.graySecondary)
-                .padding(.bottom, 20)
 
             VStack(spacing: 12) {
                 ForEach(input.assignableRoles, id: \.self) { role in
@@ -417,8 +414,8 @@ private struct SheetHeader: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Button(action: onBack) {
-                Image(systemName: "arrow.left")
-                    .font(.system(size: 18, weight: .medium))
+                Image(uiImage: UIImage.Icons.xmark)
+                    .font(Font.Typography.HeadingXl.semiBold)
                     .foregroundStyle(Color.Palette.black)
             }
             .buttonStyle(.plain)
@@ -427,6 +424,6 @@ private struct SheetHeader: View {
                 .font(Font.Typography.HeadingMd.bold)
                 .foregroundStyle(Color.Palette.black)
         }
-        .padding(.bottom, 16)
+        .padding(.top)
     }
 }

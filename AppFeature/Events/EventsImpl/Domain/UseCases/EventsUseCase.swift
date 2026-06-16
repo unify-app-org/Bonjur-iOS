@@ -13,6 +13,7 @@ import Communities
 protocol EventsUseCase {
     func fetchEvents() async throws(APIError) -> [EventsCardView.Model]
     func joinEvent(eventId: String) async throws(APIError)
+    func exitEvent(eventId: String) async throws(APIError)
     func fetchEventDetail(eventId: String) async throws(APIError) -> EventsDetailsModel.UIModel
     func fetchEventMembers(
         eventId: String
@@ -42,6 +43,10 @@ class EventsUseCaseImpl: EventsUseCase {
 
     func joinEvent(eventId: String) async throws(APIError) {
         try await repo.joinEvent(eventId: eventId)
+    }
+
+    func exitEvent(eventId: String) async throws(APIError) {
+        try await repo.exitEvent(eventId: eventId)
     }
 
     func fetchEventDetail(

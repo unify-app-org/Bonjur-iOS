@@ -64,6 +64,39 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
             Task { @MainActor in
                 presentExitConfirm()
             }
+        case .joinTapped:
+            Task {
+                await joinHangout()
+            }
+        }
+    }
+
+    // MARK: - Join flow
+
+    private func joinHangout() async {
+        postEffect(.loading(true))
+        defer { postEffect(.loading(false)) }
+        do {
+            try await dependencies.useCase.joinHangout(id: inputData.hangoutId)
+            await showJoinSnackBar()
+            fetchData()
+        } catch {
+            postEffect(.error(error))
+        }
+    }
+
+    /// Public hangouts join immediately; private hangouts create a pending request.
+    @MainActor
+    private func showJoinSnackBar() {
+        let name = state.uiModel?.name ?? "the hangout"
+        if state.uiModel?.accessType == .private {
+            AppSnackBar.show(
+                title: "Request sent",
+                subtitle: "\(name) will review your request",
+                style: .success
+            )
+        } else {
+            AppSnackBar.show(title: "Joined \(name)", style: .success)
         }
     }
 

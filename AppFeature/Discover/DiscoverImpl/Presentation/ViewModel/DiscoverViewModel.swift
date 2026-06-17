@@ -69,6 +69,8 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .refreshActivities:
+            refreshActivities()
         case .filtersSelected(let items):
             filtersSelected(items)
         case .loadMore(let activity):
@@ -264,6 +266,27 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         }
     }
     
+    /// Refetch only the 4 activity sections (communities/clubs/events/hangouts)
+    /// when Discover reappears, so changes made in a detail screen (join/request/
+    /// exit/edit) show up. Reuses the filtered path so the active filter and the
+    /// current page depth are preserved. User + categories are NOT refetched.
+    private func refreshActivities() {
+        Task {
+            postEffect(.loading(true))
+            defer {
+                postEffect(.loading(false))
+            }
+
+            let results = await fetchFilteredData()
+            let firstError = applyFilteredFetchResults(results)
+            publishActivityCounts()
+
+            if let firstError {
+                postEffect(.error(firstError))
+            }
+        }
+    }
+
     private func fetchFilteredData() async -> FilteredFetchResults {
         async let communities = apiResult {
             try await dependencies.useCase.fetchCommunitiesData(

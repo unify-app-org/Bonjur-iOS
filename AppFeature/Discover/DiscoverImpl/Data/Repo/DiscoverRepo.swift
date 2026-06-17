@@ -104,19 +104,23 @@ class DiscoverRepoImpl: DiscoverRepo {
                     name: item.name ?? "-",
                     communityName: item.communityName ?? "-",
                     logoURL: item.clubProfile ?? "",
-                    memberCount: item.count ?? 0,
-                    totalCapacity: 0,
+                    memberCount: item.memberCount ?? 0,
+                    totalCapacity: item.capacity ?? 0,
                     community: item.communityName ?? "-",
                     members: members,
                     bgType: item.background ?? .primary,
                     accessType: item.visibility ?? .private,
                     requestType: item.requestStatus ?? .none,
-                    role: item.role ?? .notJoined
+                    role: item.role ?? .notJoined,
+                    upcomingEventsCount: item.eventCount ?? 0,
+                    categories: (item.categoryResponses ?? []).map {
+                        .init(id: $0.id ?? 0, title: $0.title ?? "-")
+                    }
                 )
         }
         return uiModel
     }
-    
+
     func getCommunities(
         query: DiscoverDTOModel.PaginationQuery
     ) async throws(APIError) -> [CommunitiesModuleModel.CardInputData] {

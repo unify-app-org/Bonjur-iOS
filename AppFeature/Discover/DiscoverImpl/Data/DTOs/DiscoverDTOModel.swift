@@ -71,11 +71,17 @@ struct DiscoverDTOModel {
         let visibility: AppPresentationModel.AccessType?
         let role: AppPresentationModel.UserActivityRole?
         let requestStatus: AppPresentationModel.RequestType?
+        let categoryResponses: [Category]?
         let clubProfile: String?
         let backgroundUrl: String?
         let about: String?
-        let count, capacity: Int?
+        let memberCount, capacity, eventCount: Int?
         let members: [Member]?
+        
+        struct Category: Decodable {
+            let id: Int?
+            let title: String?
+        }
     }
     
     // MARK: - Event

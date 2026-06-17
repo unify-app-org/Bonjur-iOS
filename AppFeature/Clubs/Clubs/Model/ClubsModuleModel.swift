@@ -88,6 +88,8 @@ public struct ClubsModuleModel {
         public let accessType: AppPresentationModel.AccessType
         public let requestType: AppPresentationModel.RequestType
         public let role: AppPresentationModel.UserActivityRole?
+        public let upcomingEventsCount: Int
+        public let categories: [Category]
 
         public init(
             id: Int,
@@ -101,7 +103,9 @@ public struct ClubsModuleModel {
             bgType: AppPresentationModel.BackgroundType,
             accessType: AppPresentationModel.AccessType,
             requestType: AppPresentationModel.RequestType,
-            role: AppPresentationModel.UserActivityRole
+            role: AppPresentationModel.UserActivityRole,
+            upcomingEventsCount: Int,
+            categories: [Category]
         ) {
             self.id = id
             self.name = name
@@ -115,6 +119,8 @@ public struct ClubsModuleModel {
             self.requestType = requestType
             self.community = community
             self.role = role
+            self.upcomingEventsCount = upcomingEventsCount
+            self.categories = categories
         }
     }
 }
@@ -147,7 +153,9 @@ public extension ClubsModuleModel.CardInputData {
             bgType: .orange,
             accessType: .private,
             requestType: .none,
-            role: .notJoined
+            role: .notJoined,
+            upcomingEventsCount: 2,
+            categories: [.init(id: 1, title: "Sport"), .init(id: 2, title: "Tournament")]
         ),
         .init(
             id: 1,
@@ -174,7 +182,9 @@ public extension ClubsModuleModel.CardInputData {
             bgType: .primary,
             accessType: .public,
             requestType: .pending,
-            role: .notJoined
+            role: .notJoined,
+            upcomingEventsCount: 2,
+            categories: [.init(id: 1, title: "Sport"), .init(id: 2, title: "Tournament")]
         ),
         .init(
             id: 1,
@@ -201,7 +211,9 @@ public extension ClubsModuleModel.CardInputData {
             bgType: .secondary,
             accessType: .private,
             requestType: .none,
-            role: .notJoined
+            role: .notJoined,
+            upcomingEventsCount: 2,
+            categories: [.init(id: 1, title: "Sport"), .init(id: 2, title: "Tournament")]
         ),
         .init(
             id: 1,
@@ -228,7 +240,9 @@ public extension ClubsModuleModel.CardInputData {
             bgType: .red,
             accessType: .private,
             requestType: .none,
-            role: .notJoined
+            role: .notJoined,
+            upcomingEventsCount: 2,
+            categories: [.init(id: 1, title: "Sport"), .init(id: 2, title: "Tournament")]
         )
     ]
 }

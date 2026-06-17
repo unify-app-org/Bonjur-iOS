@@ -61,11 +61,15 @@ final class GroupsRepoImpl: GroupsRepo {
                 bgType: item.background ?? .primary,
                 accessType: item.visibility ?? .private,
                 requestType: item.status ?? .none,
-                role: item.role ?? .notJoined
+                role: item.role ?? .notJoined,
+                upcomingEventsCount: item.eventCount ?? 0,
+                categories: (item.categoryResponses ?? []).map {
+                    .init(id: $0.id ?? 0, title: $0.title ?? "-")
+                }
             )
         }
     }
-    
+
     func fetchJoinedHangouts(
         query: GroupsDTOModel.PaginationQuery
     ) async throws(APIError) -> [HangoutsModuleModel.CardInputData] {

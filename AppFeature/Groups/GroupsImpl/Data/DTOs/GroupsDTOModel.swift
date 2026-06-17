@@ -82,5 +82,7 @@ struct GroupsDTOModel {
         let count, capacity: Int?
         let joined: Bool?
         let members: [Member]?
+        let eventCount: Int?
+        let categoryResponses: [CategoryResponse]?
     }
 }

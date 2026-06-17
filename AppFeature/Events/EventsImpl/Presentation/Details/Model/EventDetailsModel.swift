@@ -58,6 +58,7 @@ enum EventDetailsAction: UIFeatureAction {
     case userTapped(String)
     case seeAllMembersTapped
     case exitTapped
+    case joinTapped
 }
 
 // MARK: - PreferenceKey

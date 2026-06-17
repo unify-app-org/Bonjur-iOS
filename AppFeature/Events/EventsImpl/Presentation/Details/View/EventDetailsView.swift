@@ -124,7 +124,7 @@ struct EventDetailsView: View {
                         contentSize: .fill
                     )
                 ) {
-
+                    store.send(.joinTapped)
                 }
                 .disabled(joinButton.disabled)
                 .padding(.horizontal)

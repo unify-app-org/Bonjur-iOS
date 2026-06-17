@@ -90,6 +90,8 @@ struct ClubDTOModel {
         let joined: Bool?
         let clubUserRole: AppPresentationModel.UserActivityRole?
         let members: [ListMember]?
+        let eventCount: Int?
+        let categoryResponses: [Category]?
     }
 
     struct MemberResponse: Decodable {

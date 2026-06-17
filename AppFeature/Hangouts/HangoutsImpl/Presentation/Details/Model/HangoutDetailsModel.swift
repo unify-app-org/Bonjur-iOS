@@ -70,6 +70,7 @@ enum HangoutDetailsAction: UIFeatureAction {
     case userTapped(String)
     case seeAllMembersTapped
     case exitTapped
+    case joinTapped
 }
 
 

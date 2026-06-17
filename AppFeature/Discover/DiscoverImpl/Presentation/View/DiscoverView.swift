@@ -16,6 +16,8 @@ import Communities
 struct DiscoverView: View {
     @ObservedObject var store: StoreOf<DiscoverFeature>
     @State private var currentCommunitiesPage = 0
+    /// Skips the first `onAppear` so we don't double-load on top of `onFirstAppear`.
+    @State private var hasAppearedOnce = false
     
     private let clubsModule: ClubsModule
     private let eventsModule: EventsModule
@@ -43,6 +45,15 @@ struct DiscoverView: View {
         }
         .onFirstAppear {
             store.send(.fetchData)
+        }
+        .onAppear {
+            // First appearance is handled by onFirstAppear's full fetch; every
+            // return after that refetches the 4 activity sections so detail-screen
+            // changes (join/request/exit/edit) are reflected.
+            if hasAppearedOnce {
+                store.send(.refreshActivities)
+            }
+            hasAppearedOnce = true
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

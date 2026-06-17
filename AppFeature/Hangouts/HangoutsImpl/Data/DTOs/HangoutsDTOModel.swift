@@ -30,6 +30,10 @@ struct HangoutsDTOModel {
         let about: String
         let hangoutDate: String
     }
+
+    struct JoinRequest: Encodable {
+        let hangoutId: String
+    }
     
     // MARK: - Category
     
@@ -72,6 +76,9 @@ struct HangoutsDTOModel {
         let ownerContact: String?
         let visibility: AppPresentationModel.AccessType?
         let role: AppPresentationModel.UserActivityRole?
+        /// Pending/accepted state for the current user. Optional: backend may omit
+        /// it on the detail endpoint; the join button then falls back to Join/Request.
+        let requestStatus: AppPresentationModel.RequestType?
         let hangoutDate: String?
         let links: [Link]?
         let community: Community

@@ -16,6 +16,7 @@ enum HangoutsEndPoint {
     case hangoutDetail(String)
     case members(String, [String: String])
     case exitHangout(String)
+    case joinHangout(HangoutsDTOModel.JoinRequest)
 }
 
 extension HangoutsEndPoint: AppEndPoint {
@@ -36,6 +37,8 @@ extension HangoutsEndPoint: AppEndPoint {
             "api/hs/v1/hangouts/\(id)/members"
         case .exitHangout(let id):
             "api/hs/v1/hangouts/exit/\(id)"
+        case .joinHangout:
+            "api/hs/v1/hangouts/join"
         }
     }
     
@@ -46,7 +49,8 @@ extension HangoutsEndPoint: AppEndPoint {
                 .hangoutDetail,
                 .members:
                 .get
-        case .createHangout:
+        case .createHangout,
+                .joinHangout:
                 .post
         case .editHangout:
                 .put
@@ -60,6 +64,8 @@ extension HangoutsEndPoint: AppEndPoint {
         case .createHangout(let request):
             request
         case .editHangout(_, let request):
+            request
+        case .joinHangout(let request):
             request
         default:
             nil

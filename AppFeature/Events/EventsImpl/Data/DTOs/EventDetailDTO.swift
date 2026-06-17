@@ -22,6 +22,10 @@ struct EventDetailDTO: Decodable {
     let backgroundUrl: String?
     let membersCount: Int?
     let eventUserRole: AppPresentationModel.UserActivityRole?
+    /// Pending/accepted state for the current user. Optional: older backends may
+    /// omit it on the detail endpoint, in which case the join button falls back to
+    /// the plain Join/Request title.
+    let requestStatus: AppPresentationModel.RequestType?
     let attachments: [Attachments]?
     let links: [Link]?
     let categories: [Category]?

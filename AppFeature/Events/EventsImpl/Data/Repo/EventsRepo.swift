@@ -186,8 +186,13 @@ private extension EventsRepoImpl {
     func mapButtonModel(
         _ data: EventDetailDTO
     ) -> EventsDetailsModel.JoinButton? {
+        // Hide once accepted (by role or request status).
         let role = data.eventUserRole ?? .notJoined
-        guard role == .notJoined else { return nil }
+        guard role == .notJoined, data.requestStatus != .joined else { return nil }
+        // A pending request keeps a disabled "Request sent" button visible.
+        if data.requestStatus == .pending {
+            return .init(title: "Request sent", disabled: true)
+        }
         let title = data.visibility == .public ? "Join" : "Request"
         return .init(title: title, disabled: false)
     }

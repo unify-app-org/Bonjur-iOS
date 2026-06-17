@@ -62,7 +62,9 @@ struct ProfileDTOModel {
         let about: String?
         let count, capacity: Int?
         let members: [ListMember]?
-        
+        let eventCount: Int?
+        let categoryResponses: [CategoryResponse]?
+
         struct ListMember: Decodable {
             let id: String?
             let fullName: String?

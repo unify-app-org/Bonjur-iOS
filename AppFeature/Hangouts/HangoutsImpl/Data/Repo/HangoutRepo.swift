@@ -44,6 +44,8 @@ protocol HangoutRepo {
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
 
     func exitHangout(id: String) async throws(APIError) -> Void
+
+    func joinHangout(id: String) async throws(APIError) -> Void
 }
 
 class HangoutRepoImpl: HangoutRepo {
@@ -173,9 +175,24 @@ class HangoutRepoImpl: HangoutRepo {
             accessType: data.visibility ?? .private,
             tags: tags,
             infoData: info,
-            editPrefillData: editPrefillData
+            editPrefillData: editPrefillData,
+            joinButton: mapButtonModel(data)
         )
         return uiModel
+    }
+
+    /// Join button for the detail screen. Hidden once accepted (by role or request
+    /// status); a pending request keeps a disabled "Request sent" button visible.
+    private func mapButtonModel(
+        _ data: HangoutsDTOModel.HangoutDetail
+    ) -> HangoutDetails.JoinButton? {
+        let role = data.role ?? .notJoined
+        guard role == .notJoined, data.requestStatus != .joined else { return nil }
+        if data.requestStatus == .pending {
+            return .init(title: "Request sent", disabled: true)
+        }
+        let title = (data.visibility ?? .private) == .public ? "Join" : "Request"
+        return .init(title: title, disabled: false)
     }
 
     func fetchDetailHangoutMembers(
@@ -204,6 +221,10 @@ class HangoutRepoImpl: HangoutRepo {
 
     func exitHangout(id: String) async throws(APIError) {
         let _ = try await dataSource.exitHangout(id: id)
+    }
+
+    func joinHangout(id: String) async throws(APIError) {
+        let _ = try await dataSource.joinHangout(request: .init(hangoutId: id))
     }
 
     private static func mapMember(

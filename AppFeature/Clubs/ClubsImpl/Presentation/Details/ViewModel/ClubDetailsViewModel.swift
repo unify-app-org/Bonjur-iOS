@@ -251,7 +251,24 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
     
     @MainActor
     private func handleJoinClub() {
+        showJoinSnackBar()
         fetchData()
+    }
+
+    /// Public clubs join immediately; private clubs create a pending request.
+    /// Branch the copy on the current model's access type.
+    @MainActor
+    private func showJoinSnackBar() {
+        let name = state.uiModel?.name ?? "the club"
+        if state.uiModel?.accessType == .private {
+            AppSnackBar.show(
+                title: "Request sent",
+                subtitle: "\(name) will review your request",
+                style: .success
+            )
+        } else {
+            AppSnackBar.show(title: "Joined \(name)", style: .success)
+        }
     }
     
     private func fetchData() {

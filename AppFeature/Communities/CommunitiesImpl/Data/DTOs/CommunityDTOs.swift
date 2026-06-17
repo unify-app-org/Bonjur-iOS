@@ -72,6 +72,8 @@ struct CommunityDTO {
         let count, capacity: Int?
         let joined: Bool?
         let members: [Member]?
+        let eventCount: Int?
+        let categoryResponses: [Category]?
     }
     
     struct Member: Decodable {

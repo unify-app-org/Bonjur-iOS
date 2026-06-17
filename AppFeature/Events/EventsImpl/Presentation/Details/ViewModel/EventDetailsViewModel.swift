@@ -74,6 +74,39 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
             Task { @MainActor in
                 presentExitConfirm()
             }
+        case .joinTapped:
+            Task {
+                await joinEvent()
+            }
+        }
+    }
+
+    // MARK: - Join flow
+
+    private func joinEvent() async {
+        postEffect(.loading(true))
+        defer { postEffect(.loading(false)) }
+        do {
+            try await dependencies.useCase.joinEvent(eventId: inputData.eventId)
+            await showJoinSnackBar()
+            fetchData()
+        } catch {
+            postEffect(.error(error))
+        }
+    }
+
+    /// Public events join immediately; private events create a pending request.
+    @MainActor
+    private func showJoinSnackBar() {
+        let name = state.uiModel?.name ?? "the event"
+        if state.uiModel?.accessType == .private {
+            AppSnackBar.show(
+                title: "Request sent",
+                subtitle: "\(name) will review your request",
+                style: .success
+            )
+        } else {
+            AppSnackBar.show(title: "Joined \(name)", style: .success)
         }
     }
 

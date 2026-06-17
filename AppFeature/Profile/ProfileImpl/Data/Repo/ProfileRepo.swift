@@ -174,11 +174,15 @@ class ProfileRepoImpl: ProfileRepo {
                 bgType: item.background ?? .primary,
                 accessType: item.visibility ?? .private,
                 requestType: item.requestStatus ?? .none,
-                role: item.role ?? .notJoined
+                role: item.role ?? .notJoined,
+                upcomingEventsCount: item.eventCount ?? 0,
+                categories: (item.categoryResponses ?? []).map {
+                    .init(id: $0.id ?? 0, title: $0.title ?? "-")
+                }
             )
         }
     }
-    
+
     func getMyHangouts(
         userId: String?
     ) async throws(APIError) -> [HangoutsModuleModel.CardInputData] {

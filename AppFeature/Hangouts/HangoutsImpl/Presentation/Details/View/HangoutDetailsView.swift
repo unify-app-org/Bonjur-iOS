@@ -104,15 +104,16 @@ struct HangoutDetailsView: View {
     
     @ViewBuilder
     private var joinButton: some View {
-        if !store.state.hasJoined {
+        if let button = store.state.uiModel?.joinButton {
             AppButton(
-                title: "Join",
+                title: button.title,
                 model: .init(
                     contentSize: .fill
                 )
             ) {
-                
+                store.send(.joinTapped)
             }
+            .disabled(button.disabled)
             .padding(.horizontal)
         }
     }

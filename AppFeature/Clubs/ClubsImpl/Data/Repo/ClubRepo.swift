@@ -40,9 +40,6 @@ protocol ClubRepo {
         role: AppPresentationModel.UserActivityRole
     ) async throws(APIError) -> Void
     func exitClub(id: Int) async throws(APIError) -> Void
-    /// Pages through the member list and returns `true` as soon as a member
-    /// holding the vice-president role is found. Used to gate the president
-    /// owner-transfer flow on exit.
     func clubHasVicePresident(id: Int) async throws(APIError) -> Bool
 }
 
@@ -85,7 +82,9 @@ class ClubRepoImpl: ClubRepo {
                 bgType: item.background ?? .primary,
                 accessType: item.visibility ?? .private,
                 requestType: (item.joined ?? false) ? .joined : .none,
-                role: item.clubUserRole
+                role: item.clubUserRole,
+                upcomingEventsCount: item.eventCount ?? 0,
+                categories: (item.categoryResponses ?? []).map { $0.title }
             )
         }
     }
@@ -227,7 +226,7 @@ private extension ClubRepoImpl {
         case .joined:
             ""
         case .rejected:
-            ""
+            "Request"
         case .pending:
             "Request sent"
         default:
@@ -242,8 +241,7 @@ private extension ClubRepoImpl {
             title: buttonTitle,
             disabled: disabled
         )
-        let hasJoined = data.clubUserRole ?? .notJoined != .notJoined
-        return hasJoined ? nil : joinButton
+        return data.requestType == .joined ? nil : joinButton
     }
     
     func mapPrefilData(
@@ -301,7 +299,6 @@ private extension ClubRepoImpl {
 
     // MARK: - Info builders
 
-    /// Trim + treat empty / `"-"` / `"None"` as absent, so empty rows are dropped.
     func cleaned(_ value: String?) -> String? {
         guard let v = value?.trimmingCharacters(in: .whitespacesAndNewlines),
               !v.isEmpty, v != "-", v.lowercased() != "none" else { return nil }
@@ -333,14 +330,12 @@ private extension ClubRepoImpl {
         return "\(members ?? 0)/\(capacity) members"
     }
 
-    /// `dd-MM-yyyy HH:mm:ss` audit stamp → date-only display.
     func modifiedDate(_ value: String?) -> String? {
         guard let v = cleaned(value) else { return nil }
         let formatted = v.date(from: .ddMMyyyyHHmmss, to: .dMMMMYYYY)
         return formatted.isEmpty ? v : formatted
     }
 
-    /// Returns the contact only when it looks like a dialable phone number.
     func phoneNumber(_ value: String?) -> String? {
         guard let v = cleaned(value) else { return nil }
         let allowed = CharacterSet(charactersIn: "+0123456789 -()")

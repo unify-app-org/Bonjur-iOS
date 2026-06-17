@@ -168,7 +168,11 @@ class CommunityRepoImpl: CommunityRepo {
                     bgType: item.background ?? .primary,
                     accessType: .private,
                     requestType: .none,
-                    role: item.role ?? .notJoined
+                    role: item.role ?? .notJoined,
+                    upcomingEventsCount: item.eventCount ?? 0,
+                    categories: (item.categoryResponses ?? []).map {
+                        .init(id: $0.id, title: $0.title)
+                    }
                 )
         }
         return uiModel

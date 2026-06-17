@@ -40,8 +40,8 @@ extension ClubCardView {
             accessType: AppUIEntities.AccessType,
             requestType: AppUIEntities.RequestType,
             role: AppUIEntities.UserActivityRole? = nil,
-            upcomingEventsCount: Int = 2,
-            categories: [String] = ["Sport", "Tournament"]
+            upcomingEventsCount: Int,
+            categories: [String]
         ) {
             self.id = id
             self.name = name
@@ -76,7 +76,9 @@ extension ClubCardView.Model {
             bgType: model.bgType,
             accessType: model.accessType,
             requestType: model.requestType,
-            role: model.role
+            role: model.role,
+            upcomingEventsCount: model.upcomingEventsCount,
+            categories: model.categories.map { $0.title }
         )
     }
 }
@@ -108,7 +110,9 @@ extension ClubCardView.Model {
             ],
             bgType: .orange,
             accessType: .private,
-            requestType: .none
+            requestType: .none,
+            upcomingEventsCount: 2,
+            categories: ["Sport", "Tournament"]
         ),
         .init(
             id: 1,
@@ -134,7 +138,9 @@ extension ClubCardView.Model {
             ],
             bgType: .primary,
             accessType: .public,
-            requestType: .pending
+            requestType: .pending,
+            upcomingEventsCount: 2,
+            categories: ["Sport", "Tournament"]
         ),
         .init(
             id: 1,
@@ -160,7 +166,9 @@ extension ClubCardView.Model {
             ],
             bgType: .secondary,
             accessType: .private,
-            requestType: .none
+            requestType: .none,
+            upcomingEventsCount: 2,
+            categories: ["Sport", "Tournament"]
         ),
         .init(
             id: 1,
@@ -186,7 +194,9 @@ extension ClubCardView.Model {
             ],
             bgType: .red,
             accessType: .private,
-            requestType: .none
+            requestType: .none,
+            upcomingEventsCount: 2,
+            categories: ["Sport", "Tournament"]
         )
     ]
 }

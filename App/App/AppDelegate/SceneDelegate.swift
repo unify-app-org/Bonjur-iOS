@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import AppAuthImpl
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-    
+
     var window: UIWindow?
     var appCoordinator: AppCoordinator?
 
@@ -20,8 +21,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         self.window = window
-        
+
         appCoordinator = AppCoordinator(window: window)
         appCoordinator?.start()
+    }
+
+    func scene(
+        _ scene: UIScene,
+        openURLContexts URLContexts: Set<UIOpenURLContext>
+    ) {
+        guard let urlContext = URLContexts.first else { return }
+        MicrosoftAuthCallback.handle(
+            urlContext.url,
+            sourceApplication: urlContext.options.sourceApplication
+        )
     }
 }

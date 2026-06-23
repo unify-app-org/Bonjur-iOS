@@ -46,8 +46,18 @@ public extension TargetDependency {
         ]
     }
     
+    /// Firebase products linked only into the App target.
+    static var FirebaseDependencies: [Self] {
+        [
+            .AppPackage.FirebaseAnalytics,
+            .AppPackage.FirebaseMessaging,
+            .AppPackage.FirebaseCrashlytics,
+            .AppPackage.FirebasePerformance
+        ]
+    }
+
     static var AllDependencies: [Self] {
-        CoreDependencies + FeaturesDependencies
+        CoreDependencies + FeaturesDependencies + FirebaseDependencies
     }
     
     enum AppCore {
@@ -186,6 +196,10 @@ public extension TargetDependency {
         public static let MSAL: TargetDependency = .external(name: "MSAL")
         public static let SDWebImage: TargetDependency = .external(name: "SDWebImage")
         public static let SDWebImageSwiftUI: TargetDependency = .external(name: "SDWebImageSwiftUI")
+        public static let FirebaseAnalytics: TargetDependency = .external(name: "FirebaseAnalytics")
+        public static let FirebaseMessaging: TargetDependency = .external(name: "FirebaseMessaging")
+        public static let FirebaseCrashlytics: TargetDependency = .external(name: "FirebaseCrashlytics")
+        public static let FirebasePerformance: TargetDependency = .external(name: "FirebasePerformance")
     }
     
     enum TestHelpers {

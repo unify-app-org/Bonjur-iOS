@@ -8,7 +8,7 @@
 // Configuration settings file format documentation can be found at:
 // https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
 
-BASE_URL = https:/$()/api.unify.co
+BASE_URL = http:/$()/66.70.191.74:8080/
 ENVIRONMENT = prod
 APP_NAME = Unify
 BUNDLE_ID = com.unify.app.prod
@@ -18,3 +18,6 @@ MSAL_AUTHORITY_URL = https:/$()/login.microsoftonline.com/organizations
 MSAL_REDIRECT_URI = msauth.com.unify.app.prod:/$()/auth
 MSAL_URL_SCHEME = msauth.com.unify.app.prod
 
+// TEMP: set to `development` for push testing via Xcode Run (sandbox APNs token).
+// MUST be `production` for TestFlight / App Store releases, or production push breaks.
+APS_ENVIRONMENT = development

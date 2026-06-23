@@ -18,3 +18,5 @@ MSAL_CLIENT_ID = 2e87ef5d-44d1-417f-832f-335e3b02a635
 MSAL_AUTHORITY_URL = https:/$()/login.microsoftonline.com/organizations
 MSAL_REDIRECT_URI = msauth.com.unify.app.staging:/$()/auth
 MSAL_URL_SCHEME = msauth.com.unify.app.staging
+
+APS_ENVIRONMENT = development

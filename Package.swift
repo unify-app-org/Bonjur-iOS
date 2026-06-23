@@ -28,6 +28,10 @@ let package = Package(
         .package(
             url: "https://github.com/SDWebImage/SDWebImageSwiftUI",
             .upToNextMajor(from: "3.0.0")
+        ),
+        .package(
+            url: "https://github.com/firebase/firebase-ios-sdk",
+            .upToNextMajor(from: "11.0.0")
         )
     ]
 )

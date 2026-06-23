@@ -1,0 +1,22 @@
+{
+    "Simulator Target Bundle": "com.unify.app.prod",
+    "aps": {
+        "alert": {
+            "body": "Hello",
+            "title": "Hello"
+        },
+        "badge": 0,
+        "mutable-content": 1
+    },
+    "custom": {
+        "a": {
+            "deeplink": "payments",
+            "action": "open_new_category",
+            "model": {
+                "category_id": "6",
+                
+            }
+        }
+    }
+}
+

@@ -43,7 +43,7 @@ public extension Scheme {
             configuration: "Debug"
         ),
         archiveAction: .archiveAction(
-            configuration: "Debug"
+            configuration: "Release"
         ),
         profileAction: .profileAction(
             configuration: "Debug"
@@ -64,7 +64,7 @@ public extension Scheme {
             configuration: "Staging"
         ),
         archiveAction: .archiveAction(
-            configuration: "Staging"
+            configuration: "Release"
         ),
         profileAction: .profileAction(
             configuration: "Staging"

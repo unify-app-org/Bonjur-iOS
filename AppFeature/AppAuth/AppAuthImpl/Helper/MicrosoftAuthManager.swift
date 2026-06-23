@@ -5,8 +5,22 @@
 //  Created by Huseyn Hasanov on 09.05.26.
 //
 
+import Foundation
 import MSAL
 import AppUtils
+
+/// Routes the redirect from the Microsoft Authenticator broker / web back into MSAL.
+/// Must be called from the scene's `openURLContexts`, otherwise the pending
+/// `acquireToken` continuation never resumes and sign-in fails silently.
+public enum MicrosoftAuthCallback {
+    @discardableResult
+    public static func handle(_ url: URL, sourceApplication: String?) -> Bool {
+        MSALPublicClientApplication.handleMSALResponse(
+            url,
+            sourceApplication: sourceApplication
+        )
+    }
+}
 
 struct MSALSignInResult {
     let name: String?

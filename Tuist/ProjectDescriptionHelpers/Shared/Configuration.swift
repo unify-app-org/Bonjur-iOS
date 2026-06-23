@@ -33,7 +33,9 @@ public extension Dictionary where Element == ProjectDescription.SettingsDictiona
             "CLANG_ENABLE_MODULE_VERIFIER": "YES",
             "CLANG_ENABLE_MODULE_VERIFIER_SUPPORTED_LANGUAGES": "Objective-C Objective-C++",
             "CLANG_ENABLE_MODULES": "YES",
-            "DEFINES_MODULE": "YES"
+            "DEFINES_MODULE": "YES",
+            "MARKETING_VERSION": "\(Project.marketingVersion)",
+            "CURRENT_PROJECT_VERSION": "1"
         ]
     }()
     
@@ -46,7 +48,12 @@ public extension Dictionary where Element == ProjectDescription.SettingsDictiona
             "CLANG_ENABLE_MODULES": "YES",
             "DEFINES_MODULE": "YES",
             "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon.${ENVIRONMENT}",
-            "MARKETING_VERSION": "\(Project.marketingVersion)"
+            "MARKETING_VERSION": "\(Project.marketingVersion)",
+            "CURRENT_PROJECT_VERSION": "$(CURRENT_PROJECT_VERSION)",
+            // Required so Obj-C categories in Firebase's static deps (e.g. GoogleUtilities
+            // NSData+GTMGzip → `gul_dataByGzippingData:`) are loaded; otherwise the
+            // selector is stripped and crashes at runtime.
+            "OTHER_LDFLAGS": "$(inherited) -ObjC"
         ]
     }()
 }

@@ -30,12 +30,18 @@
 	</array>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
+    <key>UIUserInterfaceStyle</key>
+    <string>Light</string>
 	<key>Environment</key>
 	<string>$(ENVIRONMENT)</string>
 	<key>MSAL_AUTHORITY_URL</key>
 	<string>$(MSAL_AUTHORITY_URL)</string>
 	<key>MSAL_CLIENT_ID</key>
 	<string>$(MSAL_CLIENT_ID)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>CFBundlePackageType</key>
+	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
@@ -55,5 +61,11 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<true/>
 </dict>
 </plist>

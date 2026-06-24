@@ -6,6 +6,7 @@
 //
 
 import AppUIKit
+import AppUtils
 import AppNetwork
 import Foundation
 import Clubs
@@ -52,7 +53,7 @@ class ProfileRepoImpl: ProfileRepo {
             backgroundCover: data.background,
             nameSurname: data.username ?? "-",
             speciality: data.specialization ?? "-",
-            course: data.faculty ?? "-",
+            course: Self.yearText(data.year),
             community: data.communityName ?? "-",
             degree: data.degree ?? "-",
             entryYear: String(data.entryYear ?? 2000),
@@ -95,6 +96,19 @@ class ProfileRepoImpl: ProfileRepo {
             return nil
         }
         return URL(string: value)
+    }
+
+    /// Academic year of study → "4th year". `nil`/0 → "-".
+    private static func yearText(_ year: Int?) -> String {
+        guard let year, year > 0 else { return "-" }
+        let suffix: String
+        switch year {
+        case 1: suffix = "st"
+        case 2: suffix = "nd"
+        case 3: suffix = "rd"
+        default: suffix = "th"
+        }
+        return "\(year)\(suffix) year"
     }
 
     func editProfile(
@@ -167,7 +181,7 @@ class ProfileRepoImpl: ProfileRepo {
                 name: item.name ?? "-",
                 communityName: item.communityName ?? "-",
                 logoURL: item.clubProfile ?? "",
-                memberCount: item.count ?? 0,
+                memberCount: item.memberCount ?? 0,
                 totalCapacity: item.capacity ?? 0,
                 community: item.communityName ?? "-",
                 members: members,
@@ -178,7 +192,8 @@ class ProfileRepoImpl: ProfileRepo {
                 upcomingEventsCount: item.eventCount ?? 0,
                 categories: (item.categoryResponses ?? []).map {
                     .init(id: $0.id ?? 0, title: $0.title ?? "-")
-                }
+                },
+                isVerified: item.clubStatus?.isVerified ?? false
             )
         }
     }
@@ -206,7 +221,10 @@ class ProfileRepoImpl: ProfileRepo {
                 totalCapacity: item.capacity,
                 tags: tags,
                 accessType: item.visibility ?? .private,
-                requestType: item.status ?? .none
+                requestType: item.status ?? .none,
+                location: item.location,
+                hangoutDate: Date.fromISO8601(item.hangoutDate),
+                role: item.role
             )
         }
     }
@@ -227,15 +245,14 @@ class ProfileRepoImpl: ProfileRepo {
                 coverimageURL: item.background,
                 memberCount: item.membersCount ?? 0,
                 totalCapacity: item.capacity,
-                club: .init(name: "-", id: 0),
+                club: .init(name: item.club?.name ?? "-", id: item.club?.id ?? 0),
                 tags: tags,
                 bgType: .primary,
                 requestType: item.requestStatus ?? .none,
                 accessType: item.visibility ?? .private,
                 role: item.role ?? .notJoined,
-                // `MyEventResponse` doesn't return club/location/eventDate yet — placeholders until it does.
-                location: "-",
-                eventDate: Date()
+                location: item.location ?? "-",
+                eventDate: Date.fromISO8601(item.eventDate) ?? Date()
             )
         }
     }

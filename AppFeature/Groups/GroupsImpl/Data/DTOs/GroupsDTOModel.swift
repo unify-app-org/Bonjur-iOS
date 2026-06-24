@@ -40,6 +40,8 @@ struct GroupsDTOModel {
         let capacity: Int?
         let membersCount: Int?
         let categories: [CategoryResponse]
+        let location: String?
+        let hangoutDate: String?
     }
     
     // MARK: - Event
@@ -75,12 +77,12 @@ struct GroupsDTOModel {
         let background: AppPresentationModel.BackgroundType?
         let visibility: AppPresentationModel.AccessType?
         let role: AppPresentationModel.UserActivityRole?
-        let status: AppPresentationModel.RequestType?
+        let requestStatus: AppPresentationModel.RequestType?
+        let clubStatus: AppPresentationModel.ClubStatus?
         let clubProfile: String?
         let backgroundUrl: String?
         let about: String?
-        let count, capacity: Int?
-        let joined: Bool?
+        let memberCount, capacity: Int?
         let members: [Member]?
         let eventCount: Int?
         let categoryResponses: [CategoryResponse]?

@@ -57,10 +57,11 @@ struct ProfileDTOModel {
         let visibility: AppPresentationModel.AccessType?
         let role: AppPresentationModel.UserActivityRole?
         let requestStatus: AppPresentationModel.RequestType?
+        let clubStatus: AppPresentationModel.ClubStatus?
         let clubProfile: String?
         let backgroundUrl: String?
         let about: String?
-        let count, capacity: Int?
+        let memberCount, capacity: Int?
         let members: [ListMember]?
         let eventCount: Int?
         let categoryResponses: [CategoryResponse]?
@@ -83,8 +84,10 @@ struct ProfileDTOModel {
         let capacity: Int?
         let membersCount: Int?
         let categories: [CategoryResponse]
+        let location: String?
+        let hangoutDate: String?
     }
-    
+
     struct CategoryResponse: Decodable {
         let id: Int?
         let title: String?
@@ -104,5 +107,13 @@ struct ProfileDTOModel {
         let eventActivityStatus: AppPresentationModel.ActivityStatus?
         let role: AppPresentationModel.UserActivityRole?
         let categoryResponses: [CategoryResponse]
+        let club: Club?
+        let location: String?
+        let eventDate: String?
+
+        struct Club: Decodable {
+            let id: Int?
+            let name: String?
+        }
     }
 }

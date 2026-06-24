@@ -59,6 +59,9 @@ struct DiscoverDTOModel {
         let requestStatus: AppPresentationModel.RequestType?
         let hangoutActivityStatus: AppPresentationModel.ActivityStatus?
         let categoryResponses: [CategoryResponse]
+        let location: String?
+        let hangoutDate: String?
+        let role: AppPresentationModel.UserActivityRole?
     }
     
     // MARK: - Club
@@ -77,7 +80,8 @@ struct DiscoverDTOModel {
         let about: String?
         let memberCount, capacity, eventCount: Int?
         let members: [Member]?
-        
+        let clubStatus: AppPresentationModel.ClubStatus?
+
         struct Category: Decodable {
             let id: Int?
             let title: String?
@@ -116,7 +120,8 @@ struct DiscoverDTOModel {
         let profile, backgroundUrl: String?
         let members: [Member]?
         let background: AppPresentationModel.BackgroundType?
-        
+        let role: AppPresentationModel.UserActivityRole?
+
         enum CodingKeys: String, CodingKey {
             case id
             case name
@@ -125,6 +130,7 @@ struct DiscoverDTOModel {
             case backgroundUrl
             case members
             case clubCount
+            case role
             case background = "backgroundColour"
         }
     }

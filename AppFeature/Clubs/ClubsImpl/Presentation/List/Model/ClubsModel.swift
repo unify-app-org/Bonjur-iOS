@@ -8,6 +8,7 @@
 import AppFoundation
 import Combine
 import AppNetwork
+import AppUIKit
 
 // MARK: - Clubs input
 
@@ -34,9 +35,10 @@ typealias ClubsFeature = UIFeatureDefinition<
 final class ClubsViewState: UIFeatureState {
     @Published var uiModel: UIModel = .init()
     @Published var searchText: String = ""
-    
+
     struct UIModel {
         var clubs: [ClubCardView.Model] = []
+        var filters: [FilterView.Model] = []
     }
 }
 
@@ -44,6 +46,8 @@ final class ClubsViewState: UIFeatureState {
 
 enum ClubsAction: UIFeatureAction {
     case fetchData
+    case fetchCategories
+    case filtersSelected([FilterView.Items])
     case loadMore
     case searchChanged(String)
     case itemOnTap(id: Int)

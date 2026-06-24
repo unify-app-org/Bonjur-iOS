@@ -62,11 +62,18 @@ struct ClubCardView: View {
                 Spacer()
                 accessChip
             }
-            Text(model.name)
-                .font(Font.Typography.TitleMd.bold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .multilineTextAlignment(.leading)
-                .foregroundStyle(model.bgType.foregroundColor)
+            HStack(spacing: 4) {
+                Text(model.name)
+                    .font(Font.Typography.TitleMd.bold)
+                    .multilineTextAlignment(.leading)
+                    .foregroundStyle(model.bgType.foregroundColor)
+                if model.isVerified {
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(model.bgType.foregroundColor)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
             upCommingEventsCountView
             categoriesRow
         }

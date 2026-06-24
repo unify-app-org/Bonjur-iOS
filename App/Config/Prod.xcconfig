@@ -18,6 +18,4 @@ MSAL_AUTHORITY_URL = https:/$()/login.microsoftonline.com/organizations
 MSAL_REDIRECT_URI = msauth.com.unify.app.prod:/$()/auth
 MSAL_URL_SCHEME = msauth.com.unify.app.prod
 
-// TEMP: set to `development` for push testing via Xcode Run (sandbox APNs token).
-// MUST be `production` for TestFlight / App Store releases, or production push breaks.
-APS_ENVIRONMENT = development
+APS_ENVIRONMENT = production

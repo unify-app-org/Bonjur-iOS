@@ -20,6 +20,8 @@ protocol HangoutRepo {
 
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
 
+    func getFilterCategories() async throws(APIError) -> [FilterView.Model]
+
     func createHangout(
         request: HangoutsDTOModel.Request
     ) async throws(APIError) -> Void
@@ -70,6 +72,10 @@ class HangoutRepoImpl: HangoutRepo {
                 )
             }
 
+            let parts = HangoutsCardView.Model.dateParts(
+                from: Date.fromISO8601(item.hangoutDate)
+            )
+
             return .init(
                 id: item.id ?? "-",
                 name: item.name ?? "-",
@@ -78,7 +84,12 @@ class HangoutRepoImpl: HangoutRepo {
                 totalCapacity: item.capacity,
                 tags: tags,
                 accessType: item.visibility ?? .private,
-                requestType: item.requestStatus ?? .none
+                requestType: item.requestStatus ?? .none,
+                dateDay: parts.day,
+                dateMonth: parts.month,
+                time: parts.time,
+                location: item.location,
+                role: item.role
             )
         }
     }
@@ -102,6 +113,24 @@ class HangoutRepoImpl: HangoutRepo {
                 type: item.type ?? "",
                 title: item.title ?? "",
                 categories: categories
+            )
+        }
+    }
+
+    func getFilterCategories() async throws(APIError) -> [FilterView.Model] {
+        let data = try await dataSource.getCategories()
+        return data.map { item in
+            let items: [FilterView.Items] = item.subCategories.map { subCategory in
+                .init(
+                    title: subCategory.title ?? "",
+                    id: subCategory.id ?? 0
+                )
+            }
+
+            return .init(
+                title: item.title ?? "",
+                type: item.type ?? "",
+                items: items
             )
         }
     }

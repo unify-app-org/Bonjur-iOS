@@ -19,6 +19,7 @@ protocol ClubRepo {
     ) async throws(APIError) -> [ClubCardView.Model]
     func fetchCreate() async throws(APIError) -> [ClubsCreate.FieldSchema]
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
+    func getFilterCategories() async throws(APIError) -> [FilterView.Model]
     func createClub(request: MultipartFormData) async throws(APIError) -> Void
     func fetchClubDetails(
         clubId: Int
@@ -75,16 +76,17 @@ class ClubRepoImpl: ClubRepo {
                 name: item.name ?? "-",
                 communityName: item.communityName ?? "-",
                 logoURL: item.clubProfile ?? "",
-                memberCount: item.count ?? 0,
+                memberCount: item.memberCount ?? 0,
                 totalCapacity: item.capacity ?? 0,
                 community: item.communityName ?? "-",
                 members: members,
                 bgType: item.background ?? .primary,
                 accessType: item.visibility ?? .private,
-                requestType: (item.joined ?? false) ? .joined : .none,
-                role: item.clubUserRole,
+                requestType: item.requestStatus ?? .none,
+                role: item.role,
                 upcomingEventsCount: item.eventCount ?? 0,
-                categories: (item.categoryResponses ?? []).map { $0.title }
+                categories: (item.categoryResponses ?? []).map { $0.title },
+                isVerified: item.clubStatus?.isVerified ?? false
             )
         }
     }
@@ -111,7 +113,25 @@ class ClubRepoImpl: ClubRepo {
             )
         }
     }
-    
+
+    func getFilterCategories() async throws(APIError) -> [FilterView.Model] {
+        let data = try await dataSource.getCategories()
+        return data.map { item in
+            let items: [FilterView.Items] = item.subCategories.map { subCategory in
+                .init(
+                    title: subCategory.title ?? "",
+                    id: subCategory.id ?? 0
+                )
+            }
+
+            return .init(
+                title: item.title ?? "",
+                type: item.type ?? "",
+                items: items
+            )
+        }
+    }
+
     func editClub(
         id: Int,
         request: MultipartFormData
@@ -144,7 +164,8 @@ class ClubRepoImpl: ClubRepo {
             tags: tags,
             infoData: mapInfo(data),
             editPrefillData: mapPrefilData(data, tags),
-            joinButton: mapButtonModel(data)
+            joinButton: mapButtonModel(data),
+            clubStatus: data.clubStatus
         )
         return uiModel
     }

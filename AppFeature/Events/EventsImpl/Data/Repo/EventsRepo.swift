@@ -14,13 +14,14 @@ import Communities
 import AppPresentationModel
 
 protocol EventsRepo {
-    func fetchEvents() async throws(APIError) -> [EventsModuleModel.CardInputData]
+    func fetchEvents(categoryIds: [Int]) async throws(APIError) -> [EventsModuleModel.CardInputData]
     func joinEvent(eventId: String) async throws(APIError) -> Void
     func exitEvent(eventId: String) async throws(APIError) -> Void
     func createEvent(request: MultipartFormData) async throws(APIError) -> Void
     func editEvent(eventId: String, request: MultipartFormData) async throws(APIError) -> Void
     func fetchClubsForEvents() async throws(APIError) -> [EventsCreate.SelectableClub]
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
+    func getFilterCategories() async throws(APIError) -> [FilterView.Model]
     func fetchEventDetail(
         eventId: String
     ) async throws(APIError) -> EventsDetailsModel.UIModel
@@ -42,9 +43,13 @@ final class EventsRepoImpl: EventsRepo {
         self.dataSource = dataSource
     }
 
-    func fetchEvents() async throws(APIError) -> [EventsModuleModel.CardInputData] {
+    func fetchEvents(categoryIds: [Int]) async throws(APIError) -> [EventsModuleModel.CardInputData] {
+        var query = ["page": "0", "size": "50"]
+        if !categoryIds.isEmpty {
+            query["categoryIds"] = categoryIds.map(String.init).joined(separator: ",")
+        }
         let data = try await dataSource.fetchDiscoverEvents(
-            query: ["page": "0", "size": "50"]
+            query: query
         )
         return data.map { item in
             let tags: [AppPresentationModel.Tags] = item.categoryResponses.map { category in
@@ -108,6 +113,23 @@ final class EventsRepoImpl: EventsRepo {
                 type: item.type ?? "",
                 title: item.title ?? "",
                 categories: categories
+            )
+        }
+    }
+
+    func getFilterCategories() async throws(APIError) -> [FilterView.Model] {
+        let data = try await dataSource.getCategories()
+        return data.map { item in
+            let items: [FilterView.Items] = item.subCategories.map { sub in
+                .init(
+                    title: sub.title ?? "",
+                    id: sub.id ?? 0
+                )
+            }
+            return .init(
+                title: item.title ?? "",
+                type: item.type ?? "",
+                items: items
             )
         }
     }

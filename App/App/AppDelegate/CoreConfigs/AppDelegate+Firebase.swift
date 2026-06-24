@@ -6,8 +6,8 @@
 //
 
 import UIKit
-import UserNotifications
 import FirebaseCore
+import UserNotifications
 import FirebaseMessaging
 
 extension AppDelegate {
@@ -107,5 +107,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     ) {
         // TODO: handle notification tap / deep link from `response`.
         completionHandler()
+    }
+    
+    func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable : Any]
+    ) async -> UIBackgroundFetchResult {
+        .newData
     }
 }

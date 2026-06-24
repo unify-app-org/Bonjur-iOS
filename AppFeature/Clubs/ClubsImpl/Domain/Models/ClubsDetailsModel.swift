@@ -24,8 +24,10 @@ struct ClubsDetailsModel {
         let infoData: [Info]
         let editPrefillData: ClubsCreate.PrefillData
         let joinButton: JoinButton?
+        /// nil/unverified → request-verify button (admins); verified → badge.
+        let clubStatus: AppUIEntities.ClubStatus?
     }
-    
+
     struct JoinButton {
         let title: String
         let disabled: Bool
@@ -147,7 +149,8 @@ extension ClubsDetailsModel.UIModel {
                 .rules: .text("Everyone can come"),
                 .about: .text("I want to have a coffee and then go to the film I have one free ticket to the concert for the Sunday evening if someone want just contact.")
             ]
-        ), joinButton: nil
+        ), joinButton: nil,
+        clubStatus: .verified
     )
 }
 

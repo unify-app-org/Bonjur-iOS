@@ -7,6 +7,7 @@
 
 import AppFoundation
 import AppNetwork
+import AppUIKit
 import Combine
 
 // MARK: - HangoutList input
@@ -37,6 +38,7 @@ final class HangoutListViewState: UIFeatureState {
     
     struct UIModel {
         var hangouts: [HangoutsCardView.Model]
+        var filters: [FilterView.Model] = []
     }
 }
 
@@ -44,6 +46,8 @@ final class HangoutListViewState: UIFeatureState {
 
 enum HangoutListAction: UIFeatureAction {
     case fetchData
+    case fetchCategories
+    case filtersSelected([FilterView.Items])
     case loadMore
     case searchChanged(String)
     case itemTapped(id: String)

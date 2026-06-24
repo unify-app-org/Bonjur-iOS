@@ -78,12 +78,15 @@ class DiscoverRepoImpl: DiscoverRepo {
                     totalCapacity: item.capacity ?? 0,
                     tags: tags,
                     accessType: item.visibility ?? .private,
-                    requestType: item.requestStatus ?? .none
+                    requestType: item.requestStatus ?? .none,
+                    location: item.location,
+                    hangoutDate: Date.fromISO8601(item.hangoutDate),
+                    role: item.role
                 )
         }
         return uiModel
     }
-    
+
     func getClubs(
         query: DiscoverDTOModel.PaginationQuery
     ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
@@ -115,7 +118,8 @@ class DiscoverRepoImpl: DiscoverRepo {
                     upcomingEventsCount: item.eventCount ?? 0,
                     categories: (item.categoryResponses ?? []).map {
                         .init(id: $0.id ?? 0, title: $0.title ?? "-")
-                    }
+                    },
+                    isVerified: item.clubStatus?.isVerified ?? false
                 )
         }
         return uiModel
@@ -142,7 +146,8 @@ class DiscoverRepoImpl: DiscoverRepo {
                     memberCount: item.membersCount ?? 0,
                     clubCount: item.clubCount ?? 0,
                     members: members ,
-                    bgType: item.background ?? .primary
+                    bgType: item.background ?? .primary,
+                    role: item.role
                 )
         }
         return uiModel

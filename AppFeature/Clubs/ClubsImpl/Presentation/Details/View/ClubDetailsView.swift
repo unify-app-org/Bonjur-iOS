@@ -226,8 +226,39 @@ struct ClubDetailsView: View {
             clubMetadata
             memberCount
             chipsView
+            verificationView
             createEventButton
         }
+    }
+
+    @ViewBuilder
+    private var verificationView: some View {
+        if store.state.isVerified {
+            verifiedBadge
+        } else if store.state.showVerifyButton {
+            AppButton(
+                title: "Request verification from admins",
+                model: .init(
+                    type: .secondary,
+                    contentSize: .fill,
+                    size: .medium
+                )
+            ) {
+                store.send(.requestVerificationTapped)
+            }
+            .disabled(store.state.verifyButtonDisabled)
+        }
+    }
+
+    private var verifiedBadge: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "checkmark.seal.fill")
+                .font(.system(size: 14, weight: .semibold))
+            Text("Verified club")
+                .font(Font.Typography.TextSm.medium)
+        }
+        .foregroundStyle(Color.Palette.appBlue)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     private var clubNameText: some View {

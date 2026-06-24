@@ -21,7 +21,9 @@ public enum CommunitiesModuleModel {
         public let type: AppPresentationModel.ActivityType = .community
         public let members: [AppPresentationModel.Member]
         public let bgType: AppPresentationModel.BackgroundType
-        
+        /// Decoded for parity; not yet surfaced on the community card UI.
+        public let role: AppPresentationModel.UserActivityRole?
+
         public init(
             id: Int,
             name: String,
@@ -30,7 +32,8 @@ public enum CommunitiesModuleModel {
             memberCount: Int,
             clubCount: Int,
             members: [AppPresentationModel.Member],
-            bgType: AppPresentationModel.BackgroundType
+            bgType: AppPresentationModel.BackgroundType,
+            role: AppPresentationModel.UserActivityRole? = nil
         ) {
             self.id = id
             self.subTitle = subTitle
@@ -40,6 +43,7 @@ public enum CommunitiesModuleModel {
             self.memberCount = memberCount
             self.members = members
             self.bgType = bgType
+            self.role = role
         }
     }
     

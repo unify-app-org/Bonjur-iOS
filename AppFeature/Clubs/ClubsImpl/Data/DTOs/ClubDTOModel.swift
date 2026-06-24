@@ -16,6 +16,19 @@ struct ClubDTOModel {
         let page: Int
         let size: Int
         let name: String?
+        let categoryIds: [Int]?
+
+        init(
+            page: Int,
+            size: Int,
+            name: String?,
+            categoryIds: [Int]? = nil
+        ) {
+            self.page = page
+            self.size = size
+            self.name = name
+            self.categoryIds = categoryIds
+        }
     }
 
     /// Body for `POST /v1/clubs/{clubId}/role`. Communities reuse the same
@@ -62,6 +75,7 @@ struct ClubDTOModel {
         let backgroundColour: AppPresentationModel.BackgroundType?
         let clubUserRole: AppPresentationModel.UserActivityRole?
         let requestType: AppPresentationModel.RequestType?
+        let clubStatus: AppPresentationModel.ClubStatus?
         let links: [Link]?
         let categories: [Category]
     }
@@ -86,9 +100,10 @@ struct ClubDTOModel {
         let clubProfile: String?
         let backgroundUrl: String?
         let about: String?
-        let count, capacity: Int?
-        let joined: Bool?
-        let clubUserRole: AppPresentationModel.UserActivityRole?
+        let memberCount, capacity: Int?
+        let requestStatus: AppPresentationModel.RequestType?
+        let role: AppPresentationModel.UserActivityRole?
+        let clubStatus: AppPresentationModel.ClubStatus?
         let members: [ListMember]?
         let eventCount: Int?
         let categoryResponses: [Category]?

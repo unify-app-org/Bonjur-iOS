@@ -27,6 +27,7 @@ struct EventsListView: View {
         }
         .onAppear {
             store.send(.fetchData)
+            store.send(.fetchCategories)
         }
     }
     
@@ -72,9 +73,9 @@ struct EventsListView: View {
                 SearchView(text: .constant(""))
                     .padding(.horizontal)
                 FilterView(
-                    model: FilterView.Model.mock,
-                    selectedItems: { item in
-                        // do
+                    model: store.state.uiModel.filters,
+                    selectedItems: { items in
+                        store.send(.filtersSelected(items))
                     }
                 )
             }

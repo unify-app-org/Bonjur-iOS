@@ -26,6 +26,7 @@ extension ClubCardView {
         let role: AppUIEntities.UserActivityRole?
         let upcomingEventsCount: Int
         let categories: [String]
+        let isVerified: Bool
 
         public init(
             id: Int,
@@ -41,7 +42,8 @@ extension ClubCardView {
             requestType: AppUIEntities.RequestType,
             role: AppUIEntities.UserActivityRole? = nil,
             upcomingEventsCount: Int,
-            categories: [String]
+            categories: [String],
+            isVerified: Bool = false
         ) {
             self.id = id
             self.name = name
@@ -57,6 +59,7 @@ extension ClubCardView {
             self.community = community
             self.upcomingEventsCount = upcomingEventsCount
             self.categories = categories
+            self.isVerified = isVerified
         }
     }
 }
@@ -78,7 +81,8 @@ extension ClubCardView.Model {
             requestType: model.requestType,
             role: model.role,
             upcomingEventsCount: model.upcomingEventsCount,
-            categories: model.categories.map { $0.title }
+            categories: model.categories.map { $0.title },
+            isVerified: model.isVerified
         )
     }
 }

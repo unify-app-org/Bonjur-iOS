@@ -90,6 +90,7 @@ public struct ClubsModuleModel {
         public let role: AppPresentationModel.UserActivityRole?
         public let upcomingEventsCount: Int
         public let categories: [Category]
+        public let isVerified: Bool
 
         public init(
             id: Int,
@@ -105,7 +106,8 @@ public struct ClubsModuleModel {
             requestType: AppPresentationModel.RequestType,
             role: AppPresentationModel.UserActivityRole,
             upcomingEventsCount: Int,
-            categories: [Category]
+            categories: [Category],
+            isVerified: Bool = false
         ) {
             self.id = id
             self.name = name
@@ -121,6 +123,7 @@ public struct ClubsModuleModel {
             self.role = role
             self.upcomingEventsCount = upcomingEventsCount
             self.categories = categories
+            self.isVerified = isVerified
         }
     }
 }

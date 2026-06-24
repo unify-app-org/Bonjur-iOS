@@ -5,6 +5,7 @@
 //  Created by Huseyn Hasanov on 22.01.26.
 //
 
+import AppUIKit
 import AppFoundation
 import AppNetwork
 
@@ -22,6 +23,7 @@ final class HangoutListViewModel: UIFeatureViewModel<HangoutListFeature> {
     private var isLoadingMoreHangouts = false
     private var hasMoreHangouts = true
     private var sourceHangouts: [HangoutsCardView.Model] = []
+    private var selectedCategoryIds: [Int] = []
     
     init(
         state: HangoutListFeature.State,
@@ -39,6 +41,10 @@ final class HangoutListViewModel: UIFeatureViewModel<HangoutListFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .fetchCategories:
+            fetchCategories()
+        case .filtersSelected(let items):
+            filtersSelected(items)
         case .loadMore:
             loadMoreHangouts()
         case .searchChanged(let text):
@@ -49,8 +55,30 @@ final class HangoutListViewModel: UIFeatureViewModel<HangoutListFeature> {
             }
         }
     }
-    
+
     private func fetchData() {
+        Task {
+            await getHangoutsData()
+        }
+    }
+
+    private func fetchCategories() {
+        Task {
+            do {
+                let filters = try await dependencies.useCase.getFilterCategories()
+                state.uiModel.filters = filters.applyingSelectedItemIds(selectedCategoryIds)
+            } catch {
+                postEffect(.error(error as! APIError))
+            }
+        }
+    }
+
+    private func filtersSelected(_ items: [FilterView.Items]) {
+        selectedCategoryIds = items.map(\.id)
+        state.uiModel.filters = state.uiModel.filters.applyingSelectedItemIds(selectedCategoryIds)
+        hangoutsSize = paginationStep
+        hasMoreHangouts = true
+
         Task {
             await getHangoutsData()
         }
@@ -124,7 +152,8 @@ final class HangoutListViewModel: UIFeatureViewModel<HangoutListFeature> {
         return .init(
             page: 0,
             size: hangoutsSize,
-            name: name.isEmpty ? nil : name
+            name: name.isEmpty ? nil : name,
+            categoryIds: selectedCategoryIds.isEmpty ? nil : selectedCategoryIds
         )
     }
 }

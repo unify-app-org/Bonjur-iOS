@@ -63,7 +63,18 @@ public enum AppPresentationModel {
         case active = "ACTIVE"
         case inactive = "INACTIVE"
     }
-    
+
+    // MARK: - Club Status
+
+    /// Verification state of a club. `verified` drives the verified tick on cards.
+    public enum ClubStatus: String, Codable {
+        case verified = "VERIFIED"
+        case unverified = "UNVERIFIED"
+        case pending = "PENDING"
+
+        public var isVerified: Bool { self == .verified }
+    }
+
     // MARK: - Background  Color Type
     
     public enum BackgroundType: String, Codable, Hashable, CaseIterableWithDefault {

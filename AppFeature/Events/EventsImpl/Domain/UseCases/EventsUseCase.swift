@@ -11,7 +11,7 @@ import AppNetwork
 import Communities
 
 protocol EventsUseCase {
-    func fetchEvents() async throws(APIError) -> [EventsCardView.Model]
+    func fetchEvents(categoryIds: [Int]) async throws(APIError) -> [EventsCardView.Model]
     func joinEvent(eventId: String) async throws(APIError)
     func exitEvent(eventId: String) async throws(APIError)
     func fetchEventDetail(eventId: String) async throws(APIError) -> EventsDetailsModel.UIModel
@@ -27,6 +27,7 @@ protocol EventsUseCase {
     func editEvent(eventId: String, request: MultipartFormData) async throws(APIError)
     func fetchClubsForEvents() async throws(APIError) -> [EventsCreate.SelectableClub]
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
+    func getFilterCategories() async throws(APIError) -> [FilterView.Model]
 }
 
 class EventsUseCaseImpl: EventsUseCase {
@@ -37,8 +38,8 @@ class EventsUseCaseImpl: EventsUseCase {
         self.repo = repo
     }
 
-    func fetchEvents() async throws(APIError) -> [EventsCardView.Model] {
-        try await repo.fetchEvents().map(EventsCardView.Model.init(from:))
+    func fetchEvents(categoryIds: [Int]) async throws(APIError) -> [EventsCardView.Model] {
+        try await repo.fetchEvents(categoryIds: categoryIds).map(EventsCardView.Model.init(from:))
     }
 
     func joinEvent(eventId: String) async throws(APIError) {
@@ -83,5 +84,9 @@ class EventsUseCaseImpl: EventsUseCase {
 
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section] {
         try await repo.getCategories()
+    }
+
+    func getFilterCategories() async throws(APIError) -> [FilterView.Model] {
+        try await repo.getFilterCategories()
     }
 }

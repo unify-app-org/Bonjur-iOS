@@ -16,6 +16,19 @@ struct HangoutsDTOModel {
         let page: Int
         let size: Int
         let name: String?
+        let categoryIds: [Int]?
+
+        init(
+            page: Int,
+            size: Int,
+            name: String?,
+            categoryIds: [Int]? = nil
+        ) {
+            self.page = page
+            self.size = size
+            self.name = name
+            self.categoryIds = categoryIds
+        }
     }
     
     struct Request: Encodable {
@@ -64,8 +77,11 @@ struct HangoutsDTOModel {
         let capacity: Int?
         let membersCount: Int?
         let categoryResponses: [CategoryResponse]
+        let location: String?
+        let hangoutDate: String?
+        let role: AppPresentationModel.UserActivityRole?
     }
-    
+
     struct HangoutDetail: Decodable {
         let id: String
         let name: String

@@ -5,18 +5,21 @@
 //  Created by Huseyn Hasanov on 22.01.26.
 //
 
+import AppUIKit
 import AppFoundation
+import AppNetwork
 
 final class EventsListViewModel: UIFeatureViewModel<EventsListFeature> {
-    
+
     struct Dependencies {
         let useCase: EventsUseCase
     }
-    
+
     private let router: EventsListRouterProtocol
     private let inputData: EventsListInputData
     private let dependencies: EventsListViewModel.Dependencies
-    
+    private var selectedCategoryIds: [Int] = []
+
     init(
         state: EventsListFeature.State,
         router: EventsListRouterProtocol,
@@ -33,6 +36,10 @@ final class EventsListViewModel: UIFeatureViewModel<EventsListFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .fetchCategories:
+            fetchCategories()
+        case .filtersSelected(let items):
+            filtersSelected(items)
         case .eventItemTapped(let id):
             Task {
                 await router.navigate(to: .showDetails(id: id))
@@ -50,9 +57,28 @@ final class EventsListViewModel: UIFeatureViewModel<EventsListFeature> {
         }
     }
 
+    private func fetchCategories() {
+        Task {
+            do {
+                let filters = try await dependencies.useCase.getFilterCategories()
+                state.uiModel.filters = filters.applyingSelectedItemIds(selectedCategoryIds)
+            } catch {
+                postEffect(.error(error as! APIError))
+            }
+        }
+    }
+
+    private func filtersSelected(_ items: [FilterView.Items]) {
+        selectedCategoryIds = items.map(\.id)
+        state.uiModel.filters = state.uiModel.filters.applyingSelectedItemIds(selectedCategoryIds)
+        Task {
+            await getEventsData()
+        }
+    }
+
     private func getEventsData() async {
         do {
-            state.uiModel.events = try await dependencies.useCase.fetchEvents()
+            state.uiModel.events = try await dependencies.useCase.fetchEvents(categoryIds: selectedCategoryIds)
         } catch {
             postEffect(.error(error))
         }

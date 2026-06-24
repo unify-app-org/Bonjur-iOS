@@ -17,6 +17,7 @@ protocol ClubsUseCase {
     func fetchClubDetails(clubId: Int) async throws(APIError) -> ClubsDetailsModel.UIModel
     func fetchCreateFields() async throws(APIError) -> [ClubsCreate.FieldSchema]
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
+    func getFilterCategories() async throws(APIError) -> [FilterView.Model]
     func createClub(request: MultipartFormData) async throws(APIError) -> Void
     func fetchClubMemberById(
         id: Int
@@ -69,7 +70,11 @@ class ClubsUseCaseImpl: ClubsUseCase {
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section] {
         try await repo.getCategories()
     }
-    
+
+    func getFilterCategories() async throws(APIError) -> [FilterView.Model] {
+        try await repo.getFilterCategories()
+    }
+
     func createClub(request: MultipartFormData) async throws(APIError) {
         try await repo.createClub(request: request)
     }

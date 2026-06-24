@@ -16,6 +16,8 @@ protocol HangoutsUseCase {
 
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
 
+    func getFilterCategories() async throws(APIError) -> [FilterView.Model]
+
     func fetchCreateFields() async throws(APIError) -> [HangoutsCreate.FieldSchema]
 
     func createHangout(
@@ -59,6 +61,10 @@ class HangoutsUseCaseImpl: HangoutsUseCase {
 
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section] {
         try await repo.getCategories()
+    }
+
+    func getFilterCategories() async throws(APIError) -> [FilterView.Model] {
+        try await repo.getFilterCategories()
     }
 
     func fetchCreateFields() async throws(APIError) -> [HangoutsCreate.FieldSchema] {

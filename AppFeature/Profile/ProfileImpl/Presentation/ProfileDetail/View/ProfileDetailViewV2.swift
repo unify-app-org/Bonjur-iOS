@@ -117,7 +117,7 @@ struct ProfileDetailViewV2: View {
                     .padding(.top, 3)
 
                 if !store.state.isOtherUser {
-                    cardChip
+                    cardChip(for: card)
                         .padding(.top, 14)
                 }
             }
@@ -126,13 +126,26 @@ struct ProfileDetailViewV2: View {
     }
 
     private func headerSubtitle(for card: UserCardModel) -> String {
-        [card.speciality, card.community]
-            .filter { !$0.isEmpty }
+        [card.speciality, card.course, card.community]
+            .filter { !$0.isEmpty && $0 != "-" }
             .joined(separator: " · ")
     }
 
-    private var cardChip: some View {
-        Button {
+    private func cardChip(for card: UserCardModel) -> some View {
+        // Tint from the selected card cover; fall back to the original green.
+        // `.primary` is a pale green that's unreadable as text, so it reuses the
+        // dark green pair like the nil case.
+        let chipForeground: Color
+        let chipBackground: Color
+        switch card.backgroundCover {
+        case .primary, .none:
+            chipForeground = Color.Palette.green900
+            chipBackground = Color.Palette.greenLight
+        case .some(let cover):
+            chipForeground = cover.bgColor
+            chipBackground = cover.bgColor.opacity(0.18)
+        }
+        return Button {
             guard !store.state.isOtherUser else { return }
             store.send(.userCardTapped)
         } label: {
@@ -140,16 +153,16 @@ struct ProfileDetailViewV2: View {
                 Text("🪪  User Card ID")
                     .font(Font.Typography.TextMd.bold)
                 Image(uiImage: UIImage.Icons.chevronRight)
-                    .renderingMode(.original)
+                    .renderingMode(.template)
                     .resizable()
                     .frame(width: 16, height: 16)
             }
-            .foregroundStyle(Color.Palette.green900)
+            .foregroundStyle(chipForeground)
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
-            .background(Color.Palette.greenLight)
+            .background(chipBackground)
             .overlay(
-                Capsule().stroke(Color.Palette.secondary, lineWidth: 1)
+                Capsule().stroke(chipForeground.opacity(0.5), lineWidth: 1)
             )
             .clipShape(Capsule())
         }

@@ -36,8 +36,12 @@ public enum AppUIEntities {
     public typealias ActivityType = AppPresentationModel.ActivityType
     
     // MARK: - User Activity Roles
-    
+
     public typealias UserActivityRole = AppPresentationModel.UserActivityRole
+
+    // MARK: - Club Status
+
+    public typealias ClubStatus = AppPresentationModel.ClubStatus
 }
 
 public extension AppPresentationModel.UserActivityRole {

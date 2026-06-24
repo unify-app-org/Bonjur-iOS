@@ -5,6 +5,7 @@
 //  Created by Huseyn Hasanov on 17.01.26.
 //
 
+import AppUIKit
 import AppFoundation
 import AppNetwork
 
@@ -22,6 +23,7 @@ final class ClubsViewModel: UIFeatureViewModel<ClubsFeature> {
     private var isLoadingMoreClubs = false
     private var hasMoreClubs = true
     private var sourceClubs: [ClubCardView.Model] = []
+    private var selectedCategoryIds: [Int] = []
     
     init(
         state: ClubsFeature.State,
@@ -39,6 +41,10 @@ final class ClubsViewModel: UIFeatureViewModel<ClubsFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .fetchCategories:
+            fetchCategories()
+        case .filtersSelected(let items):
+            filtersSelected(items)
         case .loadMore:
             loadMoreClubs()
         case .searchChanged(let text):
@@ -49,8 +55,30 @@ final class ClubsViewModel: UIFeatureViewModel<ClubsFeature> {
             }
         }
     }
-    
+
     private func fetchData() {
+        Task {
+            try await getClubs()
+        }
+    }
+
+    private func fetchCategories() {
+        Task {
+            do {
+                let filters = try await dependencies.useCase.getFilterCategories()
+                state.uiModel.filters = filters.applyingSelectedItemIds(selectedCategoryIds)
+            } catch {
+                postEffect(.error(error as! APIError))
+            }
+        }
+    }
+
+    private func filtersSelected(_ items: [FilterView.Items]) {
+        selectedCategoryIds = items.map(\.id)
+        state.uiModel.filters = state.uiModel.filters.applyingSelectedItemIds(selectedCategoryIds)
+        clubsSize = paginationStep
+        hasMoreClubs = true
+
         Task {
             try await getClubs()
         }
@@ -128,7 +156,8 @@ final class ClubsViewModel: UIFeatureViewModel<ClubsFeature> {
         return .init(
             page: 0,
             size: clubsSize,
-            name: name.isEmpty ? nil : name
+            name: name.isEmpty ? nil : name,
+            categoryIds: selectedCategoryIds.isEmpty ? nil : selectedCategoryIds
         )
     }
 }

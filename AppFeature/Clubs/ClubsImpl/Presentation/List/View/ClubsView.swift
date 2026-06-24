@@ -35,6 +35,7 @@ struct ClubsView: View {
         .dismissKeyboardOnTap()
         .onAppear {
             store.send(.fetchData)
+            store.send(.fetchCategories)
         }
     }
     
@@ -81,9 +82,9 @@ struct ClubsView: View {
                 SearchView(text: searchTextBinding)
                     .padding(.horizontal)
                 FilterView(
-                    model: FilterView.Model.mock,
-                    selectedItems: { item in
-                        // do
+                    model: store.state.uiModel.filters,
+                    selectedItems: { items in
+                        store.send(.filtersSelected(items))
                     }
                 )
             }

@@ -76,7 +76,24 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
             Task { @MainActor in
                 presentExitConfirm()
             }
+        case .requestVerificationTapped:
+            Task { @MainActor in
+                requestVerification()
+            }
         }
+    }
+
+    // MARK: - Verification
+
+    /// Backend has no verify-request endpoint yet (and the detail payload omits
+    /// `clubStatus`). Optimistic placeholder until both land — see backend tasks.
+    @MainActor
+    private func requestVerification() {
+        AppSnackBar.show(
+            title: "Verification requested",
+            subtitle: "Admins will review your club.",
+            style: .success
+        )
     }
 
     // MARK: - Exit flow

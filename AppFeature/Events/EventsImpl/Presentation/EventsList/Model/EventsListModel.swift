@@ -8,6 +8,7 @@
 import AppFoundation
 import Combine
 import AppNetwork
+import AppUIKit
 
 // MARK: - EventsList input
 
@@ -36,6 +37,7 @@ final class EventsListViewState: UIFeatureState {
     
     struct UIModel {
         var events: [EventsCardView.Model]
+        var filters: [FilterView.Model] = []
     }
 }
 
@@ -43,6 +45,8 @@ final class EventsListViewState: UIFeatureState {
 
 enum EventsListAction: UIFeatureAction {
     case fetchData
+    case fetchCategories
+    case filtersSelected([FilterView.Items])
     case eventItemTapped(id: String)
     case joinEvent(id: String)
 }

@@ -87,7 +87,10 @@ public enum HangoutsModuleModel {
         public let tags: [AppPresentationModel.Tags]
         public let accessType: AppPresentationModel.AccessType
         public let requestType: AppPresentationModel.RequestType
-        
+        public let location: String?
+        public let hangoutDate: Date?
+        public let role: AppPresentationModel.UserActivityRole?
+
         public init(
             id: String,
             name: String,
@@ -96,7 +99,10 @@ public enum HangoutsModuleModel {
             totalCapacity: Int?,
             tags: [AppPresentationModel.Tags],
             accessType: AppPresentationModel.AccessType,
-            requestType: AppPresentationModel.RequestType
+            requestType: AppPresentationModel.RequestType,
+            location: String? = nil,
+            hangoutDate: Date? = nil,
+            role: AppPresentationModel.UserActivityRole? = nil
         ) {
             self.id = id
             self.name = name
@@ -106,6 +112,9 @@ public enum HangoutsModuleModel {
             self.tags = tags
             self.accessType = accessType
             self.requestType = requestType
+            self.location = location
+            self.hangoutDate = hangoutDate
+            self.role = role
         }
     }
 }

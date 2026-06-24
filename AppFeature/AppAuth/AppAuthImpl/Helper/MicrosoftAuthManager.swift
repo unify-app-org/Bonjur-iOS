@@ -86,7 +86,7 @@ final class MicrosoftAuthManager {
                 )
                 return
             }
-            
+            result.idToken
             let accountInfo = result.account
             let claims = accountInfo.accountClaims
             

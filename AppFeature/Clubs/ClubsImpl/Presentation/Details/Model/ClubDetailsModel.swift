@@ -52,6 +52,17 @@ final class ClubDetailsViewState: UIFeatureState {
     var isPrivate: Bool {
         uiModel?.accessType == .private
     }
+    var isVerified: Bool {
+        uiModel?.clubStatus?.isVerified ?? false
+    }
+    /// Request-verify button: club admins only, and only while the club isn't verified.
+    var showVerifyButton: Bool {
+        isEditable && !isVerified
+    }
+    /// A pending verification request keeps the button visible but disabled.
+    var verifyButtonDisabled: Bool {
+        uiModel?.clubStatus == .pending
+    }
     
     enum SegmentTypes: String, CaseIterable, Identifiable {
         case about = "About"
@@ -73,6 +84,7 @@ enum ClubDetailsAction: UIFeatureAction {
     case seeAllMembersTapped
     case assignRole(userId: String, role: AppPresentationModel.UserActivityRole)
     case exitTapped
+    case requestVerificationTapped
 }
 
 // MARK: - PreferenceKey

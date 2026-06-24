@@ -47,7 +47,7 @@ enum EventsDependencyContainer {
     // MARK: - Dependencies Registration
     
     private static func registerHelpers() {
-        
+        print("test")
     }
     
     private static func registerDataSource() {

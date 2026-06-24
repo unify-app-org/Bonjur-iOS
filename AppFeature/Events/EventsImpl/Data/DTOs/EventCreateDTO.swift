@@ -11,8 +11,9 @@ import AppPresentationModel
 struct ClubForEventDTO: Decodable {
     let communityName: String?
     let requestStatus: AppPresentationModel.RequestType?
-    let count, id: Int
+    let memberCount, id, capacity, eventCount: Int
     let backgroundUrl, clubProfile: String?
+    let clubStatus: AppPresentationModel.ClubStatus?
     let visibility: AppPresentationModel.AccessType?
     let role: AppPresentationModel.UserActivityRole?
     let background: AppPresentationModel.BackgroundType?

@@ -35,7 +35,13 @@ let appTarget: Target = .target(
             basedOnDependencyAnalysis: false
         ),
         .post(
-            script: "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"",
+            script: """
+            RUN_SCRIPT="${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run"
+            if [ ! -f "$RUN_SCRIPT" ]; then
+                RUN_SCRIPT="${SRCROOT}/../.build/checkouts/firebase-ios-sdk/Crashlytics/run"
+            fi
+            "$RUN_SCRIPT"
+            """,
             name: "Firebase Crashlytics Upload Symbols",
             inputPaths: [
                 "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",

@@ -22,6 +22,12 @@ struct TextViewWrapper: UIViewRepresentable {
         textView.textContainerInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         textView.textContainer.lineFragmentPadding = 0
         textView.isScrollEnabled = true
+        context.coordinator.textView = textView
+        // Done keyboard accessory disabled for now. Re-enable:
+        // textView.inputAccessoryView = makeDoneToolbar(
+        //     target: context.coordinator,
+        //     action: #selector(Coordinator.doneTapped)
+        // )
         return textView
     }
     
@@ -54,9 +60,17 @@ struct TextViewWrapper: UIViewRepresentable {
     class Coordinator: NSObject, UITextViewDelegate {
         var parent: TextViewWrapper
         var isEditing = false
-        
+        weak var textView: UITextView?
+
         init(_ parent: TextViewWrapper) {
             self.parent = parent
+        }
+
+        @objc func doneTapped() {
+            // Clear the SwiftUI focus source first so `updateUIView`'s
+            // focus-sync doesn't immediately re-focus the field, then resign.
+            parent.isFocused = false
+            textView?.resignFirstResponder()
         }
         
         func textViewDidBeginEditing(_ textView: UITextView) {

@@ -83,6 +83,19 @@ struct ClubCreateView: View {
                 }
             )
         }
+        .appSheet(
+            isPresented: Binding(
+                get: { store.state.showVerifyPrompt },
+                set: { if !$0 { store.send(.dismissVerifyPrompt) } }
+            ),
+            detents: [.height(360)],
+            dragIndicator: .visible
+        ) {
+            ClubVerifyPromptView(
+                onRequestVerification: { store.send(.requestVerificationTapped) },
+                onLater: { store.send(.dismissVerifyPrompt) }
+            )
+        }
     }
     
     // MARK: - Main Components

@@ -60,7 +60,31 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
             state.showCategoryPicker = false
         case .continueTapped:
             continueTapped()
+        case .requestVerificationTapped:
+            requestVerification()
+        case .dismissVerifyPrompt:
+            dismissVerifyPrompt()
         }
+    }
+
+    // MARK: - Verification prompt
+
+    /// Backend has no verify-request endpoint yet, so this is an optimistic
+    /// placeholder mirroring the club-details flow. Wire to the real API when it
+    /// lands. See backend tasks: POST verify-request + clubStatus in payloads.
+    private func requestVerification() {
+        state.showVerifyPrompt = false
+        AppSnackBar.show(
+            title: "Verification requested",
+            subtitle: "Admins will review your club.",
+            style: .success
+        )
+        Task { await router.navigate(to: .backTapped) }
+    }
+
+    private func dismissVerifyPrompt() {
+        state.showVerifyPrompt = false
+        Task { await router.navigate(to: .backTapped) }
     }
     
     private func fetchData() {
@@ -172,11 +196,8 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
         }
         do {
             try await dependencies.useCase.createClub(request: buildRequest())
-            AppSnackBar.show(
-                title: "Club created successfully",
-                subtitle: state.values.text(.clubName),
-                style: .success
-            )
+            // New clubs start unverified; surface the verify gate before leaving.
+            state.showVerifyPrompt = true
         } catch {
 
         }

@@ -11,7 +11,12 @@ import AppNetwork
 import Communities
 
 protocol EventsUseCase {
-    func fetchEvents(categoryIds: [Int]) async throws(APIError) -> [EventsCardView.Model]
+    func fetchEvents(
+        categoryIds: [Int],
+        keyword: String?,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> [EventsCardView.Model]
     func joinEvent(eventId: String) async throws(APIError)
     func exitEvent(eventId: String) async throws(APIError)
     func fetchEventDetail(eventId: String) async throws(APIError) -> EventsDetailsModel.UIModel
@@ -38,8 +43,18 @@ class EventsUseCaseImpl: EventsUseCase {
         self.repo = repo
     }
 
-    func fetchEvents(categoryIds: [Int]) async throws(APIError) -> [EventsCardView.Model] {
-        try await repo.fetchEvents(categoryIds: categoryIds).map(EventsCardView.Model.init(from:))
+    func fetchEvents(
+        categoryIds: [Int],
+        keyword: String?,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> [EventsCardView.Model] {
+        try await repo.fetchEvents(
+            categoryIds: categoryIds,
+            keyword: keyword,
+            page: page,
+            size: size
+        ).map(EventsCardView.Model.init(from:))
     }
 
     func joinEvent(eventId: String) async throws(APIError) {

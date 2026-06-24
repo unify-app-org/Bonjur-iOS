@@ -19,11 +19,12 @@ final class HangoutListViewModel: UIFeatureViewModel<HangoutListFeature> {
     private let inputData: HangoutListInputData
     private let dependencies: HangoutListViewModel.Dependencies
     private let paginationStep = 10
+    private let searchDebounceNanoseconds: UInt64 = 300_000_000
     private var hangoutsSize = 10
     private var isLoadingMoreHangouts = false
     private var hasMoreHangouts = true
-    private var sourceHangouts: [HangoutsCardView.Model] = []
     private var selectedCategoryIds: [Int] = []
+    private var searchTask: Task<Void, Never>?
     
     init(
         state: HangoutListFeature.State,
@@ -90,10 +91,9 @@ final class HangoutListViewModel: UIFeatureViewModel<HangoutListFeature> {
                 query: makeQuery()
             )
             hasMoreHangouts = hangouts.count >= hangoutsSize
-            sourceHangouts = hangouts
-            applySearch()
+            state.uiModel.hangouts = hangouts
         } catch {
-            postEffect(.error(error))
+            print(error)
         }
     }
 
@@ -109,50 +109,41 @@ final class HangoutListViewModel: UIFeatureViewModel<HangoutListFeature> {
             }
 
             do {
-                let previousCount = sourceHangouts.count
+                let previousCount = state.uiModel.hangouts.count
                 let hangouts = try await dependencies.useCase.fetchHangouts(
                     query: makeQuery()
                 )
                 hasMoreHangouts = hangouts.count > previousCount
-                sourceHangouts = hangouts
-                applySearch()
+                state.uiModel.hangouts = hangouts
             } catch {
                 hangoutsSize = previousSize
-                postEffect(.error(error as! APIError))
+                print(error)
             }
         }
     }
 
     private func searchChanged(_ text: String) {
         state.searchText = text
-        applySearch()
-    }
+        hangoutsSize = paginationStep
+        hasMoreHangouts = true
 
-    private func applySearch() {
-        let query = state.searchText
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .lowercased()
-
-        guard !query.isEmpty else {
-            state.uiModel.hangouts = sourceHangouts
-            return
-        }
-
-        state.uiModel.hangouts = sourceHangouts.filter { hangout in
-            hangout.name.lowercased().contains(query)
-            || hangout.description.lowercased().contains(query)
-            || hangout.tags.contains { $0.title.lowercased().contains(query) }
+        searchTask?.cancel()
+        searchTask = Task { [weak self] in
+            guard let self else { return }
+            try? await Task.sleep(nanoseconds: searchDebounceNanoseconds)
+            guard !Task.isCancelled else { return }
+            await getHangoutsData()
         }
     }
 
     private func makeQuery() -> HangoutsDTOModel.PaginationQuery {
-        let name = state.searchText
+        let keyword = state.searchText
             .trimmingCharacters(in: .whitespacesAndNewlines)
 
         return .init(
             page: 0,
             size: hangoutsSize,
-            name: name.isEmpty ? nil : name,
+            keyword: keyword.isEmpty ? nil : keyword,
             categoryIds: selectedCategoryIds.isEmpty ? nil : selectedCategoryIds
         )
     }

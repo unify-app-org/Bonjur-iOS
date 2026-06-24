@@ -25,6 +25,8 @@ public enum MicrosoftAuthCallback {
 struct MSALSignInResult {
     let name: String?
     let email: String?
+    let accessToken: String?
+    let tanetId: String?
     let error: Error?
 }
 
@@ -70,6 +72,8 @@ final class MicrosoftAuthManager {
                     .init(
                         name: nil,
                         email: nil,
+                        accessToken: nil,
+                        tanetId: nil,
                         error: error
                     )
                 )
@@ -81,12 +85,15 @@ final class MicrosoftAuthManager {
                     .init(
                         name: nil,
                         email: nil,
+                        accessToken: nil,
+                        tanetId: nil,
                         error: nil
                     )
                 )
                 return
             }
-            result.idToken
+            let tanetId = result.tenantProfile.identifier
+            let accessToken = result.accessToken
             let accountInfo = result.account
             let claims = accountInfo.accountClaims
             
@@ -94,11 +101,13 @@ final class MicrosoftAuthManager {
             let email =
                 claims?["email"] as? String ??
                 claims?["preferred_username"] as? String
-                    
+            
             completion(
                 .init(
                     name: name,
                     email: email,
+                    accessToken: accessToken,
+                    tanetId: tanetId,
                     error: nil
                 )
             )

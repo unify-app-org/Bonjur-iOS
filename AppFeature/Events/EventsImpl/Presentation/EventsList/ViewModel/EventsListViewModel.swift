@@ -18,7 +18,13 @@ final class EventsListViewModel: UIFeatureViewModel<EventsListFeature> {
     private let router: EventsListRouterProtocol
     private let inputData: EventsListInputData
     private let dependencies: EventsListViewModel.Dependencies
+    private let paginationStep = 10
+    private let searchDebounceNanoseconds: UInt64 = 300_000_000
+    private var eventsSize = 10
+    private var isLoadingMoreEvents = false
+    private var hasMoreEvents = true
     private var selectedCategoryIds: [Int] = []
+    private var searchTask: Task<Void, Never>?
 
     init(
         state: EventsListFeature.State,
@@ -40,6 +46,10 @@ final class EventsListViewModel: UIFeatureViewModel<EventsListFeature> {
             fetchCategories()
         case .filtersSelected(let items):
             filtersSelected(items)
+        case .loadMore:
+            loadMoreEvents()
+        case .searchChanged(let text):
+            searchChanged(text)
         case .eventItemTapped(let id):
             Task {
                 await router.navigate(to: .showDetails(id: id))
@@ -71,6 +81,8 @@ final class EventsListViewModel: UIFeatureViewModel<EventsListFeature> {
     private func filtersSelected(_ items: [FilterView.Items]) {
         selectedCategoryIds = items.map(\.id)
         state.uiModel.filters = state.uiModel.filters.applyingSelectedItemIds(selectedCategoryIds)
+        eventsSize = paginationStep
+        hasMoreEvents = true
         Task {
             await getEventsData()
         }
@@ -78,10 +90,65 @@ final class EventsListViewModel: UIFeatureViewModel<EventsListFeature> {
 
     private func getEventsData() async {
         do {
-            state.uiModel.events = try await dependencies.useCase.fetchEvents(categoryIds: selectedCategoryIds)
+            let events = try await dependencies.useCase.fetchEvents(
+                categoryIds: selectedCategoryIds,
+                keyword: currentKeyword,
+                page: 0,
+                size: eventsSize
+            )
+            hasMoreEvents = events.count >= eventsSize
+            state.uiModel.events = events
         } catch {
-            postEffect(.error(error))
+            print(error)
         }
+    }
+
+    private func loadMoreEvents() {
+        guard !isLoadingMoreEvents, hasMoreEvents else { return }
+        isLoadingMoreEvents = true
+        let previousSize = eventsSize
+        eventsSize += paginationStep
+
+        Task {
+            defer {
+                isLoadingMoreEvents = false
+            }
+
+            do {
+                let previousCount = state.uiModel.events.count
+                let events = try await dependencies.useCase.fetchEvents(
+                    categoryIds: selectedCategoryIds,
+                    keyword: currentKeyword,
+                    page: 0,
+                    size: eventsSize
+                )
+                hasMoreEvents = events.count > previousCount
+                state.uiModel.events = events
+            } catch {
+                eventsSize = previousSize
+                print(error)
+            }
+        }
+    }
+
+    private func searchChanged(_ text: String) {
+        state.searchText = text
+        eventsSize = paginationStep
+        hasMoreEvents = true
+
+        searchTask?.cancel()
+        searchTask = Task { [weak self] in
+            guard let self else { return }
+            try? await Task.sleep(nanoseconds: searchDebounceNanoseconds)
+            guard !Task.isCancelled else { return }
+            await getEventsData()
+        }
+    }
+
+    private var currentKeyword: String? {
+        let keyword = state.searchText
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        return keyword.isEmpty ? nil : keyword
     }
 
     private func joinEvent(id: String) async {

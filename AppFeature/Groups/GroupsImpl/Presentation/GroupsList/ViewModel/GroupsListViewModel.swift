@@ -21,15 +21,14 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
     private let inputData: GroupsListInputData
     private let dependencies: GroupsListViewModel.Dependencies
     private let paginationStep = 10
+    private let searchDebounceNanoseconds: UInt64 = 300_000_000
     private var clubsSize = 10
     private var hangoutsSize = 10
     private var isLoadingMoreClubs = false
     private var isLoadingMoreHangouts = false
     private var hasMoreClubs = true
     private var hasMoreHangouts = true
-    private var sourceClubs: [ClubsModuleModel.CardInputData] = []
-    private var sourceEvents: [EventsModuleModel.CardInputData] = []
-    private var sourceHangouts: [HangoutsModuleModel.CardInputData] = []
+    private var searchTask: Task<Void, Never>?
     
     init(
         state: GroupsListFeature.State,
@@ -84,30 +83,29 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
                 query: makeQuery(size: clubsSize)
             )
             hasMoreClubs = clubs.count >= clubsSize
-            sourceClubs = clubs
-            applyClubsSearch()
+            state.uiModel.clubs = clubs
         } catch {
             postError(error)
         }
     }
-    
+
     private func getEvents() async {
         do {
-            sourceEvents = try await dependencies.useCase.fetchEvents()
-            applyEventsSearch()
+            state.uiModel.events = try await dependencies.useCase.fetchEvents(
+                keyword: currentKeyword
+            )
         } catch {
             postError(error)
         }
     }
-    
+
     private func getHangouts() async {
         do {
             let hangouts = try await dependencies.useCase.fetchHangouts(
                 query: makeQuery(size: hangoutsSize)
             )
             hasMoreHangouts = hangouts.count >= hangoutsSize
-            sourceHangouts = hangouts
-            applyHangoutsSearch()
+            state.uiModel.hangouts = hangouts
         } catch {
             postError(error)
         }
@@ -125,13 +123,12 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
             }
             
             do {
-                let previousCount = sourceClubs.count
+                let previousCount = state.uiModel.clubs.count
                 let clubs = try await dependencies.useCase.fetchClubs(
                     query: makeQuery(size: clubsSize)
                 )
                 hasMoreClubs = clubs.count > previousCount
-                sourceClubs = clubs
-                applyClubsSearch()
+                state.uiModel.clubs = clubs
             } catch {
                 clubsSize = previousSize
                 postError(error)
@@ -151,13 +148,12 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
             }
             
             do {
-                let previousCount = sourceHangouts.count
+                let previousCount = state.uiModel.hangouts.count
                 let hangouts = try await dependencies.useCase.fetchHangouts(
                     query: makeQuery(size: hangoutsSize)
                 )
                 hasMoreHangouts = hangouts.count > previousCount
-                sourceHangouts = hangouts
-                applyHangoutsSearch()
+                state.uiModel.hangouts = hangouts
             } catch {
                 hangoutsSize = previousSize
                 postError(error)
@@ -171,77 +167,30 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
         hangoutsSize = paginationStep
         hasMoreClubs = true
         hasMoreHangouts = true
-        
-        applyClubsSearch()
-        applyEventsSearch()
-        applyHangoutsSearch()
-        
-        Task {
+
+        searchTask?.cancel()
+        searchTask = Task { [weak self] in
+            guard let self else { return }
+            try? await Task.sleep(nanoseconds: searchDebounceNanoseconds)
+            guard !Task.isCancelled else { return }
             await getClubs()
+            await getEvents()
             await getHangouts()
         }
     }
-    
-    private func applyClubsSearch() {
-        let query = searchQuery
-        
-        guard !query.isEmpty else {
-            state.uiModel.clubs = sourceClubs
-            return
-        }
-        
-        state.uiModel.clubs = sourceClubs.filter { club in
-            club.name.lowercased().contains(query)
-            || club.communityName.lowercased().contains(query)
-            || club.community.lowercased().contains(query)
-        }
-    }
-    
-    private func applyEventsSearch() {
-        let query = searchQuery
-        
-        guard !query.isEmpty else {
-            state.uiModel.events = sourceEvents
-            return
-        }
-        
-        state.uiModel.events = sourceEvents.filter { event in
-            event.name.lowercased().contains(query)
-            || event.club.name.lowercased().contains(query)
-            || event.tags.contains { $0.title.lowercased().contains(query) }
-        }
-    }
-    
-    private func applyHangoutsSearch() {
-        let query = searchQuery
-        
-        guard !query.isEmpty else {
-            state.uiModel.hangouts = sourceHangouts
-            return
-        }
-        
-        state.uiModel.hangouts = sourceHangouts.filter { hangout in
-            hangout.name.lowercased().contains(query)
-            || hangout.description.lowercased().contains(query)
-            || hangout.tags.contains { $0.title.lowercased().contains(query) }
-        }
-    }
-    
+
     private func makeQuery(size: Int) -> GroupsDTOModel.PaginationQuery {
-        let name = state.searchText
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        return .init(
+        .init(
             page: 0,
             size: size,
-            name: name.isEmpty ? nil : name
+            keyword: currentKeyword
         )
     }
-    
-    private var searchQuery: String {
-        state.searchText
+
+    private var currentKeyword: String? {
+        let keyword = state.searchText
             .trimmingCharacters(in: .whitespacesAndNewlines)
-            .lowercased()
+        return keyword.isEmpty ? nil : keyword
     }
     
     private func postError(_ error: any Error) {

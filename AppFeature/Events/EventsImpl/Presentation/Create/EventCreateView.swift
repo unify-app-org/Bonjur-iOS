@@ -16,6 +16,89 @@ struct EventCreateView: View {
     @State private var baseHeight: CGFloat = 200
 
     var body: some View {
+        content
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar(.visible)
+            .toolbarBackground(isScrolled ? .automatic : .hidden, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Image(uiImage: UIImage.Icons.arrowLeft01)
+                        .toolbarItemBackground(isScrolled: isScrolled) {
+                            store.send(.backTapped)
+                        }
+                }
+            }
+            .onFirstAppear {
+                store.send(.fetchData)
+            }
+            .enableSwipeBack()
+            .dismissKeyboardOnTap()
+            .appSheet(
+                isPresented: Binding(
+                    get: { store.state.showClubPicker },
+                    set: { if !$0 { store.send(.dismissClubPicker) } }
+                ),
+                detents: [.large],
+                dragIndicator: .visible
+            ) {
+                SelectClubView(
+                    clubs: store.state.clubs,
+                    selectedClubId: store.state.selectedClub?.clubId,
+                    onSelect: { store.send(.selectClub($0)) }
+                )
+            }
+            .sheet(
+                isPresented: Binding(
+                    get: { store.state.showCategoryPicker },
+                    set: { if !$0 { store.send(.dismissCategoryPicker) } }
+                )
+            ) {
+                SelectCategoryView(
+                    sections: $store.state.categorySections,
+                    onBack: { store.send(.dismissCategoryPicker) },
+                    onDone: { store.send(.categoryPickerDone) }
+                )
+            }
+    }
+
+    // MARK: - Phase routing
+
+    @ViewBuilder
+    private var content: some View {
+        switch store.state.clubsPhase {
+        case .loading:
+            ProgressView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        case .failed:
+            centered {
+                EventCreateErrorView { store.send(.retryTapped) }
+            }
+        case .empty:
+            centered {
+                EventCreateEmptyView(
+                    onCreateClub: { store.send(.createClubTapped) },
+                    onBrowseClubs: { store.send(.browseClubsTapped) }
+                )
+            }
+        case .loaded:
+            formView
+        }
+    }
+
+    private func centered<Inner: View>(@ViewBuilder _ inner: () -> Inner) -> some View {
+        VStack {
+            Spacer()
+            inner()
+                .padding(.horizontal, 24)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    // MARK: - Form (eligible clubs available)
+
+    private var formView: some View {
         GeometryReader { proxy in
             VStack(spacing: 0) {
                 ScrollView(showsIndicators: false) {
@@ -43,49 +126,6 @@ struct EventCreateView: View {
             .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { newValue in
                 baseHeight = newValue / 4
             }
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar(.visible)
-        .toolbarBackground(isScrolled ? .automatic : .hidden, for: .navigationBar)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Image(uiImage: UIImage.Icons.arrowLeft01)
-                    .toolbarItemBackground(isScrolled: isScrolled) {
-                        store.send(.backTapped)
-                    }
-            }
-        }
-        .onFirstAppear {
-            store.send(.fetchData)
-        }
-        .enableSwipeBack()
-        .dismissKeyboardOnTap()
-        .appSheet(
-            isPresented: Binding(
-                get: { store.state.showClubPicker },
-                set: { if !$0 { store.send(.dismissClubPicker) } }
-            ),
-            detents: [.large],
-            dragIndicator: .visible
-        ) {
-            SelectClubView(
-                clubs: store.state.clubs,
-                selectedClubId: store.state.selectedClub?.clubId,
-                onSelect: { store.send(.selectClub($0)) }
-            )
-        }
-        .sheet(
-            isPresented: Binding(
-                get: { store.state.showCategoryPicker },
-                set: { if !$0 { store.send(.dismissCategoryPicker) } }
-            )
-        ) {
-            SelectCategoryView(
-                sections: $store.state.categorySections,
-                onBack: { store.send(.dismissCategoryPicker) },
-                onDone: { store.send(.categoryPickerDone) }
-            )
         }
     }
 

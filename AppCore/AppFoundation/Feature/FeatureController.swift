@@ -7,8 +7,35 @@
 
 
 import SwiftUI
+import UIKit
 
-open class UIFeatureController<Feature: UIFeature, Content: View>: UIHostingController<Content> {
+/// Wraps a feature's root view and attaches a global "Done" keyboard toolbar,
+/// so every SwiftUI text field on every feature screen gets a dismiss button
+/// above the keyboard — no per-screen wiring.
+public struct KeyboardAccessoryHost<Content: View>: View {
+    let content: Content
+
+    public var body: some View {
+        // Done keyboard toolbar disabled for now. Re-enable by restoring the
+        // `.toolbar { ToolbarItemGroup(placement: .keyboard) { ... } }` below.
+        content
+//            .toolbar {
+//                ToolbarItemGroup(placement: .keyboard) {
+//                    Spacer()
+//                    Button("Done") {
+//                        UIApplication.shared.sendAction(
+//                            #selector(UIResponder.resignFirstResponder),
+//                            to: nil,
+//                            from: nil,
+//                            for: nil
+//                        )
+//                    }
+//                }
+//            }
+    }
+}
+
+open class UIFeatureController<Feature: UIFeature, Content: View>: UIHostingController<KeyboardAccessoryHost<Content>> {
 
     let viewModel: UIFeatureViewModel<Feature>
     public let store: StoreOf<Feature>
@@ -19,7 +46,7 @@ open class UIFeatureController<Feature: UIFeature, Content: View>: UIHostingCont
     ) {
         self.viewModel = viewModel
         self.store = viewModel.store
-        super.init(rootView: content(viewModel.store))
+        super.init(rootView: KeyboardAccessoryHost(content: content(viewModel.store)))
 
         self.viewModel.effectClosure = { [weak self] effect in
             guard let self else {

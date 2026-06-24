@@ -32,6 +32,18 @@ enum EventCreateSideEffect: UISideEffect {
     case error(APIError?)
 }
 
+// MARK: - Eligible-clubs load phase
+
+/// Drives what the create screen renders. `forEvents` only returns clubs the
+/// user may post to (organizer role AND verified club), so an empty result and
+/// a network failure must be told apart — they look identical otherwise.
+enum EventCreateClubsPhase {
+    case loading
+    case loaded   // has eligible clubs → show the form
+    case empty    // no president/VP/organizer role in any verified club
+    case failed   // fetch error → retry
+}
+
 // MARK: - Feature Definition
 
 typealias EventCreateFeature = UIFeatureDefinition<
@@ -52,6 +64,7 @@ final class EventCreateViewState: UIFeatureState {
     ]
 
     @Published var clubs: [EventsCreate.SelectableClub] = []
+    @Published var clubsPhase: EventCreateClubsPhase = .loading
     @Published var showClubPicker: Bool = false
 
     @Published var categorySections: [SelectCategoryView.Section] = []
@@ -80,6 +93,9 @@ final class EventCreateViewState: UIFeatureState {
 
 enum EventCreateAction: UIFeatureAction {
     case fetchData
+    case retryTapped
+    case createClubTapped
+    case browseClubsTapped
     case backTapped
     case continueTapped
     case selectClubTapped

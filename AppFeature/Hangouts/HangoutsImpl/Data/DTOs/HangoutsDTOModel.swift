@@ -15,18 +15,18 @@ struct HangoutsDTOModel {
     struct PaginationQuery: Encodable {
         let page: Int
         let size: Int
-        let name: String?
+        let keyword: String?
         let categoryIds: [Int]?
 
         init(
             page: Int,
             size: Int,
-            name: String?,
+            keyword: String?,
             categoryIds: [Int]? = nil
         ) {
             self.page = page
             self.size = size
-            self.name = name
+            self.keyword = keyword
             self.categoryIds = categoryIds
         }
     }

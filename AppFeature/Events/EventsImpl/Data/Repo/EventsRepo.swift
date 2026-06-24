@@ -14,7 +14,12 @@ import Communities
 import AppPresentationModel
 
 protocol EventsRepo {
-    func fetchEvents(categoryIds: [Int]) async throws(APIError) -> [EventsModuleModel.CardInputData]
+    func fetchEvents(
+        categoryIds: [Int],
+        keyword: String?,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> [EventsModuleModel.CardInputData]
     func joinEvent(eventId: String) async throws(APIError) -> Void
     func exitEvent(eventId: String) async throws(APIError) -> Void
     func createEvent(request: MultipartFormData) async throws(APIError) -> Void
@@ -43,10 +48,18 @@ final class EventsRepoImpl: EventsRepo {
         self.dataSource = dataSource
     }
 
-    func fetchEvents(categoryIds: [Int]) async throws(APIError) -> [EventsModuleModel.CardInputData] {
-        var query = ["page": "0", "size": "50"]
+    func fetchEvents(
+        categoryIds: [Int],
+        keyword: String?,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> [EventsModuleModel.CardInputData] {
+        var query = ["page": "\(page)", "size": "\(size)"]
         if !categoryIds.isEmpty {
             query["categoryIds"] = categoryIds.map(String.init).joined(separator: ",")
+        }
+        if let keyword, !keyword.isEmpty {
+            query["keyword"] = keyword
         }
         let data = try await dataSource.fetchDiscoverEvents(
             query: query

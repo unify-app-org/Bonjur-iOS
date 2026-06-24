@@ -15,18 +15,18 @@ struct ClubDTOModel {
     struct PaginationQuery: Encodable {
         let page: Int
         let size: Int
-        let name: String?
+        let keyword: String?
         let categoryIds: [Int]?
 
         init(
             page: Int,
             size: Int,
-            name: String?,
+            keyword: String?,
             categoryIds: [Int]? = nil
         ) {
             self.page = page
             self.size = size
-            self.name = name
+            self.keyword = keyword
             self.categoryIds = categoryIds
         }
     }
@@ -74,8 +74,8 @@ struct ClubDTOModel {
         let backgroundUrl, logoUrl, modifiedAt: String?
         let backgroundColour: AppPresentationModel.BackgroundType?
         let clubUserRole: AppPresentationModel.UserActivityRole?
-        let requestType: AppPresentationModel.RequestType?
-        let clubStatus: AppPresentationModel.ClubStatus?
+        let clubUserStatus: AppPresentationModel.RequestType?
+        let status: AppPresentationModel.ClubStatus?
         let links: [Link]?
         let categories: [Category]
     }

@@ -12,7 +12,7 @@ import Clubs
 import Hangouts
 
 protocol GroupsUseCase {
-    func fetchEvents() async throws(APIError) -> [EventsModuleModel.CardInputData]
+    func fetchEvents(keyword: String?) async throws(APIError) -> [EventsModuleModel.CardInputData]
     func fetchClubs(
         query: GroupsDTOModel.PaginationQuery
     ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
@@ -29,9 +29,9 @@ class GroupsUseCaseImpl: GroupsUseCase {
         self.repo = repo
     }
 
-    func fetchEvents() async throws(APIError) -> [EventsModuleModel.CardInputData] {
+    func fetchEvents(keyword: String?) async throws(APIError) -> [EventsModuleModel.CardInputData] {
         try await repo.fetchJoinedEvents(
-            query: .init(page: 0, size: 50, name: nil)
+            query: .init(page: 0, size: 50, keyword: keyword)
         )
     }
     

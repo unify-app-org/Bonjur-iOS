@@ -19,11 +19,12 @@ final class ClubsViewModel: UIFeatureViewModel<ClubsFeature> {
     private let inputData: ClubsInputData
     private let dependencies: ClubsViewModel.Dependencies
     private let paginationStep = 10
+    private let searchDebounceNanoseconds: UInt64 = 300_000_000
     private var clubsSize = 10
     private var isLoadingMoreClubs = false
     private var hasMoreClubs = true
-    private var sourceClubs: [ClubCardView.Model] = []
     private var selectedCategoryIds: [Int] = []
+    private var searchTask: Task<Void, Never>?
     
     init(
         state: ClubsFeature.State,
@@ -84,20 +85,23 @@ final class ClubsViewModel: UIFeatureViewModel<ClubsFeature> {
         }
     }
     
-    private func getClubs() async throws {
-        postEffect(.loading(true))
+    private func getClubs(showLoading: Bool = true) async throws {
+        if showLoading {
+            postEffect(.loading(true))
+        }
         defer {
-            postEffect(.loading(false))
+            if showLoading {
+                postEffect(.loading(false))
+            }
         }
         do {
             let data = try await dependencies.useCase.fetchClubsData(
                 query: makeQuery()
             )
             hasMoreClubs = data.count >= clubsSize
-            sourceClubs = data
-            applySearch()
+            state.uiModel.clubs = data
         } catch {
-            postEffect(.error(error))
+            print(error)
         }
     }
 
@@ -113,50 +117,41 @@ final class ClubsViewModel: UIFeatureViewModel<ClubsFeature> {
             }
 
             do {
-                let previousCount = sourceClubs.count
+                let previousCount = state.uiModel.clubs.count
                 let clubs = try await dependencies.useCase.fetchClubsData(
                     query: makeQuery()
                 )
                 hasMoreClubs = clubs.count > previousCount
-                sourceClubs = clubs
-                applySearch()
+                state.uiModel.clubs = clubs
             } catch {
                 clubsSize = previousSize
-                postEffect(.error(error as! APIError))
+                print(error)
             }
         }
     }
 
     private func searchChanged(_ text: String) {
         state.searchText = text
-        applySearch()
-    }
+        clubsSize = paginationStep
+        hasMoreClubs = true
 
-    private func applySearch() {
-        let query = state.searchText
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .lowercased()
-
-        guard !query.isEmpty else {
-            state.uiModel.clubs = sourceClubs
-            return
-        }
-
-        state.uiModel.clubs = sourceClubs.filter { club in
-            club.name.lowercased().contains(query)
-            || club.communityName.lowercased().contains(query)
-            || club.community.lowercased().contains(query)
+        searchTask?.cancel()
+        searchTask = Task { [weak self] in
+            guard let self else { return }
+            try? await Task.sleep(nanoseconds: searchDebounceNanoseconds)
+            guard !Task.isCancelled else { return }
+            try? await getClubs(showLoading: false)
         }
     }
 
     private func makeQuery() -> ClubDTOModel.PaginationQuery {
-        let name = state.searchText
+        let keyword = state.searchText
             .trimmingCharacters(in: .whitespacesAndNewlines)
 
         return .init(
             page: 0,
             size: clubsSize,
-            name: name.isEmpty ? nil : name,
+            keyword: keyword.isEmpty ? nil : keyword,
             categoryIds: selectedCategoryIds.isEmpty ? nil : selectedCategoryIds
         )
     }

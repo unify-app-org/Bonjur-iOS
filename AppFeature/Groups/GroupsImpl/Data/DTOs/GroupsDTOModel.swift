@@ -13,7 +13,7 @@ struct GroupsDTOModel {
     struct PaginationQuery: Encodable {
         let page: Int
         let size: Int
-        let name: String?
+        let keyword: String?
     }
     
     struct CategoryResponse: Decodable {

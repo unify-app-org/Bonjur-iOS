@@ -48,6 +48,9 @@ final class ClubCreateViewState: UIFeatureState {
     @Published var existingLogoURL: URL?
     @Published var existingCoverURL: URL?
     @Published var showCategoryPicker: Bool = false
+    /// Post-create prompt: a brand-new club is unverified, and verification is
+    /// the hard gate to creating events in it. Shown only on the create path.
+    @Published var showVerifyPrompt: Bool = false
     @Published var categorySections: [SelectCategoryView.Section] = []
     @Published var disabledFieldIDs: Set<ClubsCreate.FieldID> = []
     @Published var values: [ClubsCreate.FieldID: ClubsCreate.FieldValue] = [
@@ -76,4 +79,6 @@ enum ClubCreateAction: UIFeatureAction {
     case dismissCategoryPicker
     case categoryPickerDone
     case continueTapped
+    case requestVerificationTapped
+    case dismissVerifyPrompt
 }

@@ -40,6 +40,12 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .retryTapped:
+            fetchData()
+        case .createClubTapped:
+            Task { await router.navigate(to: .createClub) }
+        case .browseClubsTapped:
+            Task { await router.navigate(to: .browseClubs) }
         case .backTapped:
             Task { await router.navigate(to: .backTapped) }
         case .continueTapped:
@@ -66,6 +72,7 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
     }
 
     private func fetchData() {
+        state.clubsPhase = .loading
         Task {
             await fetchClubs()
             await fetchCategories()
@@ -99,12 +106,21 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
 
     private func fetchClubs() async {
         do {
-            state.clubs = try await dependencies.useCase.fetchClubsForEvents()
+            let clubs = try await dependencies.useCase.fetchClubsForEvents()
+            state.clubs = clubs
             if state.selectedClub == nil {
-                state.selectedClub = state.clubs.first
+                state.selectedClub = clubs.first
+            }
+            // Editing an existing event: the club is fixed (selector disabled),
+            // so never gate the form behind the empty state.
+            if inputData.eventId != nil {
+                state.clubsPhase = .loaded
+            } else {
+                state.clubsPhase = clubs.isEmpty ? .empty : .loaded
             }
         } catch {
             state.clubs = []
+            state.clubsPhase = .failed
         }
     }
 

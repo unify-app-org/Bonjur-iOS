@@ -165,7 +165,7 @@ class ClubRepoImpl: ClubRepo {
             infoData: mapInfo(data),
             editPrefillData: mapPrefilData(data, tags),
             joinButton: mapButtonModel(data),
-            clubStatus: data.clubStatus
+            clubStatus: data.status
         )
         return uiModel
     }
@@ -242,8 +242,8 @@ private extension ClubRepoImpl {
     func mapButtonModel(
         _ data: ClubDTOModel.Response
     )-> ClubsDetailsModel.JoinButton? {
-        let disabled = data.requestType == .pending
-        let buttonTitle = switch data.requestType {
+        let disabled = data.clubUserStatus == .pending
+        let buttonTitle = switch data.clubUserStatus {
         case .joined:
             ""
         case .rejected:
@@ -262,7 +262,7 @@ private extension ClubRepoImpl {
             title: buttonTitle,
             disabled: disabled
         )
-        return data.requestType == .joined ? nil : joinButton
+        return data.clubUserStatus == .joined ? nil : joinButton
     }
     
     func mapPrefilData(

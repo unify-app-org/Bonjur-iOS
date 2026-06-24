@@ -34,7 +34,8 @@ typealias EventsListFeature = UIFeatureDefinition<
 
 final class EventsListViewState: UIFeatureState {
     @Published var uiModel: UIModel = .init(events: [])
-    
+    @Published var searchText: String = ""
+
     struct UIModel {
         var events: [EventsCardView.Model]
         var filters: [FilterView.Model] = []
@@ -47,6 +48,8 @@ enum EventsListAction: UIFeatureAction {
     case fetchData
     case fetchCategories
     case filtersSelected([FilterView.Items])
+    case loadMore
+    case searchChanged(String)
     case eventItemTapped(id: String)
     case joinEvent(id: String)
 }

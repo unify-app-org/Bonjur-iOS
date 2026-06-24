@@ -12,7 +12,14 @@ import AppUIKit
 struct EventsListView: View {
     @ObservedObject var store: StoreOf<EventsListFeature>
     @State private var viewHeight: CGFloat = 0
-    
+
+    private var searchTextBinding: Binding<String> {
+        Binding(
+            get: { store.state.searchText },
+            set: { store.send(.searchChanged($0)) }
+        )
+    }
+
     var body: some View {
         ZStack(alignment: .top) {
             VStack(spacing: .zero) {
@@ -25,6 +32,7 @@ struct EventsListView: View {
                 Spacer()
             }
         }
+        .dismissKeyboardOnTap()
         .onAppear {
             store.send(.fetchData)
             store.send(.fetchCategories)
@@ -37,11 +45,14 @@ struct EventsListView: View {
         if !events.isEmpty {
             ScrollView {
                 VStack(spacing: 20) {
-                    ForEach(events, id: \.uuid) { item in
+                    ForEach(Array(events.enumerated()), id: \.element.uuid) { index, item in
                         EventsCardView(model: item) {
                             store.send(.joinEvent(id: item.id))
                         } onTap: {
                             store.send(.eventItemTapped(id: item.id))
+                        }
+                        .onAppear {
+                            loadMoreIfNeeded(index: index, count: events.count)
                         }
                     }
                 }
@@ -70,7 +81,7 @@ struct EventsListView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal)
             VStack(spacing: .zero) {
-                SearchView(text: .constant(""))
+                SearchView(text: searchTextBinding)
                     .padding(.horizontal)
                 FilterView(
                     model: store.state.uiModel.filters,
@@ -86,6 +97,11 @@ struct EventsListView: View {
             self.viewHeight = newValue
         }
         .background(Color.Palette.white)
+    }
+
+    private func loadMoreIfNeeded(index: Int, count: Int) {
+        guard count > 0, index == count - 1 else { return }
+        store.send(.loadMore)
     }
 }
 

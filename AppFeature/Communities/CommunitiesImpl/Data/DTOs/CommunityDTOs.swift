@@ -74,6 +74,8 @@ struct CommunityDTO {
         let members: [Member]?
         let eventCount: Int?
         let categoryResponses: [Category]?
+        // Same ds/v1/clubs endpoint as Discover, which sends clubStatus → verified badge.
+        let clubStatus: AppPresentationModel.ClubStatus?
     }
     
     struct Member: Decodable {

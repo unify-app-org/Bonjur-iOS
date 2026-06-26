@@ -172,7 +172,8 @@ class CommunityRepoImpl: CommunityRepo {
                     upcomingEventsCount: item.eventCount ?? 0,
                     categories: (item.categoryResponses ?? []).map {
                         .init(id: $0.id, title: $0.title)
-                    }
+                    },
+                    isVerified: item.clubStatus?.isVerified ?? false
                 )
         }
         return uiModel

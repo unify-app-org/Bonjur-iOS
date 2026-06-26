@@ -32,6 +32,7 @@ struct ClubsView: View {
                 Spacer()
             }
         }
+        .navigationTitle("Clubs")
         .dismissKeyboardOnTap()
         .onAppear {
             store.send(.fetchData)
@@ -74,10 +75,10 @@ struct ClubsView: View {
     @ViewBuilder
     private var topView: some View {
         VStack(spacing: 24) {
-            Text("Clubs")
-                .font(Font.Typography.TitleL.extraBold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal)
+//            Text("Clubs")
+//                .font(Font.Typography.TitleL.extraBold)
+//                .frame(maxWidth: .infinity, alignment: .leading)
+//                .padding(.horizontal)
             VStack(spacing: .zero) {
                 SearchView(text: searchTextBinding)
                     .padding(.horizontal)

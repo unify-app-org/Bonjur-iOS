@@ -32,6 +32,7 @@ struct EventsListView: View {
                 Spacer()
             }
         }
+        .navigationTitle("Events")
         .dismissKeyboardOnTap()
         .onAppear {
             store.send(.fetchData)
@@ -76,10 +77,10 @@ struct EventsListView: View {
     @ViewBuilder
     private var topView: some View {
         VStack(spacing: 24) {
-            Text("Events")
-                .font(Font.Typography.TitleL.extraBold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal)
+//            Text("Events")
+//                .font(Font.Typography.TitleL.extraBold)
+//                .frame(maxWidth: .infinity, alignment: .leading)
+//                .padding(.horizontal)
             VStack(spacing: .zero) {
                 SearchView(text: searchTextBinding)
                     .padding(.horizontal)

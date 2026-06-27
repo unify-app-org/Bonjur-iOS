@@ -108,15 +108,11 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     
     private func fetchData() {
         Task {
-            postEffect(.loading(true))
-            defer {
-                postEffect(.loading(false))
-            }
-            
+            // Initial load streams in inline — no blocking overlay (only filters show it).
             let results = await fetchInitialData()
             let firstError = await applyInitialFetchResults(results)
             publishActivityCounts()
-            
+
             if let firstError {
                 postEffect(.error(firstError))
             }
@@ -272,11 +268,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     /// current page depth are preserved. User + categories are NOT refetched.
     private func refreshActivities() {
         Task {
-            postEffect(.loading(true))
-            defer {
-                postEffect(.loading(false))
-            }
-
+            // Silent refresh on reappear — no overlay (only filters show loading).
             let results = await fetchFilteredData()
             let firstError = applyFilteredFetchResults(results)
             publishActivityCounts()

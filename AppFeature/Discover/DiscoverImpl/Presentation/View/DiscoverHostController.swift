@@ -18,6 +18,7 @@ final class DiscoverHostController: UIFeatureController<
     override func handleEffect(_ effect: DiscoverSideEffect) {
         switch effect {
         case .loading(let isLoading):
+            // Only the filter-apply path posts loading (initial/reappear load inline).
             if isLoading {
                 AppLoadingUI.show()
             } else {

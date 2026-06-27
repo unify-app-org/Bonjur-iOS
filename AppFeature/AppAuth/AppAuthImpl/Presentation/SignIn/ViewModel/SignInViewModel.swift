@@ -54,7 +54,8 @@ final class SignInViewModel: UIFeatureViewModel<SignInFeature> {
             let isFirstLogin = try await dependencies.useCase.login(
                 communityId: inputData.communityId,
                 email: state.email,
-                password: state.password
+                password: state.password,
+                idToken: nil
             )
             await handleSignIn(isFirstLogin)
         } catch {

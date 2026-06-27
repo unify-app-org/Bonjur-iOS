@@ -10,10 +10,12 @@ import Events
 import Hangouts
 import Clubs
 import Communities
+import Notification
 import AppPresentationModel
 
 enum DiscoverRoute {
     case profile
+    case notifications
     case activityCountsUpdated(events: Int, hangouts: Int)
     case viewAllClubs
     case viewAllEvents
@@ -36,6 +38,7 @@ final class DiscoverRouter: DiscoverRouterProtocol {
     private var hangoutModule: HangoutsModule
     private var clubModule: ClubsModule
     private var communityModule: CommunitiesModule
+    private var notificationModule: NotificationModule
 
     init(
         view: UIViewController? = nil,
@@ -43,7 +46,8 @@ final class DiscoverRouter: DiscoverRouterProtocol {
         eventModule: EventsModule = resolve(),
         hangoutModule: HangoutsModule = resolve(),
         clubModule: ClubsModule = resolve(),
-        communityModule: CommunitiesModule = resolve()
+        communityModule: CommunitiesModule = resolve(),
+        notificationModule: NotificationModule = resolve()
     ) {
         self.view = view
         self.delegate = delegate
@@ -51,6 +55,7 @@ final class DiscoverRouter: DiscoverRouterProtocol {
         self.hangoutModule = hangoutModule
         self.clubModule = clubModule
         self.communityModule = communityModule
+        self.notificationModule = notificationModule
     }
     
     @MainActor
@@ -58,6 +63,9 @@ final class DiscoverRouter: DiscoverRouterProtocol {
         switch route {
         case .profile:
             delegate.openProfile()
+        case .notifications:
+            let vc = notificationModule.makeNotification() as! UIViewController
+            view?.navigationController?.pushViewController(vc, animated: true)
         case .activityCountsUpdated(let events, let hangouts):
             delegate.didUpdateActivityCounts(
                 events: events,

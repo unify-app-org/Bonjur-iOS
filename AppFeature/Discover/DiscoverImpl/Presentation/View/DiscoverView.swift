@@ -112,7 +112,7 @@ struct DiscoverView: View {
     private var bellButton: some View {
         Image(uiImage: UIImage.Icons.bell)
             .toolbarItemBackground {
-                
+                store.send(.notificationsTapped)
             }
     }
 

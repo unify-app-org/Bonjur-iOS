@@ -25,9 +25,7 @@ public enum MicrosoftAuthCallback {
 struct MSALSignInResult {
     let name: String?
     let email: String?
-    let accessToken: String?
-    let tanetId: String?
-    let clientId: String = AppSecrets.msalClientId
+    let idToken: String?
     let error: Error?
     /// True when the user dismissed the Microsoft web sheet themselves — not a failure.
     var isCancelled: Bool = false
@@ -65,8 +63,7 @@ final class MicrosoftAuthManager {
                 .init(
                     name: nil,
                     email: nil,
-                    accessToken: nil,
-                    tanetId: nil,
+                    idToken: nil,
                     error: NSError(
                         domain: "MicrosoftAuth",
                         code: -1,
@@ -93,8 +90,7 @@ final class MicrosoftAuthManager {
                     .init(
                         name: nil,
                         email: nil,
-                        accessToken: nil,
-                        tanetId: nil,
+                        idToken: nil,
                         error: error,
                         isCancelled: cancelled
                     )
@@ -107,15 +103,13 @@ final class MicrosoftAuthManager {
                     .init(
                         name: nil,
                         email: nil,
-                        accessToken: nil,
-                        tanetId: nil,
+                        idToken: nil,
                         error: nil
                     )
                 )
                 return
             }
-            let tanetId = result.tenantProfile.identifier
-            let accessToken = result.accessToken
+            let idToken = result.idToken
             let accountInfo = result.account
             let claims = accountInfo.accountClaims
             
@@ -128,8 +122,7 @@ final class MicrosoftAuthManager {
                 .init(
                     name: name,
                     email: email,
-                    accessToken: accessToken,
-                    tanetId: tanetId,
+                    idToken: idToken,
                     error: nil
                 )
             )

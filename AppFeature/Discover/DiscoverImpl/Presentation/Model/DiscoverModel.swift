@@ -13,6 +13,7 @@ import Clubs
 import Events
 import Hangouts
 import Communities
+import Notification
 
 // MARK: - Discover input
 
@@ -61,6 +62,7 @@ final class DiscoverViewState: UIFeatureState {
 enum DiscoverAction: UIFeatureAction {
     case fetchData
     case refreshActivities
+    case notificationsTapped
     case filtersSelected([FilterView.Items])
     case loadMore(AppUIEntities.ActivityType)
     case profileTapped

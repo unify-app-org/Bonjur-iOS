@@ -7,6 +7,7 @@
 
 import Foundation
 import DependecyInjection
+import Notification
 
 func resolve<T>(
     _ type: T.Type = T.self
@@ -45,19 +46,29 @@ enum NotificationDependencyContainer {
     // MARK: - Dependencies Registration
     
     private static func registerHelpers() {
-        
+
     }
-    
+
     private static func registerDataSource() {
-
+        register(NotificationDataSource.self) {
+            NotificationMockDataSource()
+        }
     }
-    
+
     private static func registerUseCase() {
-
+        register(NotificationUseCase.self) {
+            NotificationUseCaseImpl()
+        }
     }
-    
-    private static func registerModule() {
 
+    private static func registerModule() {
+        register(NotificationModuleImpl.self, isSingleton: true) {
+            NotificationModuleImpl()
+        }
+
+        register(NotificationModule.self, isSingleton: true) {
+            resolve(NotificationModuleImpl.self)
+        }
     }
     
     // MARK: - Dependencies Managing

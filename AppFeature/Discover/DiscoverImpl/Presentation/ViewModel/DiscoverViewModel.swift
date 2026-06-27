@@ -71,6 +71,10 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             fetchData()
         case .refreshActivities:
             refreshActivities()
+        case .notificationsTapped:
+            Task {
+                await router.navigate(to: .notifications)
+            }
         case .filtersSelected(let items):
             filtersSelected(items)
         case .loadMore(let activity):

@@ -15,7 +15,8 @@ protocol AuthRepo {
     func login(
         communityId: Int,
         email: String,
-        password: String?
+        password: String?,
+        idToken: String?
     ) async throws(APIError) -> Bool
     
     func getCommunityList() async throws(APIError) -> [SelectableListItemView.Model]
@@ -49,7 +50,8 @@ class AuthRepoImpl: AuthRepo {
     func login(
         communityId: Int,
         email: String,
-        password: String?
+        password: String?,
+        idToken: String?
     ) async throws(APIError) -> Bool {
         let deviceManager = DeviceManager.shared
         let body: AuthDTOModel.LoginRequest = .init(
@@ -60,7 +62,8 @@ class AuthRepoImpl: AuthRepo {
             deviceOs: deviceManager.deviceOs,
             deviceModel: deviceManager.deviceModel,
             appVersion: deviceManager.appVersion,
-            password: password
+            password: password,
+            idToken: idToken
         )
         let data = try await dataSource.login(body: body)
         userDefaults.set(true, forKey: .isAuthenticated)

@@ -20,6 +20,7 @@ enum AuthDTOModel {
         let deviceModel: String
         let appVersion: String
         let password: String?
+        let idToken: String?
     }
     
     struct LoginResponse: Decodable {

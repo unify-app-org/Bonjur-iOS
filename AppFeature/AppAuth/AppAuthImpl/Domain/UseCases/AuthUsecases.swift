@@ -23,7 +23,8 @@ protocol AuthUsecases {
     func login(
         communityId: Int,
         email: String,
-        password: String?
+        password: String?,
+        idToken: String?
     ) async throws(APIError) -> Bool
     
     func getCommunities() async throws(APIError) -> [SelectableListItemView.Model]
@@ -96,12 +97,14 @@ final class AuthUsecasesImpl: AuthUsecases {
     func login(
         communityId: Int,
         email: String,
-        password: String?
+        password: String?,
+        idToken: String?
     ) async throws(APIError) -> Bool {
         try await repo.login(
             communityId: communityId,
             email: email,
-            password: password
+            password: password,
+            idToken: idToken
         )
     }
     

@@ -16,7 +16,6 @@ final class SignInFlowCoordinator {
     private weak var presentingViewController: UIViewController?
     private let useCase: AuthUsecases = resolve()
     private var authDelegate: AuthDelegate = resolve()
-    /// Covers the gap between tapping sign-in and MSAL's web sheet actually appearing.
     private var authUIWaitTask: Task<Void, Never>?
 
     @MainActor
@@ -73,32 +72,34 @@ final class SignInFlowCoordinator {
 
     @MainActor
     private func handleMSALResult(_ result: MSALSignInResult) {
-        // Web flow is over (or never opened) — drop the open-delay overlay.
         authUIWaitTask?.cancel()
         AppLoadingUI.dismiss()
 
-        if result.isCancelled { return } // user dismissed the sheet — not an error
+        if result.isCancelled { return }
 
         guard result.error == nil else {
             errorAlert(title: "Microsoft Sign In Failed")
             return
         }
         guard let email = result.email,
-                let communityId = inputData?.communityId else {
+                let communityId = inputData?.communityId,
+                let idToken = result.idToken else {
             errorAlert(title: "Microsoft Sign In Failed")
             return
         }
         Task {
             await login(
                 email,
-                communityId
+                communityId,
+                idToken
             )
         }
     }
     
     private func login(
         _ email: String,
-        _ communityId: Int
+        _ communityId: Int,
+        _ idToken: String
     ) async {
         AppLoadingUI.show()
         defer {
@@ -108,7 +109,8 @@ final class SignInFlowCoordinator {
             let isFirstLogin = try await useCase.login(
                 communityId: communityId,
                 email: email,
-                password: nil
+                password: nil,
+                idToken: idToken
             )
             await handleLogin( isFirstLogin)
         } catch {

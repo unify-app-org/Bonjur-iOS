@@ -7,6 +7,7 @@
 
 import AppFoundation
 import AppUIKit
+import AppNetwork
 import Combine
 import Foundation
 
@@ -29,6 +30,7 @@ struct ClubCreateInputData {
 
 enum ClubCreateSideEffect: UISideEffect {
     case loading(Bool)
+    case error(APIError?)
 }
 
 // MARK: - Feature Definition

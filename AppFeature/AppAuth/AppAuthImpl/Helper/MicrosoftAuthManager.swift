@@ -27,7 +27,10 @@ struct MSALSignInResult {
     let email: String?
     let accessToken: String?
     let tanetId: String?
+    let clientId: String = AppSecrets.msalClientId
     let error: Error?
+    /// True when the user dismissed the Microsoft web sheet themselves — not a failure.
+    var isCancelled: Bool = false
 }
 
 final class MicrosoftAuthManager {
@@ -57,7 +60,22 @@ final class MicrosoftAuthManager {
     }
 
     func buildMsalWeb(vc: UIViewController, completion: @escaping (MSALSignInResult) -> Void) {
-        guard let appContext = applicationContext else { return }
+        guard let appContext = applicationContext else {
+            completion(
+                .init(
+                    name: nil,
+                    email: nil,
+                    accessToken: nil,
+                    tanetId: nil,
+                    error: NSError(
+                        domain: "MicrosoftAuth",
+                        code: -1,
+                        userInfo: [NSLocalizedDescriptionKey: "Microsoft sign-in is unavailable."]
+                    )
+                )
+            )
+            return
+        }
         
         let parameters = MSALInteractiveTokenParameters(
             scopes: ["User.Read"],
@@ -68,13 +86,17 @@ final class MicrosoftAuthManager {
         
         appContext.acquireToken(with: parameters) { result, error in
             if let error = error {
+                let nsError = error as NSError
+                let cancelled = nsError.domain == MSALErrorDomain
+                    && nsError.code == MSALError.userCanceled.rawValue
                 completion(
                     .init(
                         name: nil,
                         email: nil,
                         accessToken: nil,
                         tanetId: nil,
-                        error: error
+                        error: error,
+                        isCancelled: cancelled
                     )
                 )
                 return

@@ -73,7 +73,9 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
     private func fetchCreate() async {
         do {
             state.hangoutsCreateSchema = try await dependencies.useCase.fetchCreateFields()
-        } catch { }
+        } catch {
+            AppSnackBar.show(title: "Couldn't load the form", style: .error)
+        }
     }
 
     private func fetchCategories() async {
@@ -81,6 +83,7 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
             state.categorySections = try await dependencies.useCase.getCategories()
         } catch {
             state.categorySections = []
+            AppSnackBar.show(title: "Couldn't load categories", style: .error)
         }
     }
 

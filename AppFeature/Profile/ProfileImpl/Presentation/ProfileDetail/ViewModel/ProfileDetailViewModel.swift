@@ -203,7 +203,7 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
                 style: .success
             )
         } catch {
-
+            postEffect(.error(error.localizedDescription, (error as? APIError)?.detail))
         }
     }
     

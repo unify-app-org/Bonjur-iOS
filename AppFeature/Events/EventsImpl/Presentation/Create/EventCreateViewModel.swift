@@ -121,6 +121,7 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
         } catch {
             state.clubs = []
             state.clubsPhase = .failed
+            AppSnackBar.show(title: "Couldn't load clubs", style: .error)
         }
     }
 
@@ -129,6 +130,7 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
             state.categorySections = try await dependencies.useCase.getCategories()
         } catch {
             state.categorySections = []
+            AppSnackBar.show(title: "Couldn't load categories", style: .error)
         }
     }
 

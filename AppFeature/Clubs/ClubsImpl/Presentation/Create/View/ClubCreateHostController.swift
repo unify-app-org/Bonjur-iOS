@@ -29,6 +29,32 @@ final class ClubCreateHostController: UIFeatureController<
             } else {
                 AppLoadingUI.dismiss()
             }
+        case .error(let error):
+            showAlert(
+                title: error?.localizedDescription ?? "Something went wrong",
+                subtitle: error?.detail
+            )
         }
+    }
+
+    private func showAlert(
+        title: String,
+        subtitle: String?,
+        buttonTitle: String = "Got it"
+    ) {
+        AppAlertPresenter.present(
+            .init(
+                config: .init(
+                    title: title,
+                    subtitle: subtitle
+                ),
+                actions: {
+                    AppAlert.Action(
+                        title: buttonTitle,
+                        style: .primary
+                    )
+                }
+            )
+        )
     }
 }

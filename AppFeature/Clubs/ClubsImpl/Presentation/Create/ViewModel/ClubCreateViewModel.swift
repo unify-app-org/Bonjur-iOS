@@ -99,14 +99,17 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
         do {
             let data = try await dependencies.useCase.fetchCreateFields()
             state.clubsCreateSchema = data
-        } catch { }
+        } catch {
+            AppSnackBar.show(title: "Couldn't load the form", style: .error)
+        }
     }
-    
+
     private func fetchCategories() async {
         do {
             state.categorySections = try await dependencies.useCase.getCategories()
         } catch {
             state.categorySections = []
+            AppSnackBar.show(title: "Couldn't load categories", style: .error)
         }
     }
     
@@ -185,10 +188,10 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
                 style: .success
             )
         } catch {
-
+            postEffect(.error(error as? APIError))
         }
     }
-    
+
     private func createClub() async {
         postEffect(.loading(true))
         defer {
@@ -199,7 +202,7 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
             // New clubs start unverified; surface the verify gate before leaving.
             state.showVerifyPrompt = true
         } catch {
-
+            postEffect(.error(error as? APIError))
         }
     }
     

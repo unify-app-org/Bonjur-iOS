@@ -165,6 +165,7 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
             await handleCategories(data)
         } catch {
             await handleCategories([])
+            AppSnackBar.show(title: "Couldn't load categories", style: .error)
         }
     }
     
@@ -188,6 +189,7 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
             await handleLanguages(data)
         } catch {
             await handleLanguages(selectedProfileLanguages())
+            AppSnackBar.show(title: "Couldn't load languages", style: .error)
         }
     }
     

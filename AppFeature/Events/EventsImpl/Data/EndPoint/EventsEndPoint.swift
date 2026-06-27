@@ -14,6 +14,7 @@ enum EventsEndPoint {
     case eventDetail(String)
     case eventMembers(String, [String: String])
     case discoverEvents([String: String])
+    case clubEvents(Int, [String: String])
     case joinEvent(String)
     case editEvent(String, MultipartFormData)
     case exitEvent(String)
@@ -35,6 +36,8 @@ extension EventsEndPoint: AppEndPoint {
             "api/es/v1/events/\(id)/members"
         case .discoverEvents:
             "api/ds/v1/events"
+        case .clubEvents(let clubId, _):
+            "api/es/v1/events/\(clubId)/events"
         case .joinEvent(let id):
             "api/es/v1/events/\(id)/join"
         case .editEvent(let id, _):
@@ -50,7 +53,8 @@ extension EventsEndPoint: AppEndPoint {
                 .getCategories,
                 .eventDetail,
                 .eventMembers,
-                .discoverEvents:
+                .discoverEvents,
+                .clubEvents:
                 .get
         case .createEvent,
                 .joinEvent:
@@ -67,6 +71,8 @@ extension EventsEndPoint: AppEndPoint {
         case .eventMembers(_, let query):
             query
         case .discoverEvents(let query):
+            query
+        case .clubEvents(_, let query):
             query
         default:
             nil

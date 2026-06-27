@@ -11,15 +11,18 @@ import AppNetwork
 import AppUIKit
 import AppStorage
 import AppPresentationModel
+import Events
 
 final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
     
     struct Dependencies {
         let useCase: ClubsUseCase
+        let eventsModule: EventsModule
     }
     private struct InitialFetchResults {
         let detail: APIResult<ClubsDetailsModel.UIModel>
         let members: APIResult<CommunitiesMemberModuleModel.GroupedMembersData>
+        let events: APIResult<[EventsModuleModel.CardInputData]>
     }
     
     private let router: ClubDetailsRouterProtocol
@@ -61,6 +64,10 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
         case .userTapped(let id):
             Task { @MainActor in
                 router.navigate(to: .userDetail(id))
+            }
+        case .eventTapped(let id):
+            Task { @MainActor in
+                router.navigate(to: .eventDetail(id))
             }
         case .joinClubTapped:
             Task {
@@ -214,11 +221,12 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
         let input = CommunitiesMemberModuleModel.MembersListInput(
             title: "Members",
             pageSize: 20,
-            loadPage: { page, size in
+            loadPage: { page, size, keyword in
                 try await useCase.fetchClubMembersPage(
                     id: clubId,
                     page: page,
-                    size: size
+                    size: size,
+                    keyword: keyword
                 )
             },
             onMemberTapped: { [weak self] member in
@@ -315,10 +323,18 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
                 id: inputData.clubId
             )
         }
-        
+        async let events = apiResult {
+            try await dependencies.eventsModule.fetchClubEvents(
+                clubId: inputData.clubId,
+                page: 0,
+                size: 10
+            )
+        }
+
         return await .init(
             detail: detail,
-            members: members
+            members: members,
+            events: events
         )
     }
     
@@ -342,6 +358,16 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
                 handleMembers(members)
             }
         case .failure(let error):
+            firstError = firstError ?? error
+        }
+
+        switch results.events {
+        case .success(let events):
+            Task { @MainActor in
+                state.eventsData = events
+            }
+        case .failure(let error):
+            // Events tab is best-effort; surface the error but keep the rest visible.
             firstError = firstError ?? error
         }
         return firstError

@@ -69,7 +69,7 @@ struct ClubDTOModel {
         let location: String?
         let about: String
         let rule: String?
-        let capacity: Int?
+        let capacity, eventCount, clubCount: Int?
         let communityName: String
         let backgroundUrl, logoUrl, modifiedAt: String?
         let backgroundColour: AppPresentationModel.BackgroundType?

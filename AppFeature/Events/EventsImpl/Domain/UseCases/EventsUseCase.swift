@@ -9,6 +9,7 @@ import Foundation
 import AppUIKit
 import AppNetwork
 import Communities
+import Events
 
 protocol EventsUseCase {
     func fetchEvents(
@@ -17,6 +18,11 @@ protocol EventsUseCase {
         page: Int,
         size: Int
     ) async throws(APIError) -> [EventsCardView.Model]
+    func fetchClubEvents(
+        clubId: Int,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> [EventsModuleModel.CardInputData]
     func joinEvent(eventId: String) async throws(APIError)
     func exitEvent(eventId: String) async throws(APIError)
     func fetchEventDetail(eventId: String) async throws(APIError) -> EventsDetailsModel.UIModel
@@ -26,7 +32,8 @@ protocol EventsUseCase {
     func fetchEventMembersPage(
         eventId: String,
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
     func createEvent(request: MultipartFormData) async throws(APIError)
     func editEvent(eventId: String, request: MultipartFormData) async throws(APIError)
@@ -57,6 +64,14 @@ class EventsUseCaseImpl: EventsUseCase {
         ).map(EventsCardView.Model.init(from:))
     }
 
+    func fetchClubEvents(
+        clubId: Int,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> [EventsModuleModel.CardInputData] {
+        try await repo.fetchClubEvents(clubId: clubId, page: page, size: size)
+    }
+
     func joinEvent(eventId: String) async throws(APIError) {
         try await repo.joinEvent(eventId: eventId)
     }
@@ -80,9 +95,10 @@ class EventsUseCaseImpl: EventsUseCase {
     func fetchEventMembersPage(
         eventId: String,
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
-        try await repo.fetchEventMembersPage(eventId: eventId, page: page, size: size)
+        try await repo.fetchEventMembersPage(eventId: eventId, page: page, size: size, keyword: keyword)
     }
 
     func createEvent(request: MultipartFormData) async throws(APIError) {

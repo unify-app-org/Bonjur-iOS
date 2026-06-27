@@ -16,7 +16,7 @@ struct MembersListInputData {
     let title: String
     let titleOverrides: [AppPresentationModel.UserActivityRole: String]
     let pageSize: Int
-    let loadPage: (Int, Int) async throws -> CommunitiesMemberModuleModel.MembersPage
+    let loadPage: (Int, Int, String?) async throws -> CommunitiesMemberModuleModel.MembersPage
     let onMemberTapped: (CommunitiesMemberModuleModel.MemberCellModel) -> Void
     let options: CommunitiesMemberModuleModel.MemberOptionsConfig?
 }
@@ -39,6 +39,7 @@ typealias MembersListFeature = UIFeatureDefinition<
 
 final class MembersListViewState: UIFeatureState {
     @Published var title: String = ""
+    @Published var searchText: String = ""
     @Published var sections: [MemberListSectionViewData] = []
     @Published var isLoading: Bool = false
     @Published var isLoadingMore: Bool = false
@@ -56,4 +57,6 @@ enum MembersListAction: UIFeatureAction {
     case memberTapped(MemberCellViewData)
     /// Reload from the first page (e.g. after a role change).
     case reload
+    /// Server-side search term changed; debounced reload from page 0.
+    case searchChanged(String)
 }

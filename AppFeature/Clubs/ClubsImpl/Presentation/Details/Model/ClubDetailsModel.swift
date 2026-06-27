@@ -80,6 +80,7 @@ enum ClubDetailsAction: UIFeatureAction {
     case backTapped
     case editTapped
     case userTapped(String)
+    case eventTapped(String)
     case joinClubTapped
     case seeAllMembersTapped
     case assignRole(userId: String, role: AppPresentationModel.UserActivityRole)

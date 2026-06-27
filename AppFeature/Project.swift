@@ -97,6 +97,17 @@ let profileTarget = Target.createFeatureModule(
     )
 ).add(to: &frameworkTargets)
 
+let notificationTarget = Target.createFeatureModule(
+    name: "Notification",
+    implConfig: .init(
+        dependencies: [
+            .AppFeature.Clubs,
+            .AppFeature.Events,
+            .AppFeature.Hangouts
+        ]
+    )
+).add(to: &frameworkTargets)
+
 let project = Project(
     name: Project.Projects.features,
     options: .options(automaticSchemesOptions: .disabled),

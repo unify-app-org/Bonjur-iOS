@@ -42,7 +42,9 @@ public extension TargetDependency {
             .AppFeature.Groups,
             .AppFeature.GroupsImpl,
             .AppFeature.Profile,
-            .AppFeature.ProfileImpl
+            .AppFeature.ProfileImpl,
+            .AppFeature.Notification,
+            .AppFeature.NotificationImpl
         ]
     }
     
@@ -155,6 +157,17 @@ public extension TargetDependency {
         
         public static let ProfileImpl: TargetDependency = .project(
             target: "ProfileImpl",
+            path: .relativeToRoot(Project.Projects.features)
+        )
+        
+        // Notification
+        public static let Notification: TargetDependency = .project(
+            target: "Notification",
+            path: .relativeToRoot(Project.Projects.features)
+        )
+        
+        public static let NotificationImpl: TargetDependency = .project(
+            target: "NotificationImpl",
             path: .relativeToRoot(Project.Projects.features)
         )
         

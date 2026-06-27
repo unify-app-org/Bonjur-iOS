@@ -390,12 +390,13 @@ public extension CommunitiesMemberModuleModel {
     }
 
     /// Input for the standalone, self-paginating members screen. The screen owns its own
-    /// requests via `loadPage` (page, size) so callers never pre-fetch the full list.
+    /// requests via `loadPage` (page, size, keyword) so callers never pre-fetch the full list.
+    /// `keyword` is the server-side member search term (nil/empty = unfiltered).
     struct MembersListInput {
         public let title: String
         public let titleOverrides: [AppPresentationModel.UserActivityRole: String]
         public let pageSize: Int
-        public let loadPage: (Int, Int) async throws -> MembersPage
+        public let loadPage: (Int, Int, String?) async throws -> MembersPage
         public let onMemberTapped: (MemberCellModel) -> Void
         /// When set, rows show the 3-dot options menu backed by this config.
         public let options: MemberOptionsConfig?
@@ -404,7 +405,7 @@ public extension CommunitiesMemberModuleModel {
             title: String,
             titleOverrides: [AppPresentationModel.UserActivityRole: String] = [:],
             pageSize: Int = 20,
-            loadPage: @escaping (Int, Int) async throws -> MembersPage,
+            loadPage: @escaping (Int, Int, String?) async throws -> MembersPage,
             onMemberTapped: @escaping (MemberCellModel) -> Void,
             options: MemberOptionsConfig? = nil
         ) {

@@ -36,7 +36,8 @@ protocol HangoutsUseCase {
     func fetchHangoutMembersPage(
         id: String,
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
 
     func fetchDetailHangout(id: String) async throws(APIError) -> HangoutDetails.UIModel
@@ -99,9 +100,10 @@ class HangoutsUseCaseImpl: HangoutsUseCase {
     func fetchHangoutMembersPage(
         id: String,
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
-        try await repo.fetchHangoutMembersPage(id: id, page: page, size: size)
+        try await repo.fetchHangoutMembersPage(id: id, page: page, size: size, keyword: keyword)
     }
 
     func exitHangout(id: String) async throws(APIError) {

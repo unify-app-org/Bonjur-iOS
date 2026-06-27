@@ -17,6 +17,30 @@ struct MembersListView: View {
     @State private var optionsMember: CommunitiesMemberModuleModel.MemberCellModel?
 
     var body: some View {
+        VStack(spacing: 0) {
+            SearchView(
+                text: Binding(
+                    get: { store.state.searchText },
+                    set: { store.send(.searchChanged($0)) }
+                )
+            )
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+
+            content
+        }
+        .background(Color.Palette.grayQuaternary.opacity(0.2))
+        .appSheet(item: $optionsMember) { member in
+            memberOptionsSheet(for: member)
+        }
+        .navigationTitle(store.state.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            store.send(.onAppear)
+        }
+    }
+
+    private var content: some View {
         ScrollView(showsIndicators: false) {
             if store.state.isLoading && store.state.sections.isEmpty {
                 ProgressView()
@@ -45,15 +69,6 @@ struct MembersListView: View {
                         }
                 }
             }
-        }
-        .background(Color.Palette.grayQuaternary.opacity(0.2))
-        .appSheet(item: $optionsMember) { member in
-            memberOptionsSheet(for: member)
-        }
-        .navigationTitle(store.state.title)
-        .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            store.send(.onAppear)
         }
     }
 
@@ -91,7 +106,7 @@ struct MembersListView: View {
     }
 
     private var emptyStateView: some View {
-        Text("No members yet")
+        Text(store.state.searchText.isEmpty ? "No members yet" : "No members found")
             .font(Font.Typography.BodyTextSm.regular)
             .foregroundStyle(Color.Palette.blackMedium)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)

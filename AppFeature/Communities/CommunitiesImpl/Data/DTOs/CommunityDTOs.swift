@@ -27,7 +27,7 @@ struct CommunityDTO {
         let location: String?
         let about: String
         let rule, backgroundUrl, logoUrl, modifiedAt: String?
-        let capacity: Int?
+        let capacity, clubCount, eventCount: Int?
         let membersCount: Int?
         let communityName: String?
         let links: [Link]?

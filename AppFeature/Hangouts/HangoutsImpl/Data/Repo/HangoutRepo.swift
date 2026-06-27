@@ -42,7 +42,8 @@ protocol HangoutRepo {
     func fetchHangoutMembersPage(
         id: String,
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
 
     func exitHangout(id: String) async throws(APIError) -> Void
@@ -227,7 +228,7 @@ class HangoutRepoImpl: HangoutRepo {
     func fetchDetailHangoutMembers(
         id: String
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
-        let data = try await dataSource.fetchMembers(id: id, page: 0, size: 10).content
+        let data = try await dataSource.fetchMembers(id: id, page: 0, size: 10, keyword: nil).content
         let users = data.map(Self.mapMember)
         return .init(users: users, titleOverrides: [.president: "Owner"])
     }
@@ -235,9 +236,10 @@ class HangoutRepoImpl: HangoutRepo {
     func fetchHangoutMembersPage(
         id: String,
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
-        let response = try await dataSource.fetchMembers(id: id, page: page, size: size)
+        let response = try await dataSource.fetchMembers(id: id, page: page, size: size, keyword: keyword)
         let users = response.content.map(Self.mapMember)
         let hasMore: Bool
         if let totalPages = response.totalPages {

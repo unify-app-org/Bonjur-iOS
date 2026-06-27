@@ -20,6 +20,11 @@ protocol EventsRepo {
         page: Int,
         size: Int
     ) async throws(APIError) -> [EventsModuleModel.CardInputData]
+    func fetchClubEvents(
+        clubId: Int,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> [EventsModuleModel.CardInputData]
     func joinEvent(eventId: String) async throws(APIError) -> Void
     func exitEvent(eventId: String) async throws(APIError) -> Void
     func createEvent(request: MultipartFormData) async throws(APIError) -> Void
@@ -36,7 +41,8 @@ protocol EventsRepo {
     func fetchEventMembersPage(
         eventId: String,
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
 }
 
@@ -64,26 +70,42 @@ final class EventsRepoImpl: EventsRepo {
         let data = try await dataSource.fetchDiscoverEvents(
             query: query
         )
-        return data.map { item in
-            let tags: [AppPresentationModel.Tags] = item.categoryResponses.map { category in
-                .init(id: category.id ?? 0, type: "", title: category.title ?? "-")
-            }
-            return .init(
-                id: item.id ?? "-",
-                name: item.name ?? "-",
-                coverimageURL: item.background,
-                memberCount: item.membersCount ?? 0,
-                totalCapacity: item.capacity,
-                club: .init(name: item.club?.name ?? "-", id: item.club?.id ?? 0),
-                tags: tags,
-                bgType: .primary,
-                requestType: item.requestStatus ?? .none,
-                accessType: item.visibility ?? .private,
-                role: item.role ?? .notJoined,
-                location: item.location ?? "-",
-                eventDate: Date.fromISO8601(item.eventDate) ?? Date()
-            )
+        return data.map(Self.mapCard)
+    }
+
+    /// Active events for a single club (GET api/es/v1/events/{clubId}/events).
+    /// Paged response shares the discover `EventDiscoverDTO` shape, so reuse `mapCard`.
+    func fetchClubEvents(
+        clubId: Int,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> [EventsModuleModel.CardInputData] {
+        let query = ["page": "\(page)", "size": "\(size)"]
+        let response = try await dataSource.fetchClubEvents(clubId: clubId, query: query)
+        return response.content.map(Self.mapCard)
+    }
+
+    private static func mapCard(
+        _ item: EventDiscoverDTO
+    ) -> EventsModuleModel.CardInputData {
+        let tags: [AppPresentationModel.Tags] = item.categoryResponses.map { category in
+            .init(id: category.id ?? 0, type: "", title: category.title ?? "-")
         }
+        return .init(
+            id: item.id ?? "-",
+            name: item.name ?? "-",
+            coverimageURL: item.background,
+            memberCount: item.membersCount ?? 0,
+            totalCapacity: item.capacity,
+            club: .init(name: item.club?.name ?? "-", id: item.club?.id ?? 0),
+            tags: tags,
+            bgType: .primary,
+            requestType: item.requestStatus ?? .none,
+            accessType: item.visibility ?? .private,
+            role: item.role ?? .notJoined,
+            location: item.location ?? "-",
+            eventDate: Date.fromISO8601(item.eventDate) ?? Date()
+        )
     }
 
     func joinEvent(eventId: String) async throws(APIError) {
@@ -186,11 +208,14 @@ final class EventsRepoImpl: EventsRepo {
     func fetchEventMembersPage(
         eventId: String,
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
+        var query = ["page": "\(page)", "size": "\(size)"]
+        if let keyword, !keyword.isEmpty { query["keyword"] = keyword }
         let response = try await dataSource.fetchEventMembers(
             eventId: eventId,
-            query: ["page": "\(page)", "size": "\(size)"]
+            query: query
         )
         let users = response.content.map(Self.mapMember)
         let hasMore: Bool

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Events
 
 // MARK: - ClubDetails builder
 
@@ -23,7 +24,8 @@ struct ClubDetailsBuilder {
             router: router,
             inputData: inputData,
             dependencies: .init(
-                useCase: resolve()
+                useCase: resolve(),
+                eventsModule: resolve()
             )
         )
         

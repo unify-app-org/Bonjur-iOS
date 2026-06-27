@@ -21,6 +21,9 @@ final class MembersListViewModel: UIFeatureViewModel<MembersListFeature> {
     private var users: [CommunitiesMemberModuleModel.MemberCellModel] = []
     /// Index of the most recently loaded page.
     private var page: Int = 0
+    /// Debounce for server-side search, mirroring the clubs/events list (300ms).
+    private let searchDebounceNanoseconds: UInt64 = 300_000_000
+    private var searchTask: Task<Void, Never>?
 
     init(
         state: MembersListFeature.State,
@@ -44,7 +47,26 @@ final class MembersListViewModel: UIFeatureViewModel<MembersListFeature> {
             inputData.onMemberTapped(row.member)
         case .reload:
             reload()
+        case .searchChanged(let text):
+            searchChanged(text)
         }
+    }
+
+    private func searchChanged(_ text: String) {
+        state.searchText = text
+        searchTask?.cancel()
+        searchTask = Task { [weak self] in
+            guard let self else { return }
+            try? await Task.sleep(nanoseconds: searchDebounceNanoseconds)
+            guard !Task.isCancelled else { return }
+            await load(page: 0, replacing: true)
+        }
+    }
+
+    /// Trimmed search term, nil when blank so the query param is omitted.
+    private var keyword: String? {
+        let trimmed = state.searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
     }
 
     private func reload() {
@@ -84,7 +106,7 @@ final class MembersListViewModel: UIFeatureViewModel<MembersListFeature> {
 
     private func load(page: Int, replacing: Bool) async {
         do {
-            let result = try await inputData.loadPage(page, inputData.pageSize)
+            let result = try await inputData.loadPage(page, inputData.pageSize, keyword)
             await MainActor.run {
                 if replacing {
                     users = result.members

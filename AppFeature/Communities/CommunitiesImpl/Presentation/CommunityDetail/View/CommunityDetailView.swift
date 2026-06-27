@@ -199,9 +199,34 @@ struct CommunityDetailView: View {
     }
     
     private var memberCountView: some View {
-        Text("\(store.state.uiModel?.membersCount ?? 0) members")
-            .font(Font.Typography.TextMd.regular)
-            .foregroundStyle(Color.Palette.blackHigh)
+        HStack {
+            Text("\(store.state.uiModel?.membersCount ?? 0) members")
+                .font(Font.Typography.TextMd.regular)
+                .foregroundStyle(Color.Palette.blackHigh)
+            
+            if let eventCount = store.state.uiModel?.eventsCount  {
+                Text("•")
+                let text = eventCount == 1
+                ? "1 event"
+                : "\(eventCount) events"
+                HStack {
+                    Image(systemName: "calendar")
+                    Text(text)
+                        .font(Font.Typography.TextMd.regular)
+                        .foregroundStyle(Color.Palette.blackHigh)
+                }
+            }
+            
+            if let clubsCount = store.state.uiModel?.clubsCount  {
+                Text("•")
+                let text = clubsCount == 1
+                ? "1 club"
+                : "\(clubsCount) clubs"
+                Text(text)
+                    .font(Font.Typography.TextMd.regular)
+                    .foregroundStyle(Color.Palette.blackHigh)
+            }
+        }
     }
     
     private var chipsView: some View {

@@ -20,6 +20,10 @@ protocol EventsDataSource {
     func fetchDiscoverEvents(
         query: [String: String]
     ) async throws(APIError) -> [EventDiscoverDTO]
+    func fetchClubEvents(
+        clubId: Int,
+        query: [String: String]
+    ) async throws(APIError) -> PageNationResponse<[EventDiscoverDTO]>
     func joinEvent(eventId: String) async throws(APIError) -> Data
     func editEvent(eventId: String, request: MultipartFormData) async throws(APIError) -> Data
     func exitEvent(eventId: String) async throws(APIError) -> Data
@@ -54,6 +58,13 @@ final class EventsDataSourceImpl: NetworkService<EventsEndPoint>, EventsDataSour
         query: [String: String]
     ) async throws(APIError) -> [EventDiscoverDTO] {
         try await fetch(endPoint: .discoverEvents(query))
+    }
+
+    func fetchClubEvents(
+        clubId: Int,
+        query: [String: String]
+    ) async throws(APIError) -> PageNationResponse<[EventDiscoverDTO]> {
+        try await fetch(endPoint: .clubEvents(clubId, query))
     }
 
     func joinEvent(eventId: String) async throws(APIError) -> Data {

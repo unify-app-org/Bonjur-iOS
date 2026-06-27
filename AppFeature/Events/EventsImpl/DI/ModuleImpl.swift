@@ -10,9 +10,19 @@ import AppPresentationModel
 import AppUIKit
 import Events
 import SwiftUI
+import DependecyInjection
 
 struct EventsModuleImpl: EventsModule {
-    
+
+    func fetchClubEvents(
+        clubId: Int,
+        page: Int,
+        size: Int
+    ) async throws -> [EventsModuleModel.CardInputData] {
+        let useCase: EventsUseCase = resolve()
+        return try await useCase.fetchClubEvents(clubId: clubId, page: page, size: size)
+    }
+
     func makeEventsCard(
         model: EventsModuleModel.CardInputData,
         onTap: @escaping (() -> Void),

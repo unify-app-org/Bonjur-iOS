@@ -91,6 +91,11 @@ struct EventsCardView: View {
             }
             .cornerRadius(.zero)
             .backgroundType(model.bgType)
+            // Clamp the whole cover: CardBackgroundView's RoundedRectangle/GeometryReader
+            // are greedy, so without this it fills the proposed height (e.g. the club-detail
+            // pager page) and the 103pt content floats in a tall band.
+            .frame(height: 103)
+            .clipped()
         } else {
             topChipsView
                 .padding(.horizontal)

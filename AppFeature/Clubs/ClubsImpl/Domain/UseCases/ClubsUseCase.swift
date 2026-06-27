@@ -25,7 +25,8 @@ protocol ClubsUseCase {
     func fetchClubMembersPage(
         id: Int,
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
     func editClub(
         id: Int,
@@ -89,9 +90,10 @@ class ClubsUseCaseImpl: ClubsUseCase {
     func fetchClubMembersPage(
         id: Int,
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
-        try await repo.fetchClubMembersPage(id: id, page: page, size: size)
+        try await repo.fetchClubMembersPage(id: id, page: page, size: size, keyword: keyword)
     }
 
     func fetchClubMemberById(

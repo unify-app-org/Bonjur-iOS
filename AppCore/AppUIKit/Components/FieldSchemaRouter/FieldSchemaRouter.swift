@@ -548,7 +548,7 @@ private struct DateInputField: View {
         .padding(.bottom, 14)
         .appSheet(
             isPresented: $isPresented,
-            detents: [.height(360)],
+            detents: [.height(450)],
             dragIndicator: .visible
         ) {
             DatePicker(

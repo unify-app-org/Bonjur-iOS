@@ -17,7 +17,8 @@ protocol CommunityUseCase {
     func fetchCommunityMembersPage(
         id: Int,
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
     func fetchClubs(
         communityId: Int,
@@ -56,11 +57,12 @@ class CommunityUseCaseImpl: CommunityUseCase {
         )
     }
     
-    func fetchCommunityMembersPage(id: Int, page: Int, size: Int) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
+    func fetchCommunityMembersPage(id: Int, page: Int, size: Int, keyword: String?) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
         try await repo.fetchCommunityMembersPage(
             id: id,
             page: page,
-            size: size
+            size: size,
+            keyword: keyword
         )
     }
 

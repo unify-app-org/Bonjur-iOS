@@ -302,9 +302,34 @@ struct ClubDetailsView: View {
     }
     
     private var memberCount: some View {
-        Text("\(store.state.uiModel?.membersCount ?? 0) members")
-            .font(Font.Typography.TextMd.regular)
-            .foregroundStyle(Color.Palette.blackHigh)
+        HStack {
+            Text("\(store.state.uiModel?.membersCount ?? 0) members")
+                .font(Font.Typography.TextMd.regular)
+                .foregroundStyle(Color.Palette.blackHigh)
+            
+            if let eventCount = store.state.uiModel?.eventsCount  {
+                Text("•")
+                let text = eventCount == 1
+                ? "1 event"
+                : "\(eventCount) events"
+                HStack {
+                    Image(systemName: "calendar")
+                    Text(text)
+                        .font(Font.Typography.TextMd.regular)
+                        .foregroundStyle(Color.Palette.blackHigh)
+                }
+            }
+            
+            if let clubsCount = store.state.uiModel?.clubsCount  {
+                Text("•")
+                let text = clubsCount == 1
+                ? "1 club"
+                : "\(clubsCount) clubs"
+                Text(text)
+                    .font(Font.Typography.TextMd.regular)
+                    .foregroundStyle(Color.Palette.blackHigh)
+            }
+        }
     }
     
     private var chipsView: some View {
@@ -495,8 +520,8 @@ struct ClubDetailsView: View {
                 ForEach(events, id: \.uuid) { item in
                     if let view = eventsModule.makeEventsCard(
                         model: item,
-                        onTap: {},
-                        onButtonTap: {},
+                        onTap: { store.send(.eventTapped(item.id)) },
+                        onButtonTap: { store.send(.eventTapped(item.id)) },
                         onClubTap: nil
                     ) as? AnyView {
                         view
@@ -508,8 +533,8 @@ struct ClubDetailsView: View {
             AppEmptyView(
                 model: .init(
                     icon: UIImage.Icons.twoUsers,
-                    text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
-                    buttonTitle: "Create a club +"
+                    text: "There are no events for this club yet. Be the pioneer and start the very first one now!",
+                    buttonTitle: "Create an event +"
                 )
             ) {}
             .padding()

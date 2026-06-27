@@ -25,7 +25,8 @@ protocol CommunityRepo {
     func fetchCommunityMembersPage(
         id: Int,
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
 
     func getClubs(
@@ -99,6 +100,8 @@ class CommunityRepoImpl: CommunityRepo {
         let uiModel: CommunityDetails.UIModel = .init(
             name: data.name,
             membersCount: membersCount,
+            clubsCount: data.clubCount,
+            eventsCount: data.eventCount,
             logo: logoURL,
             coverImage: coverURL,
             coverColorType: data.backgroundColour ?? .primary,
@@ -113,7 +116,7 @@ class CommunityRepoImpl: CommunityRepo {
     func fetchClubMemberById(
         id: Int
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
-        let data = try await dataSource.fetchClubMemberById(id: id, page: 0, size: 10).content
+        let data = try await dataSource.fetchClubMemberById(id: id, page: 0, size: 10, keyword: nil).content
         let users = data.map(Self.mapMember)
         return .init(users: users)
     }
@@ -121,9 +124,10 @@ class CommunityRepoImpl: CommunityRepo {
     func fetchCommunityMembersPage(
         id: Int,
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
-        let data = try await dataSource.fetchClubMemberById(id: id, page: page, size: size).content
+        let data = try await dataSource.fetchClubMemberById(id: id, page: page, size: size, keyword: keyword).content
         let users = data.map(Self.mapMember)
         return .init(members: users, hasMore: users.count >= size)
     }
@@ -162,7 +166,7 @@ class CommunityRepoImpl: CommunityRepo {
                     communityName: item.communityName ?? "-",
                     logoURL: item.clubProfile ?? "",
                     memberCount: item.count ?? 0,
-                    totalCapacity: 0,
+                    totalCapacity: item.capacity ?? 0,
                     community: item.communityName ?? "-",
                     members: members,
                     bgType: item.background ?? .primary,

@@ -15,6 +15,8 @@ struct CommunityDetails {
     struct UIModel {
         let name: String
         let membersCount: Int
+        let clubsCount: Int?
+        let eventsCount: Int?
         let logo: URL?
         let coverImage: URL?
         let coverColorType: AppUIEntities.BackgroundType
@@ -56,6 +58,8 @@ extension CommunityDetails.UIModel {
     static let mockData: Self = .init(
         name: "UFAZ Community",
         membersCount: 12,
+        clubsCount: 1,
+        eventsCount: 12,
         logo: nil,
         coverImage: nil,
         coverColorType: .secondary,

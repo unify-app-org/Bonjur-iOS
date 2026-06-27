@@ -21,6 +21,13 @@ public protocol EventsModule {
     
     func makeEventsDetails(eventId: String) -> AnyObject
 
+    /// Active events for a club (first page used by the club-detail Events tab).
+    func fetchClubEvents(
+        clubId: Int,
+        page: Int,
+        size: Int
+    ) async throws -> [EventsModuleModel.CardInputData]
+
     func makeCreateVC() -> AnyObject
 
     func makeCreateVC(

@@ -14,7 +14,7 @@ protocol ClubsDataSource {
     func fetchClubs(query: [String: String]) async throws(APIError) -> [ClubDTOModel.ListResponse]
     func createClub(request: MultipartFormData) async throws(APIError) -> Data
     func fetchClubById(id: Int) async throws(APIError) -> ClubDTOModel.Response
-    func fetchClubMemberById(id: Int, page: Int, size: Int) async throws(APIError) -> ClubDTOModel.MemberResponse
+    func fetchClubMemberById(id: Int, page: Int, size: Int, keyword: String?) async throws(APIError) -> ClubDTOModel.MemberResponse
     func editClub(id: Int, request: MultipartFormData) async throws(APIError) -> Data
     func joinClub(id: Int) async throws(APIError) -> Data
     func assignRole(id: Int, request: ClubDTOModel.RoleAssignRequest) async throws(APIError) -> Data
@@ -125,9 +125,11 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
         try await fetch(endPoint: .getClubById(id))
     }
     
-    func fetchClubMemberById(id: Int, page: Int, size: Int) async throws(APIError) -> ClubDTOModel.MemberResponse {
-        try await fetch(
-            endPoint: .getMembersByClubId(id, ["page": "\(page)", "size": "\(size)"])
+    func fetchClubMemberById(id: Int, page: Int, size: Int, keyword: String?) async throws(APIError) -> ClubDTOModel.MemberResponse {
+        var query = ["page": "\(page)", "size": "\(size)"]
+        if let keyword, !keyword.isEmpty { query["keyword"] = keyword }
+        return try await fetch(
+            endPoint: .getMembersByClubId(id, query)
         )
     }
     

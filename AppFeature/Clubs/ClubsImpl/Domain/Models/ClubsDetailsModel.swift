@@ -15,6 +15,8 @@ struct ClubsDetailsModel {
         let name: String
         let communityName: String
         let membersCount: Int
+        let eventsCount: Int?
+        let clubsCount: Int?
         let logo: URL?
         let coverImage: URL?
         let coverColorType: AppUIEntities.BackgroundType
@@ -66,6 +68,8 @@ extension ClubsDetailsModel.UIModel {
         name: "Football Club",
         communityName: "UFAZ community",
         membersCount: 5,
+        eventsCount: 3,
+        clubsCount: 2,
         logo: nil,
         coverImage: nil,
         coverColorType: .secondary,

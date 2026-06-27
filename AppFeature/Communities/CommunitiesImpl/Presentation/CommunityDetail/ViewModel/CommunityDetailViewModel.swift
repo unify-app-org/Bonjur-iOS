@@ -112,11 +112,12 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
             title: "Members",
             titleOverrides: [.president: "Owner"],
             pageSize: 20,
-            loadPage: { page, size in
+            loadPage: { page, size, keyword in
                 try await useCase.fetchCommunityMembersPage(
                     id: communityId,
                     page: page,
-                    size: size
+                    size: size,
+                    keyword: keyword
                 )
             },
             onMemberTapped: { [weak self] member in

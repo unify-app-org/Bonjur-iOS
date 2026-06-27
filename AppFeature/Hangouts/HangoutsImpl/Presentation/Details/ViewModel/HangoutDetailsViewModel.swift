@@ -149,11 +149,12 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
             title: "Members",
             titleOverrides: [.president: "Owner"],
             pageSize: 20,
-            loadPage: { page, size in
+            loadPage: { page, size, keyword in
                 try await useCase.fetchHangoutMembersPage(
                     id: hangoutId,
                     page: page,
-                    size: size
+                    size: size,
+                    keyword: keyword
                 )
             },
             onMemberTapped: { [weak self] member in

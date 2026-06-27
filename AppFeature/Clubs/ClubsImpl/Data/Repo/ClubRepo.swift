@@ -28,7 +28,8 @@ protocol ClubRepo {
     func fetchClubMembersPage(
         id: Int,
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage
     func editClub(
         id: Int,
@@ -156,6 +157,8 @@ class ClubRepoImpl: ClubRepo {
             name: data.name,
             communityName: data.communityName,
             membersCount: data.membersCount ?? 0,
+            eventsCount: data.eventCount,
+            clubsCount: data.clubCount,
             logo: logoURL,
             coverImage: coverURL,
             coverColorType: data.backgroundColour ?? .primary,
@@ -173,7 +176,7 @@ class ClubRepoImpl: ClubRepo {
     func fetchClubMemberById(
         id: Int
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
-        let data = try await dataSource.fetchClubMemberById(id: id, page: 0, size: 10).content
+        let data = try await dataSource.fetchClubMemberById(id: id, page: 0, size: 10, keyword: nil).content
         let users = data.map(Self.mapMember)
         return .init(users: users)
     }
@@ -181,9 +184,10 @@ class ClubRepoImpl: ClubRepo {
     func fetchClubMembersPage(
         id: Int,
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
-        let data = try await dataSource.fetchClubMemberById(id: id, page: page, size: size).content
+        let data = try await dataSource.fetchClubMemberById(id: id, page: page, size: size, keyword: keyword).content
         let users = data.map(Self.mapMember)
         return .init(members: users, hasMore: users.count >= size)
     }
@@ -226,7 +230,7 @@ class ClubRepoImpl: ClubRepo {
         var page = 0
         while true {
             let content = try await dataSource
-                .fetchClubMemberById(id: id, page: page, size: pageSize)
+                .fetchClubMemberById(id: id, page: page, size: pageSize, keyword: nil)
                 .content
             if content.contains(where: { $0.role == .visePresident }) {
                 return true

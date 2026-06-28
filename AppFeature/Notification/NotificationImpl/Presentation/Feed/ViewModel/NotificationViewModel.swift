@@ -38,8 +38,9 @@ final class NotificationViewModel: UIFeatureViewModel<NotificationFeature> {
         case .markAllRead:
             markAllRead()
         case .actionBannerTapped:
-            // No-op until the "Needs your action" screen exists.
-            break
+            Task {
+                await router.navigate(to: .needsAction)
+            }
         case .itemTapped(let id):
             itemTapped(id: id)
         }
@@ -64,6 +65,22 @@ final class NotificationViewModel: UIFeatureViewModel<NotificationFeature> {
                 postEffect(.error(error as? APIError))
             }
         }
+        refreshRequestCount()
+    }
+
+    /// Overrides the banner's `requests` count with live totals. Verifications
+    /// stay on the mock inbox value until that service ships. Failure leaves the
+    /// banner on whatever the inbox provided (silent — it's a secondary number).
+    private func refreshRequestCount() {
+        Task {
+            guard let counts = try? await dependencies.useCase.fetchRequestCounts() else { return }
+            await applyRequestCount(counts.total)
+        }
+    }
+
+    @MainActor
+    private func applyRequestCount(_ requests: Int) {
+        state.uiModel.action.requests = requests
     }
 
     private func markAllRead() {

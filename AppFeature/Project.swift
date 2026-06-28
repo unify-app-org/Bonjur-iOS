@@ -104,7 +104,8 @@ let notificationTarget = Target.createFeatureModule(
         dependencies: [
             .AppFeature.Clubs,
             .AppFeature.Events,
-            .AppFeature.Hangouts
+            .AppFeature.Hangouts,
+            .AppFeature.Profile
         ]
     )
 ).add(to: &frameworkTargets)

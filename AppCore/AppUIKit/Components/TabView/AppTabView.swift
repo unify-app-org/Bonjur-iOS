@@ -11,15 +11,18 @@ public struct AppTabView<Content: View>: View {
     @Binding private var currentPage: Int
     private let content: Content
     private let pageCount: Int
+    private let dismissIndicator: Bool
     
     public init(
         currentPage: Binding<Int>,
         pageCount: Int,
+        dismissIndicator: Bool = true,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self._currentPage = currentPage
         self.content = content()
         self.pageCount = pageCount
+        self.dismissIndicator = dismissIndicator
     }
     
     public var body: some View {
@@ -28,8 +31,9 @@ public struct AppTabView<Content: View>: View {
                 content
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
-            
-            CustomPageIndicator(numberOfPages: pageCount, currentPage: currentPage)
+            if dismissIndicator {
+                CustomPageIndicator(numberOfPages: pageCount, currentPage: currentPage)
+            }
         }
     }
 }

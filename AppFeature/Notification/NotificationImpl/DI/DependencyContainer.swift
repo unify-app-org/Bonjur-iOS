@@ -53,11 +53,23 @@ enum NotificationDependencyContainer {
         register(NotificationDataSource.self) {
             NotificationMockDataSource()
         }
+
+        register(JoinRequestDataSource.self) {
+            JoinRequestDataSourceImpl()
+        }
     }
 
     private static func registerUseCase() {
         register(NotificationUseCase.self) {
             NotificationUseCaseImpl()
+        }
+
+        register(NeedsActionUseCase.self) {
+            NeedsActionUseCaseImpl()
+        }
+
+        register(VerificationUseCase.self) {
+            VerificationUseCaseImpl()
         }
     }
 

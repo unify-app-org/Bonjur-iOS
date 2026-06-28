@@ -11,6 +11,8 @@ import SwiftUI
 enum NotificationRoute {
     /// Modal preview of a single notification.
     case preview(NotificationFeedItem)
+    /// Pushes the "Needs your action" screen (join-request tabs).
+    case needsAction
 }
 
 protocol NotificationRouterProtocol {
@@ -30,7 +32,15 @@ final class NotificationRouter: NotificationRouterProtocol {
         switch route {
         case .preview(let item):
             presentPreview(item)
+        case .needsAction:
+            pushNeedsAction()
         }
+    }
+
+    @MainActor
+    private func pushNeedsAction() {
+        let vc = NeedsActionBuilder(inputData: .init()).build()
+        view?.navigationController?.pushViewController(vc, animated: true)
     }
 
     @MainActor

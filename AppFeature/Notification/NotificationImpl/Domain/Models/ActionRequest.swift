@@ -14,6 +14,7 @@ import Foundation
 enum ActionRequestKind: Equatable {
     case club(id: Int)
     case hangout(id: String)
+    case event(id: String)
 }
 
 // MARK: - Item
@@ -48,21 +49,13 @@ struct ActionRequestItem: Identifiable, Equatable {
 
 // MARK: - Page result
 
-/// One page of merged requests plus whether either source still has more.
-struct ActionRequestsPage {
-    let items: [ActionRequestItem]
-    let clubHasMore: Bool
-    let hangoutHasMore: Bool
-
-    static let empty = ActionRequestsPage(items: [], clubHasMore: false, hangoutHasMore: false)
-}
-
 // MARK: - Counts
 
 /// Total pending counts for the banner (`totalElements` from each source).
 struct ActionRequestCounts {
     let clubs: Int
     let hangouts: Int
+    let events: Int
 
-    var total: Int { clubs + hangouts }
+    var total: Int { clubs + hangouts + events }
 }

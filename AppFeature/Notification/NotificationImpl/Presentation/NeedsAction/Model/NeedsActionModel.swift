@@ -17,8 +17,8 @@ struct NeedsActionInputData {
 
 // MARK: - Tabs
 
-/// Top segmented control. `clubs` + `hangouts` are backed by live join-request
-/// APIs; `events` has no service yet and renders an empty state.
+/// Top segmented control. All three are backed by live join-request list APIs;
+/// `events` is read-only (no accept/reject API yet).
 /// `String` raw values double as the capsule labels rendered by
 /// `CapsuleSegmentedPicker` (it displays `rawValue`).
 enum ActionTab: String, CaseIterable, Identifiable {
@@ -72,6 +72,7 @@ final class NeedsActionViewState: UIFeatureState {
     @Published var selectedTab: ActionTab = .clubs
     @Published var clubs = RequestSourceState()
     @Published var hangouts = RequestSourceState()
+    @Published var events = RequestSourceState()
     /// Rows mid accept/reject — buttons disable + show a spinner.
     @Published var processingIds: Set<String> = []
 

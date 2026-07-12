@@ -10,5 +10,6 @@ import DependecyInjection
 extension AppDelegate {
     func setUpCore(container: AppDIContainer) {
         setUpManagers(container)
+        setUpDeepLinking(container)
     }
 }

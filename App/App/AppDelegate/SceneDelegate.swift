@@ -7,6 +7,8 @@
 
 import UIKit
 import AppAuthImpl
+import AppFoundation
+import DependecyInjection
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -35,5 +37,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             urlContext.url,
             sourceApplication: urlContext.options.sourceApplication
         )
+        handleDeepLink(url: urlContext.url)
+    }
+
+    /// Custom-scheme deep links (e.g. `bonjur://club?id=12`). Identifiers come
+    /// from whatever module routers registered at launch; unknown links no-op.
+    private func handleDeepLink(url: URL) {
+        let manager = AppDIContainer.shared.resolve(DeepLinkManagerProtocol.self)
+        let parser = DeepLinkDataParser(deepLinksIdentifiers: manager.deepLinksIdentifiers())
+
+        guard let notification = parser.parseDeepLinkData(from: url) else { return }
+        manager.process(notification: notification, context: .default)
     }
 }

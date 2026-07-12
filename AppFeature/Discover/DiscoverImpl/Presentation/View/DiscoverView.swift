@@ -114,6 +114,21 @@ struct DiscoverView: View {
             .toolbarItemBackground {
                 store.send(.notificationsTapped)
             }
+            .overlay(alignment: .topTrailing) {
+                unreadBadge
+            }
+    }
+
+    @ViewBuilder
+    private var unreadBadge: some View {
+        let count = store.state.unreadNotifications
+        if count > 0 {
+            Circle()
+                .frame(width: 12, height: 12)
+                .allowsHitTesting(false)
+                .background(Color.red)
+                .clipShape(Circle())
+        }
     }
 
     private var filterView: some View {

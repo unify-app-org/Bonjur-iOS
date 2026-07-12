@@ -10,14 +10,16 @@ import Hangouts
 import AppUIKit
 import AppNetwork
 import Communities
+import Notification
 import AppFoundation
 
 final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
-    
+
     struct Dependencies {
         let useCase: DiscoverUseCase
     }
-    
+
+    private let notificationModule: NotificationModule = resolve()
     private let router: DiscoverRouterProtocol
     private let inputData: DiscoverInputData
     private let dependencies: DiscoverViewModel.Dependencies
@@ -121,6 +123,22 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
                 postEffect(.error(firstError))
             }
         }
+        refreshUnreadBadge()
+    }
+
+    /// Bell badge count. Silent on failure — the badge just keeps its last
+    /// value. Refreshed on first load and every Discover reappearance, so
+    /// returning from the feed (which fires read-all) zeroes it.
+    private func refreshUnreadBadge() {
+        Task {
+            guard let count = try? await notificationModule.fetchUnreadCount() else { return }
+            await applyUnreadCount(count)
+        }
+    }
+
+    @MainActor
+    private func applyUnreadCount(_ count: Int) {
+        state.unreadNotifications = count
     }
     
     private func joinHangout(id: String) async {
@@ -281,6 +299,7 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
                 postEffect(.error(firstError))
             }
         }
+        refreshUnreadBadge()
     }
 
     private func fetchFilteredData() async -> FilteredFetchResults {

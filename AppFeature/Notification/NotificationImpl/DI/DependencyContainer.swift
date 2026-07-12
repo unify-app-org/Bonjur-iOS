@@ -51,7 +51,7 @@ enum NotificationDependencyContainer {
 
     private static func registerDataSource() {
         register(NotificationDataSource.self) {
-            NotificationMockDataSource()
+            NotificationNetworkDataSource()
         }
 
         register(JoinRequestDataSource.self) {

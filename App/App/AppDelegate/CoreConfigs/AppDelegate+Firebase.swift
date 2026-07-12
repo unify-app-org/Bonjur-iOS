@@ -9,6 +9,8 @@ import UIKit
 import FirebaseCore
 import UserNotifications
 import FirebaseMessaging
+import AppStorage
+import AppNetwork
 
 extension AppDelegate {
 
@@ -84,8 +86,13 @@ extension AppDelegate: MessagingDelegate {
         _ messaging: Messaging,
         didReceiveRegistrationToken fcmToken: String?
     ) {
-        // TODO: forward `fcmToken` to backend so the device can receive pushes.
-        print("FCM registration token:", fcmToken ?? "nil")
+        guard let fcmToken else { return }
+        let userUpdate = UserDataServiceImpl()
+        let request = UserUpdate(fcmToken: fcmToken)
+        Task {
+            try await userUpdate.updateUser(body: request)
+        }
+        print("FCM registration token:", fcmToken)
     }
 }
 
@@ -115,4 +122,51 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     ) async -> UIBackgroundFetchResult {
         .newData
     }
+}
+
+
+enum UserEnpoints {
+    case updateUser(Encodable, String)
+}
+
+extension UserEnpoints: AppEndPoint {
+    
+    var path: String {
+        switch self {
+        case .updateUser(_ , let id):
+            "api/as/v1/device/\(id)"
+        }
+    }
+    
+    var method: HTTPMethod {
+        switch self {
+        case .updateUser:
+                .put
+        }
+    }
+    
+    var body: Encodable? {
+        switch self {
+        case .updateUser(let body, _):
+            body
+        }
+    }
+}
+
+
+protocol UserDataService {
+    func updateUser(body: Encodable) async throws(APIError)
+}
+
+final class UserDataServiceImpl: NetworkService<UserEnpoints>, UserDataService {
+    
+    let deviceManger = DeviceManager.shared
+    
+    func updateUser(body: Encodable) async throws(APIError) {
+        _ = try await fetchRawData(endPoint: .updateUser(body, deviceManger.deviceId))
+    }
+}
+
+struct UserUpdate: Encodable {
+    let fcmToken: String
 }

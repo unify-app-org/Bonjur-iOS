@@ -56,3 +56,18 @@ struct HangoutJoinRequestDTO: Decodable {
     let hangoutName: String?
     let createdAt: String?
 }
+
+// MARK: - Event
+
+/// `GET api/es/v1/events/requests` content row. The live API sends neither
+/// `fileUrl` nor `createdAt` yet — both decoded optionally for when they ship
+/// (rows sort last / show no time stamp meanwhile).
+struct EventJoinRequestDTO: Decodable {
+    let userId: String?
+    let userProfileUrl: String?
+    let fullName: String?
+    let fileUrl: String?
+    let eventId: String?
+    let eventName: String?
+    let createdAt: String?
+}

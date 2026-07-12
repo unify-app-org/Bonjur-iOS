@@ -5,6 +5,7 @@
 //  Created by Huseyn Hasanov on 27.06.26.
 //
 
+import Foundation
 import AppUIKit
 import AppNetwork
 import AppFoundation
@@ -18,6 +19,10 @@ final class NotificationViewModel: UIFeatureViewModel<NotificationFeature> {
     private let router: NotificationRouterProtocol
     private let inputData: NotificationInputData
     private let dependencies: NotificationViewModel.Dependencies
+
+    private let pageSize = 20
+    private var page = 0
+    private var feedItems: [NotificationFeedItem] = []
 
     init(
         state: NotificationFeature.State,
@@ -33,8 +38,10 @@ final class NotificationViewModel: UIFeatureViewModel<NotificationFeature> {
 
     override func handle(action: NotificationFeature.Action) {
         switch action {
-        case .fetchData:
+        case .fetchData, .retry:
             fetchData()
+        case .loadMore:
+            loadMore()
         case .markAllRead:
             markAllRead()
         case .actionBannerTapped:
@@ -56,35 +63,91 @@ final class NotificationViewModel: UIFeatureViewModel<NotificationFeature> {
         }
     }
 
+    // MARK: - Feed loading
+
     private func fetchData() {
+        if state.uiModel.sections.isEmpty {
+            state.phase = .loading
+        }
         Task {
             do {
-                let inbox = try await dependencies.useCase.fetchInbox()
-                await apply(inbox)
+                let result = try await dependencies.useCase.fetchFeedPage(page: 0, size: pageSize)
+                await applyInitial(result)
             } catch {
-                postEffect(.error(error as? APIError))
+                await applyFailure(error as? APIError)
             }
         }
-        refreshRequestCount()
+        refreshActionBanner()
     }
 
-    /// Overrides the banner's `requests` count with live totals. Verifications
-    /// stay on the mock inbox value until that service ships. Failure leaves the
-    /// banner on whatever the inbox provided (silent — it's a secondary number).
-    private func refreshRequestCount() {
+    private func loadMore() {
+        guard state.canLoadMore, !state.isLoadingMore else { return }
+        state.isLoadingMore = true
+        let next = page + 1
+
         Task {
-            guard let counts = try? await dependencies.useCase.fetchRequestCounts() else { return }
-            await applyRequestCount(counts.total)
+            do {
+                let result = try await dependencies.useCase.fetchFeedPage(page: next, size: pageSize)
+                await applyMore(result, page: next)
+            } catch {
+                await stopLoadingMore(error as? APIError)
+            }
         }
     }
 
     @MainActor
-    private func applyRequestCount(_ requests: Int) {
-        state.uiModel.action.requests = requests
+    private func applyInitial(_ result: NotificationFeedPage) {
+        page = 0
+        feedItems = result.items
+        state.uiModel.sections = NotificationFeedMapper.sections(from: feedItems)
+        state.canLoadMore = result.hasMore
+        state.phase = .loaded
     }
 
+    @MainActor
+    private func applyMore(_ result: NotificationFeedPage, page nextPage: Int) {
+        page = nextPage
+        feedItems += result.items
+        state.uiModel.sections = NotificationFeedMapper.sections(from: feedItems)
+        state.canLoadMore = result.hasMore
+        state.isLoadingMore = false
+    }
+
+    @MainActor
+    private func applyFailure(_ error: APIError?) {
+        if state.uiModel.sections.isEmpty {
+            state.phase = .failed
+        }
+        postEffect(.error(error))
+    }
+
+    @MainActor
+    private func stopLoadingMore(_ error: APIError?) {
+        state.isLoadingMore = false
+        postEffect(.error(error))
+    }
+
+    // MARK: - Needs your action (banner)
+
+    /// Composes the banner client-side: join-request totals (club + hangout +
+    /// event) plus the admin-only verification probe (403 → 0, banner shows
+    /// requests only). Failures are silent — it's a secondary number.
+    private func refreshActionBanner() {
+        Task {
+            let requests = (try? await dependencies.useCase.fetchRequestCounts())?.total ?? 0
+            let verifications = (try? await dependencies.useCase.fetchVerificationCount()) ?? 0
+            await applyActionCounts(requests: requests, verifications: verifications)
+        }
+    }
+
+    @MainActor
+    private func applyActionCounts(requests: Int, verifications: Int) {
+        state.uiModel.action = .init(requests: requests, verifications: verifications)
+    }
+
+    // MARK: - Read state
+    /// Explicit toolbar action — flips rows locally too.
     private func markAllRead() {
-        // Optimistic: clear unread locally, then tell the backend.
         applyAllRead()
         Task {
             do {
@@ -95,16 +158,14 @@ final class NotificationViewModel: UIFeatureViewModel<NotificationFeature> {
         }
     }
 
-    @MainActor
-    private func apply(_ inbox: NotificationInbox) {
-        state.uiModel = inbox
-    }
-
     private func applyAllRead() {
         for sectionIndex in state.uiModel.sections.indices {
             for itemIndex in state.uiModel.sections[sectionIndex].items.indices {
                 state.uiModel.sections[sectionIndex].items[itemIndex].isRead = true
             }
+        }
+        for index in feedItems.indices {
+            feedItems[index].isRead = true
         }
     }
 }

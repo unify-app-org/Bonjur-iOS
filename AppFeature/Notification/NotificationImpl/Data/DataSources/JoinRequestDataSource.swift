@@ -11,8 +11,10 @@ import AppNetwork
 protocol JoinRequestDataSource {
     func fetchClubRequests(page: Int, size: Int) async throws(APIError) -> JoinRequestPage<ClubJoinRequestDTO>
     func fetchHangoutRequests(page: Int, size: Int) async throws(APIError) -> JoinRequestPage<HangoutJoinRequestDTO>
+    func fetchEventRequests(page: Int, size: Int) async throws(APIError) -> JoinRequestPage<EventJoinRequestDTO>
     func setClubStatus(clubId: Int, userId: String, accept: Bool) async throws(APIError)
     func setHangoutStatus(hangoutId: String, userId: String, accept: Bool) async throws(APIError)
+    func setEventStatus(eventId: String, userId: String, accept: Bool) async throws(APIError)
     /// Admin: clubs awaiting verification (same row shape as join requests).
     func fetchPendingClubs(page: Int, size: Int) async throws(APIError) -> JoinRequestPage<ClubJoinRequestDTO>
     func setClubVerification(clubId: Int, accept: Bool) async throws(APIError)
@@ -28,6 +30,10 @@ final class JoinRequestDataSourceImpl: NetworkService<NotificationEndPoint>, Joi
 
     func fetchHangoutRequests(page: Int, size: Int) async throws(APIError) -> JoinRequestPage<HangoutJoinRequestDTO> {
         try await fetch(endPoint: .hangoutJoinRequests(query(page: page, size: size)))
+    }
+
+    func fetchEventRequests(page: Int, size: Int) async throws(APIError) -> JoinRequestPage<EventJoinRequestDTO> {
+        try await fetch(endPoint: .eventJoinRequests(query(page: page, size: size)))
     }
 
     func setClubStatus(clubId: Int, userId: String, accept: Bool) async throws(APIError) {
@@ -47,6 +53,18 @@ final class JoinRequestDataSourceImpl: NetworkService<NotificationEndPoint>, Joi
             endPoint: .setHangoutRequestStatus(
                 hangoutId: hangoutId,
                 body: HangoutRequestStatusBody(
+                    userId: userId,
+                    status: accept ? "ACCEPTED" : "REJECTED"
+                )
+            )
+        )
+    }
+
+    func setEventStatus(eventId: String, userId: String, accept: Bool) async throws(APIError) {
+        _ = try await fetchRawData(
+            endPoint: .setEventRequestStatus(
+                eventId: eventId,
+                body: EventRequestStatusBody(
                     userId: userId,
                     status: accept ? "ACCEPTED" : "REJECTED"
                 )

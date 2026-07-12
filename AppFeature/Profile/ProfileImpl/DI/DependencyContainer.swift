@@ -7,6 +7,7 @@
 
 import Foundation
 import Profile
+import AppFoundation
 import DependecyInjection
 
 func resolve<T>(
@@ -42,12 +43,20 @@ enum ProfileDependencyContainer {
         registerDataSource()
         registerRepo()
         registerUseCase()
+        registerDeepLinks()
     }
-    
+
     // MARK: - Dependencies Registration
-    
+
     private static func registerHelpers() {
-        
+
+    }
+
+    /// Registers this module's deep-link routes with the app-wide registrar
+    /// (registered in the shared container before feature setup runs).
+    private static func registerDeepLinks() {
+        let registrar = resolve(DeepLinkRegistrar.self)
+        registrar.register(router: ProfileDeepLinkRouter())
     }
     
     private static func registerDataSource() {

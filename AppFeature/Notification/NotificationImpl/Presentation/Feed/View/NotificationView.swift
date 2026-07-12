@@ -22,11 +22,14 @@ struct NotificationView: View {
                 if store.state.uiModel.action.hasActions {
                     actionBanner
                 }
-                feedSections
+                feedContent
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)
             .padding(.bottom, 55)
+        }
+        .refreshable {
+            store.send(.fetchData)
         }
         .background(Color.Palette.grayQuaternary.opacity(0.4))
         .onFirstAppear {
@@ -110,6 +113,27 @@ struct NotificationView: View {
 
     // MARK: - Feed
 
+    @ViewBuilder
+    private var feedContent: some View {
+        if !store.state.uiModel.sections.isEmpty {
+            feedSections
+            if store.state.isLoadingMore {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+            }
+        } else {
+            switch store.state.phase {
+            case .idle, .loading:
+                loadingState
+            case .failed:
+                errorState
+            case .loaded:
+                emptyState
+            }
+        }
+    }
+
     private var feedSections: some View {
         ForEach(store.state.uiModel.sections) { section in
             VStack(alignment: .leading, spacing: 12) {
@@ -120,9 +144,62 @@ struct NotificationView: View {
                     .padding(.top, 8)
                 ForEach(section.items) { item in
                     feedRow(item)
+                        .onAppear { loadMoreIfNeeded(item) }
                 }
             }
         }
+    }
+
+    private func loadMoreIfNeeded(_ item: NotificationFeedItem) {
+        guard store.state.canLoadMore,
+              item.id == store.state.uiModel.sections.last?.items.last?.id else { return }
+        store.send(.loadMore)
+    }
+
+    // MARK: - States
+
+    private var loadingState: some View {
+        ProgressView()
+            .frame(maxWidth: .infinity)
+            .padding(.top, 120)
+    }
+
+    private var errorState: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.system(size: 28))
+                .foregroundStyle(Color.Palette.graySecondary)
+            Text("Couldn't load notifications")
+                .font(Font.Typography.BodyTextMd.semiBold)
+                .foregroundStyle(Color.Palette.black)
+            Button {
+                store.send(.retry)
+            } label: {
+                Text("Try again")
+                    .font(Font.Typography.BodyTextMd.semiBold)
+                    .foregroundStyle(Color.Palette.green900)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.top, 100)
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: 8) {
+            Image(systemName: "bell")
+                .font(.system(size: 30))
+                .foregroundStyle(Color.Palette.graySecondary)
+            Text("No notifications yet")
+                .font(Font.Typography.BodyTextMd.semiBold)
+                .foregroundStyle(Color.Palette.black)
+            Text("Event reminders, request outcomes and more will show up here.")
+                .font(Font.Typography.TextL.regular)
+                .foregroundStyle(Color.Palette.graySecondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.top, 100)
+        .padding(.horizontal, 32)
     }
 
     private func feedRow(_ item: NotificationFeedItem) -> some View {

@@ -115,10 +115,7 @@ struct NeedsActionView: View {
     private func pageView(for tab: ActionTab) -> some View {
         switch tab {
         case .events:
-            comingSoon(
-                title: "No event actions yet",
-                subtitle: "Event approvals will appear here once events go live."
-            )
+            requestsTab(tab: .events, source: store.state.events, emptySubtitle: "No pending event requests right now.")
         case .hangouts:
             requestsTab(tab: .hangouts, source: store.state.hangouts, emptySubtitle: "No pending hangout requests right now.")
         case .clubs:

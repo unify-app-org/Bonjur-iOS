@@ -46,7 +46,9 @@ final class DiscoverViewState: UIFeatureState {
         events: [],
         hangouts: []
     )
-    
+    /// Unread notification total shown on the bell (hidden when 0).
+    @Published var unreadNotifications = 0
+
     struct UIModel {
         var user: UserModel
         var filters: [FilterView.Model]

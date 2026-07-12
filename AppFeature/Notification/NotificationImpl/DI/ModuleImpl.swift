@@ -17,4 +17,9 @@ final class NotificationModuleImpl: NotificationModule {
             inputData: .init()
         ).build()
     }
+
+    func fetchUnreadCount() async throws -> Int {
+        let dataSource: NotificationDataSource = resolve()
+        return try await dataSource.fetchUnreadCount()
+    }
 }

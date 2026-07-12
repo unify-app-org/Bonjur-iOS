@@ -37,4 +37,17 @@ enum JoinRequestMapper {
             createdAt: RelativeTime.parse(dto.createdAt)
         )
     }
+
+    static func item(from dto: EventJoinRequestDTO) -> ActionRequestItem? {
+        guard let eventId = dto.eventId else { return nil }
+        return ActionRequestItem(
+            id: "event-\(eventId)-\(dto.userId ?? UUID().uuidString)",
+            kind: .event(id: eventId),
+            requesterId: dto.userId,
+            requesterName: dto.fullName ?? "Someone",
+            targetName: dto.eventName ?? "an event",
+            avatarURL: dto.userProfileUrl,
+            createdAt: RelativeTime.parse(dto.createdAt)
+        )
+    }
 }

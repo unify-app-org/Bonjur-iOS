@@ -23,6 +23,7 @@ final class NeedsActionViewModel: UIFeatureViewModel<NeedsActionFeature> {
     // Independent page cursors per source.
     private var clubPage = 0
     private var hangoutPage = 0
+    private var eventPage = 0
 
     init(
         state: NeedsActionFeature.State,
@@ -39,6 +40,7 @@ final class NeedsActionViewModel: UIFeatureViewModel<NeedsActionFeature> {
         case .onAppear:
             if state.clubs.phase == .idle { loadInitial(.clubs) }
             if state.hangouts.phase == .idle { loadInitial(.hangouts) }
+            if state.events.phase == .idle { loadInitial(.events) }
             refreshVerificationBanner()
         case .selectTab(let tab):
             state.selectedTab = tab
@@ -89,7 +91,7 @@ final class NeedsActionViewModel: UIFeatureViewModel<NeedsActionFeature> {
         switch tab {
         case .clubs:    \.clubs
         case .hangouts: \.hangouts
-        case .events:   nil
+        case .events:   \.events
         }
     }
 
@@ -97,7 +99,7 @@ final class NeedsActionViewModel: UIFeatureViewModel<NeedsActionFeature> {
         switch tab {
         case .clubs:    try await dependencies.useCase.fetchClubRequests(page: page, size: pageSize)
         case .hangouts: try await dependencies.useCase.fetchHangoutRequests(page: page, size: pageSize)
-        case .events:   nil
+        case .events:   try await dependencies.useCase.fetchEventRequests(page: page, size: pageSize)
         }
     }
 
@@ -105,7 +107,7 @@ final class NeedsActionViewModel: UIFeatureViewModel<NeedsActionFeature> {
         switch tab {
         case .clubs:    clubPage = 0
         case .hangouts: hangoutPage = 0
-        case .events:   break
+        case .events:   eventPage = 0
         }
     }
 
@@ -113,7 +115,7 @@ final class NeedsActionViewModel: UIFeatureViewModel<NeedsActionFeature> {
         switch tab {
         case .clubs:    clubPage
         case .hangouts: hangoutPage
-        case .events:   0
+        case .events:   eventPage
         }
     }
 
@@ -121,7 +123,7 @@ final class NeedsActionViewModel: UIFeatureViewModel<NeedsActionFeature> {
         switch tab {
         case .clubs:    clubPage = page
         case .hangouts: hangoutPage = page
-        case .events:   break
+        case .events:   eventPage = page
         }
     }
 
@@ -214,6 +216,8 @@ final class NeedsActionViewModel: UIFeatureViewModel<NeedsActionFeature> {
                     try await dependencies.useCase.setClubStatus(clubId: clubId, userId: userId, accept: accept)
                 case .hangout(let hangoutId):
                     try await dependencies.useCase.setHangoutStatus(hangoutId: hangoutId, userId: userId, accept: accept)
+                case .event(let eventId):
+                    try await dependencies.useCase.setEventStatus(eventId: eventId, userId: userId, accept: accept)
                 }
                 await finishProcessing(item, removed: true, error: nil)
             } catch {
@@ -240,6 +244,8 @@ final class NeedsActionViewModel: UIFeatureViewModel<NeedsActionFeature> {
             state.clubs.items.removeAll { $0.id == item.id }
         case .hangout:
             state.hangouts.items.removeAll { $0.id == item.id }
+        case .event:
+            state.events.items.removeAll { $0.id == item.id }
         }
     }
 

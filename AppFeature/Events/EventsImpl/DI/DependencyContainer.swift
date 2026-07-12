@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppFoundation
 import DependecyInjection
 import Events
 
@@ -42,12 +43,20 @@ enum EventsDependencyContainer {
         registerDataSource()
         registerRepo()
         registerUseCase()
+        registerDeepLinks()
     }
-    
+
     // MARK: - Dependencies Registration
-    
+
     private static func registerHelpers() {
-        
+
+    }
+
+    /// Registers this module's deep-link routes with the app-wide registrar
+    /// (registered in the shared container before feature setup runs).
+    private static func registerDeepLinks() {
+        let registrar = resolve(DeepLinkRegistrar.self)
+        registrar.register(router: EventsDeepLinkRouter())
     }
     
     private static func registerDataSource() {

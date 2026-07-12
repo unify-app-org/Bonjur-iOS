@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftUI
+import AppFoundation
 
 enum NotificationRoute {
     /// Modal preview of a single notification.
@@ -23,8 +24,14 @@ protocol NotificationRouterProtocol {
 final class NotificationRouter: NotificationRouterProtocol {
     weak var view: UIViewController?
 
-    init(view: UIViewController? = nil) {
+    private let deepLinkManager: DeepLinkManagerProtocol
+
+    init(
+        view: UIViewController? = nil,
+        deepLinkManager: DeepLinkManagerProtocol = resolve()
+    ) {
         self.view = view
+        self.deepLinkManager = deepLinkManager
     }
 
     @MainActor
@@ -45,16 +52,14 @@ final class NotificationRouter: NotificationRouterProtocol {
 
     @MainActor
     private func presentPreview(_ item: NotificationFeedItem) {
-        // Dismissing the presenter tears down the presented modal.
         let dismiss: () -> Void = { [weak view] in
             view?.dismiss(animated: true)
         }
 
         let detail = NotificationDetailView(
             item: item,
-            onContinue: {
-                // TODO: deep-link to item.targetType/targetId, then dismiss.
-                dismiss()
+            onContinue: { [weak self] in
+                self?.openTarget(of: item)
             },
             onClose: dismiss
         )
@@ -74,5 +79,40 @@ final class NotificationRouter: NotificationRouterProtocol {
             sheet.prefersGrabberVisible = true
         }
         view?.present(nav, animated: true)
+    }
+
+    // MARK: - Deep link (preview "Continue")
+    
+    @MainActor
+    private func openTarget(of item: NotificationFeedItem) {
+        let notification = deepLinkNotification(for: item)
+        let host = view
+        view?.dismiss(animated: true) { [deepLinkManager] in
+            guard let notification else { return }
+            deepLinkManager.process(
+                notification: notification,
+                context: DeepLinkContext(
+                    navigationType: .overCurrentContext(topViewController: host)
+                )
+            )
+        }
+    }
+    
+    private func deepLinkNotification(for item: NotificationFeedItem) -> DeepLinkNotification? {
+        guard let targetId = item.targetId, !targetId.isEmpty else { return nil }
+
+        let identifier: String? = switch item.targetType {
+        case .event: "event"
+        case .club: "club"
+        case .user: "user"
+        case .none: nil
+        }
+        guard let identifier else { return nil }
+
+        return DeepLinkNotification(
+            identifier: identifier,
+            action: item.type.apiValue,
+            payload: ["id": targetId]
+        )
     }
 }

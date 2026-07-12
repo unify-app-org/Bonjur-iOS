@@ -34,15 +34,20 @@ typealias NotificationFeature = UIFeatureDefinition<
 
 final class NotificationViewState: UIFeatureState {
     @Published var uiModel: NotificationInbox = .empty
+    /// First-load lifecycle (spinner / empty / error). Reuses the NeedsAction phase enum.
+    @Published var phase: RequestsPhase = .idle
+    @Published var isLoadingMore = false
+    @Published var canLoadMore = false
 }
 
 // MARK: - Feature Action
 
 enum NotificationAction: UIFeatureAction {
     case fetchData
+    case retry
+    case loadMore
     case markAllRead
-    /// Banner is static for now — tap is a no-op until the action screen exists.
     case actionBannerTapped
-    /// Rows don't deep-link yet — placeholder for the next pass.
+    /// Opens the modal preview for a feed row.
     case itemTapped(id: String)
 }

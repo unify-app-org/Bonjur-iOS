@@ -10,8 +10,6 @@ import AppUIKit
 
 // MARK: - Inbox
 
-/// Full payload backing the notification inbox screen: the "Needs your action"
-/// summary (banner) plus the read-only feed grouped into time sections.
 struct NotificationInbox {
     var action: NeedsActionSummary
     var sections: [NotificationSection]
@@ -24,8 +22,6 @@ struct NotificationInbox {
 
 // MARK: - Needs your action (banner)
 
-/// Client-composed count. Join requests live in club/hangout/event services,
-/// verifications in the verification service; the banner just sums them.
 struct NeedsActionSummary {
     var requests: Int
     var verifications: Int
@@ -42,29 +38,19 @@ struct NotificationSection: Identifiable {
     var items: [NotificationFeedItem]
 }
 
-/// Mirrors `NotificationResponse` from the notification-service spec
-/// (see notification-verification-api-spec.md §3.1).
 struct NotificationFeedItem: Identifiable {
     let id: String
     let type: NotificationType
     let title: String
-    /// `body` in the API.
     let subtitle: String
-    /// Optional extra context (e.g. admin reject reason). Shown under `subtitle`.
     let note: String?
-    /// Remote `imageUrl` from the API. May be `nil` (then the local type icon shows).
     let imageURL: String?
     let timeAgo: String
     var isRead: Bool
-
     let targetType: NotificationTargetType
     let targetId: String?
-
+    var createdAt: Date? = nil
     var isUnread: Bool { !isRead }
-
-    /// Resolves to a remote image when the type points at a real entity and a
-    /// URL is present; otherwise a local SF Symbol icon. (Spec: BIRTHDAY/HOLIDAY
-    /// are always local, the rest prefer the remote club/user image.)
     var image: NotificationImageSource {
         if type.prefersRemoteImage,
            let urlString = imageURL,
@@ -90,10 +76,8 @@ enum NotificationType {
     case eventReminder
     case requestOutcome
     case verificationOutcome
-    /// Default / unknown type — uses the bell icon.
     case general
 
-    /// Maps the API string (`BIRTHDAY`, `EVENT_REMINDER`, ...). Unknown → `.general`.
     init(apiValue: String) {
         switch apiValue.uppercased() {
         case "BIRTHDAY":             self = .birthday
@@ -104,9 +88,18 @@ enum NotificationType {
         default:                     self = .general
         }
     }
-
-    /// Outcome/event types reference a real entity → use its remote photo.
-    /// Birthday/holiday/general are platform-generic → always the local icon.
+    
+    var apiValue: String? {
+        switch self {
+        case .birthday:            return "BIRTHDAY"
+        case .holiday:             return "HOLIDAY"
+        case .eventReminder:       return "EVENT_REMINDER"
+        case .requestOutcome:      return "REQUEST_OUTCOME"
+        case .verificationOutcome: return "VERIFICATION_OUTCOME"
+        case .general:             return nil
+        }
+    }
+    
     var prefersRemoteImage: Bool {
         switch self {
         case .birthday, .holiday, .general:
@@ -116,7 +109,6 @@ enum NotificationType {
         }
     }
 
-    /// SF Symbol name for the local icon (clean, crisp at any size).
     var iconSystemName: String {
         switch self {
         case .birthday:            return "gift.fill"

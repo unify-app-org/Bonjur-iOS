@@ -9,11 +9,11 @@ import SwiftUI
 
 public struct AppEmptyView: View {
     private let model: Model
-    private let completion: (() -> Void)
-    
+    private let completion: (() -> Void)?
+
     public init(
         model: Model,
-        completion: @escaping (() -> Void)
+        completion: (() -> Void)? = nil
     ) {
         self.model = model
         self.completion = completion
@@ -32,16 +32,18 @@ public struct AppEmptyView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Color.Palette.blackMedium)
-            AppButton(
-                title: model.buttonTitle,
-                model: .init(
-                    contentSize: .fill,
-                    size: .small
-                )
-            ) {
-                completion()
+            if let buttonTitle = model.buttonTitle {
+                AppButton(
+                    title: buttonTitle,
+                    model: .init(
+                        contentSize: .fill,
+                        size: .small
+                    )
+                ) {
+                    completion?()
+                }
+                .padding(.horizontal, 40)
             }
-            .padding(.horizontal, 40)
         }
         .padding(16)
         .background(Color.Palette.white)
@@ -64,7 +66,7 @@ public struct AppEmptyView: View {
     AppEmptyView(
         model: .init(
             icon: UIImage.Icons.twoUsers,
-            text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
+            text: "No clubs yet. Be the pioneer and start the very first one now!",
             buttonTitle: "Create a club +"
         )
     ) {

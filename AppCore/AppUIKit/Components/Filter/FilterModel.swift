@@ -19,6 +19,12 @@ public extension FilterView {
             self.type = type
             self.items = items
         }
+
+        /// Whether any item in this filter group is currently selected. Callers
+        /// outside `AppUIKit` use this to tell "no data" from "no matches".
+        public var hasSelectedItems: Bool {
+            items.contains { $0.selected }
+        }
     }
     
     struct Items: Identifiable, Hashable {

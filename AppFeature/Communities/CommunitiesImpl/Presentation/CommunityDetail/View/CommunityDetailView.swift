@@ -252,7 +252,9 @@ struct CommunityDetailView: View {
                     contentSize: .fill,
                     size: .medium
                 )
-            ) {}
+            ) {
+                store.send(.createEventTapped)
+            }
         }
     }
     
@@ -428,7 +430,7 @@ struct CommunityDetailView: View {
             } else {
                 emptyView(
                     icon: UIImage.Icons.twoUsers,
-                    text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
+                    text: "This community has no clubs yet. Be the pioneer and start the very first one now!",
                     buttonTitle: "Create a club +",
                     type: .clubs
                 )
@@ -525,7 +527,10 @@ struct CommunityDetailView: View {
                 buttonTitle: buttonTitle
             )
         ) {
-            
+            // Clubs is the only section with an empty state on this screen.
+            if type == .clubs {
+                store.send(.createClubTapped)
+            }
         }
         .padding()
     }

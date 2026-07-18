@@ -7,6 +7,7 @@
 
 import UIKit
 import Clubs
+import Events
 import Profile
 import Communities
 
@@ -16,6 +17,8 @@ enum CommunityDetailRoute {
     case userDetails(id: String)
     case edit(id: Int, prefillData: ClubsModuleModel.CreatePrefillData)
     case membersList(CommunitiesMemberModuleModel.MembersListInput)
+    case createClub
+    case createEvent
 }
 
 protocol CommunityDetailRouterProtocol {
@@ -26,17 +29,20 @@ protocol CommunityDetailRouterProtocol {
 final class CommunityDetailRouter: CommunityDetailRouterProtocol {
     weak var view: UIViewController?
     private var clubModule: ClubsModule
+    private var eventsModule: EventsModule
     private var profileModule: ProfileModule
     private var communitiesModule: CommunitiesModule
-    
+
     init(
         view: UIViewController? = nil,
         clubModule: ClubsModule = resolve(),
+        eventsModule: EventsModule = resolve(),
         profileModule: ProfileModule = resolve(),
         communitiesModule: CommunitiesModule = resolve()
     ) {
         self.view = view
         self.clubModule = clubModule
+        self.eventsModule = eventsModule
         self.profileModule = profileModule
         self.communitiesModule = communitiesModule
     }
@@ -60,6 +66,12 @@ final class CommunityDetailRouter: CommunityDetailRouterProtocol {
             view?.navigationController?.pushViewController(vc, animated: true)
         case .membersList(let input):
             guard let vc = communitiesModule.makeMembersListScreen(input: input) as? UIViewController else { return }
+            view?.navigationController?.pushViewController(vc, animated: true)
+        case .createClub:
+            let vc = clubModule.makeCreateVC() as! UIViewController
+            view?.navigationController?.pushViewController(vc, animated: true)
+        case .createEvent:
+            let vc = eventsModule.makeCreateVC() as! UIViewController
             view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

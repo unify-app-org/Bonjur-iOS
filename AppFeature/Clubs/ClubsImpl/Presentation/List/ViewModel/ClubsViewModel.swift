@@ -54,6 +54,10 @@ final class ClubsViewModel: UIFeatureViewModel<ClubsFeature> {
             Task {
                 await router.navigate(to: .showDetails(clubId: id))
             }
+        case .createTapped:
+            Task {
+                await router.navigate(to: .createClub)
+            }
         }
     }
 

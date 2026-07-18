@@ -113,6 +113,10 @@ final class MembersListViewModel: UIFeatureViewModel<MembersListFeature> {
                 } else {
                     users.append(contentsOf: result.members)
                 }
+                // The API can return the same user twice (duplicate membership rows).
+                // Identical ids make SwiftUI's ForEach drop rows, so collapse them here.
+                var seen = Set<String>()
+                users = users.filter { seen.insert($0.id).inserted }
                 self.page = page
                 state.hasMore = result.hasMore
                 rebuildSections()

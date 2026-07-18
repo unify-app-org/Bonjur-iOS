@@ -154,7 +154,7 @@ struct DiscoverView: View {
             }
             .coordinateSpace(name: "EndDetectionScrollView")
             .refreshable {
-                store.send(.fetchData)
+                store.send(.pullToRefresh)
             }
             .clipped()
         }
@@ -205,7 +205,7 @@ struct DiscoverView: View {
             isEmpty: clubs.isEmpty,
             emptyModel: .init(
                 icon: UIImage.Icons.twoUsers,
-                text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
+                text: "No clubs here yet. Be the pioneer and start the very first one now!",
                 buttonTitle: "Create a club +"
             )
         ) {
@@ -240,7 +240,7 @@ struct DiscoverView: View {
                 buttonTitle: buttonTitle
             )
         ) {
-            
+            store.send(.createTapped(type))
         }
         .padding()
     }
@@ -256,8 +256,8 @@ struct DiscoverView: View {
             viewAllVisible: !uiModel.events.isEmpty,
             emptyModel: .init(
                 icon: UIImage.Icons.twoUsers,
-                text: "There are no event for the clubs yet. Be the pioneer and start the very first one now!",
-                buttonTitle: "Create events +"
+                text: "No events scheduled yet. Be the pioneer and start the very first one now!",
+                buttonTitle: "Create an event +"
             )
         ) {
             horizontalCards(
@@ -294,8 +294,8 @@ struct DiscoverView: View {
             isEmpty: hangouts.isEmpty,
             emptyModel: .init(
                 icon: UIImage.Icons.twoUsers,
-                text: "There are no hangouts for this community yet. Be the pioneer and start the very first one now!",
-                buttonTitle: "Create hangouts +"
+                text: "No hangouts planned yet. Be the pioneer and start the very first one now!",
+                buttonTitle: "Create a hangout +"
             )
         ) {
             horizontalCards(

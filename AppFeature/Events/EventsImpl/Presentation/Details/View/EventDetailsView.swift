@@ -207,7 +207,7 @@ struct EventDetailsView: View {
                 AppEmptyView(
                     model: .init(
                         icon: nil,
-                        text: "You can upload files up to 15 MB total for this event.",
+                        text: "No attachments yet. You can upload files up to 15 MB total for this event.",
                         buttonTitle: "Add +"
                     )
                 ) {

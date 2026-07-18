@@ -57,7 +57,8 @@ struct MembersListView: View {
                         optionsMember = row.member
                     },
                     onSelectGroupTap: { _ in },
-                    showsScrollView: false
+                    showsScrollView: false,
+                    previewLimit: nil
                 )
 
                 if store.state.hasMore {

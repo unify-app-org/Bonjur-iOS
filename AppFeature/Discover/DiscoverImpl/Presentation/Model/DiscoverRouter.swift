@@ -24,6 +24,9 @@ enum DiscoverRoute {
     case eventsDetails(id: String)
     case hangoutsDetails(id: String)
     case communityDetails(id: Int)
+    case createClub
+    case createEvent
+    case createHangout
 }
 
 protocol DiscoverRouterProtocol {
@@ -91,6 +94,15 @@ final class DiscoverRouter: DiscoverRouterProtocol {
         case .communityDetails(let id):
             let vc = communityModule.makeCommunityDetail(communityId: id) as! UIViewController
             self.view?.navigationController?.pushViewController(vc, animated: true)
+        case .createClub:
+            let vc = clubModule.makeCreateVC() as! UIViewController
+            view?.navigationController?.pushViewController(vc, animated: true)
+        case .createEvent:
+            let vc = eventModule.makeCreateVC() as! UIViewController
+            view?.navigationController?.pushViewController(vc, animated: true)
+        case .createHangout:
+            let vc = hangoutModule.makeCreateVC() as! UIViewController
+            view?.navigationController?.pushViewController(vc, animated: true)
         }
     }
 }

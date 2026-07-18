@@ -87,6 +87,10 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
             Task { @MainActor in
                 requestVerification()
             }
+        case .createEventTapped:
+            Task { @MainActor in
+                router.navigate(to: .createEvent)
+            }
         }
     }
 

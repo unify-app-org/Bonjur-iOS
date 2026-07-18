@@ -86,6 +86,7 @@ enum ClubDetailsAction: UIFeatureAction {
     case assignRole(userId: String, role: AppPresentationModel.UserActivityRole)
     case exitTapped
     case requestVerificationTapped
+    case createEventTapped
 }
 
 // MARK: - PreferenceKey

@@ -9,6 +9,7 @@ import UIKit
 
 enum HangoutListRoute {
     case details(hangoutId: String)
+    case createHangout
 }
 
 protocol HangoutListRouterProtocol {
@@ -28,6 +29,9 @@ final class HangoutListRouter: HangoutListRouterProtocol {
                     hangoutId: hangoutId
                 )
             ).build()
+            view?.navigationController?.pushViewController(vc, animated: true)
+        case .createHangout:
+            let vc = HangoutCreateBuilder(inputData: .init()).build()
             view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

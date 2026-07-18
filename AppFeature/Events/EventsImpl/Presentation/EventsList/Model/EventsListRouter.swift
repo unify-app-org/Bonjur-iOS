@@ -9,6 +9,7 @@ import UIKit
 
 enum EventsListRoute {
     case showDetails(id: String)
+    case createEvent
 }
 
 protocol EventsListRouterProtocol {
@@ -28,6 +29,9 @@ final class EventsListRouter: EventsListRouterProtocol {
                     eventId: id
                 )
             ).build()
+            view?.navigationController?.pushViewController(vc, animated: true)
+        case .createEvent:
+            let vc = EventCreateBuilder(inputData: .init()).build()
             view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

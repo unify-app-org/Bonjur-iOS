@@ -16,6 +16,7 @@ enum ClubDetailsRoute {
     case userDetail(String)
     case eventDetail(String)
     case membersList(CommunitiesMemberModuleModel.MembersListInput)
+    case createEvent
 }
 
 protocol ClubDetailsRouterProtocol {
@@ -62,6 +63,9 @@ final class ClubDetailsRouter: ClubDetailsRouterProtocol {
             view?.navigationController?.pushViewController(vc, animated: true)
         case .membersList(let input):
             guard let vc = communitiesModule.makeMembersListScreen(input: input) as? UIViewController else { return }
+            view?.navigationController?.pushViewController(vc, animated: true)
+        case .createEvent:
+            guard let vc = eventsModule.makeCreateVC() as? UIViewController else { return }
             view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

@@ -61,17 +61,38 @@ struct EventsListView: View {
                 .padding(.bottom, 55)
             }
         } else {
+            emptyView
+                .padding()
+        }
+    }
+
+    /// Two empty states: nothing here at all (offer to create the first one),
+    /// and nothing matching the active search/filters (nothing to create for).
+    @ViewBuilder
+    private var emptyView: some View {
+        if isFiltering {
             AppEmptyView(
                 model: .init(
                     icon: UIImage.Icons.twoUsers,
-                    text: "There are no clubs for this community yet. Be the pioneer and start the very first one now!",
-                    buttonTitle: "Create a club +"
+                    text: "No events match your search. Try another name or clear your filters."
+                )
+            )
+        } else {
+            AppEmptyView(
+                model: .init(
+                    icon: UIImage.Icons.twoUsers,
+                    text: "No events yet. Be the pioneer and start the very first one now!",
+                    buttonTitle: "Create an event +"
                 )
             ) {
-                
+                store.send(.createTapped)
             }
-            .padding()
         }
+    }
+
+    private var isFiltering: Bool {
+        !store.state.searchText.isEmpty
+            || store.state.uiModel.filters.contains { $0.hasSelectedItems }
     }
     
     @ViewBuilder

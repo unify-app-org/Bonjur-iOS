@@ -71,6 +71,8 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .pullToRefresh:
+            pullToRefresh()
         case .refreshActivities:
             refreshActivities()
         case .notificationsTapped:
@@ -109,12 +111,51 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             Task {
                 await joinHangout(id: id)
             }
+        case .createTapped(let type):
+            createTapped(type)
         }
     }
     
+    /// Empty-state CTA per section. `community` has no create flow, so its
+    /// empty state renders without a button and never reaches here.
+    private func createTapped(_ type: AppUIEntities.ActivityType) {
+        let route: DiscoverRoute? = switch type {
+        case .clubs: .createClub
+        case .events: .createEvent
+        case .hangOuts: .createHangout
+        case .community: nil
+        }
+
+        guard let route else { return }
+        Task { @MainActor in
+            router.navigate(to: route)
+        }
+    }
+
+    /// First load: nothing is on screen yet, so the whole screen shows the
+    /// loading overlay rather than flashing empty states section by section.
     private func fetchData() {
         Task {
-            // Initial load streams in inline — no blocking overlay (only filters show it).
+            postEffect(.loading(true))
+            defer {
+                postEffect(.loading(false))
+            }
+
+            let results = await fetchInitialData()
+            let firstError = await applyInitialFetchResults(results)
+            publishActivityCounts()
+
+            if let firstError {
+                postEffect(.error(firstError))
+            }
+        }
+        refreshUnreadBadge()
+    }
+
+    /// Pull-to-refresh: same full refetch as `fetchData`, but the pull spinner is
+    /// already showing, so no overlay on top of it. Mirrors Android `pullToRefresh`.
+    private func pullToRefresh() {
+        Task {
             let results = await fetchInitialData()
             let firstError = await applyInitialFetchResults(results)
             publishActivityCounts()

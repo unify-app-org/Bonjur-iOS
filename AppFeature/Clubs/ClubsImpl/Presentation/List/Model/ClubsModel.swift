@@ -51,4 +51,5 @@ enum ClubsAction: UIFeatureAction {
     case loadMore
     case searchChanged(String)
     case itemOnTap(id: Int)
+    case createTapped
 }

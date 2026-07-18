@@ -58,6 +58,10 @@ final class EventsListViewModel: UIFeatureViewModel<EventsListFeature> {
             Task {
                 await joinEvent(id: id)
             }
+        case .createTapped:
+            Task {
+                await router.navigate(to: .createEvent)
+            }
         }
     }
 

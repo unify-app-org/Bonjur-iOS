@@ -214,7 +214,9 @@ struct GroupsListView: View {
                 text: segmentType.emptyText,
                 buttonTitle: segmentType.emptyButtonTitle
             )
-        ) { }
+        ) {
+            store.send(.emptyStateActionTapped(segmentType))
+        }
         .padding()
     }
 

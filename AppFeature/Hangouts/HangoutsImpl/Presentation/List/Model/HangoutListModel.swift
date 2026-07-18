@@ -51,4 +51,5 @@ enum HangoutListAction: UIFeatureAction {
     case loadMore
     case searchChanged(String)
     case itemTapped(id: String)
+    case createTapped
 }

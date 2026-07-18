@@ -54,6 +54,10 @@ final class HangoutListViewModel: UIFeatureViewModel<HangoutListFeature> {
             Task {
                 await router.navigate(to: .details(hangoutId: id))
             }
+        case .createTapped:
+            Task {
+                await router.navigate(to: .createHangout)
+            }
         }
     }
 

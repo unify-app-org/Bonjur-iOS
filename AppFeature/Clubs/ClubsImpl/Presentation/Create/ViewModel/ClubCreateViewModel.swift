@@ -199,7 +199,6 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
         }
         do {
             try await dependencies.useCase.createClub(request: buildRequest())
-            // New clubs start unverified; surface the verify gate before leaving.
             state.showVerifyPrompt = true
         } catch {
             postEffect(.error(error as? APIError))

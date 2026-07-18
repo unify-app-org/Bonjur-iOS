@@ -355,7 +355,9 @@ struct ClubDetailsView: View {
                     contentSize: .fill,
                     size: .medium
                 )
-            ) {}
+            ) {
+                store.send(.createEventTapped)
+            }
         }
     }
     
@@ -530,13 +532,18 @@ struct ClubDetailsView: View {
             }
             .padding(.vertical)
         } else {
+            // Members can't create events, so they get the message without a CTA.
             AppEmptyView(
                 model: .init(
                     icon: UIImage.Icons.twoUsers,
-                    text: "There are no events for this club yet. Be the pioneer and start the very first one now!",
-                    buttonTitle: "Create an event +"
+                    text: store.state.canCreateEvent
+                        ? "This club hasn't run any events yet. Be the pioneer and start the very first one now!"
+                        : "This club hasn't run any events yet. Check back soon.",
+                    buttonTitle: store.state.canCreateEvent ? "Create an event +" : nil
                 )
-            ) {}
+            ) {
+                store.send(.createEventTapped)
+            }
             .padding()
         }
     }

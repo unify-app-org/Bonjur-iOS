@@ -75,6 +75,14 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
             Task {
                 await assignRole(userId: userId, role: role)
             }
+        case .createClubTapped:
+            Task { @MainActor in
+                router.navigate(to: .createClub)
+            }
+        case .createEventTapped:
+            Task { @MainActor in
+                router.navigate(to: .createEvent)
+            }
         }
     }
 

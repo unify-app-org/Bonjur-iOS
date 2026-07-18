@@ -64,6 +64,17 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
             Task {
                 await router.navigate(to: .hangoutDetail(id: id))
             }
+        case .emptyStateActionTapped(let segment):
+            // Clubs/events send the user somewhere to join one; hangouts can be
+            // started outright, so that tab opens the create flow.
+            let route: GroupsListRoute = switch segment {
+            case .clubs: .exploreClubs
+            case .events: .exploreEvents
+            case .hangouts: .createHangout
+            }
+            Task { @MainActor in
+                router.navigate(to: route)
+            }
         }
     }
     

@@ -29,7 +29,7 @@ struct MemberListView: View {
         onSelectGroupTap: @escaping (MemberListSectionViewData) -> Void,
         showsScrollView: Bool = true,
         horizontalPadding: Bool = true,
-        previewLimit: Int = 5,
+        previewLimit: Int? = 5,
         totalCount: Int? = nil,
         onSeeAllTapped: (() -> Void)? = nil
     ) {

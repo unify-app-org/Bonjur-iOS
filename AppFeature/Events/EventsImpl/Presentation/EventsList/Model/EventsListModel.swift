@@ -52,4 +52,5 @@ enum EventsListAction: UIFeatureAction {
     case searchChanged(String)
     case eventItemTapped(id: String)
     case joinEvent(id: String)
+    case createTapped
 }

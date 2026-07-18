@@ -63,6 +63,7 @@ final class DiscoverViewState: UIFeatureState {
 
 enum DiscoverAction: UIFeatureAction {
     case fetchData
+    case pullToRefresh
     case refreshActivities
     case notificationsTapped
     case filtersSelected([FilterView.Items])
@@ -74,4 +75,5 @@ enum DiscoverAction: UIFeatureAction {
     case hangoutsItemOnTap(id: String)
     case communityItemOnTap(id: Int)
     case joinHangout(id: String)
+    case createTapped(AppUIEntities.ActivityType)
 }

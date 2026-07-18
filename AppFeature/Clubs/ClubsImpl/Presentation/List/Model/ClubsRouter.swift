@@ -9,6 +9,7 @@ import UIKit
 
 enum ClubsRoute {
     case showDetails(clubId: Int)
+    case createClub
 }
 
 protocol ClubsRouterProtocol {
@@ -24,6 +25,9 @@ final class ClubsRouter: ClubsRouterProtocol {
         switch route {
         case .showDetails(let clubId):
             let vc = ClubDetailsBuilder(inputData: .init(clubId: clubId)).build()
+            self.view?.navigationController?.pushViewController(vc, animated: true)
+        case .createClub:
+            let vc = ClubCreateBuilder(inputData: .init()).build()
             self.view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

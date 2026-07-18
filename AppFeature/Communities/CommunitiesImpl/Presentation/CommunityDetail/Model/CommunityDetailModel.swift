@@ -72,6 +72,8 @@ enum CommunityDetailAction: UIFeatureAction {
     case userTapped(String)
     case seeAllMembersTapped
     case assignRole(userId: String, role: AppPresentationModel.UserActivityRole)
+    case createClubTapped
+    case createEventTapped
 }
 
 // MARK: - PreferenceKey

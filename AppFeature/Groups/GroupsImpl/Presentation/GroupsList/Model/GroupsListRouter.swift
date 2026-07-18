@@ -14,6 +14,9 @@ enum GroupsListRoute {
     case clubDetail(id: Int)
     case eventDetail(id: String)
     case hangoutDetail(id: String)
+    case exploreClubs
+    case exploreEvents
+    case createHangout
 }
 
 protocol GroupsListRouterProtocol {
@@ -50,6 +53,15 @@ final class GroupsListRouter: GroupsListRouterProtocol {
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .hangoutDetail(let id):
             let vc = hangoutModule.makeHangoutDetails(hangoutId: id) as! UIViewController
+            self.view?.navigationController?.pushViewController(vc, animated: true)
+        case .exploreClubs:
+            let vc = clubModule.makeClubsViewController() as! UIViewController
+            self.view?.navigationController?.pushViewController(vc, animated: true)
+        case .exploreEvents:
+            let vc = eventModule.makeEventsList() as! UIViewController
+            self.view?.navigationController?.pushViewController(vc, animated: true)
+        case .createHangout:
+            let vc = hangoutModule.makeCreateVC() as! UIViewController
             self.view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

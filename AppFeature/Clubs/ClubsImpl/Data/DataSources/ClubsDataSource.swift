@@ -114,7 +114,7 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
         id: Int,
         request: MultipartFormData
     ) async throws(APIError) -> Data {
-        try await fetch(endPoint: .editClub(id, request))
+        try await fetchRawData(endPoint: .editClub(id, request))
     }
     
     func createClub(request: MultipartFormData) async throws(APIError) -> Data {

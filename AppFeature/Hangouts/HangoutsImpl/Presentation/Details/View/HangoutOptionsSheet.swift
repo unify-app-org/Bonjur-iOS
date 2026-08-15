@@ -8,6 +8,7 @@
 //
 
 import SwiftUI
+import AppFoundation
 import AppUIKit
 import AppPresentationModel
 
@@ -78,7 +79,7 @@ struct HangoutOptionsSheet: View {
             if showReport {
                 HangoutOptionRow(
                     systemIcon: "exclamationmark.circle",
-                    title: "Report hangout",
+                    title: "hangouts_report".localized,
                     tint: Color.Palette.destructiveRed
                 ) { screen = .report }
                 rowDivider
@@ -87,7 +88,7 @@ struct HangoutOptionsSheet: View {
             if showExit {
                 HangoutOptionRow(
                     systemIcon: "rectangle.portrait.and.arrow.right",
-                    title: "Exit hangout",
+                    title: "hangouts_exit_confirm".localized,
                     tint: Color.Palette.destructiveRed
                 ) {
                     dismiss()
@@ -98,7 +99,7 @@ struct HangoutOptionsSheet: View {
 
             HangoutOptionRow(
                 systemIcon: "square.and.arrow.up",
-                title: "Share",
+                title: "common_share".localized,
                 tint: Color.Palette.graySecondary,
                 trailing: "Coming soon",
                 isDisabled: true

@@ -30,7 +30,7 @@ final class CommunityDetailHostController: UIFeatureController<
             }
         case .error(let error):
             showAlert(
-                title: error?.localizedDescription ?? "Unknown error",
+                title: error?.localizedDescription ?? "common_unknown_error".localized,
                 subtitle: error?.detail
             )
         }
@@ -39,7 +39,7 @@ final class CommunityDetailHostController: UIFeatureController<
     private func showAlert(
         title: String,
         subtitle: String?,
-        buttonTitle: String = "Got it"
+        buttonTitle: String = "common_got_it".localized
     ) {
         AppAlertPresenter.present(
             .init(

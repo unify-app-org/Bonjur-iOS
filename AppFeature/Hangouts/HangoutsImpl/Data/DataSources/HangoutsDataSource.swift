@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppFoundation
 import AppNetwork
 import AppUIKit
 import UIKit
@@ -55,65 +56,65 @@ final class HangoutsDataSourceImpl: NetworkService<HangoutsEndPoint>, HangoutsDa
         [
             HangoutsCreate.FieldSchema(
                 id: .visibility,
-                label: "Who can see your hangout?",
+                label: "hangouts_visibility_q".localized,
                 type: .radioGroup(options: [
                     HangoutsCreate.RadioOption(
                         value: .public,
-                        label: "Public",
-                        description: "This is a Public Hangout. Feel free to use the contact details below to get in touch with the organizers."
+                        label: "hangouts_public".localized,
+                        description: "hangouts_public_desc".localized
                     ),
                     HangoutsCreate.RadioOption(
                         value: .private,
-                        label: "Private",
-                        description: "Contact details and group links are only visible to members. Join the hangout to access this information."
+                        label: "hangouts_private".localized,
+                        description: "hangouts_private_desc".localized
                     )
                 ])
             ),
             HangoutsCreate.FieldSchema(
                 id: .hangoutName,
-                label: "Hangout name",
-                type: .text(placeholder: "Study night at cafe")
+                label: "hangouts_name_label".localized,
+                type: .text(placeholder: "hangouts_name_ph".localized)
             ),
             HangoutsCreate.FieldSchema(
                 id: .ownerContact,
-                label: "Owner contact",
+                label: "hangouts_owner_contact_label".localized,
                 type: .text(placeholder: "+994 123 45 67")
             ),
             HangoutsCreate.FieldSchema(
                 id: .category,
-                label: "Category",
-                type: .chipInput(placeholder: "Add category")
+                label: "hangouts_category_label".localized,
+                type: .chipInput(placeholder: "hangouts_add_category".localized)
             ),
             HangoutsCreate.FieldSchema(
                 id: .links,
-                label: "Add link",
-                type: .linkInput(placeholder: "Add link"),
+                label: "hangouts_add_link".localized,
+                type: .linkInput(placeholder: "hangouts_add_link".localized),
                 required: false
             ),
             HangoutsCreate.FieldSchema(
                 id: .capacity,
-                label: "Capacity",
+                label: "hangouts_capacity_label".localized,
                 type: .text(placeholder: "200", keyboardType: .numberPad),
                 required: false
             ),
             HangoutsCreate.FieldSchema(
                 id: .location,
-                label: "Location",
-                type: .text(placeholder: "Library")
+                label: "hangouts_location_label".localized,
+                type: .text(placeholder: "hangouts_location_ph".localized)
             ),
             HangoutsCreate.FieldSchema(
                 id: .hangoutDate,
-                label: "Start date",
+                label: "hangouts_start_date".localized,
                 type: .date(placeholder: "dd/mm/yyyy")
             ),
             HangoutsCreate.FieldSchema(
                 id: .rules,
-                label: "Rules",
+                label: "hangouts_rules_label".localized,
                 type: .textArea(placeholder: "", maxLength: 500)
             ),
             HangoutsCreate.FieldSchema(
                 id: .about,
-                label: "About",
+                label: "hangouts_about_label".localized,
                 type: .textArea(placeholder: "", maxLength: 500)
             )
         ]

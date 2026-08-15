@@ -1,0 +1,46 @@
+/* Settings screen */
+"settings_title" = "Ayarlar";
+"settings_notification" = "Bildiriş";
+"settings_language" = "Dil";
+"settings_help_center" = "Yardım mərkəzi";
+"settings_terms" = "Şərtlər və qaydalar";
+"settings_app_version" = "Tətbiq versiyası";
+"settings_delete_account" = "Hesabı sil";
+"settings_logout" = "Çıxış";
+
+/* Delete account confirmation */
+"settings_delete_title" = "Hesab silinsin?";
+"settings_delete_subtitle" = "Hesabınızı silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.";
+"settings_delete_confirm" = "Sil";
+
+/* Log out confirmation */
+"settings_logout_title" = "Çıxış edilsin?";
+"settings_logout_subtitle" = "Çıxış etmək istədiyinizə əminsiniz?";
+"settings_logout_confirm" = "Çıxış";
+
+/* Language picker */
+"language_title" = "Dil";
+"language_english" = "İngilis dili";
+"language_azerbaijan" = "Azərbaycan dili";
+"language_russian" = "Rus dili";
+
+"common_cancel" = "Ləğv et";
+
+/* Profile detail */
+"profile_title" = "Profil";
+"profile_about" = "Haqqında";
+"profile_about_user" = "İstifadəçi haqqında";
+"profile_no_information" = "Məlumat yoxdur";
+"profile_gender" = "Cins";
+"profile_birthday" = "Doğum günü";
+"profile_languages" = "Dillər";
+"profile_your_activities" = "Fəaliyyətləriniz";
+"profile_no_clubs" = "Hələ klub yoxdur";
+"profile_no_events" = "Hələ tədbir yoxdur";
+"profile_no_hangouts" = "Hələ görüş yoxdur";
+"profile_cover_updated" = "Üz şəkli uğurla yeniləndi";
+"profile_changes_saved" = "Dəyişiklikləriniz saxlanıldı";
+"profile_card_course" = "kurs";
+"profile_card_degree" = "dərəcə";
+"profile_card_entry" = "qəbul";
+"profile_user_card_id" = "İstifadəçi Kartı";

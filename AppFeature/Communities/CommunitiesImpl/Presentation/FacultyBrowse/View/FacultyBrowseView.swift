@@ -47,7 +47,7 @@ struct FacultyBrowseView: View {
     }
     
     var emptyStateView: some View {
-        Text("No faculties found")
+        Text("comm_no_faculties".localized)
             .font(Font.Typography.HeadingMd.regular)
             .foregroundStyle(Color.Palette.blackMedium)
             .frame(maxWidth: .infinity)
@@ -87,7 +87,7 @@ struct FacultyBrowseView: View {
 
 private let previewViewModel: FacultyBrowseViewModel = {
     let state = FacultyBrowseViewState()
-    state.title = "All member"
+    state.title = "comm_all_member".localized
     state.sectionTitle = "Faculty"
     state.faculties = [
         .init(id: "1", title: "2002 - Bachelor", sections: previewFacultySections),
@@ -115,7 +115,7 @@ private let previewViewModel: FacultyBrowseViewModel = {
 
 private let emptyPreviewViewModel: FacultyBrowseViewModel = {
     let state = FacultyBrowseViewState()
-    state.title = "All member"
+    state.title = "comm_all_member".localized
     state.sectionTitle = "Faculty"
     state.faculties = []
     

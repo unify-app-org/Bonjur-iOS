@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppLocalization
 
 public struct SearchView: View {
     
@@ -22,7 +23,7 @@ public struct SearchView: View {
                 .resizable()
                 .frame(width: 24, height: 24)
 
-            TextField("Search", text: text)
+            TextField("Search".localized, text: text)
                 .focused($isFocused)
         }
         .padding(.horizontal)

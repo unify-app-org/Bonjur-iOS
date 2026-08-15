@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppFoundation
 import AppUIKit
 
 struct UserCardView: View {
@@ -122,11 +123,11 @@ struct UserCardView: View {
     
     private var additionalInfoView: some View {
         HStack {
-            additionalInfoItems(title: "course", subTitle: model.course)
+            additionalInfoItems(title: "profile_card_course".localized, subTitle: model.course)
             Spacer()
-            additionalInfoItems(title: "degree", subTitle: model.degree)
+            additionalInfoItems(title: "profile_card_degree".localized, subTitle: model.degree)
             Spacer()
-            additionalInfoItems(title: "entry", subTitle: model.entryYear)
+            additionalInfoItems(title: "profile_card_entry".localized, subTitle: model.entryYear)
         }
     }
     

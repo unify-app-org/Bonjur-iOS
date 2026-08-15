@@ -58,6 +58,12 @@ struct ClubDTOModel {
         let url: String
     }
 
+    // MARK: - Create response
+
+    struct CreateResponse: Decodable {
+        let id: Int?
+    }
+
     // MARK: - Response
 
     struct Response: Decodable {

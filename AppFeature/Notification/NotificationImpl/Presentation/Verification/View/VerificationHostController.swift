@@ -19,11 +19,11 @@ final class VerificationHostController: UIFeatureController<
             AppAlertPresenter.present(
                 .init(
                     config: .init(
-                        title: error?.localizedDescription ?? "Unknown error",
+                        title: error?.localizedDescription ?? "common_unknown_error".localized,
                         subtitle: error?.detail
                     ),
                     actions: {
-                        AppAlert.Action(title: "Got it", style: .primary)
+                        AppAlert.Action(title: "common_got_it".localized, style: .primary)
                     }
                 )
             )
@@ -31,12 +31,12 @@ final class VerificationHostController: UIFeatureController<
             AppAlertPresenter.present(
                 .init(
                     config: .init(
-                        title: "Reject verification?",
+                        title: "notif_reject_verification".localized,
                         subtitle: "Are you sure you want to reject \(item.clubName)'s verification request?"
                     ),
                     actions: {
-                        AppAlert.Action(title: "Cancel", style: .secondary)
-                        AppAlert.Action(title: "Reject", style: .destructive) { [weak self] in
+                        AppAlert.Action(title: "common_cancel".localized, style: .secondary)
+                        AppAlert.Action(title: "notif_reject".localized, style: .destructive) { [weak self] in
                             self?.store.send(.performReject(item))
                         }
                     }

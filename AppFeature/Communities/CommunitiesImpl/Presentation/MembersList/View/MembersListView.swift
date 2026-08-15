@@ -107,7 +107,7 @@ struct MembersListView: View {
     }
 
     private var emptyStateView: some View {
-        Text(store.state.searchText.isEmpty ? "No members yet" : "No members found")
+        Text(store.state.searchText.isEmpty ? "comm_no_members_yet".localized : "comm_no_members_found".localized)
             .font(Font.Typography.BodyTextSm.regular)
             .foregroundStyle(Color.Palette.blackMedium)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)

@@ -200,7 +200,7 @@ struct CommunityDetailView: View {
     
     private var memberCountView: some View {
         HStack {
-            Text("\(store.state.uiModel?.membersCount ?? 0) members")
+            Text("count_members".localized(with: store.state.uiModel?.membersCount ?? 0))
                 .font(Font.Typography.TextMd.regular)
                 .foregroundStyle(Color.Palette.blackHigh)
             
@@ -208,7 +208,7 @@ struct CommunityDetailView: View {
                 Text("•")
                 let text = eventCount == 1
                 ? "1 event"
-                : "\(eventCount) events"
+                : "count_events".localized(with: eventCount)
                 HStack {
                     Image(systemName: "calendar")
                     Text(text)
@@ -221,7 +221,7 @@ struct CommunityDetailView: View {
                 Text("•")
                 let text = clubsCount == 1
                 ? "1 club"
-                : "\(clubsCount) clubs"
+                : "count_clubs".localized(with: clubsCount)
                 Text(text)
                     .font(Font.Typography.TextMd.regular)
                     .foregroundStyle(Color.Palette.blackHigh)
@@ -246,7 +246,7 @@ struct CommunityDetailView: View {
     private var createEventButton: some View {
         if store.state.canCreateEvent {
             AppButton(
-                title: "Create new event +",
+                title: "comm_create_event".localized,
                 model: .init(
                     type: .secondary,
                     contentSize: .fill,
@@ -371,7 +371,7 @@ struct CommunityDetailView: View {
     private func handleTap(on subItem: CommunityDetails.SubInfo) {
         if let phone = subItem.phoneNumber {
             UIPasteboard.general.string = phone
-            AppSnackBar.show(title: "Copied to clipboard")
+            AppSnackBar.show(title: "common_copied".localized)
         } else if subItem.isLink {
             openLink(subItem.description)
         }
@@ -424,6 +424,7 @@ struct CommunityDetailView: View {
                             }
                         ) as? AnyView {
                             view
+                                .frame(height: 210)
                         }
                     }
                 }
@@ -431,7 +432,7 @@ struct CommunityDetailView: View {
                 emptyView(
                     icon: UIImage.Icons.twoUsers,
                     text: "This community has no clubs yet. Be the pioneer and start the very first one now!",
-                    buttonTitle: "Create a club +",
+                    buttonTitle: "comm_create_club".localized,
                     type: .clubs
                 )
                 .padding()
@@ -506,7 +507,7 @@ struct CommunityDetailView: View {
                 },
                 onReport: { _ in
                     await MainActor.run {
-                        AppSnackBar.show(title: "Report submitted", style: .success)
+                        AppSnackBar.show(title: "comm_report_submitted".localized, style: .success)
                     }
                     return true
                 }

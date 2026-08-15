@@ -6,6 +6,7 @@
 //
 
 import AppPresentationModel
+import AppFoundation
 import Foundation
 import AppNetwork
 import UIKit
@@ -69,34 +70,34 @@ final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataS
                 items: [
                     .init(
                         icon: UIImage.Icons.bell,
-                        title: "Notification",
+                        title: "settings_notification".localized,
                         rightIcon: UIImage.Icons.chevronRight,
                         isSwitch: true
                     ),
                     .init(
                         icon: UIImage.Icons.globe01,
-                        title: "Language",
+                        title: "settings_language".localized,
                         rightIcon: UIImage.Icons.chevronRight,
                         isSwitch: false,
                         action: .didTapLanguage
                     ),
                     .init(
                         icon: UIImage.Icons.chatQuestion,
-                        title: "Help center",
+                        title: "settings_help_center".localized,
                         rightIcon: UIImage.Icons.chevronRight,
                         isSwitch: false,
                         action: .didTapHelpCenter
                     ),
                     .init(
                         icon: UIImage.Icons.clipboardList,
-                        title: "Terms and conditions",
+                        title: "settings_terms".localized,
                         rightIcon: UIImage.Icons.chevronRight,
                         isSwitch: false,
                         action: .didTapTerms
                     ),
                     .init(
                         icon: UIImage.Icons.mobilePhone,
-                        title: "App version",
+                        title: "settings_app_version".localized,
                         rightIcon: UIImage.Icons.chevronRight,
                         isSwitch: false,
                         versionText: "1.24.0"
@@ -108,7 +109,7 @@ final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataS
                 items: [
                     .init(
                         icon: UIImage.Icons.trash,
-                        title: "Delete account",
+                        title: "settings_delete_account".localized,
                         rightIcon: UIImage.Icons.chevronRight,
                         isSwitch: false,
                         isDestructive: false,
@@ -116,7 +117,7 @@ final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataS
                     ),
                     .init(
                         icon: UIImage.Icons.logout,
-                        title: "Log out",
+                        title: "settings_logout".localized,
                         rightIcon: UIImage.Icons.chevronRight,
                         isSwitch: false,
                         isDestructive: true,

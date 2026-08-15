@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppFoundation
 import AppUIKit
 import Hangouts
 
@@ -59,9 +60,9 @@ extension HangoutsCardView {
         
         var memberCountText: String {
             if let totalCapacity {
-                return "\(memberCount) of \(totalCapacity)"
+                return "count_of".localized(with: memberCount, totalCapacity)
             } else {
-                return "\(memberCount) members"
+                return "count_members".localized(with: memberCount)
             }
         }
 

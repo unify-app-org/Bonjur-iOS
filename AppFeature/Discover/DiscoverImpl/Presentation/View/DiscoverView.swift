@@ -47,9 +47,6 @@ struct DiscoverView: View {
             store.send(.fetchData)
         }
         .onAppear {
-            // First appearance is handled by onFirstAppear's full fetch; every
-            // return after that refetches the 4 activity sections so detail-screen
-            // changes (join/request/exit/edit) are reflected.
             if hasAppearedOnce {
                 store.send(.refreshActivities)
             }
@@ -97,16 +94,30 @@ struct DiscoverView: View {
         }
     }
 
+    @ViewBuilder
     private var greetingView: some View {
-        VStack(alignment: .center, spacing: 2) {
-            Text(store.state.uiModel.user.greeting)
-                .font(Font.Typography.TextMd.regular)
-                .foregroundStyle(Color.Palette.grayPrimary)
-            Text(store.state.uiModel.user.name)
-                .font(Font.Typography.BodyTextMd.bold)
-                .foregroundStyle(Color.Palette.black)
+        if #available(iOS 26.0, *) {
+            VStack(alignment: .center, spacing: 2) {
+                navigationTitleTexts
+            }
+        } else {
+            VStack(alignment: .leading, spacing: 2) {
+                navigationTitleTexts
+            }
         }
-        .fixedSize()
+    }
+    
+    @ViewBuilder
+    private var navigationTitleTexts: some View {
+        Text(store.state.uiModel.user.greeting)
+            .font(Font.Typography.TextMd.regular)
+            .foregroundStyle(Color.Palette.grayPrimary)
+            .lineLimit(1)
+            .truncationMode(.tail)
+        Text(store.state.uiModel.user.name)
+            .font(Font.Typography.BodyTextMd.bold)
+            .foregroundStyle(Color.Palette.black)
+            .lineLimit(1)
     }
 
     private var bellButton: some View {
@@ -124,10 +135,11 @@ struct DiscoverView: View {
         let count = store.state.unreadNotifications
         if count > 0 {
             Circle()
+                .fill(Color.red)
                 .frame(width: 12, height: 12)
+                .overlay(Circle().stroke(Color.Palette.white, lineWidth: 1.5))
                 .allowsHitTesting(false)
-                .background(Color.red)
-                .clipShape(Circle())
+                .offset(x: 0, y: 2)
         }
     }
 
@@ -144,13 +156,13 @@ struct DiscoverView: View {
     private var scrollView: some View {
         GeometryReader { geometry in
             ScrollView {
-                LazyVStack {
+                VStack {
                     communitiesView(geometry: geometry)
                     clubsView(geometry: geometry)
                     eventsView(geometry: geometry)
                     hangoutsView(geometry: geometry)
                 }
-                .padding(.bottom, 55)
+                .padding(.bottom, 110)
             }
             .coordinateSpace(name: "EndDetectionScrollView")
             .refreshable {
@@ -165,7 +177,7 @@ struct DiscoverView: View {
         let communities = store.state.uiModel.communities
         
         activitySection(
-            title: "Communities",
+            title: "discover_communities".localized,
             type: .community,
             isEmpty: communities.isEmpty
         ) {
@@ -200,13 +212,13 @@ struct DiscoverView: View {
         let clubs = store.state.uiModel.clubs
         
         activitySection(
-            title: "Clubs",
+            title: "discover_clubs".localized,
             type: .clubs,
             isEmpty: clubs.isEmpty,
             emptyModel: .init(
                 icon: UIImage.Icons.twoUsers,
-                text: "No clubs here yet. Be the pioneer and start the very first one now!",
-                buttonTitle: "Create a club +"
+                text: "discover_clubs_empty".localized,
+                buttonTitle: "discover_create_club".localized
             )
         ) {
             horizontalCards(
@@ -250,14 +262,14 @@ struct DiscoverView: View {
         let uiModel = store.state.uiModel
         
         activitySection(
-            title: "Events",
+            title: "discover_events".localized,
             type: .events,
             isEmpty: uiModel.events.isEmpty || uiModel.clubs.isEmpty,
             viewAllVisible: !uiModel.events.isEmpty,
             emptyModel: .init(
                 icon: UIImage.Icons.twoUsers,
-                text: "No events scheduled yet. Be the pioneer and start the very first one now!",
-                buttonTitle: "Create an event +"
+                text: "discover_events_empty".localized,
+                buttonTitle: "discover_create_event".localized
             )
         ) {
             horizontalCards(
@@ -289,13 +301,13 @@ struct DiscoverView: View {
         let hangouts = store.state.uiModel.hangouts
         
         activitySection(
-            title: "Hangouts",
+            title: "discover_hangouts".localized,
             type: .hangOuts,
             isEmpty: hangouts.isEmpty,
             emptyModel: .init(
                 icon: UIImage.Icons.twoUsers,
-                text: "No hangouts planned yet. Be the pioneer and start the very first one now!",
-                buttonTitle: "Create a hangout +"
+                text: "discover_hangouts_empty".localized,
+                buttonTitle: "discover_create_hangout".localized
             )
         ) {
             horizontalCards(
@@ -409,7 +421,7 @@ struct DiscoverView: View {
                 Button {
                     store.send(.viewAllTapped(type))
                 } label: {
-                    Text("view all")
+                    Text("discover_view_all".localized)
                         .font(Font.Typography.TextL.regular)
                         .foregroundStyle(Color.Palette.black)
                         .underline()

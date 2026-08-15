@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppFoundation
 import Clubs
 import AppUtils
 import AppPresentationModel
@@ -60,23 +61,23 @@ class CommunityRepoImpl: CommunityRepo {
         var info: [CommunityDetails.Info] = []
         let membersCount = data.membersCount ?? 0
 
-        appendSection(&info, title: "About", rows: [
+        appendSection(&info, title: "About".localized.localized, rows: [
             row(title: nil, value: data.about)
         ])
 
-        appendSection(&info, title: "Event info", rows: [
-            row(title: "Created/Updated Date", value: modifiedDate(data.modifiedAt)),
-            row(title: "Owner Contact", value: cleaned(data.ownerContact),
+        appendSection(&info, title: "comm_info_section".localized, rows: [
+            row(title: "Created/Updated Date".localized, value: modifiedDate(data.modifiedAt)),
+            row(title: "comm_row_owner_contact".localized, value: cleaned(data.ownerContact),
                 phoneNumber: phoneNumber(data.ownerContact)),
-            row(title: "Capacity", value: capacityText(members: membersCount, capacity: data.capacity)),
-            row(title: "Rules", value: data.rule),
-            row(title: "Location", value: data.location)
+            row(title: "Capacity".localized, value: capacityText(members: membersCount, capacity: data.capacity)),
+            row(title: "comm_row_rules".localized, value: data.rule),
+            row(title: "comm_row_location".localized, value: data.location)
         ])
 
         let linkRows = (data.links ?? []).map { link in
             row(title: link.name, value: link.url, isLink: true)
         }
-        appendSection(&info, title: "Links", rows: linkRows)
+        appendSection(&info, title: "comm_row_links".localized, rows: linkRows)
         let logoURL = data.logoUrl.flatMap { URL(string: $0) }
         let coverURL = data.backgroundUrl.flatMap { URL(string: $0) }
         let editPrefillData = ClubsModuleModel.CreatePrefillData(
@@ -85,7 +86,7 @@ class CommunityRepoImpl: CommunityRepo {
             coverType: data.backgroundColour ?? .primary,
             visibility: data.visibility ?? .public,
             name: data.name,
-            ownerContact: data.ownerContact,
+            ownerContact: data.ownerContact ?? "-",
             categories: tags.map {
                 .init(id: $0.id, title: $0.title)
             },

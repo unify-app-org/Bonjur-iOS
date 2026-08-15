@@ -7,6 +7,7 @@
 
 
 import SwiftUI
+import AppFoundation
 import AppUIKit
 
 struct MemberSectionHeaderView: View {
@@ -38,7 +39,7 @@ struct MemberSectionHeaderView: View {
                             .scaledToFit()
                             .frame(width: 18,height: 18)
                            
-                        Text("select group")
+                        Text("comm_select_group".localized)
                     }
                     .font(Font.Typography.TextL.bold)
                 }

@@ -1,0 +1,46 @@
+/* Settings screen */
+"settings_title" = "Настройки";
+"settings_notification" = "Уведомления";
+"settings_language" = "Язык";
+"settings_help_center" = "Центр помощи";
+"settings_terms" = "Условия и положения";
+"settings_app_version" = "Версия приложения";
+"settings_delete_account" = "Удалить аккаунт";
+"settings_logout" = "Выйти";
+
+/* Delete account confirmation */
+"settings_delete_title" = "Удалить аккаунт?";
+"settings_delete_subtitle" = "Вы уверены, что хотите удалить аккаунт? Это действие нельзя отменить.";
+"settings_delete_confirm" = "Удалить";
+
+/* Log out confirmation */
+"settings_logout_title" = "Выйти?";
+"settings_logout_subtitle" = "Вы уверены, что хотите выйти?";
+"settings_logout_confirm" = "Выйти";
+
+/* Language picker */
+"language_title" = "Язык";
+"language_english" = "Английский";
+"language_azerbaijan" = "Азербайджанский";
+"language_russian" = "Русский";
+
+"common_cancel" = "Отмена";
+
+/* Profile detail */
+"profile_title" = "Профиль";
+"profile_about" = "Описание";
+"profile_about_user" = "О пользователе";
+"profile_no_information" = "Нет информации";
+"profile_gender" = "Пол";
+"profile_birthday" = "День рождения";
+"profile_languages" = "Языки";
+"profile_your_activities" = "Ваша активность";
+"profile_no_clubs" = "Пока нет клубов";
+"profile_no_events" = "Пока нет событий";
+"profile_no_hangouts" = "Пока нет тусовок";
+"profile_cover_updated" = "Обложка обновлена";
+"profile_changes_saved" = "Изменения сохранены";
+"profile_card_course" = "курс";
+"profile_card_degree" = "степень";
+"profile_card_entry" = "год поступления";
+"profile_user_card_id" = "Карта пользователя";

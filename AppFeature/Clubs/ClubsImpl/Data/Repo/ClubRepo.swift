@@ -6,6 +6,7 @@
 //
 
 import AppUIKit
+import AppFoundation
 import AppUtils
 import Foundation
 import AppNetwork
@@ -20,7 +21,7 @@ protocol ClubRepo {
     func fetchCreate() async throws(APIError) -> [ClubsCreate.FieldSchema]
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
     func getFilterCategories() async throws(APIError) -> [FilterView.Model]
-    func createClub(request: MultipartFormData) async throws(APIError) -> Void
+    func createClub(request: MultipartFormData) async throws(APIError) -> Int?
     func fetchClubDetails(
         clubId: Int
     ) async throws(APIError) -> ClubsDetailsModel.UIModel
@@ -43,6 +44,7 @@ protocol ClubRepo {
     ) async throws(APIError) -> Void
     func exitClub(id: Int) async throws(APIError) -> Void
     func clubHasVicePresident(id: Int) async throws(APIError) -> Bool
+    func requestVerify(id: Int) async throws(APIError) -> Void
 }
 
 class ClubRepoImpl: ClubRepo {
@@ -142,10 +144,15 @@ class ClubRepoImpl: ClubRepo {
     
     func createClub(
         request: MultipartFormData
-    ) async throws(APIError) -> Void {
-        let _ = try await dataSource.createClub(request: request)
+    ) async throws(APIError) -> Int? {
+        let data = try await dataSource.createClub(request: request)
+        return try? JSONDecoder().decode(ClubDTOModel.CreateResponse.self, from: data).id
     }
-    
+
+    func requestVerify(id: Int) async throws(APIError) -> Void {
+        _ = try await dataSource.requestVerify(id: id)
+    }
+
     func fetchClubDetails(clubId: Int) async throws(APIError) -> ClubsDetailsModel.UIModel {
         let data = try await dataSource.fetchClubById(id: clubId)
         let tags: [AppUIEntities.Tags] = data.categories.map { category in
@@ -253,7 +260,7 @@ private extension ClubRepoImpl {
         case .rejected:
             "Request"
         case .pending:
-            "Request sent"
+            "clubs_join_request_sent".localized
         default:
             switch data.visibility {
             case .public:
@@ -301,15 +308,15 @@ private extension ClubRepoImpl {
     ) -> [ClubsDetailsModel.Info] {
         var info: [ClubsDetailsModel.Info] = []
 
-        appendSection(&info, title: "About", rows: [
+        appendSection(&info, title: "About".localized, rows: [
             row(title: nil, value: data.about)
         ])
 
-        appendSection(&info, title: "Event info", rows: [
-            row(title: "Created/Updated Date", value: modifiedDate(data.modifiedAt)),
-            row(title: "Owner Contact", value: cleaned(data.ownerContact),
+        appendSection(&info, title: "clubs_info_section".localized, rows: [
+            row(title: "Created/Updated Date".localized, value: modifiedDate(data.modifiedAt)),
+            row(title: "clubs_row_owner_contact".localized, value: cleaned(data.ownerContact),
                 phoneNumber: phoneNumber(data.ownerContact)),
-            row(title: "Capacity", value: capacityText(members: data.membersCount, capacity: data.capacity)),
+            row(title: "Capacity".localized, value: capacityText(members: data.membersCount, capacity: data.capacity)),
             row(title: "Rules", value: data.rule),
             row(title: "Location", value: data.location)
         ])
@@ -317,7 +324,7 @@ private extension ClubRepoImpl {
         let linkRows = (data.links ?? []).map { link in
             row(title: link.name, value: link.url, isLink: true)
         }
-        appendSection(&info, title: "Links", rows: linkRows)
+        appendSection(&info, title: "clubs_row_links".localized, rows: linkRows)
 
         return info
     }

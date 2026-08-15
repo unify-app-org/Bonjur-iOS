@@ -1,0 +1,31 @@
+/* Notification module */
+"notif_accept" = "Qəbul et";
+"notif_reject" = "Rədd et";
+"notif_verify" = "Təsdiqlə";
+"notif_close" = "Bağla";
+"notif_continue" = "Davam et";
+"notif_try_again" = "Yenidən cəhd et";
+"notif_note" = "Qeyd";
+"notif_needs_action" = "Sizin əməliyyatınız lazımdır";
+"notif_verification_requests" = "Təsdiq sorğuları";
+"notif_no_notifications" = "Hələ bildiriş yoxdur";
+"notif_nothing_to_verify" = "Təsdiqlənəcək bir şey yoxdur";
+"notif_all_caught_up" = "Hər şey qaydasındadır";
+"notif_all_handled" = "Bütün klub təsdiq sorğuları həll edildi.";
+"notif_empty_desc" = "Tədbir xatırlatmaları, sorğu nəticələri və daha çoxu burada görünəcək.";
+"notif_mark_all_read" = "Bu, bütün bildirişləri oxunmuş kimi işarələyir.";
+"notif_reject_request" = "Sorğu rədd edilsin?";
+"notif_reject_verification" = "Təsdiq rədd edilsin?";
+"notif_load_fail" = "Bildirişlər yüklənə bilmədi";
+"notif_requests_load_fail" = "Sorğular yüklənə bilmədi";
+"notif_verifications_load_fail" = "Təsdiqlər yüklənə bilmədi";
+
+"notif_action_subtitle" = "%d qoşulma sorğusu · %d təsdiq";
+
+"notif_mark_all_title" = "Hamısı oxunmuş kimi işarələnsin?";
+"notif_mark_all_confirm" = "Hamısını oxu";
+
+"notif_today" = "Bu gün";
+"notif_yesterday" = "Dünən";
+"notif_this_week" = "Bu həftə";
+"notif_earlier" = "Əvvəllər";

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppLocalization
 import SwiftUI
 import AppPresentationModel
 
@@ -48,13 +49,13 @@ public extension AppPresentationModel.UserActivityRole {
     var title: String {
         switch self {
         case .member:
-            return "Members"
+            return "Members".localized
         case .president:
-            return "President"
+            return "President".localized
         case .visePresident:
-            return "Vise president"
+            return "Vise president".localized
         case .eventCreator:
-            return "Event creators"
+            return "Event creators".localized
         case .notJoined:
             return "-"
         }

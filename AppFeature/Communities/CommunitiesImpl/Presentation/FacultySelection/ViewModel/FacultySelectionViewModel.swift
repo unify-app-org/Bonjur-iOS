@@ -191,7 +191,7 @@ final class FacultySelectionViewModel: UIFeatureViewModel<FacultySelectionFeatur
                 let overflowCount = selectedMembers.count - capacityLimit
                 postEffect(
                     .showAlert(
-                        title: "Capacity limit reached",
+                        title: "comm_capacity_limit".localized,
                         subtitle: "Remove \(overflowCount) member\(overflowCount == 1 ? "" : "s") to continue."
                     )
                 )

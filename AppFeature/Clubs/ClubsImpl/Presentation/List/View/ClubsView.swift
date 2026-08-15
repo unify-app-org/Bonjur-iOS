@@ -80,7 +80,7 @@ struct ClubsView: View {
                 model: .init(
                     icon: UIImage.Icons.twoUsers,
                     text: "No clubs yet. Be the pioneer and start the very first one now!",
-                    buttonTitle: "Create a club +"
+                    buttonTitle: "clubs_create_club".localized
                 )
             ) {
                 store.send(.createTapped)

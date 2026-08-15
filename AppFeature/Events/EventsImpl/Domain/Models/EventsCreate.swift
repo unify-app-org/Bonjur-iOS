@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppFoundation
 import AppUIKit
 import AppPresentationModel
 
@@ -47,91 +48,91 @@ enum EventsCreate {
         [
             FieldSchema(
                 id: .visibility,
-                label: "Visibility",
+                label: "events_visibility".localized,
                 type: .radioGroup(options: [
                     RadioOption(
                         value: .public,
-                        label: "Public",
-                        description: "Anyone in the community can find and join this event."
+                        label: "events_public".localized,
+                        description: "events_public_desc".localized
                     ),
                     RadioOption(
                         value: .private,
-                        label: "Private",
-                        description: "Only people you approve can join. Contact stays hidden."
+                        label: "events_private".localized,
+                        description: "events_private_desc".localized
                     )
                 ]),
                 required: false
             ),
             FieldSchema(
                 id: .eventName,
-                label: "Event name",
-                type: .text(placeholder: "Enter event name"),
+                label: "events_name_label".localized,
+                type: .text(placeholder: "events_name_ph".localized),
                 required: true
             ),
             FieldSchema(
                 id: .ownerContact,
-                label: "Owner contact",
-                type: .text(placeholder: "Enter owner contact"),
+                label: "events_owner_contact_label".localized,
+                type: .text(placeholder: "events_owner_contact_ph".localized),
                 required: true
             ),
             FieldSchema(
                 id: .attachment,
-                label: "Attachment",
+                label: "events_attachment".localized,
                 type: .attachment(
-                    placeholder: "Add",
-                    description: "You can upload files up to 15 MB total for this event."
+                    placeholder: "events_add".localized,
+                    description: "events_attachment_hint".localized
                 ),
                 required: false
             ),
             FieldSchema(
                 id: .about,
-                label: "About",
-                type: .textArea(placeholder: "About", maxLength: 500),
+                label: "events_about_label".localized,
+                type: .textArea(placeholder: "events_about_ph".localized, maxLength: 500),
                 required: true
             ),
             FieldSchema(
                 id: .category,
-                label: "Category",
-                type: .chipInput(placeholder: "Add category"),
+                label: "events_category_label".localized,
+                type: .chipInput(placeholder: "events_add_category".localized),
                 required: true
             ),
             FieldSchema(
                 id: .eventDate,
-                label: "Date",
-                type: .date(placeholder: "Pick date & time"),
+                label: "events_date_label".localized,
+                type: .date(placeholder: "events_pick_datetime".localized),
                 required: true
             ),
             FieldSchema(
                 id: .reminder,
-                label: "Reminder",
+                label: "events_reminder".localized,
                 type: .reminder(
-                    placeholder: "None",
-                    description: "Members will receive a notification to remind them about the event start time."
+                    placeholder: "events_none".localized,
+                    description: "events_reminder_desc".localized
                 ),
                 required: false
             ),
             FieldSchema(
                 id: .location,
-                label: "Location",
-                type: .text(placeholder: "Enter location"),
+                label: "events_location_label".localized,
+                type: .text(placeholder: "events_location_ph".localized),
                 required: false
             ),
             FieldSchema(
                 id: .capacity,
-                label: "Capacity",
-                type: .text(placeholder: "Enter capacity", keyboardType: .numberPad),
+                label: "events_capacity_label".localized,
+                type: .text(placeholder: "events_capacity_ph".localized, keyboardType: .numberPad),
                 required: false
             ),
             FieldSchema(
                 id: .links,
-                label: "Add link",
-                type: .linkInput(placeholder: "Add link"),
+                label: "events_add_link".localized,
+                type: .linkInput(placeholder: "events_add_link".localized),
                 required: false
             ),
             FieldSchema(
                 id: .rules,
-                label: "Rules",
-                type: .textArea(placeholder: "Rules", maxLength: 500),
+                label: "events_rules_label".localized,
+                type: .textArea(placeholder: "events_rules_ph".localized, maxLength: 500),
                 required: false
             )
         ]

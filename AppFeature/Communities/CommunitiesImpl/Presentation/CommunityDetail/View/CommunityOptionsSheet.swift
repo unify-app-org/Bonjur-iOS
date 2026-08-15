@@ -8,6 +8,7 @@
 //
 
 import SwiftUI
+import AppFoundation
 import AppUIKit
 
 struct CommunityOptionsToken: Identifiable {
@@ -33,7 +34,7 @@ struct CommunityOptionsSheet: View {
         VStack(spacing: 0) {
             CommunityOptionRow(
                 systemIcon: "square.and.arrow.up",
-                title: "Share",
+                title: "common_share".localized,
                 tint: Color.Palette.graySecondary,
                 trailing: "Coming soon",
                 isDisabled: true

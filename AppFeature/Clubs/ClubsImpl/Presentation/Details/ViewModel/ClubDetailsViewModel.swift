@@ -84,8 +84,8 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
                 presentExitConfirm()
             }
         case .requestVerificationTapped:
-            Task { @MainActor in
-                requestVerification()
+            Task {
+                await requestVerification()
             }
         case .createEventTapped:
             Task { @MainActor in
@@ -96,15 +96,28 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
 
     // MARK: - Verification
 
-    /// Backend has no verify-request endpoint yet (and the detail payload omits
-    /// `clubStatus`). Optimistic placeholder until both land — see backend tasks.
-    @MainActor
-    private func requestVerification() {
-        AppSnackBar.show(
-            title: "Verification requested",
-            subtitle: "Admins will review your club.",
-            style: .success
-        )
+    /// Ask the community admin to verify this club, then refresh so the status
+    /// (and the verify CTA) reflects the pending request.
+    private func requestVerification() async {
+        do {
+            try await dependencies.useCase.requestVerify(id: inputData.clubId)
+            await MainActor.run {
+                AppSnackBar.show(
+                    title: "clubs_verification_requested".localized,
+                    subtitle: "clubs_verification_requested_sub".localized,
+                    style: .success
+                )
+            }
+            fetchData()
+        } catch {
+            await MainActor.run {
+                AppSnackBar.show(
+                    title: "clubs_verification_fail".localized,
+                    subtitle: "common_try_again".localized,
+                    style: .error
+                )
+            }
+        }
     }
 
     // MARK: - Exit flow
@@ -114,14 +127,14 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
         AppAlertPresenter.present(
             .init(
                 config: .init(
-                    title: "Exit Club?",
-                    subtitle: "Are you sure you want to leave this club? You will no longer be able to participate in events or see club updates."
+                    title: "clubs_exit_title".localized,
+                    subtitle: "clubs_exit_subtitle".localized
                 ),
                 actions: {
-                    AppAlert.Action(title: "Exit club", style: .destructive) { [weak self] in
+                    AppAlert.Action(title: "clubs_exit_confirm".localized, style: .destructive) { [weak self] in
                         self?.handleExitConfirmed()
                     }
-                    AppAlert.Action(title: "Cancel", style: .primary)
+                    AppAlert.Action(title: "common_cancel".localized, style: .primary)
                 }
             )
         )
@@ -156,7 +169,7 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
         do {
             try await dependencies.useCase.exitClub(id: inputData.clubId)
             await MainActor.run {
-                AppSnackBar.show(title: "You left the club", style: .success)
+                AppSnackBar.show(title: "clubs_left".localized, style: .success)
                 router.navigate(to: .backTapped)
             }
         } catch {
@@ -169,12 +182,12 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
         AppAlertPresenter.present(
             .init(
                 config: .init(
-                    title: "Transfer Ownership Required",
-                    subtitle: "You are the owner of this club. Before leaving, you must assign the vice president role to another member to ensure the group remains active."
+                    title: "clubs_transfer_title".localized,
+                    subtitle: "clubs_transfer_subtitle".localized
                 ),
                 actions: {
-                    AppAlert.Action(title: "Cancel", style: .secondary)
-                    AppAlert.Action(title: "Assign", style: .primary) { [weak self] in
+                    AppAlert.Action(title: "common_cancel".localized, style: .secondary)
+                    AppAlert.Action(title: "common_assign".localized, style: .primary) { [weak self] in
                         self?.presentMembersList()
                     }
                 }
@@ -185,8 +198,8 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
     private func showExitError() async {
         await MainActor.run {
             AppSnackBar.show(
-                title: "Could not leave club",
-                subtitle: "Please try again.",
+                title: "clubs_exit_fail".localized,
+                subtitle: "common_try_again".localized,
                 style: .error
             )
         }
@@ -203,14 +216,14 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
                 role: role
             )
             await MainActor.run {
-                AppSnackBar.show(title: "Role updated", style: .success)
+                AppSnackBar.show(title: "clubs_role_updated".localized, style: .success)
             }
             fetchData()
         } catch {
             await MainActor.run {
                 AppSnackBar.show(
-                    title: "Could not update role",
-                    subtitle: "Please try again.",
+                    title: "clubs_role_update_fail".localized,
+                    subtitle: "common_try_again".localized,
                     style: .error
                 )
             }
@@ -223,7 +236,7 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
         let viewerRole = state.uiModel?.userActivityType ?? .notJoined
         let currentUserId = KeychainImpl().getString(key: .userId)
         let input = CommunitiesMemberModuleModel.MembersListInput(
-            title: "Members",
+            title: "clubs_members_title".localized,
             pageSize: 20,
             loadPage: { page, size, keyword in
                 try await useCase.fetchClubMembersPage(
@@ -245,17 +258,17 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
                 onAssignRole: { userId, role in
                     do {
                         try await useCase.assignRole(clubId: clubId, userId: userId, role: role)
-                        await MainActor.run { AppSnackBar.show(title: "Role updated", style: .success) }
+                        await MainActor.run { AppSnackBar.show(title: "clubs_role_updated".localized, style: .success) }
                         return true
                     } catch {
                         await MainActor.run {
-                            AppSnackBar.show(title: "Could not update role", subtitle: "Please try again.", style: .error)
+                            AppSnackBar.show(title: "clubs_role_update_fail".localized, subtitle: "common_try_again".localized, style: .error)
                         }
                         return false
                     }
                 },
                 onReport: { _, _ in
-                    await MainActor.run { AppSnackBar.show(title: "Report submitted", style: .success) }
+                    await MainActor.run { AppSnackBar.show(title: "clubs_report_submitted".localized, style: .success) }
                     return true
                 }
             )
@@ -291,7 +304,7 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
         let name = state.uiModel?.name ?? "the club"
         if state.uiModel?.accessType == .private {
             AppSnackBar.show(
-                title: "Request sent",
+                title: "clubs_join_request_sent".localized,
                 subtitle: "\(name) will review your request",
                 style: .success
             )

@@ -162,7 +162,9 @@ struct ClubDetailsView: View {
     
     private var headerContent: some View {
         CachedAsyncImage(url: store.state.uiModel?.coverImage) { image in
-            image.resizable()
+            image
+                .resizable()
+                .scaledToFill()
         } placeholder: {
             CardBackgroundView(cardType: .club) {}
                 .backgroundType(store.state.uiModel?.coverColorType ?? .primary)
@@ -237,7 +239,7 @@ struct ClubDetailsView: View {
             verifiedBadge
         } else if store.state.showVerifyButton {
             AppButton(
-                title: "Request verification from admins",
+                title: "clubs_request_verification_from_admins".localized,
                 model: .init(
                     type: .secondary,
                     contentSize: .fill,
@@ -254,7 +256,7 @@ struct ClubDetailsView: View {
         HStack(spacing: 6) {
             Image(systemName: "checkmark.seal.fill")
                 .font(.system(size: 14, weight: .semibold))
-            Text("Verified club")
+            Text("clubs_verified".localized)
                 .font(Font.Typography.TextSm.medium)
         }
         .foregroundStyle(Color.Palette.appBlue)
@@ -269,7 +271,7 @@ struct ClubDetailsView: View {
                 $0.frame(in: .named("scroll")).minY
             } action: { minY in
                 withAnimation {
-                    isNameVisible = minY > 0
+                    isNameVisible = minY > -36
                 }
             }
     }
@@ -283,7 +285,7 @@ struct ClubDetailsView: View {
     
     private var accessTypeBadge: some View {
         let isPrivate = store.state.uiModel?.accessType == .private
-        return Text(isPrivate ? "Private" : "Public")
+        return Text(isPrivate ? "clubs_private".localized : "clubs_public".localized)
             .font(Font.Typography.TextSm.medium)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
@@ -303,7 +305,7 @@ struct ClubDetailsView: View {
     
     private var memberCount: some View {
         HStack {
-            Text("\(store.state.uiModel?.membersCount ?? 0) members")
+            Text("count_members".localized(with: store.state.uiModel?.membersCount ?? 0))
                 .font(Font.Typography.TextMd.regular)
                 .foregroundStyle(Color.Palette.blackHigh)
             
@@ -311,7 +313,7 @@ struct ClubDetailsView: View {
                 Text("•")
                 let text = eventCount == 1
                 ? "1 event"
-                : "\(eventCount) events"
+                : "count_events".localized(with: eventCount)
                 HStack {
                     Image(systemName: "calendar")
                     Text(text)
@@ -324,7 +326,7 @@ struct ClubDetailsView: View {
                 Text("•")
                 let text = clubsCount == 1
                 ? "1 club"
-                : "\(clubsCount) clubs"
+                : "count_clubs".localized(with: clubsCount)
                 Text(text)
                     .font(Font.Typography.TextMd.regular)
                     .foregroundStyle(Color.Palette.blackHigh)
@@ -349,7 +351,7 @@ struct ClubDetailsView: View {
     private var createEventButton: some View {
         if store.state.canCreateEvent {
             AppButton(
-                title: "Create new event +",
+                title: "clubs_create_new_event".localized,
                 model: .init(
                     type: .secondary,
                     contentSize: .fill,
@@ -474,7 +476,7 @@ struct ClubDetailsView: View {
     private func handleTap(on subItem: ClubsDetailsModel.SubInfo) {
         if let phone = subItem.phoneNumber {
             UIPasteboard.general.string = phone
-            AppSnackBar.show(title: "Copied to clipboard")
+            AppSnackBar.show(title: "common_copied".localized)
         } else if subItem.isLink {
             openLink(subItem.description)
         }
@@ -539,7 +541,7 @@ struct ClubDetailsView: View {
                     text: store.state.canCreateEvent
                         ? "This club hasn't run any events yet. Be the pioneer and start the very first one now!"
                         : "This club hasn't run any events yet. Check back soon.",
-                    buttonTitle: store.state.canCreateEvent ? "Create an event +" : nil
+                    buttonTitle: store.state.canCreateEvent ? "clubs_create_event".localized : nil
                 )
             ) {
                 store.send(.createEventTapped)
@@ -581,7 +583,7 @@ struct ClubDetailsView: View {
                 onExit: { store.send(.exitTapped) },
                 onReport: { _ in
                     await MainActor.run {
-                        AppSnackBar.show(title: "Report submitted", style: .success)
+                        AppSnackBar.show(title: "clubs_report_submitted".localized, style: .success)
                     }
                     return true
                 }
@@ -612,7 +614,7 @@ struct ClubDetailsView: View {
             },
             onReport: { _ in
                 await MainActor.run {
-                    AppSnackBar.show(title: "Report submitted", style: .success)
+                    AppSnackBar.show(title: "clubs_report_submitted".localized, style: .success)
                 }
                 return true
             }

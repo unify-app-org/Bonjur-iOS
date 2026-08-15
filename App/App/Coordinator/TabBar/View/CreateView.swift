@@ -8,22 +8,23 @@
 
 import SwiftUI
 import AppUIKit
+import AppFoundation
 
 struct CreateView: View {
 
     let model: [Model] = [
         .init(
-            title: "Club",
+            title: "create_club".localized,
             icon: .Icons.twoUsers,
             type: .club
         ),
         .init(
-            title: "Events",
+            title: "create_events".localized,
             icon: .Icons.calendar,
             type: .event
         ),
         .init(
-            title: "Hangouts",
+            title: "create_hangouts".localized,
             icon: .Icons.chat,
             type: .hangout
         )
@@ -45,10 +46,11 @@ struct CreateView: View {
         .padding(.horizontal, 24)
         .padding(.bottom, 16)
         .background(Color.Palette.white)
+        .localized()
     }
 
     private var titleView: some View {
-        Text("Create")
+        Text("create_title".localized)
             .font(Font.Typography.HeadingXl.bold)
             .foregroundStyle(Color.Palette.blackHigh)
             .frame(maxWidth: .infinity, alignment: .leading)

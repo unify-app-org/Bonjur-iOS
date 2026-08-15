@@ -1,0 +1,14 @@
+/* Discover module */
+"discover_communities" = "Сообщества";
+"discover_clubs" = "Клубы";
+"discover_events" = "События";
+"discover_hangouts" = "Тусовки";
+"discover_view_all" = "показать все";
+"discover_clubs_empty" = "Пока нет клубов. Станьте первым и создайте свой!";
+"discover_events_empty" = "Пока нет запланированных событий. Станьте первым и создайте своё!";
+"discover_hangouts_empty" = "Пока нет запланированных тусовок. Станьте первым и создайте свою!";
+"discover_create_club" = "Создать клуб +";
+"discover_create_event" = "Создать событие +";
+"discover_create_hangout" = "Создать тусовку +";
+"common_got_it" = "Понятно";
+"common_unknown_error" = "Неизвестная ошибка";

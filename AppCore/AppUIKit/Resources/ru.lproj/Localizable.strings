@@ -1,0 +1,38 @@
+/* Shared UI (AppUIKit) */
+"Filter" = "Фильтр";
+"All" = "Все";
+"About" = "Описание";
+"Events" = "События";
+"Members" = "Участники";
+"Clubs" = "Клубы";
+"Hangouts" = "Тусовки";
+
+"Capacity" = "Вместимость";
+"Created/Updated Date" = "Дата создания/обновления";
+
+"Search" = "Поиск";
+"Remove" = "Убрать";
+"Apply" = "Применить";
+"Owner" = "Владелец";
+"Private" = "Приватный";
+"Public" = "Публичный";
+"filter_subtitle" = "Выберите интересы, чтобы найти подходящие события сообщества.";
+
+"President" = "Президент";
+"Vise president" = "Вице-президент";
+"Event creators" = "Создатели событий";
+
+"Member" = "Участник";
+"Vice president" = "Вице-президент";
+"Creator" = "Создатель";
+"Notification" = "Уведомления";
+
+"count_events" = "%d событий";
+"count_members" = "%d участников";
+"count_of_members" = "%d из %d участников";
+"count_of" = "%d из %d";
+
+"count_clubs" = "%d клубов";
+
+"field_optional" = "(необязательно)";
+"field_write_something" = "Напишите что-нибудь";

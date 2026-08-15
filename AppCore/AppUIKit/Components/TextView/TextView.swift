@@ -7,6 +7,7 @@
 
 
 import SwiftUI
+import AppLocalization
 
 public struct TextView: View {
     
@@ -41,7 +42,7 @@ public struct TextView: View {
                     text: text,
                     isFocused: $isFocused,
                     characterLimit: characterLimit,
-                    placeholder: "Write something",
+                    placeholder: "field_write_something".localized,
                     keyboardType: model.keyboardType
                 )
                 .frame(minHeight: 40)

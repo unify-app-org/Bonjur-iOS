@@ -1,0 +1,46 @@
+/* Settings screen */
+"settings_title" = "Settings";
+"settings_notification" = "Notification";
+"settings_language" = "Language";
+"settings_help_center" = "Help center";
+"settings_terms" = "Terms and conditions";
+"settings_app_version" = "App version";
+"settings_delete_account" = "Delete account";
+"settings_logout" = "Log out";
+
+/* Delete account confirmation */
+"settings_delete_title" = "Delete account?";
+"settings_delete_subtitle" = "Are you sure you want to delete your account? This action cannot be undone.";
+"settings_delete_confirm" = "Delete";
+
+/* Log out confirmation */
+"settings_logout_title" = "Log out?";
+"settings_logout_subtitle" = "Are you sure you want to log out?";
+"settings_logout_confirm" = "Log out";
+
+/* Language picker */
+"language_title" = "Language";
+"language_english" = "English";
+"language_azerbaijan" = "Azerbaijani";
+"language_russian" = "Russian";
+
+"common_cancel" = "Cancel";
+
+/* Profile detail */
+"profile_title" = "Profile";
+"profile_about" = "About";
+"profile_about_user" = "About user";
+"profile_no_information" = "No information";
+"profile_gender" = "Gender";
+"profile_birthday" = "Birthday";
+"profile_languages" = "Languages";
+"profile_your_activities" = "Your activities";
+"profile_no_clubs" = "No clubs yet";
+"profile_no_events" = "No events yet";
+"profile_no_hangouts" = "No hangouts yet";
+"profile_cover_updated" = "Cover updated successfully";
+"profile_changes_saved" = "Your changes are saved";
+"profile_card_course" = "course";
+"profile_card_degree" = "degree";
+"profile_card_entry" = "entry";
+"profile_user_card_id" = "User Card ID";

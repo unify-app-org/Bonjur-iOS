@@ -6,6 +6,7 @@
 //
 
 import Events
+import AppFoundation
 import AppUIKit
 import AppUtils
 import Foundation
@@ -202,7 +203,7 @@ final class EventsRepoImpl: EventsRepo {
             query: ["page": "0", "size": "100"]
         ).content
         let users = data.map(Self.mapMember)
-        return .init(users: users, titleOverrides: [.president: "Owner"])
+        return .init(users: users, titleOverrides: [.president: "events_owner_role".localized])
     }
 
     func fetchEventMembersPage(
@@ -249,11 +250,11 @@ private extension EventsRepoImpl {
         // Hide once accepted (by role or request status).
         let role = data.eventUserRole ?? .notJoined
         guard role == .notJoined, data.requestStatus != .joined else { return nil }
-        // A pending request keeps a disabled "Request sent" button visible.
+        // A pending request keeps a disabled "events_join_request_sent".localized button visible.
         if data.requestStatus == .pending {
-            return .init(title: "Request sent", disabled: true)
+            return .init(title: "events_join_request_sent".localized, disabled: true)
         }
-        let title = data.visibility == .public ? "Join" : "Request"
+        let title = data.visibility == .public ? "events_join".localized : "events_request".localized
         return .init(title: title, disabled: false)
     }
 
@@ -298,29 +299,29 @@ private extension EventsRepoImpl {
     func mapInfo(_ data: EventDetailDTO) -> [EventsDetailsModel.Info] {
         var info: [EventsDetailsModel.Info] = []
 
-        appendSection(&info, title: "About", rows: [
+        appendSection(&info, title: "About".localized, rows: [
             row(title: nil, value: data.about)
         ])
 
         var eventRows: [EventsDetailsModel.SubInfo?] = [
-            row(title: "Date", value: meetupDate(data.eventDate)),
-            row(title: "Created/Updated Date", value: modifiedDate(data.modifiedAt)),
-            row(title: "Owner Contact", value: cleaned(data.ownerContact),
+            row(title: "events_row_date".localized, value: meetupDate(data.eventDate)),
+            row(title: "Created/Updated Date".localized, value: modifiedDate(data.modifiedAt)),
+            row(title: "events_row_owner_contact".localized, value: cleaned(data.ownerContact),
                 phoneNumber: phoneNumber(data.ownerContact)),
-            row(title: "Capacity", value: capacityText(members: data.membersCount, capacity: data.capacity)),
+            row(title: "Capacity".localized, value: capacityText(members: data.membersCount, capacity: data.capacity)),
             row(title: "Rules", value: data.rule),
             row(title: "Location", value: data.location)
         ]
         // Reminders are an organiser broadcast config — only organisers see them.
         if isOrganizer(data.eventUserRole), let reminders = reminderText(data.reminderTimes) {
-            eventRows.append(row(title: "Reminders", value: reminders))
+            eventRows.append(row(title: "events_reminders".localized, value: reminders))
         }
-        appendSection(&info, title: "Event info", rows: eventRows)
+        appendSection(&info, title: "events_info_section".localized, rows: eventRows)
 
         let linkRows = (data.links ?? []).map { link in
             row(title: link.name, value: link.url, isLink: true)
         }
-        appendSection(&info, title: "Links", rows: linkRows)
+        appendSection(&info, title: "events_row_links".localized, rows: linkRows)
 
         return info
     }

@@ -58,8 +58,39 @@ final class NotificationViewModel: UIFeatureViewModel<NotificationFeature> {
             .flatMap(\.items)
             .first(where: { $0.id == id }) else { return }
 
+        markRead(id: id)
+
+        // Always open the notification detail (preview); the preview's "Continue"
+        // action performs the per-type navigation (target detail / needs-action).
         Task {
             await router.navigate(to: .preview(item))
+        }
+    }
+
+    /// Optimistically mark a single notification read, then persist it. Ignore
+    /// failures — the badge/read-state re-syncs on next fetch.
+    private func markRead(id: String) {
+        guard let item = state.uiModel.sections
+            .flatMap(\.items)
+            .first(where: { $0.id == id }), item.isUnread else { return }
+
+        Task { @MainActor in
+            setReadFlag(id: id, isRead: true)
+            do {
+                try await dependencies.useCase.markRead(id: id)
+            } catch {
+                setReadFlag(id: id, isRead: false)
+            }
+        }
+    }
+
+    @MainActor
+    private func setReadFlag(id: String, isRead: Bool) {
+        for s in state.uiModel.sections.indices {
+            for i in state.uiModel.sections[s].items.indices
+            where state.uiModel.sections[s].items[i].id == id {
+                state.uiModel.sections[s].items[i].isRead = isRead
+            }
         }
     }
 

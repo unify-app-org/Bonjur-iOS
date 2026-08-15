@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppFoundation
 import AppUIKit
 
 struct CommunityCardView: View {
@@ -57,7 +58,7 @@ struct CommunityCardView: View {
                     .foregroundStyle(model.bgType.foregroundColor)
             }
             HStack(spacing: 4) {
-                Text("view all")
+                Text("comm_view_all".localized)
                     .font(Font.Typography.TextMd.medium)
                 Image(uiImage: UIImage.Icons.arrowLeft01)
                     .renderingMode(.template)
@@ -100,11 +101,7 @@ struct CommunityCardView: View {
             Image(uiImage: UIImage.Icons.usersGroup)
                 .renderingMode(.template)
                 .font(.system(size: 11, weight: .semibold))
-            Text(
-                model.clubsCount == 1
-                    ? "1 club"
-                    : "\(model.clubsCount) clubs"
-            )
+            Text("count_clubs".localized(with: model.clubsCount))
                 .font(Font.Typography.TextMd.semiBold)
         }
         .foregroundStyle(model.bgType.foregroundColor)
@@ -113,7 +110,7 @@ struct CommunityCardView: View {
     @ViewBuilder
     private var membersView: some View {
         HStack(spacing: 8) {
-            Text("\(model.memberCount) members")
+            Text("count_members".localized(with: model.memberCount))
                 .font(Font.Typography.TextMd.regular)
                 .foregroundColor(model.bgType.foregroundColor)
                 .frame(maxWidth: .infinity, alignment: .trailing)

@@ -6,6 +6,7 @@
 //
 
 import AppNetwork
+import AppFoundation
 
 /// One page of the notification feed, already mapped to feed items.
 struct NotificationFeedPage {
@@ -16,7 +17,8 @@ struct NotificationFeedPage {
 protocol NotificationUseCase {
     func fetchFeedPage(page: Int, size: Int) async throws(APIError) -> NotificationFeedPage
     func markAllRead() async throws(APIError)
-    /// Live pending-request totals for the "Needs your action" banner.
+    func markRead(id: String) async throws(APIError)
+    /// Live pending-request totals for the "notif_needs_action".localized banner.
     func fetchRequestCounts() async throws(APIError) -> ActionRequestCounts
     /// Admin-only pending-verification total; throwing (403) means not an admin.
     func fetchVerificationCount() async throws(APIError) -> Int
@@ -45,6 +47,10 @@ final class NotificationUseCaseImpl: NotificationUseCase {
 
     func markAllRead() async throws(APIError) {
         try await dataSource.markAllRead()
+    }
+
+    func markRead(id: String) async throws(APIError) {
+        try await dataSource.markRead(id: id)
     }
 
     /// Cheap `size=1` probes — we only read `totalElements` from each source.

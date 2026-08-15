@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppFoundation
 import AppUIKit
 
 struct HangoutsCardView: View {
@@ -49,7 +50,7 @@ struct HangoutsCardView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
                 dateBadge
-                Text(isPrivate ? "Private" : "Public")
+                Text(isPrivate ? "Private".localized : "Public".localized)
                     .font(Font.Typography.TextSm.medium)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
@@ -161,7 +162,7 @@ struct HangoutsCardView: View {
         case .joined:
             statusLabel(
                 icon: "checkmark",
-                text: "Going",
+                text: "hangouts_going".localized,
                 foreground: Color.Palette.green900,
                 background: Color.Palette.greenLight,
                 border: Color.Palette.secondary

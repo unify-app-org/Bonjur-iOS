@@ -97,14 +97,14 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
                 role: role
             )
             await MainActor.run {
-                AppSnackBar.show(title: "Role updated", style: .success)
+                AppSnackBar.show(title: "comm_role_updated".localized, style: .success)
             }
             fetchData()
         } catch {
             await MainActor.run {
                 AppSnackBar.show(
-                    title: "Could not update role",
-                    subtitle: "Please try again.",
+                    title: "comm_role_update_fail".localized,
+                    subtitle: "common_try_again".localized,
                     style: .error
                 )
             }
@@ -117,8 +117,8 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
         let viewerRole = state.uiModel?.userActivity ?? .notJoined
         let currentUserId = KeychainImpl().getString(key: .userId)
         let input = CommunitiesMemberModuleModel.MembersListInput(
-            title: "Members",
-            titleOverrides: [.president: "Owner"],
+            title: "Members".localized,
+            titleOverrides: [.president: "comm_owner_role".localized],
             pageSize: 20,
             loadPage: { page, size, keyword in
                 try await useCase.fetchCommunityMembersPage(
@@ -140,17 +140,17 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
                 onAssignRole: { userId, role in
                     do {
                         try await useCase.assignRole(communityId: communityId, userId: userId, role: role)
-                        await MainActor.run { AppSnackBar.show(title: "Role updated", style: .success) }
+                        await MainActor.run { AppSnackBar.show(title: "comm_role_updated".localized, style: .success) }
                         return true
                     } catch {
                         await MainActor.run {
-                            AppSnackBar.show(title: "Could not update role", subtitle: "Please try again.", style: .error)
+                            AppSnackBar.show(title: "comm_role_update_fail".localized, subtitle: "common_try_again".localized, style: .error)
                         }
                         return false
                     }
                 },
                 onReport: { _, _ in
-                    await MainActor.run { AppSnackBar.show(title: "Report submitted", style: .success) }
+                    await MainActor.run { AppSnackBar.show(title: "comm_report_submitted".localized, style: .success) }
                     return true
                 }
             )

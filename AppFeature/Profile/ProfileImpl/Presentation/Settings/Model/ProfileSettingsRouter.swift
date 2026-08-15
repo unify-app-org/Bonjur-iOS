@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import SwiftUI
+import AppFoundation
 import AppUIKit
 import Profile
 
@@ -42,24 +44,24 @@ final class ProfileSettingsRouter: ProfileSettingsRouterProtocol {
         case .back:
             break
         case .language:
-            break
+            presentLanguagePicker()
         case .helpCenter:
             break
         case .termsAndConditions:
             break
         case .deleteAccount(let onConfirm):
             showConfirmationAlert(
-                title: "Delete account?",
-                subtitle: "Are you sure you want to delete your account? This action cannot be undone.",
-                confirmTitle: "Delete",
+                title: "settings_delete_title".localized,
+                subtitle: "settings_delete_subtitle".localized,
+                confirmTitle: "settings_delete_confirm".localized,
                 confirmStyle: .destructive,
                 onConfirm: onConfirm
             )
         case .logout:
             showConfirmationAlert(
-                title: "Log out?",
-                subtitle: "Are you sure you want to log out?",
-                confirmTitle: "Log out",
+                title: "settings_logout_title".localized,
+                subtitle: "settings_logout_subtitle".localized,
+                confirmTitle: "settings_logout_confirm".localized,
                 confirmStyle: .destructive
             ) { [weak self] in
                 self?.delegate.logout()
@@ -69,6 +71,22 @@ final class ProfileSettingsRouter: ProfileSettingsRouterProtocol {
         }
     }
     
+    @MainActor
+    private func presentLanguagePicker() {
+        let localization: AppLocalizationProtocol = resolve()
+        let picker = LanguageSelectionView { [weak view] code in
+            localization.setLanguage(code)
+            view?.dismiss(animated: true)
+        }
+        let host = UIHostingController(rootView: picker)
+        if let sheet = host.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 24
+        }
+        view?.present(host, animated: true)
+    }
+
     @MainActor
     private func showConfirmationAlert(
         title: String,
@@ -85,7 +103,7 @@ final class ProfileSettingsRouter: ProfileSettingsRouterProtocol {
                 ),
                 actions: {
                     AppAlert.Action(
-                        title: "Cancel",
+                        title: "common_cancel".localized,
                         style: .primary
                     )
                     

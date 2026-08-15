@@ -66,7 +66,7 @@ struct GroupsListView: View {
             store.send(.fetchData)
         }
         .animation(.easeInOut, value: store.state.selectedSegment)
-        .navigationTitle("My activities")
+        .navigationTitle("groups_my_activities".localized)
         .ignoresSafeArea(edges: .bottom)
         .dismissKeyboardOnTap()
     }

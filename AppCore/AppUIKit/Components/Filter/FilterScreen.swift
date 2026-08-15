@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppLocalization
 import AppUtils
 
 struct FilterScreen: View {
@@ -40,12 +41,12 @@ struct FilterScreen: View {
     
     private var topView: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Filter")
+            Text("Filter".localized)
                 .font(Font.Typography.TitleL.extraBold)
                 .foregroundStyle(Color.Palette.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
-            Text("Select your interests to find the perfect community events for you.")
+            Text("filter_subtitle".localized)
                 .font(Font.Typography.BodyTextMd.regular)
                 .foregroundStyle(Color.Palette.grayPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -83,7 +84,7 @@ struct FilterScreen: View {
     private var buttons: some View {
         HStack(spacing: 18) {
             AppButton(
-                title: "Remove",
+                title: "Remove".localized,
                 model: .init(
                     type: .secondary,
                     contentSize: .fill,
@@ -97,7 +98,7 @@ struct FilterScreen: View {
             }
             
             AppButton(
-                title: "Apply",
+                title: "Apply".localized,
                 model: .init(
                     contentSize: .fill,
                     size: .medium

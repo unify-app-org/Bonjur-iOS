@@ -74,7 +74,7 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
         do {
             state.hangoutsCreateSchema = try await dependencies.useCase.fetchCreateFields()
         } catch {
-            AppSnackBar.show(title: "Couldn't load the form", style: .error)
+            AppSnackBar.show(title: "hangouts_form_load_fail".localized, style: .error)
         }
     }
 
@@ -83,7 +83,7 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
             state.categorySections = try await dependencies.useCase.getCategories()
         } catch {
             state.categorySections = []
-            AppSnackBar.show(title: "Couldn't load categories", style: .error)
+            AppSnackBar.show(title: "hangouts_categories_load_fail".localized, style: .error)
         }
     }
 
@@ -155,7 +155,7 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
                 request: buildRequest()
             )
             AppSnackBar.show(
-                title: "Hangout created successfully",
+                title: "hangouts_created".localized,
                 subtitle: state.values.text(.hangoutName),
                 style: .success
             )
@@ -177,7 +177,7 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
                 request: buildRequest()
             )
             AppSnackBar.show(
-                title: "Hangout updated successfully",
+                title: "hangouts_updated".localized,
                 subtitle: state.values.text(.hangoutName),
                 style: .success
             )

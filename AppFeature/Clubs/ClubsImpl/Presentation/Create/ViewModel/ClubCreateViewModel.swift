@@ -69,17 +69,36 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
 
     // MARK: - Verification prompt
 
-    /// Backend has no verify-request endpoint yet, so this is an optimistic
-    /// placeholder mirroring the club-details flow. Wire to the real API when it
-    /// lands. See backend tasks: POST verify-request + clubStatus in payloads.
+    /// Fire the real verify request for the just-created club, then leave the
+    /// create flow. Falls back to a soft message if we somehow lack the new id.
     private func requestVerification() {
         state.showVerifyPrompt = false
-        AppSnackBar.show(
-            title: "Verification requested",
-            subtitle: "Admins will review your club.",
-            style: .success
-        )
-        Task { await router.navigate(to: .backTapped) }
+        guard let clubId = state.createdClubId else {
+            AppSnackBar.show(
+                title: "clubs_verification_requested".localized,
+                subtitle: "clubs_verification_requested_sub".localized,
+                style: .success
+            )
+            Task { await router.navigate(to: .backTapped) }
+            return
+        }
+        Task {
+            do {
+                try await dependencies.useCase.requestVerify(id: clubId)
+                AppSnackBar.show(
+                    title: "clubs_verification_requested".localized,
+                    subtitle: "clubs_verification_requested_sub".localized,
+                    style: .success
+                )
+            } catch {
+                AppSnackBar.show(
+                    title: "clubs_verification_fail".localized,
+                    subtitle: "clubs_verification_fail_sub_create".localized,
+                    style: .error
+                )
+            }
+            await router.navigate(to: .backTapped)
+        }
     }
 
     private func dismissVerifyPrompt() {
@@ -100,7 +119,7 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
             let data = try await dependencies.useCase.fetchCreateFields()
             state.clubsCreateSchema = data
         } catch {
-            AppSnackBar.show(title: "Couldn't load the form", style: .error)
+            AppSnackBar.show(title: "clubs_form_load_fail".localized, style: .error)
         }
     }
 
@@ -109,7 +128,7 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
             state.categorySections = try await dependencies.useCase.getCategories()
         } catch {
             state.categorySections = []
-            AppSnackBar.show(title: "Couldn't load categories", style: .error)
+            AppSnackBar.show(title: "clubs_categories_load_fail".localized, style: .error)
         }
     }
     
@@ -183,7 +202,7 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
                 request: buildRequest()
             )
             AppSnackBar.show(
-                title: "Club updated successfully",
+                title: "clubs_updated".localized,
                 subtitle: state.values.text(.clubName),
                 style: .success
             )
@@ -198,7 +217,8 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
             postEffect(.loading(false))
         }
         do {
-            try await dependencies.useCase.createClub(request: buildRequest())
+            let createdId = try await dependencies.useCase.createClub(request: buildRequest())
+            state.createdClubId = createdId
             state.showVerifyPrompt = true
         } catch {
             postEffect(.error(error as? APIError))

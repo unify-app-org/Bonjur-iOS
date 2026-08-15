@@ -32,7 +32,7 @@ struct EventsListView: View {
                 Spacer()
             }
         }
-        .navigationTitle("Events")
+        .navigationTitle("events_title".localized)
         .dismissKeyboardOnTap()
         .onAppear {
             store.send(.fetchData)
@@ -74,15 +74,15 @@ struct EventsListView: View {
             AppEmptyView(
                 model: .init(
                     icon: UIImage.Icons.twoUsers,
-                    text: "No events match your search. Try another name or clear your filters."
+                    text: "events_search_empty".localized
                 )
             )
         } else {
             AppEmptyView(
                 model: .init(
                     icon: UIImage.Icons.twoUsers,
-                    text: "No events yet. Be the pioneer and start the very first one now!",
-                    buttonTitle: "Create an event +"
+                    text: "events_empty".localized,
+                    buttonTitle: "events_create".localized
                 )
             ) {
                 store.send(.createTapped)
@@ -98,7 +98,7 @@ struct EventsListView: View {
     @ViewBuilder
     private var topView: some View {
         VStack(spacing: 24) {
-//            Text("Events")
+//            Text("events_title".localized)
 //                .font(Font.Typography.TitleL.extraBold)
 //                .frame(maxWidth: .infinity, alignment: .leading)
 //                .padding(.horizontal)

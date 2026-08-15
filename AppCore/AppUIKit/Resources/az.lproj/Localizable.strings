@@ -1,0 +1,38 @@
+/* Shared UI (AppUIKit) */
+"Filter" = "Filtr";
+"All" = "Hamısı";
+"About" = "Haqqında";
+"Events" = "Tədbirlər";
+"Members" = "Üzvlər";
+"Clubs" = "Klublar";
+"Hangouts" = "Görüşlər";
+
+"Capacity" = "Tutum";
+"Created/Updated Date" = "Yaradılma/Yenilənmə tarixi";
+
+"Search" = "Axtar";
+"Remove" = "Sil";
+"Apply" = "Tətbiq et";
+"Owner" = "Sahib";
+"Private" = "Qapalı";
+"Public" = "Açıq";
+"filter_subtitle" = "Sizə uyğun icma tədbirlərini tapmaq üçün maraqlarınızı seçin.";
+
+"President" = "Prezident";
+"Vise president" = "Vitse-prezident";
+"Event creators" = "Tədbir yaradanlar";
+
+"Member" = "Üzv";
+"Vice president" = "Vitse-prezident";
+"Creator" = "Yaradan";
+"Notification" = "Bildirişlər";
+
+"count_events" = "%d tədbir";
+"count_members" = "%d üzv";
+"count_of_members" = "%d / %d üzv";
+"count_of" = "%d / %d";
+
+"count_clubs" = "%d klub";
+
+"field_optional" = "(istəyə bağlı)";
+"field_write_something" = "Nəsə yazın";

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppFoundation
 import AppUIKit
 
 struct ClubCardView: View {
@@ -28,7 +29,7 @@ struct ClubCardView: View {
     private func roleBadgeText(
         _ role: AppUIEntities.UserActivityRole
     ) -> String {
-        role == .president ? "👑 Owner" : role.displayTitle
+        role == .president ? "👑 " + "Owner".localized : role.displayTitle.localized
     }
     
     init(
@@ -101,7 +102,7 @@ struct ClubCardView: View {
             Text("•")
             let text = model.upcomingEventsCount == 1
             ? "1 event"
-            : "\(model.upcomingEventsCount) events"
+            : "count_events".localized(with: model.upcomingEventsCount)
             Image(systemName: "calendar")
             Text(text)
             if let role = joinedRole {
@@ -114,7 +115,7 @@ struct ClubCardView: View {
     }
     
     private var accessChip: some View {
-        Text(model.accessType == .private ? "Private" : "Public")
+        Text(model.accessType == .private ? "Private".localized : "Public".localized)
             .font(Font.Typography.TextSm.medium)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
@@ -193,8 +194,8 @@ struct ClubCardView: View {
             }
             Text(
                 model.totalCapacity > 0
-                ? "\(model.memberCount) of \(model.totalCapacity) members"
-                : "\(model.memberCount) members"
+                ? "count_of_members".localized(with: model.memberCount, model.totalCapacity)
+                : "count_members".localized(with: model.memberCount)
             )
             .font(Font.Typography.TextMd.regular)
             .foregroundColor(model.bgType.foregroundColor)

@@ -61,7 +61,7 @@ struct FacultyStudentSelectListView: View {
                     .scaledToFit()
                     .frame(width: 18, height: 18)
                 
-                Text("select all member")
+                Text("comm_select_all_member".localized)
                     .font(Font.Typography.BodyTextSm.medium)
                     .foregroundStyle(Color.Palette.grayPrimary)
                 
@@ -80,7 +80,7 @@ struct FacultyStudentSelectListView: View {
     }
     
     private var emptySearchStateView: some View {
-        Text("No students found")
+        Text("comm_no_students_found".localized)
             .font(Font.Typography.BodyTextSm.regular)
             .foregroundStyle(Color.Palette.blackMedium)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)

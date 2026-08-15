@@ -8,6 +8,7 @@
 import SwiftUI
 import UIKit
 import AppUIKit
+import AppFoundation
 
 struct FloatingDockRootView: View {
     @ObservedObject var model: FloatingDockModel
@@ -41,6 +42,7 @@ struct FloatingDockRootView: View {
 
     var body: some View {
         dockContent
+        .localized()
         .appSheet(
             isPresented: $model.isCreatePresented,
             detents: [.fraction(0.4)],
@@ -109,7 +111,7 @@ struct FloatingDockRootView: View {
                     .renderingMode(.template)
 
 
-                Text("My Activities")
+                Text("dock_my_activities".localized)
                     .font(Font.Typography.BodyTextSm.medium)
             }
             .padding(.horizontal, 14)

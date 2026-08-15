@@ -6,9 +6,10 @@
 //
 
 import AppNetwork
+import AppFoundation
 
 /// Endpoints backing the notification feed (notification-service, `api/ns`) and
-/// the "Needs your action" screen (club/hangout/event join requests).
+/// the "notif_needs_action".localized screen (club/hangout/event join requests).
 /// Accept/reject a club join request. `status` ∈ {"ACCEPT", "REJECT"}.
 struct ClubRequestStatusBody: Encodable {
     let clubId: Int
@@ -43,6 +44,8 @@ enum NotificationEndPoint {
     case unreadCount
     /// Marks every notification read.
     case readAll
+    /// Marks a single notification read.
+    case readSingle(notificationId: String)
     /// Pending club join requests for clubs the caller organizes.
     case clubJoinRequests([String: String])
     /// Pending hangout join requests for hangouts the caller organizes.
@@ -71,6 +74,8 @@ extension NotificationEndPoint: AppEndPoint {
             "api/ns/v1/notifications/unread-count"
         case .readAll:
             "api/ns/v1/notifications/read-all"
+        case .readSingle(let notificationId):
+            "api/ns/v1/notifications/read/\(notificationId)"
         case .clubJoinRequests:
             "api/cs/v1/clubs/join-requests"
         case .hangoutJoinRequests:
@@ -94,7 +99,7 @@ extension NotificationEndPoint: AppEndPoint {
         switch self {
         case .feed, .unreadCount, .clubJoinRequests, .hangoutJoinRequests, .eventJoinRequests, .clubPending:
             .get
-        case .readAll, .setClubRequestStatus, .setHangoutRequestStatus, .setEventRequestStatus, .setClubVerification:
+        case .readAll, .readSingle, .setClubRequestStatus, .setHangoutRequestStatus, .setEventRequestStatus, .setClubVerification:
             .post
         }
     }
@@ -107,7 +112,7 @@ extension NotificationEndPoint: AppEndPoint {
                 .eventJoinRequests(let query),
                 .clubPending(let query):
             query
-        case .unreadCount, .readAll, .setClubRequestStatus, .setHangoutRequestStatus, .setEventRequestStatus, .setClubVerification:
+        case .unreadCount, .readAll, .readSingle, .setClubRequestStatus, .setHangoutRequestStatus, .setEventRequestStatus, .setClubVerification:
             nil
         }
     }

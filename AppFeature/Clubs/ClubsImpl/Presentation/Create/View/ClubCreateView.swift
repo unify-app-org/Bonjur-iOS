@@ -112,7 +112,7 @@ struct ClubCreateView: View {
             .coordinateSpace(name: "scroll")
             
             AppButton(
-                title: "Continue",
+                title: "clubs_continue".localized,
                 model: .init(
                     contentSize: .fill
                 )
@@ -245,7 +245,7 @@ struct ClubCreateView: View {
     
     private var fieldView: some View {
         VStack(spacing: 16) {
-            Text("Fields marked with * are required.")
+            Text("clubs_required_hint".localized)
                 .font(Font.Typography.BodyTextMd.regular)
                 .foregroundStyle(Color.Palette.appBlue)
                 .frame(maxWidth: .infinity, alignment: .leading)

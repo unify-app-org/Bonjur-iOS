@@ -41,7 +41,7 @@ struct HangoutCreateView: View {
             }
 
             AppButton(
-                title: "Continue",
+                title: "hangouts_continue".localized,
                 model: .init(contentSize: .fill)
             ) {
                 store.send(.continueTapped)
@@ -92,7 +92,7 @@ struct HangoutCreateView: View {
                 .font(Font.Typography.TitleL.extraBold)
                 .foregroundStyle(Color.Palette.black)
 
-            Text("Fields marked with * are required.")
+            Text("hangouts_required_hint".localized)
                 .font(Font.Typography.BodyTextMd.regular)
                 .foregroundStyle(Color.Palette.appBlue)
         }

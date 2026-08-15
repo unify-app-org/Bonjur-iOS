@@ -1,0 +1,31 @@
+/* Notification module */
+"notif_accept" = "Accept";
+"notif_reject" = "Reject";
+"notif_verify" = "Verify";
+"notif_close" = "Close";
+"notif_continue" = "Continue";
+"notif_try_again" = "Try again";
+"notif_note" = "Note";
+"notif_needs_action" = "Needs your action";
+"notif_verification_requests" = "Verification requests";
+"notif_no_notifications" = "No notifications yet";
+"notif_nothing_to_verify" = "Nothing to verify";
+"notif_all_caught_up" = "You're all caught up";
+"notif_all_handled" = "All club verification requests are handled.";
+"notif_empty_desc" = "Event reminders, request outcomes and more will show up here.";
+"notif_mark_all_read" = "This marks every notification as read.";
+"notif_reject_request" = "Reject request?";
+"notif_reject_verification" = "Reject verification?";
+"notif_load_fail" = "Couldn't load notifications";
+"notif_requests_load_fail" = "Couldn't load requests";
+"notif_verifications_load_fail" = "Couldn't load verifications";
+
+"notif_action_subtitle" = "%d join requests · %d to verify";
+
+"notif_mark_all_title" = "Mark all as read?";
+"notif_mark_all_confirm" = "Mark all read";
+
+"notif_today" = "Today";
+"notif_yesterday" = "Yesterday";
+"notif_this_week" = "This week";
+"notif_earlier" = "Earlier";

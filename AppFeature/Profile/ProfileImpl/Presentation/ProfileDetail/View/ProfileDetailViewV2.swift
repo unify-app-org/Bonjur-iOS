@@ -150,7 +150,7 @@ struct ProfileDetailViewV2: View {
             store.send(.userCardTapped)
         } label: {
             HStack(spacing: 4) {
-                Text("🪪  User Card ID")
+                Text("🪪  " + "profile_user_card_id".localized)
                     .font(Font.Typography.TextMd.bold)
                 Image(uiImage: UIImage.Icons.chevronRight)
                     .renderingMode(.template)
@@ -173,7 +173,7 @@ struct ProfileDetailViewV2: View {
     private var aboutBoxView: some View {
         AppInfoContainer(alignment: .leading, spacing: 16) {
             HStack {
-                Text("About")
+                Text("About".localized)
                     .font(Font.Typography.HeadingMd.medium)
                     .foregroundStyle(Color.Palette.black)
 
@@ -191,7 +191,7 @@ struct ProfileDetailViewV2: View {
                 }
             }
 
-            Text(store.state.uiModel?.about ?? "No information")
+            Text(store.state.uiModel?.about ?? "profile_no_information".localized)
                 .font(Font.Typography.BodyTextSm.regular)
                 .foregroundStyle(Color.Palette.blackHigh)
 
@@ -200,10 +200,10 @@ struct ProfileDetailViewV2: View {
             }
 
             VStack(spacing: 21) {
-                userInfoCell(image: UIImage.Icons.genderIcon, title: "Gender", subtitle: store.state.uiModel?.gender?.title ?? "-")
-                userInfoCell(image: UIImage.Icons.cakeBirthday, title: "Birthday", subtitle: store.state.uiModel?.birthday ?? "-")
+                userInfoCell(image: UIImage.Icons.genderIcon, title: "profile_gender".localized, subtitle: store.state.uiModel?.gender?.title ?? "-")
+                userInfoCell(image: UIImage.Icons.cakeBirthday, title: "profile_birthday".localized, subtitle: store.state.uiModel?.birthday ?? "-")
                 userInfoCell(
-                    image: UIImage.Icons.globe01, title: "Languages",
+                    image: UIImage.Icons.globe01, title: "profile_languages".localized,
                     subtitle: store.state.uiModel?.languages?
                         .map({ $0.title })
                         .joined(separator: ", ") ?? "-"
@@ -272,7 +272,7 @@ struct ProfileDetailViewV2: View {
     private var activitySummaryCardContent: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
-                Text("Your activities")
+                Text("profile_your_activities".localized)
                     .font(Font.Typography.HeadingMd.medium)
                     .foregroundStyle(Color.Palette.green900)
                 Spacer()
@@ -409,7 +409,7 @@ struct ProfileDetailViewV2: View {
         let clubs = store.state.clubs
         VStack(spacing: 16) {
             if clubs.isEmpty {
-                emptyStateView(message: "No clubs yet")
+                emptyStateView(message: "profile_no_clubs".localized)
             } else {
                 ForEach(Array(clubs.enumerated()), id: \.element.uuid) { index, item in
                     if let view = clubsModule.makeCardView(
@@ -432,7 +432,7 @@ struct ProfileDetailViewV2: View {
         let events = store.state.events
         VStack(spacing: 16) {
             if events.isEmpty {
-                emptyStateView(message: "No events yet")
+                emptyStateView(message: "profile_no_events".localized)
             } else {
                 ForEach(Array(events.enumerated()), id: \.element.uuid) { index, item in
                     if let view = eventsModule.makeEventsCard(
@@ -458,7 +458,7 @@ struct ProfileDetailViewV2: View {
         let hangouts = store.state.hangouts
         VStack(spacing: 16) {
             if hangouts.isEmpty {
-                emptyStateView(message: "No hangouts yet")
+                emptyStateView(message: "profile_no_hangouts".localized)
             } else {
                 ForEach(Array(hangouts.enumerated()), id: \.element.uuid) { index, item in
                     if let view = hangoutsModule.makeHangoutsCard(

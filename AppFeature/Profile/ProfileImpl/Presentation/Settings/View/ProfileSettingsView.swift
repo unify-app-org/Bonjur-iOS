@@ -29,12 +29,13 @@ struct ProfileSettingsView: View {
                 }
             }
         }
-        .navigationTitle("Settings")
+        .navigationTitle("settings_title".localized)
         .toolbar(.visible)
         .onAppear {
             store.send(.fetchData)
         }
         .padding(.top, -10)
+        .localized()
     }
 }
 

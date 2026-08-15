@@ -17,6 +17,7 @@ enum ClubsEndPoint {
     case joinClub(Int)
     case assignRole(Int, ClubDTOModel.RoleAssignRequest)
     case exitClub(Int)
+    case requestVerify(Int)
 }
 
 extension ClubsEndPoint: AppEndPoint {
@@ -41,6 +42,8 @@ extension ClubsEndPoint: AppEndPoint {
             "api/cs/v1/clubs/\(id)/role"
         case .exitClub(let id):
             "api/cs/v1/clubs/\(id)/exit"
+        case .requestVerify(let id):
+            "api/cs/v1/clubs/verify/\(id)"
         }
     }
 
@@ -48,7 +51,8 @@ extension ClubsEndPoint: AppEndPoint {
         switch self {
         case .createClub,
                 .joinClub,
-                .assignRole:
+                .assignRole,
+                .requestVerify:
                 .post
         case .getCategories,
                 .getClubs,

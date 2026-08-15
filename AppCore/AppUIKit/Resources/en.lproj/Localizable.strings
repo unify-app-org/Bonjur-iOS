@@ -1,0 +1,38 @@
+/* Shared UI (AppUIKit) */
+"Filter" = "Filter";
+"All" = "All";
+"About" = "About";
+"Events" = "Events";
+"Members" = "Members";
+"Clubs" = "Clubs";
+"Hangouts" = "Hangouts";
+
+"Capacity" = "Capacity";
+"Created/Updated Date" = "Created/Updated Date";
+
+"Search" = "Search";
+"Remove" = "Remove";
+"Apply" = "Apply";
+"Owner" = "Owner";
+"Private" = "Private";
+"Public" = "Public";
+"filter_subtitle" = "Select your interests to find the perfect community events for you.";
+
+"President" = "President";
+"Vise president" = "Vice president";
+"Event creators" = "Event creators";
+
+"Member" = "Member";
+"Vice president" = "Vice president";
+"Creator" = "Creator";
+"Notification" = "Notification";
+
+"count_events" = "%d events";
+"count_members" = "%d members";
+"count_of_members" = "%d of %d members";
+"count_of" = "%d of %d";
+
+"count_clubs" = "%d clubs";
+
+"field_optional" = "(optional)";
+"field_write_something" = "Write something";

@@ -101,7 +101,7 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
         let name = state.uiModel?.name ?? "the event"
         if state.uiModel?.accessType == .private {
             AppSnackBar.show(
-                title: "Request sent",
+                title: "events_join_request_sent".localized,
                 subtitle: "\(name) will review your request",
                 style: .success
             )
@@ -117,14 +117,14 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
         AppAlertPresenter.present(
             .init(
                 config: .init(
-                    title: "Leave event?",
+                    title: "events_leave_title".localized,
                     subtitle: "Are you sure you want to leave this event? You will no longer be able to participate or see updates."
                 ),
                 actions: {
-                    AppAlert.Action(title: "Leave event", style: .destructive) { [weak self] in
+                    AppAlert.Action(title: "events_leave_confirm".localized, style: .destructive) { [weak self] in
                         self?.performExit()
                     }
-                    AppAlert.Action(title: "Cancel", style: .primary)
+                    AppAlert.Action(title: "common_cancel".localized, style: .primary)
                 }
             )
         )
@@ -137,14 +137,14 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
             do {
                 try await dependencies.useCase.exitEvent(eventId: inputData.eventId)
                 await MainActor.run {
-                    AppSnackBar.show(title: "You left the event", style: .success)
+                    AppSnackBar.show(title: "events_left".localized, style: .success)
                 }
                 await router.navigate(to: .backTapped)
             } catch {
                 await MainActor.run {
                     AppSnackBar.show(
-                        title: "Could not leave event",
-                        subtitle: "Please try again.",
+                        title: "events_leave_fail".localized,
+                        subtitle: "common_try_again".localized,
                         style: .error
                     )
                 }
@@ -156,8 +156,8 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
         let eventId = inputData.eventId
         let useCase = dependencies.useCase
         let input = CommunitiesMemberModuleModel.MembersListInput(
-            title: "Members",
-            titleOverrides: [.president: "Owner"],
+            title: "Members".localized,
+            titleOverrides: [.president: "events_owner_role".localized],
             pageSize: 20,
             loadPage: { page, size, keyword in
                 try await useCase.fetchEventMembersPage(
@@ -178,7 +178,7 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
                 currentUserId: KeychainImpl().getString(key: .userId),
                 onAssignRole: { _, _ in false },
                 onReport: { _, _ in
-                    await MainActor.run { AppSnackBar.show(title: "Report submitted", style: .success) }
+                    await MainActor.run { AppSnackBar.show(title: "events_report_submitted".localized, style: .success) }
                     return true
                 }
             )

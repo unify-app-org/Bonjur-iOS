@@ -66,7 +66,7 @@ final class HangoutCreateViewState: UIFeatureState {
     }
 
     var topTitle: String {
-        isEdit ? "Edit hangout" : "Create new hangouts"
+        isEdit ? "hangouts_edit_title".localized : "hangouts_create_title".localized
     }
 }
 

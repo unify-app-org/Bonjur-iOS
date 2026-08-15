@@ -87,11 +87,11 @@ final class GroupsListViewState: UIFeatureState {
         var caption: String {
             switch self {
             case .clubs:
-                return "Clubs you belong to or run. Members organise events and meet up."
+                return "groups_clubs_desc".localized
             case .events:
-                return "Events you've joined or requested. Each one is hosted by a club."
+                return "groups_events_desc".localized
             case .hangouts:
-                return "Casual, one-off meetups — no club needed. Anyone can start one."
+                return "groups_hangouts_desc".localized
             }
         }
 
@@ -99,19 +99,19 @@ final class GroupsListViewState: UIFeatureState {
         var emptyText: String {
             switch self {
             case .clubs:
-                return "You haven't joined or created any clubs yet. Explore communities or start your own."
+                return "groups_clubs_empty".localized
             case .events:
-                return "No events yet. Join a club to discover its events, or request to attend one."
+                return "groups_events_empty".localized
             case .hangouts:
-                return "No hangouts yet. They're casual meetups — start one and invite friends."
+                return "groups_hangouts_empty".localized
             }
         }
 
         var emptyButtonTitle: String {
             switch self {
-            case .clubs: return "Explore clubs"
-            case .events: return "Explore events"
-            case .hangouts: return "Start a hangout +"
+            case .clubs: return "groups_explore_clubs".localized
+            case .events: return "groups_explore_events".localized
+            case .hangouts: return "groups_start_hangout".localized
             }
         }
     }

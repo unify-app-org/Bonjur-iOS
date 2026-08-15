@@ -111,13 +111,13 @@ struct VerificationView: View {
         } else {
             HStack(spacing: 10) {
                 AppButton(
-                    title: "Reject",
+                    title: "notif_reject".localized,
                     model: .init(type: .destructive, contentSize: .fill, size: .small)
                 ) {
                     store.send(.reject(item))
                 }
                 AppButton(
-                    title: "Verify",
+                    title: "notif_verify".localized,
                     model: .init(type: .primary, contentSize: .fill, size: .small)
                 ) {
                     store.send(.verify(item))
@@ -165,11 +165,11 @@ struct VerificationView: View {
             Image(systemName: "exclamationmark.triangle")
                 .font(.system(size: 28))
                 .foregroundStyle(Color.Palette.graySecondary)
-            Text("Couldn't load verifications")
+            Text("notif_verifications_load_fail".localized)
                 .font(Font.Typography.BodyTextMd.semiBold)
                 .foregroundStyle(Color.Palette.black)
             Button { store.send(.retry) } label: {
-                Text("Try again")
+                Text("notif_try_again".localized)
                     .font(Font.Typography.BodyTextMd.semiBold)
                     .foregroundStyle(Color.Palette.green900)
             }
@@ -185,10 +185,10 @@ struct VerificationView: View {
             Image(systemName: "checkmark.seal.fill")
                 .font(.system(size: 30))
                 .foregroundStyle(Color.Palette.green900)
-            Text("Nothing to verify")
+            Text("notif_nothing_to_verify".localized)
                 .font(Font.Typography.BodyTextMd.semiBold)
                 .foregroundStyle(Color.Palette.black)
-            Text("All club verification requests are handled.")
+            Text("notif_all_handled".localized)
                 .font(Font.Typography.TextL.regular)
                 .foregroundStyle(Color.Palette.graySecondary)
                 .multilineTextAlignment(.center)

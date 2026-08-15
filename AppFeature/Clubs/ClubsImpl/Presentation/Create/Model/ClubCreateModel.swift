@@ -53,6 +53,8 @@ final class ClubCreateViewState: UIFeatureState {
     /// Post-create prompt: a brand-new club is unverified, and verification is
     /// the hard gate to creating events in it. Shown only on the create path.
     @Published var showVerifyPrompt: Bool = false
+    /// Id of the just-created club, used to fire the verify request from the prompt.
+    @Published var createdClubId: Int?
     @Published var categorySections: [SelectCategoryView.Section] = []
     @Published var disabledFieldIDs: Set<ClubsCreate.FieldID> = []
     @Published var values: [ClubsCreate.FieldID: ClubsCreate.FieldValue] = [
@@ -66,8 +68,14 @@ final class ClubCreateViewState: UIFeatureState {
             .filter(\.selected)
     }
     
+    /// A profile photo is mandatory: require a freshly-picked logo on create, or
+    /// an existing one on edit. Cover stays optional (a colour is used as fallback).
+    var hasProfilePhoto: Bool {
+        selectedLogo != nil || existingLogoURL != nil
+    }
+
     var isValid: Bool {
-        values.isValid(for: clubsCreateSchema)
+        hasProfilePhoto && values.isValid(for: clubsCreateSchema)
     }
 }
 

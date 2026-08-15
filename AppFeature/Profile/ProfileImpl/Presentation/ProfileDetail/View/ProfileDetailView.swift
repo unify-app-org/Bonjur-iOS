@@ -97,7 +97,7 @@ struct ProfileDetailView: View {
     private var userInfoView: some View {
         AppInfoContainer(alignment: .leading, spacing: 16) {
             HStack {
-                Text("About")
+                Text("About".localized)
                     .font(Font.Typography.HeadingMd.medium)
                     .foregroundStyle(Color.Palette.black)
                 
@@ -111,17 +111,17 @@ struct ProfileDetailView: View {
                     }
                 }
             }
-            Text(store.state.uiModel?.about ?? "No information")
+            Text(store.state.uiModel?.about ?? "profile_no_information".localized)
                 .font(Font.Typography.BodyTextSm.regular)
                 .foregroundStyle(Color.Palette.blackHigh)
             if store.state.uiModel?.tags.isEmpty == false {
                 chipsView(data: store.state.uiModel?.tags ?? [])
             }
             VStack(spacing: 21) {
-                userInfoCell(image: UIImage.Icons.genderIcon, title: "Gender", subtitle: store.state.uiModel?.gender?.title ?? "-")
-                userInfoCell(image: UIImage.Icons.cakeBirthday, title: "Birthday", subtitle: store.state.uiModel?.birthday ?? "-")
+                userInfoCell(image: UIImage.Icons.genderIcon, title: "profile_gender".localized, subtitle: store.state.uiModel?.gender?.title ?? "-")
+                userInfoCell(image: UIImage.Icons.cakeBirthday, title: "profile_birthday".localized, subtitle: store.state.uiModel?.birthday ?? "-")
                 userInfoCell(
-                    image: UIImage.Icons.globe01, title: "Languages",
+                    image: UIImage.Icons.globe01, title: "profile_languages".localized,
                     subtitle: store.state.uiModel?.languages?
                         .map({ $0.title })
                         .joined(separator: ", ") ?? "-"
@@ -260,7 +260,7 @@ struct ProfileDetailView: View {
         let clubs = store.state.clubs
         VStack(spacing: 16) {
             if clubs.isEmpty {
-                emptyStateView(message: "No clubs yet")
+                emptyStateView(message: "profile_no_clubs".localized)
             } else {
                 ForEach(Array(clubs.enumerated()), id: \.element.uuid) { index, item in
                     if let view = clubsModule.makeCardView(
@@ -283,7 +283,7 @@ struct ProfileDetailView: View {
         let events = store.state.events
         VStack(spacing: 16) {
             if events.isEmpty {
-                emptyStateView(message: "No events yet")
+                emptyStateView(message: "profile_no_events".localized)
             } else {
                 ForEach(Array(events.enumerated()), id: \.element.uuid) { index, item in
                     if let view = eventsModule.makeEventsCard(
@@ -309,7 +309,7 @@ struct ProfileDetailView: View {
         let hangouts = store.state.hangouts
         VStack(spacing: 16) {
             if hangouts.isEmpty {
-                emptyStateView(message: "No hangouts yet")
+                emptyStateView(message: "profile_no_hangouts".localized)
             } else {
                 ForEach(Array(hangouts.enumerated()), id: \.element.uuid) { index, item in
                     if let view = hangoutsModule.makeHangoutsCard(

@@ -30,7 +30,7 @@ final class EventDetailsHostController: UIFeatureController<
             }
         case .error(let error):
             showAlert(
-                title: error?.localizedDescription ?? "Something went wrong",
+                title: error?.localizedDescription ?? "common_something_went_wrong".localized,
                 subtitle: error?.detail
             )
         }
@@ -39,7 +39,7 @@ final class EventDetailsHostController: UIFeatureController<
     private func showAlert(
         title: String,
         subtitle: String?,
-        buttonTitle: String = "Got it"
+        buttonTitle: String = "common_got_it".localized
     ) {
         AppAlertPresenter.present(
             .init(

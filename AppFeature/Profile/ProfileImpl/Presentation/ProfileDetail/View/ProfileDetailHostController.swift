@@ -41,7 +41,7 @@ final class ProfileDetailHostController: UIFeatureController<
     private func showAlert(
         title: String,
         subtitle: String?,
-        buttonTitle: String = "Got it"
+        buttonTitle: String = "common_got_it".localized
     ) {
         AppAlertPresenter.present(
             .init(

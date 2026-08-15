@@ -8,6 +8,7 @@
 //
 
 import SwiftUI
+import AppFoundation
 import AppUIKit
 import AppPresentationModel
 
@@ -78,7 +79,7 @@ struct EventOptionsSheet: View {
             if showReport {
                 EventOptionRow(
                     systemIcon: "exclamationmark.circle",
-                    title: "Report event",
+                    title: "events_report".localized,
                     tint: Color.Palette.destructiveRed
                 ) { screen = .report }
                 rowDivider
@@ -87,7 +88,7 @@ struct EventOptionsSheet: View {
             if showExit {
                 EventOptionRow(
                     systemIcon: "rectangle.portrait.and.arrow.right",
-                    title: "Leave event",
+                    title: "events_leave_confirm".localized,
                     tint: Color.Palette.destructiveRed
                 ) {
                     dismiss()
@@ -98,7 +99,7 @@ struct EventOptionsSheet: View {
 
             EventOptionRow(
                 systemIcon: "square.and.arrow.up",
-                title: "Share",
+                title: "common_share".localized,
                 tint: Color.Palette.graySecondary,
                 trailing: "Coming soon",
                 isDisabled: true

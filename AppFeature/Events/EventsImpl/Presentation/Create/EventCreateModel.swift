@@ -85,7 +85,7 @@ final class EventCreateViewState: UIFeatureState {
     }
 
     var topTitle: String {
-        isEdit ? "Edit event" : "Create new event"
+        isEdit ? "events_edit_title".localized : "events_create_title".localized
     }
 }
 

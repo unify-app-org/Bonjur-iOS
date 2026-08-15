@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import AppFoundation
 import AppUIKit
 
 /// Modal preview of a single notification: image, title, body, optional note,
 /// and one CTA. Actionable notifications (`targetType != .none`) show
-/// "Continue" (deep-links to the target); the rest show "Close".
+/// "notif_continue".localized (deep-links to the target); the rest show "notif_close".localized.
 struct NotificationDetailView: View {
     let item: NotificationFeedItem
     let onContinue: () -> Void
@@ -85,7 +86,7 @@ struct NotificationDetailView: View {
 
     private func noteBox(_ note: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Note")
+            Text("notif_note".localized)
                 .font(Font.Typography.CaptionMd.medium)
                 .foregroundStyle(Color.Palette.graySecondary)
             Text(note)
@@ -108,7 +109,7 @@ struct NotificationDetailView: View {
         Button {
             isActionable ? onContinue() : onClose()
         } label: {
-            Text(isActionable ? "Continue" : "Close")
+            Text(isActionable ? "notif_continue".localized : "notif_close".localized)
                 .font(Font.Typography.BodyTextMd.semiBold)
                 .foregroundStyle(Color.Palette.green900)
                 .frame(maxWidth: .infinity)

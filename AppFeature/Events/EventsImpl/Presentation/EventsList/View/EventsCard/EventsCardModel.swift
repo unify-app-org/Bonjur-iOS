@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppFoundation
 import AppUIKit
 import Events
 
@@ -96,9 +97,9 @@ extension EventsCardView {
 
         var memberCountText: String {
             if let totalCapacity {
-                return "\(memberCount) of \(totalCapacity)"
+                return "count_of".localized(with: memberCount, totalCapacity)
             } else {
-                return "\(memberCount) members"
+                return "count_members".localized(with: memberCount)
             }
         }
     }

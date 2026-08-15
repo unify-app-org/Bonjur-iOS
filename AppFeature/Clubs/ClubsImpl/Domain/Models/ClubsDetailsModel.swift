@@ -92,7 +92,7 @@ extension ClubsDetailsModel.UIModel {
                 ]
             ),
             .init(
-                title: "Event info",
+                title: "Club info",
                 subItems: [
                     .init(
                         title: "Created/Updated Data",

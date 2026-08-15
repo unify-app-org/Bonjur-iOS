@@ -10,6 +10,7 @@
 //
 
 import SwiftUI
+import AppFoundation
 import AppUIKit
 import AppPresentationModel
 
@@ -86,7 +87,7 @@ struct ClubOptionsSheet: View {
             if showReport {
                 ClubOptionRow(
                     systemIcon: "exclamationmark.circle",
-                    title: "Report club",
+                    title: "clubs_report".localized,
                     tint: Color.Palette.destructiveRed
                 ) { screen = .report }
                 rowDivider
@@ -95,7 +96,7 @@ struct ClubOptionsSheet: View {
             if showExit {
                 ClubOptionRow(
                     systemIcon: "rectangle.portrait.and.arrow.right",
-                    title: "Exit club",
+                    title: "clubs_exit_confirm".localized,
                     tint: Color.Palette.destructiveRed
                 ) {
                     dismiss()
@@ -106,7 +107,7 @@ struct ClubOptionsSheet: View {
 
             ClubOptionRow(
                 systemIcon: "square.and.arrow.up",
-                title: "Share",
+                title: "common_share".localized,
                 tint: Color.Palette.graySecondary,
                 trailing: "Coming soon",
                 isDisabled: true

@@ -32,7 +32,7 @@ struct HangoutListView: View {
                 Spacer()
             }
         }
-        .navigationTitle("Hangouts")
+        .navigationTitle("hangouts_title".localized)
         .dismissKeyboardOnTap()
         .onAppear {
             store.send(.fetchData)
@@ -74,15 +74,15 @@ struct HangoutListView: View {
             AppEmptyView(
                 model: .init(
                     icon: UIImage.Icons.twoUsers,
-                    text: "No hangouts match your search. Try another name or clear your filters."
+                    text: "hangouts_search_empty".localized
                 )
             )
         } else {
             AppEmptyView(
                 model: .init(
                     icon: UIImage.Icons.twoUsers,
-                    text: "No hangouts yet. Be the pioneer and start the very first one now!",
-                    buttonTitle: "Create a hangout +"
+                    text: "hangouts_empty".localized,
+                    buttonTitle: "hangouts_create".localized
                 )
             ) {
                 store.send(.createTapped)
@@ -98,7 +98,7 @@ struct HangoutListView: View {
     @ViewBuilder
     private var topView: some View {
         VStack(spacing: 24) {
-//            Text("Hangouts")
+//            Text("hangouts_title".localized)
 //                .font(Font.Typography.TitleL.extraBold)
 //                .frame(maxWidth: .infinity, alignment: .leading)
 //                .padding(.horizontal)

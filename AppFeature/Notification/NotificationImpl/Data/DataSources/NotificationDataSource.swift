@@ -12,6 +12,7 @@ protocol NotificationDataSource {
     func fetchFeed(page: Int, size: Int) async throws(APIError) -> JoinRequestPage<NotificationDTO>
     func fetchUnreadCount() async throws(APIError) -> Int
     func markAllRead() async throws(APIError)
+    func markRead(id: String) async throws(APIError)
 }
 
 /// Live notification-service source (`api/ns`). Decodes the Spring `Page<T>`
@@ -29,5 +30,9 @@ final class NotificationNetworkDataSource: NetworkService<NotificationEndPoint>,
 
     func markAllRead() async throws(APIError) {
         _ = try await fetchRawData(endPoint: .readAll)
+    }
+
+    func markRead(id: String) async throws(APIError) {
+        _ = try await fetchRawData(endPoint: .readSingle(notificationId: id))
     }
 }

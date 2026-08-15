@@ -56,7 +56,7 @@ struct FacultyStudentListView: View {
     }
     
     private var emptyStateView: some View {
-        Text("No students available")
+        Text("comm_no_students_available".localized)
             .font(Font.Typography.BodyTextSm.regular)
             .foregroundStyle(Color.Palette.blackMedium)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -64,7 +64,7 @@ struct FacultyStudentListView: View {
     }
     
     private var emptySearchResultsView: some View {
-        Text("No students found")
+        Text("comm_no_students_found".localized)
             .font(Font.Typography.BodyTextSm.regular)
             .foregroundStyle(Color.Palette.blackMedium)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)

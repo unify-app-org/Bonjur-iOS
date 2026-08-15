@@ -35,7 +35,7 @@ struct NotificationView: View {
         .onFirstAppear {
             store.send(.fetchData)
         }
-        .navigationTitle("Notification")
+        .navigationTitle("Notification".localized)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -46,13 +46,13 @@ struct NotificationView: View {
                 }
             }
         }
-        .alert("Mark all as read?", isPresented: $showMarkAllAlert) {
-            Button("Cancel", role: .cancel) {}
-            Button("Mark all read") {
+        .alert("notif_mark_all_title".localized, isPresented: $showMarkAllAlert) {
+            Button("common_cancel".localized, role: .cancel) {}
+            Button("notif_mark_all_confirm".localized) {
                 store.send(.markAllRead)
             }
         } message: {
-            Text("This marks every notification as read.")
+            Text("notif_mark_all_read".localized)
         }
     }
 
@@ -83,7 +83,7 @@ struct NotificationView: View {
                 .frame(width: avatarSize, height: avatarSize)
 
                 VStack(alignment: .leading, spacing: 3) {
-                    Text("Needs your action")
+                    Text("notif_needs_action".localized)
                         .font(Font.Typography.BodyTextMd.semiBold)
                         .foregroundStyle(Color.Palette.black)
                     Text(bannerSubtitle)
@@ -108,7 +108,7 @@ struct NotificationView: View {
 
     private var bannerSubtitle: String {
         let action = store.state.uiModel.action
-        return "\(action.requests) join requests · \(action.verifications) to verify"
+        return "notif_action_subtitle".localized(with: action.requests, action.verifications)
     }
 
     // MARK: - Feed
@@ -169,13 +169,13 @@ struct NotificationView: View {
             Image(systemName: "exclamationmark.triangle")
                 .font(.system(size: 28))
                 .foregroundStyle(Color.Palette.graySecondary)
-            Text("Couldn't load notifications")
+            Text("notif_load_fail".localized)
                 .font(Font.Typography.BodyTextMd.semiBold)
                 .foregroundStyle(Color.Palette.black)
             Button {
                 store.send(.retry)
             } label: {
-                Text("Try again")
+                Text("notif_try_again".localized)
                     .font(Font.Typography.BodyTextMd.semiBold)
                     .foregroundStyle(Color.Palette.green900)
             }
@@ -189,10 +189,10 @@ struct NotificationView: View {
             Image(systemName: "bell")
                 .font(.system(size: 30))
                 .foregroundStyle(Color.Palette.graySecondary)
-            Text("No notifications yet")
+            Text("notif_no_notifications".localized)
                 .font(Font.Typography.BodyTextMd.semiBold)
                 .foregroundStyle(Color.Palette.black)
-            Text("Event reminders, request outcomes and more will show up here.")
+            Text("notif_empty_desc".localized)
                 .font(Font.Typography.TextL.regular)
                 .foregroundStyle(Color.Palette.graySecondary)
                 .multilineTextAlignment(.center)
@@ -309,9 +309,11 @@ private extension NotificationType {
 
     var iconBackground: Color {
         switch self {
-        case .birthday, .holiday:
+        case .birthday:
             return Color.Palette.cardBgTeritary.opacity(0.5)
         case .eventReminder, .requestOutcome, .verificationOutcome, .general:
+            return Color.Palette.grayQuaternary
+        default:
             return Color.Palette.grayQuaternary
         }
     }

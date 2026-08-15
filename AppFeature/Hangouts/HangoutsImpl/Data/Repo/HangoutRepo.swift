@@ -6,6 +6,7 @@
 //
 
 import AppNetwork
+import AppFoundation
 import AppUIKit
 import AppUtils
 import Communities
@@ -159,15 +160,15 @@ class HangoutRepoImpl: HangoutRepo {
         let membersCount = data.membersCount ?? 0
         var info: [HangoutDetails.Info] = []
 
-        appendSection(&info, title: "About", rows: [
+        appendSection(&info, title: "About".localized, rows: [
             row(title: nil, value: data.about)
         ])
 
-        appendSection(&info, title: "Event info", rows: [
-            row(title: "Date", value: meetupDate(data.hangoutDate)),
-            row(title: "Owner Contact", value: cleaned(data.ownerContact),
+        appendSection(&info, title: "hangouts_info_section".localized, rows: [
+            row(title: "hangouts_row_date".localized, value: meetupDate(data.hangoutDate)),
+            row(title: "hangouts_row_owner_contact".localized, value: cleaned(data.ownerContact),
                 phoneNumber: phoneNumber(data.ownerContact)),
-            row(title: "Capacity", value: capacityText(members: data.membersCount, capacity: data.capacity)),
+            row(title: "Capacity".localized, value: capacityText(members: data.membersCount, capacity: data.capacity)),
             row(title: "Rules", value: data.rules),
             row(title: "Location", value: data.location)
         ])
@@ -175,7 +176,7 @@ class HangoutRepoImpl: HangoutRepo {
         let linkRows = (data.links ?? []).map { link in
             row(title: link.name, value: link.url, isLink: true)
         }
-        appendSection(&info, title: "Links", rows: linkRows)
+        appendSection(&info, title: "hangouts_row_links".localized, rows: linkRows)
         let editPrefillData = HangoutsCreate.PrefillData(
             values: [
                 .visibility: .radio(data.visibility ?? .public),
@@ -212,16 +213,16 @@ class HangoutRepoImpl: HangoutRepo {
     }
 
     /// Join button for the detail screen. Hidden once accepted (by role or request
-    /// status); a pending request keeps a disabled "Request sent" button visible.
+    /// status); a pending request keeps a disabled "hangouts_join_request_sent".localized button visible.
     private func mapButtonModel(
         _ data: HangoutsDTOModel.HangoutDetail
     ) -> HangoutDetails.JoinButton? {
         let role = data.role ?? .notJoined
         guard role == .notJoined, data.requestStatus != .joined else { return nil }
         if data.requestStatus == .pending {
-            return .init(title: "Request sent", disabled: true)
+            return .init(title: "hangouts_join_request_sent".localized, disabled: true)
         }
-        let title = (data.visibility ?? .private) == .public ? "Join" : "Request"
+        let title = (data.visibility ?? .private) == .public ? "hangouts_join".localized : "hangouts_request".localized
         return .init(title: title, disabled: false)
     }
 

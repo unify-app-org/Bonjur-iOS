@@ -22,7 +22,7 @@ struct ClubVerifyPromptView: View {
                 .foregroundStyle(Color.Palette.appBlue)
                 .padding(.top, 8)
 
-            Text("Club created 🎉")
+            Text("clubs_created_title".localized)
                 .font(Font.Typography.TitleMd.extraBold)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Color.Palette.black)
@@ -35,12 +35,12 @@ struct ClubVerifyPromptView: View {
 
             VStack(spacing: 8) {
                 AppButton(
-                    title: "Request verification",
+                    title: "clubs_request_verification".localized,
                     model: .init(type: .primary, contentSize: .fill),
                     action: onRequestVerification
                 )
                 AppButton(
-                    title: "Later",
+                    title: "common_later".localized,
                     model: .init(type: .tertiary, contentSize: .fill),
                     action: onLater
                 )

@@ -1,0 +1,14 @@
+/* Discover module */
+"discover_communities" = "Communities";
+"discover_clubs" = "Clubs";
+"discover_events" = "Events";
+"discover_hangouts" = "Hangouts";
+"discover_view_all" = "view all";
+"discover_clubs_empty" = "No clubs here yet. Be the pioneer and start the very first one now!";
+"discover_events_empty" = "No events scheduled yet. Be the pioneer and start the very first one now!";
+"discover_hangouts_empty" = "No hangouts planned yet. Be the pioneer and start the very first one now!";
+"discover_create_club" = "Create a club +";
+"discover_create_event" = "Create an event +";
+"discover_create_hangout" = "Create a hangout +";
+"common_got_it" = "Got it";
+"common_unknown_error" = "Unknown error";

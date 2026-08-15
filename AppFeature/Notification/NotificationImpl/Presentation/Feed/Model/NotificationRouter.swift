@@ -12,7 +12,7 @@ import AppFoundation
 enum NotificationRoute {
     /// Modal preview of a single notification.
     case preview(NotificationFeedItem)
-    /// Pushes the "Needs your action" screen (join-request tabs).
+    /// Pushes the "notif_needs_action".localized screen (join-request tabs).
     case needsAction
 }
 
@@ -81,20 +81,29 @@ final class NotificationRouter: NotificationRouterProtocol {
         view?.present(nav, animated: true)
     }
 
-    // MARK: - Deep link (preview "Continue")
+    // MARK: - Deep link (preview "notif_continue".localized)
     
     @MainActor
     private func openTarget(of item: NotificationFeedItem) {
-        let notification = deepLinkNotification(for: item)
-        let host = view
-        view?.dismiss(animated: true) { [deepLinkManager] in
-            guard let notification else { return }
-            deepLinkManager.process(
-                notification: notification,
-                context: DeepLinkContext(
-                    navigationType: .overCurrentContext(topViewController: host)
+        switch item.type.tapDestination {
+        case .needsAction:
+            view?.dismiss(animated: true) { [weak self] in
+                self?.pushNeedsAction()
+            }
+        case .target:
+            let notification = deepLinkNotification(for: item)
+            let host = view
+            view?.dismiss(animated: true) { [deepLinkManager] in
+                guard let notification else { return }
+                deepLinkManager.process(
+                    notification: notification,
+                    context: DeepLinkContext(
+                        navigationType: .overCurrentContext(topViewController: host)
+                    )
                 )
-            )
+            }
+        case .none:
+            view?.dismiss(animated: true)
         }
     }
     
@@ -105,6 +114,8 @@ final class NotificationRouter: NotificationRouterProtocol {
         case .event: "event"
         case .club: "club"
         case .user: "user"
+        case .community: "community"
+        case .hangout: "hangout"
         case .none: nil
         }
         guard let identifier else { return nil }

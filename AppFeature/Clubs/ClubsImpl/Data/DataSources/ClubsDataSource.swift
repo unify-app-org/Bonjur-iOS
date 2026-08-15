@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppFoundation
 import AppNetwork
 
 protocol ClubsDataSource {
@@ -19,6 +20,7 @@ protocol ClubsDataSource {
     func joinClub(id: Int) async throws(APIError) -> Data
     func assignRole(id: Int, request: ClubDTOModel.RoleAssignRequest) async throws(APIError) -> Data
     func exitClub(id: Int) async throws(APIError) -> Data
+    func requestVerify(id: Int) async throws(APIError) -> Data
 }
 
 final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource {
@@ -35,10 +37,10 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
         [
             ClubsCreate.FieldSchema(
                 id: .cover,
-                label: "Choose a cover style for your club card",
+                label: "clubs_cover_card_label".localized,
                 type: .coverPicker(item: .init(
-                    title: "Choose a cover style for your club",
-                    description: "If you don’t upload a cover image, the selected color will be used as your club cover.",
+                    title: "clubs_cover_title".localized,
+                    description: "clubs_cover_desc".localized,
                     covers: [
                         .primary,
                         .secondary,
@@ -51,61 +53,61 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
             ),
             ClubsCreate.FieldSchema(
                 id: .visibility,
-                label: "Who can see your club?",
+                label: "clubs_visibility_q".localized,
                 type: .radioGroup(options: [
                     ClubsCreate.RadioOption(
                         value: .public,
-                        label: "Public",
-                        description: "This is a Public Club. Feel free to use the contact details below to get in touch with the organizers."
+                        label: "clubs_public".localized,
+                        description: "clubs_public_desc".localized
                     ),
                     ClubsCreate.RadioOption(
                         value: .private,
-                        label: "Private",
-                        description: "Contact details and group links are only visible to members. Join the club to access this information."
+                        label: "clubs_private".localized,
+                        description: "clubs_private_desc".localized
                     )
                 ])
             ),
             ClubsCreate.FieldSchema(
                 id: .clubName,
-                label: "Club name",
-                type: .text(placeholder: "Futbool Club")
+                label: "clubs_name_label".localized,
+                type: .text(placeholder: "clubs_name_ph".localized)
             ),
             ClubsCreate.FieldSchema(
                 id: .ownerContact,
-                label: "Owner contact",
+                label: "clubs_owner_contact_label".localized,
                 type: .text(placeholder: "+994 123 45 67")
             ),
             ClubsCreate.FieldSchema(
                 id: .category,
-                label: "Category",
-                type: .chipInput(placeholder: "Add category")
+                label: "clubs_category_label".localized,
+                type: .chipInput(placeholder: "clubs_add_category".localized)
             ),
             ClubsCreate.FieldSchema(
                 id: .links,
-                label: "Add link",
-                type: .linkInput(placeholder: "Add link"),
+                label: "clubs_add_link".localized,
+                type: .linkInput(placeholder: "clubs_add_link".localized),
                 required: false
             ),
             ClubsCreate.FieldSchema(
                 id: .capacity,
-                label: "Capasity",
-                type: .text(placeholder: "200"),
+                label: "clubs_capacity_label".localized,
+                type: .text(placeholder: "200", keyboardType: .numberPad),
                 required: false
             ),
             ClubsCreate.FieldSchema(
                 id: .location,
-                label: "Location",
-                type: .text(placeholder: "200")
+                label: "clubs_location_label".localized,
+                type: .text(placeholder: "clubs_location_ph".localized)
             ),
             ClubsCreate.FieldSchema(
                 id: .rules,
-                label: "Rules",
-                type: .textArea(placeholder: "Everyone can some",maxLength: 100)
+                label: "clubs_rules_label".localized,
+                type: .textArea(placeholder: "clubs_rules_ph".localized,maxLength: 100)
             ),
             ClubsCreate.FieldSchema(
                 id: .about,
-                label: "About",
-                type: .textArea(placeholder: "I want to have a coffee and then go...", maxLength: 100)
+                label: "clubs_about_label".localized,
+                type: .textArea(placeholder: "clubs_about_ph".localized, maxLength: 100)
             )
         ]
     }
@@ -146,5 +148,9 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
 
     func exitClub(id: Int) async throws(APIError) -> Data {
         try await fetchRawData(endPoint: .exitClub(id))
+    }
+
+    func requestVerify(id: Int) async throws(APIError) -> Data {
+        try await fetchRawData(endPoint: .requestVerify(id))
     }
 }

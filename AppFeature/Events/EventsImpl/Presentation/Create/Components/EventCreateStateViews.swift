@@ -4,7 +4,7 @@
 //
 //  Empty / error states for the create-event screen. `AppEmptyView` only
 //  supports one button, so the organizer empty state (which needs both
-//  "Create a club" and "Browse clubs") is a local view mirroring its style.
+//  "events_create_club".localized and "events_browse_clubs".localized) is a local view mirroring its style.
 //
 
 import SwiftUI
@@ -24,7 +24,7 @@ struct EventCreateEmptyView: View {
                 .background(Color.Palette.grayQuaternary)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
 
-            Text("No clubs to post to")
+            Text("events_no_clubs".localized)
                 .font(Font.Typography.BodyTextMd.medium)
                 .foregroundStyle(Color.Palette.black)
 
@@ -35,12 +35,12 @@ struct EventCreateEmptyView: View {
 
             VStack(spacing: 8) {
                 AppButton(
-                    title: "Create a club",
+                    title: "events_create_club".localized,
                     model: .init(type: .primary, contentSize: .fill, size: .small),
                     action: onCreateClub
                 )
                 AppButton(
-                    title: "Browse clubs",
+                    title: "events_browse_clubs".localized,
                     model: .init(type: .secondary, contentSize: .fill, size: .small),
                     action: onBrowseClubs
                 )
@@ -66,17 +66,17 @@ struct EventCreateErrorView: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            Text("Couldn't load your clubs")
+            Text("events_your_clubs_load_fail".localized)
                 .font(Font.Typography.BodyTextMd.medium)
                 .foregroundStyle(Color.Palette.black)
 
-            Text("Check your connection and try again.")
+            Text("events_check_connection".localized)
                 .font(Font.Typography.BodyTextSm.regular)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Color.Palette.blackMedium)
 
             AppButton(
-                title: "Retry",
+                title: "events_retry".localized,
                 model: .init(type: .secondary, contentSize: .fill, size: .small),
                 action: onRetry
             )

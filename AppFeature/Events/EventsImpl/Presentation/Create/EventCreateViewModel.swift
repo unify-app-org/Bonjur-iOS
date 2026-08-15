@@ -121,7 +121,7 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
         } catch {
             state.clubs = []
             state.clubsPhase = .failed
-            AppSnackBar.show(title: "Couldn't load clubs", style: .error)
+            AppSnackBar.show(title: "events_clubs_load_fail".localized, style: .error)
         }
     }
 
@@ -130,7 +130,7 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
             state.categorySections = try await dependencies.useCase.getCategories()
         } catch {
             state.categorySections = []
-            AppSnackBar.show(title: "Couldn't load categories", style: .error)
+            AppSnackBar.show(title: "events_categories_load_fail".localized, style: .error)
         }
     }
 
@@ -171,14 +171,14 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
                         request: multipart
                     )
                     AppSnackBar.show(
-                        title: "Event updated successfully",
+                        title: "events_updated".localized,
                         subtitle: name,
                         style: .success
                     )
                 } else {
                     try await dependencies.useCase.createEvent(request: multipart)
                     AppSnackBar.show(
-                        title: "Event created successfully",
+                        title: "events_created".localized,
                         subtitle: "\(name) · now active",
                         style: .success
                     )

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppLocalization
 
 public struct CapsuleSegmentedPicker<
     T: Hashable & CaseIterable & RawRepresentable
@@ -20,7 +21,7 @@ public struct CapsuleSegmentedPicker<
     public var body: some View {
         HStack(spacing: 4) {
             ForEach(Array(T.allCases), id: \.self) { item in
-                Text(item.rawValue)
+                Text(item.rawValue.localized)
                     .font(selection == item ? Font.Typography.TextL.semiBold : Font.Typography.TextL.regular)
                     .foregroundStyle(selection == item ? Color.Palette.blackHigh : Color.Palette.blackDisabled)
                     .frame(maxWidth: .infinity)

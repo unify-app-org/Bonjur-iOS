@@ -28,7 +28,6 @@ final class AppCoordinator {
     
     func start() {
 //        userDefaults.set(false, forKey: .isAuthenticated)
-        userDefaults.set(1, forKey: .communityId)
         let isAuthenticated = userDefaults.bool(forKey: .isAuthenticated)
         
         var apiClient: APIClientProtocol = dependencyContainer.resolve(
@@ -56,7 +55,7 @@ final class AppCoordinator {
     }
     
     @MainActor
-    func showTabBar() {
+    private func showTabBar() {
         let tabBarVC = AppTabBarBuilder(
             inputData: .init(),
             dependencyContainer: dependencyContainer

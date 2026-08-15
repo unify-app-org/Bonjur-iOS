@@ -149,7 +149,11 @@ struct HangoutDetailsView: View {
                     var transaction = Transaction(animation: .easeInOut(duration: 0.2))
                     transaction.disablesAnimations = false
                     withTransaction(transaction) {
-                        isNameVisible = minY > 0
+                        // The big title is the first scroll element, so at rest its
+                        // minY ≈ 0. Only treat it as hidden (and reveal the nav-bar
+                        // title) once it has scrolled up past ~its own height, so the
+                        // two titles never show at the same time.
+                        isNameVisible = minY > -36
                         isScrolled = minY <= 0
                     }
                 }
@@ -165,7 +169,7 @@ struct HangoutDetailsView: View {
     
     private var accessTypeBadge: some View {
         let isPrivate = store.state.uiModel?.accessType == .private
-        return Text(isPrivate ? "Private" : "Public")
+        return Text(isPrivate ? "Private".localized : "Public".localized)
             .font(Font.Typography.TextSm.medium)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
@@ -189,7 +193,7 @@ struct HangoutDetailsView: View {
     }
     
     private var memberCount: some View {
-        Text("\(store.state.uiModel?.membersCount ?? 0) members")
+        Text("count_members".localized(with: store.state.uiModel?.membersCount ?? 0))
             .font(Font.Typography.TextMd.regular)
             .foregroundStyle(Color.Palette.blackHigh)
     }
@@ -209,7 +213,7 @@ struct HangoutDetailsView: View {
     
     private var remindButton: some View {
         AppButton(
-            title: "Reminder",
+            title: "hangouts_reminder".localized,
             model: .init(
                 contentSize: .fill,
                 size: .medium
@@ -329,7 +333,7 @@ struct HangoutDetailsView: View {
     private func handleTap(on subItem: HangoutDetails.SubInfo) {
         if let phone = subItem.phoneNumber {
             UIPasteboard.general.string = phone
-            AppSnackBar.show(title: "Copied to clipboard")
+            AppSnackBar.show(title: "common_copied".localized)
         } else if subItem.isLink {
             openLink(subItem.description)
         }
@@ -401,7 +405,7 @@ struct HangoutDetailsView: View {
                 onExit: { store.send(.exitTapped) },
                 onReport: { _ in
                     await MainActor.run {
-                        AppSnackBar.show(title: "Report submitted", style: .success)
+                        AppSnackBar.show(title: "hangouts_report_submitted".localized, style: .success)
                     }
                     return true
                 }
@@ -423,7 +427,7 @@ struct HangoutDetailsView: View {
             onAssignRole: { _ in false },
             onReport: { _ in
                 await MainActor.run {
-                    AppSnackBar.show(title: "Report submitted", style: .success)
+                    AppSnackBar.show(title: "hangouts_report_submitted".localized, style: .success)
                 }
                 return true
             }

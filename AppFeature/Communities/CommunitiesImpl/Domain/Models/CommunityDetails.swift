@@ -81,7 +81,7 @@ extension CommunityDetails.UIModel {
                 ]
             ),
             .init(
-                title: "Event info",
+                title: "Community info",
                 subItems: [
                     .init(
                         title: "Created/Updated Data",

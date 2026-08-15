@@ -23,7 +23,7 @@ struct CommunityDTO {
         let clubUserRole: AppPresentationModel.UserActivityRole?
         let backgroundColour: AppPresentationModel.BackgroundType?
         let name: String
-        let ownerContact: String
+        let ownerContact: String?
         let location: String?
         let about: String
         let rule, backgroundUrl, logoUrl, modifiedAt: String?

@@ -26,7 +26,7 @@ struct NeedsActionView: View {
             pager
         }
         .background(Color.Palette.grayQuaternary.opacity(0.4))
-        .navigationTitle("Needs your action")
+        .navigationTitle("notif_needs_action".localized)
         .navigationBarTitleDisplayMode(.inline)
         .onFirstAppear {
             store.send(.onAppear)
@@ -49,7 +49,7 @@ struct NeedsActionView: View {
                 .frame(width: avatarSize, height: avatarSize)
 
                 VStack(alignment: .leading, spacing: 3) {
-                    Text("Verification requests")
+                    Text("notif_verification_requests".localized)
                         .font(Font.Typography.BodyTextMd.semiBold)
                         .foregroundStyle(Color.Palette.black)
                     Text("\(store.state.verificationCount) clubs awaiting your approval")
@@ -136,7 +136,7 @@ struct NeedsActionView: View {
             case .failed:
                 errorState(tab: tab)
             case .loaded:
-                comingSoon(title: "You're all caught up", subtitle: emptySubtitle)
+                comingSoon(title: "notif_all_caught_up".localized, subtitle: emptySubtitle)
             }
         }
     }
@@ -217,13 +217,13 @@ struct NeedsActionView: View {
         } else {
             HStack(spacing: 10) {
                 AppButton(
-                    title: "Reject",
+                    title: "notif_reject".localized,
                     model: .init(type: .destructive, contentSize: .fill, size: .small)
                 ) {
                     store.send(.reject(item))
                 }
                 AppButton(
-                    title: "Accept",
+                    title: "notif_accept".localized,
                     model: .init(type: .primary, contentSize: .fill, size: .small)
                 ) {
                     store.send(.accept(item))
@@ -277,13 +277,13 @@ struct NeedsActionView: View {
             Image(systemName: "exclamationmark.triangle")
                 .font(.system(size: 28))
                 .foregroundStyle(Color.Palette.graySecondary)
-            Text("Couldn't load requests")
+            Text("notif_requests_load_fail".localized)
                 .font(Font.Typography.BodyTextMd.semiBold)
                 .foregroundStyle(Color.Palette.black)
             Button {
                 store.send(.retry(tab))
             } label: {
-                Text("Try again")
+                Text("notif_try_again".localized)
                     .font(Font.Typography.BodyTextMd.semiBold)
                     .foregroundStyle(Color.Palette.green900)
             }

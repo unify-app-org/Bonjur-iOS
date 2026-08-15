@@ -18,7 +18,7 @@ protocol ClubsUseCase {
     func fetchCreateFields() async throws(APIError) -> [ClubsCreate.FieldSchema]
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
     func getFilterCategories() async throws(APIError) -> [FilterView.Model]
-    func createClub(request: MultipartFormData) async throws(APIError) -> Void
+    func createClub(request: MultipartFormData) async throws(APIError) -> Int?
     func fetchClubMemberById(
         id: Int
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData
@@ -42,6 +42,7 @@ protocol ClubsUseCase {
     ) async throws(APIError)
     func exitClub(id: Int) async throws(APIError)
     func clubHasVicePresident(id: Int) async throws(APIError) -> Bool
+    func requestVerify(id: Int) async throws(APIError)
 }
 
 class ClubsUseCaseImpl: ClubsUseCase {
@@ -76,7 +77,7 @@ class ClubsUseCaseImpl: ClubsUseCase {
         try await repo.getFilterCategories()
     }
 
-    func createClub(request: MultipartFormData) async throws(APIError) {
+    func createClub(request: MultipartFormData) async throws(APIError) -> Int? {
         try await repo.createClub(request: request)
     }
     
@@ -120,5 +121,9 @@ class ClubsUseCaseImpl: ClubsUseCase {
 
     func clubHasVicePresident(id: Int) async throws(APIError) -> Bool {
         try await repo.clubHasVicePresident(id: id)
+    }
+
+    func requestVerify(id: Int) async throws(APIError) {
+        try await repo.requestVerify(id: id)
     }
 }

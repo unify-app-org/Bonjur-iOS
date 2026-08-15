@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppFoundation
 import AppUIKit
 
 struct EventsCardView: View {
@@ -124,7 +125,7 @@ struct EventsCardView: View {
         let isPrivate = model.accessType == .private
         HStack(spacing: 8) {
             dateBadge
-            Text(isPrivate ? "Private" : "Public")
+            Text(isPrivate ? "Private".localized : "Public".localized)
                 .font(Font.Typography.TextSm.medium)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
@@ -154,7 +155,7 @@ struct EventsCardView: View {
     private var ownerBadge: some View {
         HStack(spacing: 4) {
             Text("👑")
-            Text("Owner")
+            Text("events_owner_role".localized)
                 .font(Font.Typography.TextSm.medium)
         }
         .foregroundStyle(Color.Palette.whiteHigh)
@@ -239,7 +240,7 @@ struct EventsCardView: View {
         case .joined:
             statusLabel(
                 icon: "checkmark",
-                text: "Participating",
+                text: "events_going".localized,
                 foreground: Color.Palette.green900,
                 background: Color.Palette.greenLight,
                 border: Color.Palette.secondary
@@ -247,7 +248,7 @@ struct EventsCardView: View {
         case .pending:
             statusLabel(
                 icon: "clock",
-                text: "Request sent",
+                text: "events_join_request_sent".localized,
                 foreground: Color.Palette.graySecondary,
                 background: Color.Palette.grayQuaternary,
                 border: Color.Palette.grayTeritary

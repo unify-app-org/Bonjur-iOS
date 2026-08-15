@@ -112,13 +112,17 @@ struct EventCreateView: View {
                 .coordinateSpace(name: "scroll")
 
                 AppButton(
-                    title: "Continue",
+                    title: "events_continue".localized,
                     model: .init(contentSize: .fill)
                 ) {
                     store.send(.continueTapped)
                 }
                 .disabled(!store.state.isValid)
-                .padding(.bottom, proxy.safeAreaInsets.bottom)
+                // Cap the bottom inset: when the keyboard opens the GeometryReader's
+                // safeAreaInsets.bottom balloons to the keyboard height, and adding it
+                // here (on top of SwiftUI's own avoidance) shoved the button up over the
+                // focused field. Clamp to the home-indicator inset like ClubCreateView.
+                .padding(.bottom, min(proxy.safeAreaInsets.bottom, 34))
                 .padding(.top)
                 .padding(.horizontal)
             }
@@ -178,18 +182,18 @@ struct EventCreateView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 16)
 
-            Text("Fields marked with * are required.")
+            Text("events_required_hint".localized)
                 .font(Font.Typography.BodyTextMd.regular)
                 .foregroundStyle(Color.Palette.appBlue)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 16)
 
             AppSelectorField(
-                title: "Choose club",
+                title: "events_choose_club".localized,
                 isRequired: true,
                 imageURL: store.state.selectedClub?.profileURL,
                 value: store.state.selectedClub?.clubName ?? "",
-                placeholder: "Select club",
+                placeholder: "events_select_club".localized,
                 isDisabled: store.state.isEdit,
                 onTap: { store.send(.selectClubTapped) }
             )

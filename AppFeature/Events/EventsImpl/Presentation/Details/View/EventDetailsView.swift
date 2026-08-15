@@ -157,7 +157,9 @@ struct EventDetailsView: View {
     
     private var headerContent: some View {
         CachedAsyncImage(url: store.state.uiModel?.coverImage) { image in
-            image.resizable()
+            image
+                .resizable()
+                .scaledToFill()
         } placeholder: {
             CardBackgroundView(cardType: .club) {}
                 .backgroundType(store.state.uiModel?.coverColorType ?? .primary)
@@ -194,7 +196,7 @@ struct EventDetailsView: View {
     private var attachmentsView: some View {
         let attachments = store.state.uiModel?.attachments ?? []
         VStack(alignment: .leading, spacing: 8) {
-            Text("Attachments")
+            Text("events_attachments".localized)
                 .font(Font.Typography.HeadingXl.medium)
                 .foregroundStyle(Color.Palette.black)
                 .frame(alignment: .leading)
@@ -207,8 +209,8 @@ struct EventDetailsView: View {
                 AppEmptyView(
                     model: .init(
                         icon: nil,
-                        text: "No attachments yet. You can upload files up to 15 MB total for this event.",
-                        buttonTitle: "Add +"
+                        text: "events_attachments_empty".localized,
+                        buttonTitle: "events_add_plus".localized
                     )
                 ) {
                     store.send(.editTapped)
@@ -239,7 +241,7 @@ struct EventDetailsView: View {
     
     private var accessTypeBadge: some View {
         let isPrivate = store.state.uiModel?.accessType == .private
-        return Text(isPrivate ? "Private" : "Public")
+        return Text(isPrivate ? "Private".localized : "Public".localized)
             .font(Font.Typography.TextSm.medium)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
@@ -263,7 +265,7 @@ struct EventDetailsView: View {
     }
     
     private var memberCount: some View {
-        Text("\(store.state.uiModel?.membersCount ?? 0) members")
+        Text("count_members".localized(with: store.state.uiModel?.membersCount ?? 0))
             .font(Font.Typography.TextMd.regular)
             .foregroundStyle(Color.Palette.blackHigh)
     }
@@ -283,7 +285,7 @@ struct EventDetailsView: View {
     
     private var remindButton: some View {
         AppButton(
-            title: "Reminder",
+            title: "events_reminder".localized,
             model: .init(
                 contentSize: .fill,
                 size: .medium
@@ -403,7 +405,7 @@ struct EventDetailsView: View {
     private func handleTap(on subItem: EventsDetailsModel.SubInfo) {
         if let phone = subItem.phoneNumber {
             UIPasteboard.general.string = phone
-            AppSnackBar.show(title: "Copied to clipboard")
+            AppSnackBar.show(title: "common_copied".localized)
         } else if subItem.isLink {
             openLink(subItem.description)
         }
@@ -475,7 +477,7 @@ struct EventDetailsView: View {
                 onExit: { store.send(.exitTapped) },
                 onReport: { _ in
                     await MainActor.run {
-                        AppSnackBar.show(title: "Report submitted", style: .success)
+                        AppSnackBar.show(title: "events_report_submitted".localized, style: .success)
                     }
                     return true
                 }
@@ -497,7 +499,7 @@ struct EventDetailsView: View {
             onAssignRole: { _ in false },
             onReport: { _ in
                 await MainActor.run {
-                    AppSnackBar.show(title: "Report submitted", style: .success)
+                    AppSnackBar.show(title: "events_report_submitted".localized, style: .success)
                 }
                 return true
             }

@@ -1,0 +1,31 @@
+/* Notification module */
+"notif_accept" = "Принять";
+"notif_reject" = "Отклонить";
+"notif_verify" = "Верифицировать";
+"notif_close" = "Закрыть";
+"notif_continue" = "Продолжить";
+"notif_try_again" = "Повторить";
+"notif_note" = "Заметка";
+"notif_needs_action" = "Требует действия";
+"notif_verification_requests" = "Запросы на верификацию";
+"notif_no_notifications" = "Пока нет уведомлений";
+"notif_nothing_to_verify" = "Нечего верифицировать";
+"notif_all_caught_up" = "Вы всё просмотрели";
+"notif_all_handled" = "Все запросы на верификацию обработаны.";
+"notif_empty_desc" = "Здесь появятся напоминания, результаты запросов и другое.";
+"notif_mark_all_read" = "Все уведомления будут отмечены как прочитанные.";
+"notif_reject_request" = "Отклонить запрос?";
+"notif_reject_verification" = "Отклонить верификацию?";
+"notif_load_fail" = "Не удалось загрузить уведомления";
+"notif_requests_load_fail" = "Не удалось загрузить запросы";
+"notif_verifications_load_fail" = "Не удалось загрузить верификации";
+
+"notif_action_subtitle" = "%d запросов · %d на проверку";
+
+"notif_mark_all_title" = "Отметить все как прочитанные?";
+"notif_mark_all_confirm" = "Отметить все";
+
+"notif_today" = "Сегодня";
+"notif_yesterday" = "Вчера";
+"notif_this_week" = "На этой неделе";
+"notif_earlier" = "Ранее";

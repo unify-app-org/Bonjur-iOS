@@ -63,7 +63,7 @@ struct FacultySelectionView: View {
     }
     
     private var emptyStateView: some View {
-        Text("No faculties found")
+        Text("comm_no_faculties".localized)
             .font(Font.Typography.HeadingMd.regular)
             .foregroundStyle(Color.Palette.blackMedium)
             .frame(maxWidth: .infinity)
@@ -73,7 +73,7 @@ struct FacultySelectionView: View {
     private var actionBar: some View {
         HStack(spacing: 12) {
             AppButton(
-                title: "Skip",
+                title: "comm_skip".localized,
                 model:.init(
                     type: .tertiary,
                     contentSize: .fit,
@@ -86,7 +86,7 @@ struct FacultySelectionView: View {
             
             
             AppButton(
-                title: "Next",
+                title: "comm_next".localized,
                 model: .init(contentSize: .fill)
             ) {
                 store.send(.nextTapped)
@@ -113,7 +113,7 @@ private let defaultPreviewViewModel: FacultySelectionViewModel = {
         state: .init(),
         router: PreviewFacultySelectionRouter(),
         inputData: .init(
-            title: "Add members",
+            title: "comm_add_members".localized,
             sectionTitle: "Faculty",
             mode: .preloadedMembers(
                 faculties: previewFaculties,

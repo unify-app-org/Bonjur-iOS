@@ -9,6 +9,7 @@
 //
 
 import SwiftUI
+import AppFoundation
 import AppUIKit
 import Communities
 import AppPresentationModel
@@ -76,7 +77,7 @@ struct MemberOptionsSheet: View {
             if input.showChangeRole {
                 MemberOptionRow(
                     systemIcon: "person.badge.minus",
-                    title: "Change role",
+                    title: "comm_change_role".localized,
                     tint: Color.Palette.black
                 ) { screen = .assignRole }
                 rowDivider
@@ -85,7 +86,7 @@ struct MemberOptionsSheet: View {
             if input.showReport {
                 MemberOptionRow(
                     systemIcon: "exclamationmark.circle",
-                    title: "Report user",
+                    title: "comm_report_user".localized,
                     tint: Color.Palette.destructiveRed
                 ) { screen = .report }
                 rowDivider
@@ -93,7 +94,7 @@ struct MemberOptionsSheet: View {
 
             MemberOptionRow(
                 systemIcon: "square.and.arrow.up",
-                title: "Share",
+                title: "common_share".localized,
                 tint: Color.Palette.graySecondary,
                 trailing: "Coming soon",
                 isDisabled: true
@@ -211,9 +212,9 @@ private struct AssignRoleScreen: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            SheetHeader(title: "Assign role", onBack: onBack)
+            SheetHeader(title: "comm_assign_role".localized, onBack: onBack)
 
-            Text("Choose a role for this member")
+            Text("comm_choose_role".localized)
                 .font(Font.Typography.BodyTextMd.regular)
                 .foregroundStyle(Color.Palette.graySecondary)
 
@@ -229,12 +230,12 @@ private struct AssignRoleScreen: View {
 
             HStack(spacing: 12) {
                 AppButton(
-                    title: "Cancel",
+                    title: "common_cancel".localized,
                     model: .init(type: .secondary, contentSize: .fill)
                 ) { onBack() }
 
                 AppButton(
-                    title: "Confirm",
+                    title: "comm_confirm".localized,
                     model: .init(type: .primary, contentSize: .fill)
                 ) { submit() }
                 .disabled(selected == input.currentRole || isSubmitting)
@@ -312,7 +313,7 @@ private struct ReportUserScreen: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SheetHeader(title: "Report user", onBack: onBack)
+            SheetHeader(title: "comm_report_user".localized, onBack: onBack)
                 .padding(.horizontal, 20)
 
             ScrollView(showsIndicators: false) {
@@ -329,7 +330,7 @@ private struct ReportUserScreen: View {
             }
 
             AppButton(
-                title: "Report",
+                title: "comm_report".localized,
                 model: .init(type: .destructive, style: .hover, contentSize: .fill)
             ) { submit() }
             .disabled(isSubmitting)

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import AppLocalization
 
 public struct FilterView: View {
     @StateObject private var viewModel: FilterViewModel
@@ -68,7 +69,7 @@ public struct FilterView: View {
                 viewModel.selectAll()
             }
         } label: {
-            Text("All")
+            Text("All".localized)
                 .foregroundStyle(Color.Palette.black)
                 .font(Font.Typography.TextL.regular)
                 .padding(.horizontal, 12)
@@ -94,7 +95,7 @@ public struct FilterView: View {
         } label: {
             HStack {
                 Image(uiImage: UIImage.Icons.filter04)
-                Text("Filter")
+                Text("Filter".localized)
                     .font(Font.Typography.TextL.regular)
                     .foregroundStyle(Color.Palette.black)
             }

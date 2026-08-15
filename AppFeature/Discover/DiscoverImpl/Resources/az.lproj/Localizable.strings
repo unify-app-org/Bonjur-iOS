@@ -1,0 +1,14 @@
+/* Discover module */
+"discover_communities" = "İcmalar";
+"discover_clubs" = "Klublar";
+"discover_events" = "Tədbirlər";
+"discover_hangouts" = "Görüşlər";
+"discover_view_all" = "hamısına bax";
+"discover_clubs_empty" = "Hələ klub yoxdur. Öncül ol və ilkini indi yarat!";
+"discover_events_empty" = "Hələ planlaşdırılmış tədbir yoxdur. Öncül ol və ilkini indi yarat!";
+"discover_hangouts_empty" = "Hələ planlaşdırılmış görüş yoxdur. Öncül ol və ilkini indi yarat!";
+"discover_create_club" = "Klub yarat +";
+"discover_create_event" = "Tədbir yarat +";
+"discover_create_hangout" = "Görüş yarat +";
+"common_got_it" = "Anladım";
+"common_unknown_error" = "Naməlum xəta";

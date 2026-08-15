@@ -91,7 +91,7 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
         let name = state.uiModel?.name ?? "the hangout"
         if state.uiModel?.accessType == .private {
             AppSnackBar.show(
-                title: "Request sent",
+                title: "hangouts_join_request_sent".localized,
                 subtitle: "\(name) will review your request",
                 style: .success
             )
@@ -107,14 +107,14 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
         AppAlertPresenter.present(
             .init(
                 config: .init(
-                    title: "Exit hangout?",
+                    title: "hangouts_exit_title".localized,
                     subtitle: "Are you sure you want to leave this hangout? You will no longer be able to participate or see updates."
                 ),
                 actions: {
-                    AppAlert.Action(title: "Exit hangout", style: .destructive) { [weak self] in
+                    AppAlert.Action(title: "hangouts_exit_confirm".localized, style: .destructive) { [weak self] in
                         self?.performExit()
                     }
-                    AppAlert.Action(title: "Cancel", style: .primary)
+                    AppAlert.Action(title: "common_cancel".localized, style: .primary)
                 }
             )
         )
@@ -127,14 +127,14 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
             do {
                 try await dependencies.useCase.exitHangout(id: inputData.hangoutId)
                 await MainActor.run {
-                    AppSnackBar.show(title: "You left the hangout", style: .success)
+                    AppSnackBar.show(title: "hangouts_left".localized, style: .success)
                 }
                 await router.navigate(to: .back)
             } catch {
                 await MainActor.run {
                     AppSnackBar.show(
-                        title: "Could not leave hangout",
-                        subtitle: "Please try again.",
+                        title: "hangouts_exit_fail".localized,
+                        subtitle: "common_try_again".localized,
                         style: .error
                     )
                 }
@@ -146,7 +146,7 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
         let hangoutId = inputData.hangoutId
         let useCase = dependencies.useCase
         let input = CommunitiesMemberModuleModel.MembersListInput(
-            title: "Members",
+            title: "Members".localized,
             titleOverrides: [.president: "Owner"],
             pageSize: 20,
             loadPage: { page, size, keyword in
@@ -168,7 +168,7 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
                 currentUserId: KeychainImpl().getString(key: .userId),
                 onAssignRole: { _, _ in false },
                 onReport: { _, _ in
-                    await MainActor.run { AppSnackBar.show(title: "Report submitted", style: .success) }
+                    await MainActor.run { AppSnackBar.show(title: "hangouts_report_submitted".localized, style: .success) }
                     return true
                 }
             )

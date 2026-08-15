@@ -1,0 +1,11 @@
+/* Groups / My activities */
+"groups_my_activities" = "My activities";
+"groups_clubs_desc" = "Clubs you belong to or run. Members organise events and meet up.";
+"groups_events_desc" = "Events you've joined or requested. Each one is hosted by a club.";
+"groups_hangouts_desc" = "Casual, one-off meetups — no club needed. Anyone can start one.";
+"groups_clubs_empty" = "You haven't joined or created any clubs yet. Explore communities or start your own.";
+"groups_events_empty" = "No events yet. Join a club to discover its events, or request to attend one.";
+"groups_hangouts_empty" = "No hangouts yet. They're casual meetups — start one and invite friends.";
+"groups_explore_clubs" = "Explore clubs";
+"groups_explore_events" = "Explore events";
+"groups_start_hangout" = "Start a hangout +";

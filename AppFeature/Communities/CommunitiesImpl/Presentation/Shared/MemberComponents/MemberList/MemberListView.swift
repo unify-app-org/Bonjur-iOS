@@ -7,6 +7,7 @@
 
 
 import SwiftUI
+import AppFoundation
 import Communities
 import Foundation
 import AppUIKit
@@ -261,7 +262,7 @@ private let selectablePreviewSections: [MemberListSectionViewData] = [
 private let clubMembersPreviewSections: [MemberListSectionViewData] = [
     .init(
         id: "owner",
-        title: "Owner",
+        title: "comm_owner_role".localized,
         memberCountText: nil,
         rows: [
             .init(member: previewMembers[0], accessory: .none)
@@ -271,7 +272,7 @@ private let clubMembersPreviewSections: [MemberListSectionViewData] = [
     ),
     .init(
         id: "president",
-        title: "President",
+        title: "comm_president".localized,
         memberCountText: nil,
         rows: [
             .init(member: previewMembers[1], accessory: .optionsMenu)
@@ -281,7 +282,7 @@ private let clubMembersPreviewSections: [MemberListSectionViewData] = [
     ),
     .init(
         id: "members",
-        title: "Members",
+        title: "Members".localized,
         memberCountText: nil,
         rows: [
             .init(member: previewMembers[2], accessory: .optionsMenu),

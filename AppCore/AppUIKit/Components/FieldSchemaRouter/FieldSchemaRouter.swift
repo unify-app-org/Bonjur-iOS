@@ -6,6 +6,7 @@
 //
 
 import AppPresentationModel
+import AppLocalization
 import AppUtils
 import SwiftUI
 import UIKit
@@ -863,7 +864,7 @@ private struct FieldLabel: View {
                     .font(Font.Typography.HeadingMd.medium)
                     .foregroundStyle(Color.Palette.green900)
             } else {
-                Text("(optional)")
+                Text("field_optional".localized)
                     .font(Font.Typography.BodyTextSm.regular)
                     .foregroundStyle(Color.Palette.blackMedium)
             }

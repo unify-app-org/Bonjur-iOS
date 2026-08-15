@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppFoundation
 import AppUIKit
 
 struct SelectClubView: View {
@@ -15,12 +16,12 @@ struct SelectClubView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Select club")
+            Text("events_select_club".localized)
                 .font(Font.Typography.HeadingXl.bold)
                 .foregroundStyle(Color.Palette.blackHigh)
                 .padding(.top, 8)
 
-            Text("Select the club where this event will be created.")
+            Text("events_select_club_hint".localized)
                 .font(Font.Typography.BodyTextSm.regular)
                 .foregroundStyle(Color.Palette.blackMedium)
                 .padding(.top, 8)

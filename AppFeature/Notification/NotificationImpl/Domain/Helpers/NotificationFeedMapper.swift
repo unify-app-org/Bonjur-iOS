@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppFoundation
 
 /// Maps notification-service rows into feed items and groups a flat page
 /// stream into the date buckets the feed renders (Today / Yesterday /
@@ -60,10 +61,10 @@ enum NotificationFeedMapper {
         }
 
         return [
-            ("Today", today),
-            ("Yesterday", yesterday),
-            ("This week", thisWeek),
-            ("Earlier", earlier)
+            ("notif_today".localized, today),
+            ("notif_yesterday".localized, yesterday),
+            ("notif_this_week".localized, thisWeek),
+            ("notif_earlier".localized, earlier)
         ]
         .filter { !$0.1.isEmpty }
         .map { NotificationSection(title: $0.0, items: $0.1) }

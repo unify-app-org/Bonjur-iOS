@@ -1,0 +1,11 @@
+/* Groups / My activities */
+"groups_my_activities" = "Fəaliyyətlərim";
+"groups_clubs_desc" = "Üzvü olduğunuz və ya idarə etdiyiniz klublar. Üzvlər tədbirlər təşkil edir və görüşür.";
+"groups_events_desc" = "Qoşulduğunuz və ya sorğu göndərdiyiniz tədbirlər. Hər biri bir klub tərəfindən keçirilir.";
+"groups_hangouts_desc" = "Sərbəst, birdəfəlik görüşlər — klub lazım deyil. Hər kəs başlada bilər.";
+"groups_clubs_empty" = "Hələ heç bir kluba qoşulmamısınız və ya yaratmamısınız. İcmaları araşdırın və ya öz klubunuzu yaradın.";
+"groups_events_empty" = "Hələ tədbir yoxdur. Tədbirləri kəşf etmək üçün kluba qoşulun və ya iştirak üçün sorğu göndərin.";
+"groups_hangouts_empty" = "Hələ görüş yoxdur. Onlar sərbəst görüşlərdir — birini başladın və dostları dəvət edin.";
+"groups_explore_clubs" = "Klublara bax";
+"groups_explore_events" = "Tədbirlərə bax";
+"groups_start_hangout" = "Görüş başlat +";

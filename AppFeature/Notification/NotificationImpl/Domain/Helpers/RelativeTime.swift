@@ -26,10 +26,44 @@ enum RelativeTime {
         return f
     }()
 
-    /// Parses a server `createdAt` string into a `Date`, or `nil` if unparseable.
+    /// The format notification-service actually emits: `19-08-2026 17:55:35`.
+    /// Same house audit stamp clubs/events/communities already parse
+    /// (`DateFormat.ddMMyyyyHHmmss`). No zone on the wire — it is server-local,
+    /// so it is read as device-local like everywhere else in the app.
+    private static let houseStamp: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.timeZone = .current
+        f.dateFormat = "dd-MM-yyyy HH:mm:ss"
+        return f
+    }()
+
+    /// Zone-less ISO stamps (`2026-06-27T12:30:00`) — the shape the API spec
+    /// documents. Not what the live feed sends today; kept as a fallback.
+    private static let zoneLessISO: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.timeZone = TimeZone(secondsFromGMT: 0)
+        f.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        return f
+    }()
+
+    /// Parses a server `createdAt` into a `Date`, or `nil` if unparseable.
+    /// House format first (that is what the feed sends), then the ISO shapes.
+    /// An unparseable stamp shows no time on the row and sinks it to the
+    /// "Earlier" bucket, so keep this tolerant.
     static func parse(_ string: String?) -> Date? {
         guard let string, !string.isEmpty else { return nil }
-        return isoFractional.date(from: string) ?? iso.date(from: string)
+        if let date = houseStamp.date(from: string) {
+            return date
+        }
+        // "2026-06-27 12:30:00" — space instead of the ISO `T`.
+        let normalized = string.replacingOccurrences(of: " ", with: "T")
+        if let date = isoFractional.date(from: normalized) ?? iso.date(from: normalized) {
+            return date
+        }
+        let withoutFraction = normalized.split(separator: ".").first.map(String.init) ?? normalized
+        return zoneLessISO.date(from: withoutFraction)
     }
 
     /// Compact relative stamp from `date` to `reference` (default: now).

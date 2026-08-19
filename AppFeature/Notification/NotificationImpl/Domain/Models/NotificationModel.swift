@@ -87,6 +87,9 @@ enum NotificationType {
     case requestHangout
     case rejectedUserFromHangout
     case acceptedUserFromHangout
+    case userJoinedPublicHangout
+
+    case userJoinedPublicClub
 
     case rejectedUserFromEvent
     case acceptedUserFromEvent
@@ -133,6 +136,12 @@ enum NotificationType {
 
         case "ACCEPTED_USER_FROM_HANGOUT":
             self = .acceptedUserFromHangout
+
+        case "USER_JOINED_PUBLIC_HANGOUT":
+            self = .userJoinedPublicHangout
+
+        case "USER_JOINED_PUBLIC_CLUB":
+            self = .userJoinedPublicClub
 
         case "REJECTED_USER_FROM_EVENT":
             self = .rejectedUserFromEvent
@@ -189,6 +198,12 @@ enum NotificationType {
         case .acceptedUserFromHangout:
             return "ACCEPTED_USER_FROM_HANGOUT"
 
+        case .userJoinedPublicHangout:
+            return "USER_JOINED_PUBLIC_HANGOUT"
+
+        case .userJoinedPublicClub:
+            return "USER_JOINED_PUBLIC_CLUB"
+
         case .rejectedUserFromEvent:
             return "REJECTED_USER_FROM_EVENT"
 
@@ -236,7 +251,8 @@ enum NotificationType {
              .rejectedUserFromClub, .acceptedUserFromClub,
              .verifiedClub, .rejectedClubVerification,
              .rejectedUserFromHangout, .acceptedUserFromHangout,
-             .rejectedUserFromEvent, .acceptedUserFromEvent:
+             .rejectedUserFromEvent, .acceptedUserFromEvent,
+             .userJoinedPublicClub, .userJoinedPublicHangout:
             return .target
         }
     }
@@ -284,6 +300,9 @@ enum NotificationType {
 
         case .acceptedUserFromHangout:
             return "person.badge.checkmark"
+
+        case .userJoinedPublicClub, .userJoinedPublicHangout:
+            return "person.3.fill"
 
         case .rejectedUserFromEvent:
             return "calendar.badge.minus"

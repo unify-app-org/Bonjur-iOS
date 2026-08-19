@@ -111,6 +111,10 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
             Task {
                 await joinHangout(id: id)
             }
+        case .joinEvent(let id):
+            Task {
+                await joinEvent(id: id)
+            }
         case .createTapped(let type):
             createTapped(type)
         }
@@ -209,6 +213,35 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         data: [HangoutsModuleModel.CardInputData]
     ) {
         state.uiModel.hangouts = data
+    }
+    
+    private func joinEvent(id: String) async {
+        postEffect(.loading(true))
+        defer {
+            postEffect(.loading(false))
+        }
+        do {
+            _ = try await dependencies.useCase.joinEvent(
+                request: .init(
+                    eventId: id
+                )
+            )
+            let data = try await dependencies.useCase.fetchEventsData(
+                query: .init(page: 0, size: hangoutsSize)
+            )
+            await handleJoinEvent(
+                data: data
+            )
+        } catch {
+            postEffect(.error(error))
+        }
+    }
+    
+    @MainActor
+    private func handleJoinEvent(
+        data: [EventsModuleModel.CardInputData]
+    ) {
+        state.uiModel.events = data
     }
     
     private func fetchInitialData() async -> InitialFetchResults {

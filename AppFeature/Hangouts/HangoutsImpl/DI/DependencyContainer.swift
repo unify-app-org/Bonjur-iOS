@@ -8,6 +8,7 @@
 import Foundation
 import Hangouts
 import DependecyInjection
+import AppFoundation
 
 func resolve<T>(
     _ type: T.Type = T.self
@@ -42,12 +43,18 @@ enum HangoutsDependencyContainer {
         registerDataSource()
         registerRepo()
         registerUseCase()
+        registerDeepLinks()
     }
     
     // MARK: - Dependencies Registration
     
     private static func registerHelpers() {
         
+    }
+    
+    private static func registerDeepLinks() {
+        let registrar = resolve(DeepLinkRegistrar.self)
+        registrar.register(router: HangoutsDeepLinkRouter())
     }
     
     private static func registerDataSource() {

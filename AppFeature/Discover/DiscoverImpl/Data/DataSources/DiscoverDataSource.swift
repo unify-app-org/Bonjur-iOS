@@ -35,6 +35,10 @@ protocol DiscoverDataSource {
     func joinHangout(
         request: Encodable
     ) async throws(APIError) -> Data
+    
+    func joinEvent(
+        id: String
+    ) async throws(APIError) -> Data
 }
 
 final class DiscoverDataSourceImpl: NetworkService<DiscoverEndPoint>, DiscoverDataSource {
@@ -77,5 +81,11 @@ final class DiscoverDataSourceImpl: NetworkService<DiscoverEndPoint>, DiscoverDa
         request: Encodable
     ) async throws(APIError) -> Data {
         try await fetchRawData(endPoint: .joinHangout(request))
+    }
+    
+    func joinEvent(
+        id: String
+    ) async throws(APIError) -> Data {
+        try await fetchRawData(endPoint: .joinEvent(id))
     }
 }

@@ -36,6 +36,10 @@ protocol DiscoverUseCase {
     func joinHangout(
         request: DiscoverDTOModel.JoinHangoutRequest
     ) async throws(APIError)
+    
+    func joinEvent(
+        request: DiscoverDTOModel.JoinEventRequest
+    ) async throws(APIError)
 }
 
 class DiscoverUseCaseImpl: DiscoverUseCase {
@@ -82,5 +86,11 @@ class DiscoverUseCaseImpl: DiscoverUseCase {
         request: DiscoverDTOModel.JoinHangoutRequest
     ) async throws(APIError) {
         try await repo.joinHangout(request: request)
+    }
+    
+    func joinEvent(
+        request: DiscoverDTOModel.JoinEventRequest
+    ) async throws(APIError) {
+        try await repo.joinEvent(request: request)
     }
 }

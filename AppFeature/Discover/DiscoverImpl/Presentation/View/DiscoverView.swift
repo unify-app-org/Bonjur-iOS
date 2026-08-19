@@ -282,7 +282,7 @@ struct DiscoverView: View {
                         store.send(.eventItemOnTap(id: item.id))
                     },
                     onButtonTap: {
-
+                        store.send(.joinEvent(id: item.id))
                     },
                     onClubTap: { clubId in
                         store.send(.clubItemOnTap(id: clubId))

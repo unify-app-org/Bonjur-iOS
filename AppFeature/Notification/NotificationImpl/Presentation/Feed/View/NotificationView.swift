@@ -19,9 +19,7 @@ struct NotificationView: View {
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 12) {
-                if store.state.uiModel.action.hasActions {
-                    actionBanner
-                }
+                actionBanner
                 feedContent
             }
             .padding(.horizontal, 16)
@@ -92,11 +90,13 @@ struct NotificationView: View {
                 }
 
                 Spacer(minLength: 8)
-
-                Circle()
-                    .fill(Color.Palette.destructiveRed)
-                    .frame(width: 10, height: 10)
-
+                
+                if store.state.uiModel.action.hasActions {
+                    Circle()
+                        .fill(Color.Palette.destructiveRed)
+                        .frame(width: 10, height: 10)
+                }
+                
                 Image(uiImage: .Icons.chevronRight)
                     .renderingMode(.template)
                     .foregroundStyle(Color.Palette.graySecondary)
@@ -221,6 +221,13 @@ struct NotificationView: View {
                     if let note = item.note, !note.isEmpty {
                         noteBox(note)
                     }
+                    let time = receivedAt(item)
+                    if !time.isEmpty {
+                        Text(time)
+                            .font(Font.Typography.TextSm.regular)
+                            .foregroundStyle(Color.Palette.graySecondary)
+                            .padding(.top, 2)
+                    }
                 }
                 Spacer(minLength: 8)
 
@@ -233,6 +240,13 @@ struct NotificationView: View {
             .cardStyle(radius: cardRadius)
         }
         .buttonStyle(.plain)
+    }
+
+    /// Relative "received" stamp. Recomputed at render so a screen left open
+    /// doesn't keep showing the value baked in at map time.
+    private func receivedAt(_ item: NotificationFeedItem) -> String {
+        guard let createdAt = item.createdAt else { return item.timeAgo }
+        return RelativeTime.short(from: createdAt)
     }
 
     @ViewBuilder

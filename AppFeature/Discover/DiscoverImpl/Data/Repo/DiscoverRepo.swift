@@ -41,6 +41,10 @@ protocol DiscoverRepo {
     func joinHangout(
         request: DiscoverDTOModel.JoinHangoutRequest
     ) async throws(APIError)
+    
+    func joinEvent(
+        request: DiscoverDTOModel.JoinEventRequest
+    ) async throws(APIError)
 }
 
 class DiscoverRepoImpl: DiscoverRepo {
@@ -218,5 +222,11 @@ class DiscoverRepoImpl: DiscoverRepo {
         request: DiscoverDTOModel.JoinHangoutRequest
     ) async throws(APIError) {
         let _ = try await dataSource.joinHangout(request: request)
+    }
+    
+    func joinEvent(
+        request: DiscoverDTOModel.JoinEventRequest
+    ) async throws(APIError) {
+        let _ = try await dataSource.joinEvent(id: request.eventId)
     }
 }

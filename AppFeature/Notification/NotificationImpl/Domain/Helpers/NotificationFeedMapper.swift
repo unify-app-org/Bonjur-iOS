@@ -21,7 +21,7 @@ enum NotificationFeedMapper {
             type: NotificationType(apiValue: dto.type ?? ""),
             title: dto.title ?? "",
             subtitle: dto.body ?? "",
-            note: dto.note,
+            note: dto.note ?? dto.metadata?.rejectionReason,
             imageURL: dto.imageUrl,
             timeAgo: createdAt.map { RelativeTime.short(from: $0) } ?? "",
             isRead: dto.isRead ?? true,
@@ -31,8 +31,32 @@ enum NotificationFeedMapper {
         )
     }
 
-    /// Buckets keep the incoming (server, newest-first) order within each
-    /// section; items without a parseable `createdAt` sink to "Earlier".
+    /// Newest first; rows missing `createdAt` keep their relative order and
+    /// sink to the bottom (they also bucket into "Earlier"). The server order
+    /// is not relied on — pages are concatenated as they load, so the merged
+    /// list has to be sorted client-side.
+    static func sorted(_ items: [NotificationFeedItem]) -> [NotificationFeedItem] {
+        // Pages can overlap when rows arrive between requests; a repeated id
+        // would render twice (and collide as an `Identifiable` id).
+        var seen = Set<String>()
+        let unique = items.filter { seen.insert($0.id).inserted }
+        return unique.enumerated().sorted { lhs, rhs in
+            switch (lhs.element.createdAt, rhs.element.createdAt) {
+            case let (l?, r?):
+                return l == r ? lhs.offset < rhs.offset : l > r
+            case (_?, nil):
+                return true
+            case (nil, _?):
+                return false
+            case (nil, nil):
+                return lhs.offset < rhs.offset
+            }
+        }
+        .map(\.element)
+    }
+
+    /// Buckets are filled newest-first; items without a parseable `createdAt`
+    /// sink to "Earlier".
     static func sections(from items: [NotificationFeedItem], now: Date = Date()) -> [NotificationSection] {
         let calendar = Calendar.current
         let startOfToday = calendar.startOfDay(for: now)
@@ -44,7 +68,7 @@ enum NotificationFeedMapper {
         var thisWeek: [NotificationFeedItem] = []
         var earlier: [NotificationFeedItem] = []
 
-        for item in items {
+        for item in sorted(items) {
             guard let date = item.createdAt else {
                 earlier.append(item)
                 continue

@@ -7,12 +7,15 @@
 
 import AppUIKit
 import AppNetwork
+import AppStorage
 import AppFoundation
+import AppPresentationModel
 
 final class NeedsActionViewModel: UIFeatureViewModel<NeedsActionFeature> {
 
     struct Dependencies {
         let useCase: NeedsActionUseCase
+        let userDefaults: UserDefaultsProtocol
     }
 
     private let router: NeedsActionRouterProtocol
@@ -71,10 +74,11 @@ final class NeedsActionViewModel: UIFeatureViewModel<NeedsActionFeature> {
     /// any failure (403 / network) → hide it. Doubles as the admin check.
     private func refreshVerificationBanner() {
         Task {
+            let isAdmin = dependencies.userDefaults.string(forKey: .userCommunityRole) == AppPresentationModel.UserActivityRole.president.rawValue
             if let count = try? await dependencies.useCase.fetchVerificationCount() {
-                await applyVerification(count: count, isAdmin: true)
+                await applyVerification(count: count, isAdmin: isAdmin)
             } else {
-                await applyVerification(count: 0, isAdmin: false)
+                await applyVerification(count: 0, isAdmin: isAdmin)
             }
         }
     }

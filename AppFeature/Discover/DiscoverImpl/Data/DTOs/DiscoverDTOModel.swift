@@ -138,4 +138,8 @@ struct DiscoverDTOModel {
     struct JoinHangoutRequest: Encodable {
         let hangoutId: String
     }
+    
+    struct JoinEventRequest: Encodable {
+        let eventId: String
+    }
 }

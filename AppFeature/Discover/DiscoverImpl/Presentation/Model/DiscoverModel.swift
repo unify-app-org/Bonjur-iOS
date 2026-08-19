@@ -75,5 +75,6 @@ enum DiscoverAction: UIFeatureAction {
     case hangoutsItemOnTap(id: String)
     case communityItemOnTap(id: Int)
     case joinHangout(id: String)
+    case joinEvent(id: String)
     case createTapped(AppUIEntities.ActivityType)
 }

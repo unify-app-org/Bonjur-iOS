@@ -20,7 +20,8 @@ struct NeedsActionBuilder {
             state: .init(),
             router: router,
             dependencies: .init(
-                useCase: resolve()
+                useCase: resolve(),
+                userDefaults: resolve()
             )
         )
 

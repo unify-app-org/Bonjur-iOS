@@ -16,6 +16,7 @@ enum DiscoverEndPoint {
     case getUser
     case getUserById(String)
     case joinHangout(Encodable)
+    case joinEvent(String)
 }
 
 extension DiscoverEndPoint: AppEndPoint {
@@ -38,6 +39,8 @@ extension DiscoverEndPoint: AppEndPoint {
             "api/us/v1/users/\(id)"
         case .joinHangout:
             "api/hs/v1/hangouts/join"
+        case .joinEvent(let id):
+            "api/es/v1/events/\(id)/join"
         }
     }
     
@@ -72,7 +75,8 @@ extension DiscoverEndPoint: AppEndPoint {
                 .getUser,
                 .getUserById:
                 .get
-        case .joinHangout:
+        case .joinHangout,
+                .joinEvent:
                 .post
         }
     }

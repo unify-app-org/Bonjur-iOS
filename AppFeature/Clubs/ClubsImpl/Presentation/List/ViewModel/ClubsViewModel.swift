@@ -91,11 +91,11 @@ final class ClubsViewModel: UIFeatureViewModel<ClubsFeature> {
     
     private func getClubs(showLoading: Bool = true) async throws {
         if showLoading {
-            postEffect(.loading(true))
+            state.isLoading = true
         }
         defer {
             if showLoading {
-                postEffect(.loading(false))
+                state.isLoading = false
             }
         }
         do {

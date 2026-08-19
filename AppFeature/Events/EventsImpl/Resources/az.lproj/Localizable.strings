@@ -73,3 +73,14 @@
 "events_reminder_desc" = "Üzvlər tədbirin başlama vaxtı barədə bildiriş alacaq.";
 "events_create_title" = "Yeni tədbir yarat";
 "events_edit_title" = "Tədbiri redaktə et";
+
+"events_request_again" = "Yenidən sorğu göndər";
+
+/* Reminder broadcast (one per day) */
+"events_reminder_unavailable" = "Sabah əlçatan olacaq";
+"events_reminder_send" = "Xatırlatma göndər";
+"events_reminder_warning_title" = "Xatırlatma göndərilsin?";
+"events_reminder_warning_subtitle" = "Gündə yalnız bir xatırlatma göndərə bilərsiniz. Göndərdikdən sonra bu düymə bir gün ərzində deaktiv olacaq.";
+"events_reminder_sent" = "Xatırlatma göndərildi";
+"events_reminder_sent_sub" = "Qrup məlumatlandırıldı. Növbətisini sabah göndərə bilərsiniz.";
+"events_reminder_fail" = "Xatırlatma göndərilmədi";

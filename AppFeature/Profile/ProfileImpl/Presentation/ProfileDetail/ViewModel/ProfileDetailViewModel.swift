@@ -151,7 +151,7 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
             Task {
                 let myId = await dependencies.tokenManager.getUserId()
                 if let id = inputData.userId, id != myId {
-                    state.navigationTitle = "About user"
+                    state.navigationTitle = "profile_about_user".localized
                     state.isOtherUser = true
                 }
             }

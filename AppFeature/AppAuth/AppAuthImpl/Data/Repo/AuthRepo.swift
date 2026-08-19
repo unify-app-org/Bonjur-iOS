@@ -10,6 +10,7 @@ import AppNetwork
 import AppUIKit
 import Foundation
 import AppUtils
+import AppPresentationModel
 
 protocol AuthRepo {
     func login(
@@ -66,6 +67,7 @@ class AuthRepoImpl: AuthRepo {
             idToken: idToken
         )
         let data = try await dataSource.login(body: body)
+        userDefaults.set(data.userCommunityRole.rawValue, forKey: .userCommunityRole)
         userDefaults.set(true, forKey: .isAuthenticated)
         userDefaults.set(communityId, forKey: .communityId)
         await tokenManager.saveAccessToken(data.accessToken)

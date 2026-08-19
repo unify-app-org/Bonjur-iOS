@@ -18,6 +18,7 @@ enum EventsEndPoint {
     case joinEvent(String)
     case editEvent(String, MultipartFormData)
     case exitEvent(String)
+    case sendReminder(String)
 }
 
 extension EventsEndPoint: AppEndPoint {
@@ -44,6 +45,8 @@ extension EventsEndPoint: AppEndPoint {
             "api/es/v1/events/\(id)"
         case .exitEvent(let id):
             "api/es/v1/events/\(id)/exit"
+        case .sendReminder(let id):
+            "api/es/v1/events/\(id)/reminder"
         }
     }
 
@@ -57,7 +60,8 @@ extension EventsEndPoint: AppEndPoint {
                 .clubEvents:
                 .get
         case .createEvent,
-                .joinEvent:
+                .joinEvent,
+                .sendReminder:
                 .post
         case .editEvent:
                 .put

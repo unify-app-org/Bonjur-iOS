@@ -431,8 +431,8 @@ struct CommunityDetailView: View {
             } else {
                 emptyView(
                     icon: UIImage.Icons.twoUsers,
-                    text: "This community has no clubs yet. Be the pioneer and start the very first one now!",
-                    buttonTitle: "comm_create_club".localized,
+                    text: "comm_clubs_empty".localized,
+                    buttonTitle: nil,
                     type: .clubs
                 )
                 .padding()
@@ -518,7 +518,7 @@ struct CommunityDetailView: View {
     private func emptyView(
         icon: UIImage,
         text: String,
-        buttonTitle: String,
+        buttonTitle: String?,
         type: AppUIEntities.ActivityType
     ) -> some View {
         AppEmptyView(

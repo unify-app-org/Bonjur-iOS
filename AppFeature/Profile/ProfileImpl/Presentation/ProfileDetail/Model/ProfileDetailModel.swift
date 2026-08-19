@@ -42,7 +42,7 @@ final class ProfileDetailViewState: UIFeatureState {
     @Published var events: [EventsModuleModel.CardInputData] = []
     @Published var hangouts: [HangoutsModuleModel.CardInputData] = []
     @Published var selectedSegment: SegmentTypes = .clubs
-    @Published var navigationTitle = "Profile"
+    @Published var navigationTitle = "profile_title".localized
     @Published var isOtherUser = false
     
     enum SegmentTypes: String, CaseIterable, Identifiable {

@@ -30,3 +30,5 @@
 "comm_view_all" = "view all";
 "comm_row_location" = "Location";
 "comm_row_rules" = "Rules";
+
+"comm_clubs_empty" = "This community has no clubs yet.";

@@ -45,6 +45,9 @@ final class MembersListViewState: UIFeatureState {
     @Published var isLoadingMore: Bool = false
     @Published var hasMore: Bool = true
     @Published var isEmpty: Bool = false
+    /// Number of members loaded so far. Used to re-identify the paging spinner so
+    /// its `onAppear` fires again for every page (otherwise paging stalls after one).
+    @Published var loadedCount: Int = 0
     /// Non-nil when the 3-dot options menu is enabled for this list.
     @Published var optionsConfig: CommunitiesMemberModuleModel.MemberOptionsConfig?
 }

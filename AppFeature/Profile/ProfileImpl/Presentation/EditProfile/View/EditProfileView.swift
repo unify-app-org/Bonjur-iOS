@@ -26,7 +26,7 @@ struct EditProfileView: View {
             }
             .scrollDismissesKeyboard(.interactively)
             AppButton(
-                title: "Save",
+                title: "editprofile_save".localized,
                 model: .init(
                     contentSize: .fill
                 )
@@ -35,7 +35,7 @@ struct EditProfileView: View {
             }
             .padding()
         }
-        .navigationTitle("Edit profile")
+        .navigationTitle("editprofile_title".localized)
         .onFirstAppear {
             store.send(.fetchData)
         }
@@ -80,9 +80,9 @@ struct EditProfileView: View {
         ) {
             SelectableListView(
                 items: $store.state.languages,
-                title: "Select spoken language",
-                subtitle: "Select languages you know",
-                doneTitle: "Select",
+                title: "editprofile_select_spoken".localized,
+                subtitle: "editprofile_select_known".localized,
+                doneTitle: "editprofile_select".localized,
                 onBack: {
                     store.send(.dismissLanguagePicker)
                 },
@@ -138,36 +138,36 @@ struct EditProfileView: View {
         VStack(spacing: 16) {
             AppTextField(
                 text: $store.state.name,
-                placeHolder: "Name and surname",
-                model: .init(title: "Name and surname")
+                placeHolder: "editprofile_name".localized,
+                model: .init(title: "editprofile_name".localized)
             )
             .disabled(true)
             
             AppTextField(
                 text: $store.state.faculty,
-                placeHolder: "Faculty",
-                model: .init(title: "Faculty")
+                placeHolder: "editprofile_faculty".localized,
+                model: .init(title: "editprofile_faculty".localized)
             )
             .disabled(true)
             
             AppTextField(
                 text: $store.state.community,
-                placeHolder: "University",
-                model: .init(title: "University")
+                placeHolder: "editprofile_university".localized,
+                model: .init(title: "editprofile_university".localized)
             )
             .disabled(true)
             
             AppTextField(
                 text: $store.state.entry,
-                placeHolder: "Entry",
-                model: .init(title: "Entry")
+                placeHolder: "editprofile_entry".localized,
+                model: .init(title: "editprofile_entry".localized)
             )
             .disabled(true)
             
             AppTextField(
                 text: $store.state.course,
-                placeHolder: "Course",
-                model: .init(title: "Course")
+                placeHolder: "editprofile_course".localized,
+                model: .init(title: "editprofile_course".localized)
             )
             .disabled(true)
         }
@@ -179,7 +179,7 @@ struct EditProfileView: View {
             TextView(
                 text: $store.state.about,
                 characterLimit: 150,
-                model: .init(title: "About")
+                model: .init(title: "profile_about".localized)
             )
             
             genderPicker
@@ -200,8 +200,8 @@ struct EditProfileView: View {
             )
             
             SelectionChipsField(
-                title: "Spoken languages",
-                addTitle: "Add language",
+                title: "editprofile_spoken_languages".localized,
+                addTitle: "editprofile_add_language".localized,
                 items: store.state.selectedLanguages,
                 onAdd: {
                     store.send(.addLanguageTapped)
@@ -216,7 +216,7 @@ struct EditProfileView: View {
     
     private var genderPicker: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Choose gender")
+            Text("editprofile_choose_gender".localized)
                 .font(Font.Typography.HeadingMd.medium)
                 .foregroundStyle(Color.Palette.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -254,7 +254,7 @@ struct EditProfileView: View {
     
     private var datePicker: some View {
         DatePicker(
-            "Select Date",
+            "editprofile_select_date".localized,
             selection: Binding(
                 get: { store.state.birthDate ?? Date() },
                 set: { store.send(.birthDateChanged($0)) }

@@ -43,7 +43,7 @@ struct AuthOptionalBirthdayView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundStyle(Color.Palette.blackHigh)
                 } else {
-                    Text("Date of birth")
+                    Text("auth_birthday_placeholder".localized)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundStyle(Color.Palette.blackDisabled)
                 }
@@ -57,12 +57,12 @@ struct AuthOptionalBirthdayView: View {
     
     private var topView: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Your Birthday")
+            Text("auth_birthday_title".localized)
                 .font(Font.Typography.TitleXl.extraBold)
                 .foregroundStyle(Color.Palette.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
-            Text("Whats your date of birth?")
+            Text("auth_birthday_subtitle".localized)
                 .font(Font.Typography.BodyTextMd.regular)
                 .foregroundStyle(Color.Palette.grayPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)

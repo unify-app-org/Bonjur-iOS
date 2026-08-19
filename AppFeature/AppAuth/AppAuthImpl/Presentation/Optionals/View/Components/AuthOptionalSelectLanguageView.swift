@@ -15,8 +15,8 @@ struct AuthOptionalSelectLanguageView: View {
     var body: some View {
         SelectableListView(
             items: $store.state.langauges,
-            title: "Which language do you know?",
-            subtitle: "Select languages you know",
+            title: "auth_languages_title".localized,
+            subtitle: "auth_languages_subtitle".localized,
             showsBackButton: false,
             showsDoneButton: false
         )

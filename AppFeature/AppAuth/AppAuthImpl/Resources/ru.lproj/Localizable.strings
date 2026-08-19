@@ -1,0 +1,65 @@
+/* Common auth actions */
+"auth_next" = "Далее";
+"auth_back" = "Назад";
+"auth_skip" = "Пропустить";
+"auth_continue" = "Продолжить";
+"auth_got_it" = "Понятно";
+"auth_okay" = "Хорошо";
+
+/* Choose university */
+"auth_choose_university_title" = "Выберите \nуниверситет";
+"auth_choose_university_subtitle" = "В каком университете вы учитесь?";
+
+/* Sign in */
+"auth_sign_in_title" = "Вход";
+"auth_sign_in_subtitle" = "Продолжайте, только если вы скачали приложение из надёжного магазина или с надёжного сайта.";
+"auth_sign_in_button" = "Войти";
+"auth_email" = "Эл. почта";
+"auth_email_placeholder" = "Введите эл. почту";
+"auth_password" = "Пароль";
+"auth_password_placeholder" = "Введите пароль";
+"auth_microsoft_failed" = "Не удалось войти через Microsoft";
+
+/* Optional info — photo */
+"auth_photo_title" = "Ваше фото профиля";
+"auth_photo_subtitle" = "Загрузите фото, чтобы начать";
+"auth_photo_add" = "Добавить";
+"auth_photo_change" = "Изменить";
+
+/* Optional info — birthday */
+"auth_birthday_title" = "Ваш день рождения";
+"auth_birthday_subtitle" = "Какая у вас дата рождения?";
+"auth_birthday_placeholder" = "Дата рождения";
+"auth_select_date" = "Выберите дату";
+
+/* Optional info — gender */
+"auth_gender_title" = "Ваш пол";
+"auth_gender_subtitle" = "Выберите ваш пол";
+
+/* Optional info — languages */
+"auth_languages_title" = "Какие языки вы знаете?";
+"auth_languages_subtitle" = "Выберите языки, которые вы знаете";
+
+/* Optional info — bio */
+"auth_bio_title" = "О вас";
+"auth_bio_subtitle" = "Напишите что-нибудь о себе";
+
+/* Optional info — interests */
+"auth_interests_title" = "Ваши интересы";
+"auth_interests_subtitle" = "Выберите, что вам интересно";
+
+/* Onboarding slides */
+"auth_onboarding_1_title" = "Найди \nсвоих людей";
+"auth_onboarding_1_subtitle" = "Присоединяйся к университетскому сообществу и знакомься с единомышленниками.";
+"auth_onboarding_2_title" = "Общайся \nпо-своему";
+"auth_onboarding_2_subtitle" = "Отправляй сообщения и делись идеями мгновенно — через любимые приложения.";
+"auth_onboarding_3_title" = "Настрой \nпод себя";
+"auth_onboarding_3_subtitle" = "Настрой внешний вид приложения и общайся так, как удобно тебе.";
+
+/* Welcome */
+"auth_welcome_title" = "Добро пожаловать";
+"auth_welcome_subtitle" = "Заполните профиль для лучшего взаимодействия. Это займёт всего 5 минут.";
+
+/* Gender options */
+"auth_gender_female" = "Женский";
+"auth_gender_male" = "Мужской";

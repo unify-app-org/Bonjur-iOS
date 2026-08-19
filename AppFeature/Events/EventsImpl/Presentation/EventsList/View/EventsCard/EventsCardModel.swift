@@ -67,30 +67,33 @@ extension EventsCardView {
 
         /// President is treated as the owner of the event's club.
         var isOwner: Bool { role == .president }
-        
+
+        /// The user actually belongs to the event (accepted request or a role).
+        var isMember: Bool {
+            requestType == .joined || (role ?? .notJoined) != .notJoined
+        }
+
         var buttonTitle: String {
             switch requestType {
-            case .joined:
-                return "Participating"
             case .rejected:
-                return "Request again"
+                return "events_request_again".localized
             case .pending:
-                return "Request sent"
-            case .none:
+                return "events_join_request_sent".localized
+            case .joined, .none:
                 switch accessType {
                 case .public:
-                    return "Join"
+                    return "events_join".localized
                 case .private:
-                    return "Request"
+                    return "events_request".localized
                 }
             }
         }
 
         var buttonDisabled: Bool {
             switch requestType {
-            case .joined, .pending:
+            case .pending:
                 true
-            case .none, .rejected:
+            case .joined, .none, .rejected:
                 false
             }
         }

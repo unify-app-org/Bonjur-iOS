@@ -8,6 +8,9 @@
 
 public enum UserDefultsKeys: String {
     case isDarkModeEnabled
+    case userCommunityRole
     case isAuthenticated
     case communityId
+    /// User ticked "Don't show again" on the event reminder warning alert.
+    case hideEventReminderWarning
 }

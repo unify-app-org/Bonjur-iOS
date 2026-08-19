@@ -53,7 +53,16 @@ final class ProfileSettingsViewModel: UIFeatureViewModel<ProfileSettingsFeature>
         case .didTapLogOut:
             Task {@MainActor in router.navigate(to: .logout)}
         case .didToggleNotification(let isOn):
-            state.notificationsEnabled = isOn
+            didToggleNotification(isOn)
+        }
+    }
+    
+    private func didToggleNotification(_ isOn: Bool) {
+        state.notificationsEnabled = isOn
+        if isOn {
+            UIApplication.shared.registerForRemoteNotifications()
+        } else {
+            UIApplication.shared.unregisterForRemoteNotifications()
         }
     }
     

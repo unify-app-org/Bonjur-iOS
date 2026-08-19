@@ -142,5 +142,6 @@ final class MembersListViewModel: UIFeatureViewModel<MembersListFeature> {
                 : .browse(id: "section-\(index)", section: section)
         }
         state.isEmpty = users.isEmpty
+        state.loadedCount = users.count
     }
 }

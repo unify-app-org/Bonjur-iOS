@@ -36,3 +36,16 @@
 
 "field_optional" = "(istəyə bağlı)";
 "field_write_something" = "Nəsə yazın";
+
+"common_coming_soon" = "Tezliklə";
+
+"count_students" = "%d tələbə";
+"count_see_all_members" = "Bütün %d üzvə bax";
+
+/* Language picker (shared) */
+"language_title" = "Dil";
+"language_english" = "İngilis dili";
+"language_azerbaijan" = "Azərbaycan dili";
+"language_russian" = "Rus dili";
+
+"common_dont_show_again" = "Bunu bir daha göstərmə";

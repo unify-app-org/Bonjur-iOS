@@ -16,6 +16,7 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
 
     struct Dependencies {
         let useCase: EventsUseCase
+        let userDefaults: UserDefaultsProtocol
     }
 
     private struct InitialFetchResults {
@@ -78,6 +79,10 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
             Task {
                 await joinEvent()
             }
+        case .remindTapped:
+            Task { @MainActor in
+                remindTapped()
+            }
         }
     }
 
@@ -95,7 +100,6 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
         }
     }
 
-    /// Public events join immediately; private events create a pending request.
     @MainActor
     private func showJoinSnackBar() {
         let name = state.uiModel?.name ?? "the event"
@@ -107,6 +111,69 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
             )
         } else {
             AppSnackBar.show(title: "Joined \(name)", style: .success)
+        }
+    }
+
+    // MARK: - Reminder flow
+    @MainActor
+    private func remindTapped() {
+        guard state.uiModel?.isReminderSent != true else { return }
+
+        guard !dependencies.userDefaults.bool(forKey: .hideEventReminderWarning) else {
+            sendReminder()
+            return
+        }
+
+        var suppressWarning = false
+        AppAlertPresenter.present(
+            .init(
+                config: .init(
+                    title: "events_reminder_warning_title".localized,
+                    subtitle: "events_reminder_warning_subtitle".localized,
+                    checkbox: .init(title: "common_dont_show_again".localized) { isOn in
+                        suppressWarning = isOn
+                    }
+                ),
+                actions: {
+                    AppAlert.Action(title: "common_cancel".localized, style: .secondary)
+                    AppAlert.Action(title: "events_reminder_send".localized, style: .primary) { [weak self] in
+                        guard let self else { return }
+                        if suppressWarning {
+                            self.dependencies.userDefaults.set(true, forKey: .hideEventReminderWarning)
+                        }
+                        self.sendReminder()
+                    }
+                }
+            )
+        )
+    }
+    
+    /// Broadcast the reminder to the group. `POST api/es/v1/events/{id}/reminder`
+    /// returns no body, so the spent state is re-read from the detail endpoint
+    /// (`isReminder`) instead of assumed locally — the server owns the daily window.
+    private func sendReminder() {
+        Task {
+            postEffect(.loading(true))
+            defer { postEffect(.loading(false)) }
+            do {
+                try await dependencies.useCase.sendReminder(eventId: inputData.eventId)
+                await MainActor.run {
+                    AppSnackBar.show(
+                        title: "events_reminder_sent".localized,
+                        subtitle: "events_reminder_sent_sub".localized,
+                        style: .success
+                    )
+                }
+                fetchData()
+            } catch {
+                await MainActor.run {
+                    AppSnackBar.show(
+                        title: "events_reminder_fail".localized,
+                        subtitle: "common_try_again".localized,
+                        style: .error
+                    )
+                }
+            }
         }
     }
 

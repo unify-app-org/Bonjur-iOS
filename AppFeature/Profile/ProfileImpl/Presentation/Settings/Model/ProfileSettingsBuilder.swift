@@ -32,6 +32,7 @@ struct ProfileSettingsBuilder {
         ) { store in
             ProfileSettingsView(store: store)
         }
+        controller.hidesBottomBarWhenPushed = true
         
         router.view = controller
         return controller

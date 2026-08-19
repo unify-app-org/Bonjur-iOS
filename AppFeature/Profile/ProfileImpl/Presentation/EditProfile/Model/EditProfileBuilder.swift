@@ -32,6 +32,7 @@ struct EditProfileBuilder {
         ) { store in
             EditProfileView(store: store)
         }
+        controller.hidesBottomBarWhenPushed = true
         
         router.view = controller
         return controller

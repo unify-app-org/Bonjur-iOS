@@ -36,3 +36,16 @@
 
 "field_optional" = "(необязательно)";
 "field_write_something" = "Напишите что-нибудь";
+
+"common_coming_soon" = "Скоро";
+
+"count_students" = "%d студентов";
+"count_see_all_members" = "Показать всех (%d)";
+
+/* Language picker (shared) */
+"language_title" = "Язык";
+"language_english" = "Английский";
+"language_azerbaijan" = "Азербайджанский";
+"language_russian" = "Русский";
+
+"common_dont_show_again" = "Больше не показывать";

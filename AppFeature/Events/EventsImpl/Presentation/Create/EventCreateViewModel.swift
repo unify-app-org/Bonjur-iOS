@@ -9,6 +9,7 @@ import AppFoundation
 import AppNetwork
 import AppUIKit
 import Foundation
+import UIKit
 
 final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
 
@@ -157,6 +158,7 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
     // MARK: - Submit
 
     private func continueTapped() {
+        UIApplication.shared.endEditing()
         guard let clubId = state.selectedClub?.clubId else { return }
         Task {
             postEffect(.loading(true))

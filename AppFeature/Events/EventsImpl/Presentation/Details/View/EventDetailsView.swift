@@ -185,35 +185,56 @@ struct EventDetailsView: View {
             memberCount
             VStack(spacing: 8) {
                 chipsView
-                remindButton
+                // Reminder is an organizer-only control.
+                if isOrganizer {
+                    remindButton
+                }
             }
             attachmentsView
         }
         .padding(.top)
     }
     
+    /// The viewer's role in this event (drives attachment/reminder permissions).
+    private var viewerRole: AppPresentationModel.UserActivityRole {
+        store.state.uiModel?.userActivityType ?? .notJoined
+    }
+
+    /// Members (and organizers) can see attachments; outsiders cannot.
+    private var isMember: Bool { viewerRole != .notJoined }
+
+    /// Only organizers (president / vice president / event creator) may add docs
+    /// or set reminders.
+    private var isOrganizer: Bool {
+        [.president, .visePresident, .eventCreator].contains(viewerRole)
+    }
+
     @ViewBuilder
     private var attachmentsView: some View {
-        let attachments = store.state.uiModel?.attachments ?? []
-        VStack(alignment: .leading, spacing: 8) {
-            Text("events_attachments".localized)
-                .font(Font.Typography.HeadingXl.medium)
-                .foregroundStyle(Color.Palette.black)
-                .frame(alignment: .leading)
-                .multilineTextAlignment(.leading)
-            if !attachments.isEmpty {
-                ForEach(attachments, id: \.uuid) { attachment in
-                    AttachmentItemView(model: attachment)
-                }
-            } else {
-                AppEmptyView(
-                    model: .init(
-                        icon: nil,
-                        text: "events_attachments_empty".localized,
-                        buttonTitle: "events_add_plus".localized
-                    )
-                ) {
-                    store.send(.editTapped)
+        // Attachments (view + add) are hidden from users who aren't members.
+        if isMember {
+            let attachments = store.state.uiModel?.attachments ?? []
+            VStack(alignment: .leading, spacing: 8) {
+                Text("events_attachments".localized)
+                    .font(Font.Typography.HeadingXl.medium)
+                    .foregroundStyle(Color.Palette.black)
+                    .frame(alignment: .leading)
+                    .multilineTextAlignment(.leading)
+                if !attachments.isEmpty {
+                    ForEach(attachments, id: \.uuid) { attachment in
+                        AttachmentItemView(model: attachment)
+                    }
+                } else {
+                    AppEmptyView(
+                        model: .init(
+                            icon: nil,
+                            text: "events_attachments_empty".localized,
+                            // Only organizers can add documents.
+                            buttonTitle: isOrganizer ? "events_add_plus".localized : nil
+                        )
+                    ) {
+                        store.send(.editTapped)
+                    }
                 }
             }
         }
@@ -283,14 +304,25 @@ struct EventDetailsView: View {
         }
     }
     
+    /// One reminder per day: once the backend reports `isReminder`, the button
+    /// is spent and says so until it resets tomorrow.
+    private var isReminderSent: Bool {
+        store.state.uiModel?.isReminderSent ?? false
+    }
+
     private var remindButton: some View {
         AppButton(
-            title: "events_reminder".localized,
+            title: isReminderSent
+                ? "events_reminder_unavailable".localized
+                : "events_reminder".localized,
             model: .init(
                 contentSize: .fill,
                 size: .medium
             )
-        ) {}
+        ) {
+            store.send(.remindTapped)
+        }
+        .disabled(isReminderSent)
     }
     
     // MARK: - Segments

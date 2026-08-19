@@ -12,17 +12,21 @@ struct AppAlertView: View {
     private let alert: AppAlert
     private let dismiss: (((() -> Void)?) -> Void)
 
+    @State private var isCheckboxOn: Bool
+
     init(
         alert: AppAlert,
         dismiss: @escaping (((() -> Void)?) -> Void)
     ) {
         self.alert = alert
         self.dismiss = dismiss
+        _isCheckboxOn = State(initialValue: alert.config.checkbox?.isOn ?? false)
     }
 
     var body: some View {
         VStack(spacing: 20) {
             textSection
+            checkboxSection
             actionsSection
         }
         .padding(24)
@@ -50,6 +54,32 @@ struct AppAlertView: View {
             }
         }
         .frame(maxWidth: .infinity,alignment: .leading)
+    }
+
+    @ViewBuilder
+    private var checkboxSection: some View {
+        if let checkbox = alert.config.checkbox {
+            Button {
+                isCheckboxOn.toggle()
+                checkbox.onChange(isCheckboxOn)
+            } label: {
+                HStack(spacing: 12) {
+                    Image(
+                        uiImage: isCheckboxOn
+                            ? UIImage.Icons.selectedCheckBox
+                            : UIImage.Icons.notSelectedCheckBox
+                    )
+                    Text(checkbox.title)
+                        .font(Font.Typography.TextMd.regular)
+                        .foregroundStyle(Color.Palette.blackMedium)
+                        .multilineTextAlignment(.leading)
+                    Spacer(minLength: 0)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 
     private var actionsSection: some View {

@@ -34,12 +34,12 @@ struct AuthOptionalBioView: View {
     
     private var topView: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("About you")
+            Text("auth_bio_title".localized)
                 .font(Font.Typography.TitleXl.extraBold)
                 .foregroundStyle(Color.Palette.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
-            Text("Write something about yourself")
+            Text("auth_bio_subtitle".localized)
                 .font(Font.Typography.BodyTextMd.regular)
                 .foregroundStyle(Color.Palette.grayPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)

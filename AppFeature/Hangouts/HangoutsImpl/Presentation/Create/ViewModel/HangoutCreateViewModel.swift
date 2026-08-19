@@ -9,6 +9,7 @@ import AppFoundation
 import AppNetwork
 import AppUIKit
 import Foundation
+import UIKit
 
 final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
 
@@ -135,6 +136,7 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
     }
 
     private func continueTapped() {
+        UIApplication.shared.endEditing()
         Task {
             if let id = inputData.id {
                 await editHangout(id: id)

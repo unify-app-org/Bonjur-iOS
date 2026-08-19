@@ -22,16 +22,27 @@ struct EventDetailDTO: Decodable {
     let backgroundUrl: String?
     let membersCount: Int?
     let eventUserRole: AppPresentationModel.UserActivityRole?
-    /// Pending/accepted state for the current user. Optional: older backends may
-    /// omit it on the detail endpoint, in which case the join button falls back to
-    /// the plain Join/Request title.
-    let requestStatus: AppPresentationModel.RequestType?
+    let eventUserStatus: AppPresentationModel.RequestType?
+    let requestStatusRaw: AppPresentationModel.RequestType?
+    var requestStatus: AppPresentationModel.RequestType? {
+        eventUserStatus ?? requestStatusRaw
+    }
     let attachments: [Attachments]?
     let links: [Link]?
     let categories: [Category]?
     let isDeleted: Bool?
     let modifiedAt: String?
     let reminderTimes: [AppPresentationModel.ReminderOption]?
+    let isReminder: Bool?
+
+    enum CodingKeys: String, CodingKey {
+        case id, visibility, name, ownerContact, location, eventDate, about, rule
+        case capacity, club, backgroundUrl, membersCount, eventUserRole
+        case eventUserStatus
+        case requestStatusRaw = "requestStatus"
+        case attachments, links, categories, isDeleted, modifiedAt, reminderTimes
+        case isReminder
+    }
 
     struct Attachments: Decodable {
         let url: String?

@@ -27,6 +27,7 @@ protocol EventsDataSource {
     func joinEvent(eventId: String) async throws(APIError) -> Data
     func editEvent(eventId: String, request: MultipartFormData) async throws(APIError) -> Data
     func exitEvent(eventId: String) async throws(APIError) -> Data
+    func sendReminder(eventId: String) async throws(APIError) -> Data
 }
 
 final class EventsDataSourceImpl: NetworkService<EventsEndPoint>, EventsDataSource {
@@ -73,6 +74,10 @@ final class EventsDataSourceImpl: NetworkService<EventsEndPoint>, EventsDataSour
 
     func editEvent(eventId: String, request: MultipartFormData) async throws(APIError) -> Data {
         try await fetchRawData(endPoint: .editEvent(eventId, request))
+    }
+
+    func sendReminder(eventId: String) async throws(APIError) -> Data {
+        try await fetchRawData(endPoint: .sendReminder(eventId))
     }
 
     func exitEvent(eventId: String) async throws(APIError) -> Data {

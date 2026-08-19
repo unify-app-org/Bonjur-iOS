@@ -216,18 +216,20 @@ struct EventsCardView: View {
 
     private var bottomView: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 8) {
-                ForEach(Array(model.tags.enumerated()), id: \.offset) { _, item in
-                    Text("#\(item.title.lowercased())")
-                        .font(Font.Typography.TextSm.regular)
-                        .lineLimit(1)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(Color.Palette.grayQuaternary)
-                        .clipShape(Capsule())
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(Array(model.tags.enumerated()), id: \.offset) { _, item in
+                        Text("#\(item.title.lowercased())")
+                            .font(Font.Typography.TextSm.regular)
+                            .lineLimit(1)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(Color.Palette.grayQuaternary)
+                            .clipShape(Capsule())
+                    }
                 }
             }
-
+            
             actionView
         }
         .padding(.horizontal)
@@ -236,6 +238,8 @@ struct EventsCardView: View {
 
     @ViewBuilder
     private var actionView: some View {
+        // Card and detail must agree: both derive the join state from the same
+        // status (list `requestStatus` == detail `eventUserStatus`).
         switch model.requestType {
         case .joined:
             statusLabel(

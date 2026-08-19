@@ -18,11 +18,6 @@
 "settings_logout_subtitle" = "Вы уверены, что хотите выйти?";
 "settings_logout_confirm" = "Выйти";
 
-/* Language picker */
-"language_title" = "Язык";
-"language_english" = "Английский";
-"language_azerbaijan" = "Азербайджанский";
-"language_russian" = "Русский";
 
 "common_cancel" = "Отмена";
 
@@ -44,3 +39,22 @@
 "profile_card_degree" = "степень";
 "profile_card_entry" = "год поступления";
 "profile_user_card_id" = "Карта пользователя";
+
+/* Edit profile */
+"editprofile_title" = "Редактировать профиль";
+"editprofile_save" = "Сохранить";
+"editprofile_name" = "Имя и фамилия";
+"editprofile_faculty" = "Факультет";
+"editprofile_university" = "Университет";
+"editprofile_entry" = "Год поступления";
+"editprofile_course" = "Курс";
+"editprofile_spoken_languages" = "Языки общения";
+"editprofile_add_language" = "Добавить язык";
+"editprofile_select_spoken" = "Выберите язык";
+"editprofile_select_known" = "Выберите языки, которые знаете";
+"editprofile_select" = "Выбрать";
+"editprofile_choose_gender" = "Выберите пол";
+"editprofile_select_date" = "Выберите дату";
+"editprofile_categories_fail" = "Не удалось загрузить категории";
+"editprofile_languages_fail" = "Не удалось загрузить языки";
+"editprofile_updated" = "Профиль обновлён";

@@ -81,13 +81,13 @@ final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataS
                         isSwitch: false,
                         action: .didTapLanguage
                     ),
-                    .init(
-                        icon: UIImage.Icons.chatQuestion,
-                        title: "settings_help_center".localized,
-                        rightIcon: UIImage.Icons.chevronRight,
-                        isSwitch: false,
-                        action: .didTapHelpCenter
-                    ),
+//                    .init(
+//                        icon: UIImage.Icons.chatQuestion,
+//                        title: "settings_help_center".localized,
+//                        rightIcon: UIImage.Icons.chevronRight,
+//                        isSwitch: false,
+//                        action: .didTapHelpCenter
+//                    ),
                     .init(
                         icon: UIImage.Icons.clipboardList,
                         title: "settings_terms".localized,

@@ -35,6 +35,8 @@ typealias HangoutListFeature = UIFeatureDefinition<
 final class HangoutListViewState: UIFeatureState {
     @Published var uiModel: UIModel = .init(hangouts: [])
     @Published var searchText: String = ""
+    /// True during the initial/full hangouts fetch — drives the inline spinner.
+    @Published var isLoading: Bool = false
     
     struct UIModel {
         var hangouts: [HangoutsCardView.Model]

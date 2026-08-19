@@ -291,9 +291,9 @@ struct ProfileDetailViewV2: View {
                 .multilineTextAlignment(.leading)
 
             HStack(spacing: 8) {
-                countCell(value: store.state.clubs.count, label: "Clubs")
-                countCell(value: store.state.events.count, label: "Events")
-                countCell(value: store.state.hangouts.count, label: "Hangouts")
+                countCell(value: store.state.clubs.count, label: "Clubs".localized)
+                countCell(value: store.state.events.count, label: "Events".localized)
+                countCell(value: store.state.hangouts.count, label: "Hangouts".localized)
             }
         }
         .padding(16)

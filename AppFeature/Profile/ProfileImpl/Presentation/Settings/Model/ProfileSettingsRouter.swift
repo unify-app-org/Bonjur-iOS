@@ -80,9 +80,11 @@ final class ProfileSettingsRouter: ProfileSettingsRouterProtocol {
         }
         let host = UIHostingController(rootView: picker)
         if let sheet = host.sheetPresentationController {
-            sheet.detents = [.medium()]
             sheet.prefersGrabberVisible = true
             sheet.preferredCornerRadius = 24
+            sheet.detents = [
+                .custom { _ in 270 }
+            ]
         }
         view?.present(host, animated: true)
     }

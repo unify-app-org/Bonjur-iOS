@@ -18,11 +18,6 @@
 "settings_logout_subtitle" = "Çıxış etmək istədiyinizə əminsiniz?";
 "settings_logout_confirm" = "Çıxış";
 
-/* Language picker */
-"language_title" = "Dil";
-"language_english" = "İngilis dili";
-"language_azerbaijan" = "Azərbaycan dili";
-"language_russian" = "Rus dili";
 
 "common_cancel" = "Ləğv et";
 
@@ -44,3 +39,22 @@
 "profile_card_degree" = "dərəcə";
 "profile_card_entry" = "qəbul";
 "profile_user_card_id" = "İstifadəçi Kartı";
+
+/* Edit profile */
+"editprofile_title" = "Profili redaktə et";
+"editprofile_save" = "Yadda saxla";
+"editprofile_name" = "Ad və soyad";
+"editprofile_faculty" = "Fakültə";
+"editprofile_university" = "Universitet";
+"editprofile_entry" = "Qəbul ili";
+"editprofile_course" = "Kurs";
+"editprofile_spoken_languages" = "Danışılan dillər";
+"editprofile_add_language" = "Dil əlavə et";
+"editprofile_select_spoken" = "Danışılan dili seçin";
+"editprofile_select_known" = "Bildiyiniz dilləri seçin";
+"editprofile_select" = "Seç";
+"editprofile_choose_gender" = "Cins seçin";
+"editprofile_select_date" = "Tarix seçin";
+"editprofile_categories_fail" = "Kateqoriyalar yüklənə bilmədi";
+"editprofile_languages_fail" = "Dillər yüklənə bilmədi";
+"editprofile_updated" = "Profil uğurla yeniləndi";

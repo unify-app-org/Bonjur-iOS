@@ -35,16 +35,40 @@ public extension AppAlert {
 
         public let title: String
         public let subtitle: String?
+        public let checkbox: Checkbox?
         public let onBackgroundTap: BackgroundTapHandler?
 
         public init(
             title: String,
             subtitle: String? = nil,
+            checkbox: Checkbox? = nil,
             onBackgroundTap: BackgroundTapHandler? = nil
         ) {
             self.title = title
             self.subtitle = subtitle
+            self.checkbox = checkbox
             self.onBackgroundTap = onBackgroundTap
+        }
+    }
+
+    /// Optional opt-out row between the text and the actions, e.g.
+    /// "Don't show this again". The alert owns the tick state and reports every
+    /// change, so the caller can persist the final value in its action handler.
+    struct Checkbox {
+        public typealias ChangeHandler = (Bool) -> Void
+
+        public let title: String
+        public let isOn: Bool
+        public let onChange: ChangeHandler
+
+        public init(
+            title: String,
+            isOn: Bool = false,
+            onChange: @escaping ChangeHandler
+        ) {
+            self.title = title
+            self.isOn = isOn
+            self.onChange = onChange
         }
     }
 

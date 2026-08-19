@@ -10,6 +10,7 @@ import AppNetwork
 import AppStorage
 import AppUIKit
 import AppPresentationModel
+import UIKit
 
 final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
     
@@ -68,6 +69,14 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
     }
 
     // MARK: - Verification prompt
+
+    /// Community presidents own the community, so the clubs they create are
+    /// trusted by definition — they skip the post-create verification prompt
+    /// entirely. Role is stashed at sign-in under `.userCommunityRole`.
+    private var isCommunityPresident: Bool {
+        let raw = dependencies.userDefaults.string(forKey: .userCommunityRole) ?? ""
+        return AppPresentationModel.UserActivityRole(rawValue: raw) == .president
+    }
 
     /// Fire the real verify request for the just-created club, then leave the
     /// create flow. Falls back to a soft message if we somehow lack the new id.
@@ -182,6 +191,7 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
     }
     
     private func continueTapped() {
+        UIApplication.shared.endEditing()
         Task {
             if let id = inputData.id {
                 await editClub(id: id)
@@ -207,7 +217,7 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
                 style: .success
             )
         } catch {
-            postEffect(.error(error as? APIError))
+            postEffect(.error(error))
         }
     }
 
@@ -219,9 +229,19 @@ final class ClubCreateViewModel: UIFeatureViewModel<ClubCreateFeature> {
         do {
             let createdId = try await dependencies.useCase.createClub(request: buildRequest())
             state.createdClubId = createdId
+            // Presidents' clubs need no verification: confirm and leave.
+            guard !isCommunityPresident else {
+                AppSnackBar.show(
+                    title: "clubs_created_title".localized,
+                    subtitle: state.values.text(.clubName),
+                    style: .success
+                )
+                await router.navigate(to: .backTapped)
+                return
+            }
             state.showVerifyPrompt = true
         } catch {
-            postEffect(.error(error as? APIError))
+            postEffect(.error(error))
         }
     }
     

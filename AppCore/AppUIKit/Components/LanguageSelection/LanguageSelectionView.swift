@@ -1,33 +1,51 @@
 //
 //  LanguageSelectionView.swift
-//  ProfileImpl
+//  AppUIKit
 //
-//  Language picker sheet: lists the supported app languages and switches live.
+//  Shared language picker: lists the supported app languages and reports the
+//  chosen code back to the caller, which performs the actual switch.
+//  Used by Profile settings and by the auth onboarding flow.
 //
 
 import SwiftUI
-import AppFoundation
-import AppUIKit
+import AppLocalization
 
-struct LanguageSelectionView: View {
+public struct LanguageSelectionView: View {
 
-    struct Language: Identifiable {
-        let code: String
-        let flag: String
-        let nameKey: String
-        var id: String { code }
+    public struct Language: Identifiable {
+        public let code: String
+        public let flag: String
+        public let nameKey: String
+        public var id: String { code }
+
+        public init(code: String, flag: String, nameKey: String) {
+            self.code = code
+            self.flag = flag
+            self.nameKey = nameKey
+        }
     }
 
-    private static let languages: [Language] = [
+    /// Supported app languages, in display order.
+    public static let languages: [Language] = [
         .init(code: "en", flag: "🇬🇧", nameKey: "language_english"),
         .init(code: "az", flag: "🇦🇿", nameKey: "language_azerbaijan"),
         .init(code: "ru", flag: "🇷🇺", nameKey: "language_russian")
     ]
 
-    private let localization: AppLocalizationProtocol = resolve()
-    let onSelect: (String) -> Void
+    /// Flag of the language currently in use, for compact entry points.
+    public static func flag(for code: String) -> String {
+        languages.first { $0.code == code.lowercased() }?.flag
+            ?? languages[0].flag
+    }
 
-    var body: some View {
+    @ObservedObject private var languageManager = LanguageManager.shared
+    private let onSelect: (String) -> Void
+
+    public init(onSelect: @escaping (String) -> Void) {
+        self.onSelect = onSelect
+    }
+
+    public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("language_title".localized)
                 .font(Font.Typography.TitleSm.semiBold)
@@ -57,7 +75,7 @@ struct LanguageSelectionView: View {
         .localized()
     }
 
-    private func row(_ language: LanguageSelectionView.Language) -> some View {
+    private func row(_ language: Language) -> some View {
         HStack(spacing: 16) {
             Text(language.flag)
                 .font(.system(size: 32))
@@ -83,7 +101,7 @@ struct LanguageSelectionView: View {
         .contentShape(Rectangle())
     }
 
-    private func isSelected(_ language: LanguageSelectionView.Language) -> Bool {
-        localization.currentLanguage.lowercased() == language.code
+    private func isSelected(_ language: Language) -> Bool {
+        languageManager.languageCode == language.code
     }
 }

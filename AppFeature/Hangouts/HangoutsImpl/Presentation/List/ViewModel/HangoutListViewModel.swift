@@ -90,6 +90,8 @@ final class HangoutListViewModel: UIFeatureViewModel<HangoutListFeature> {
     }
     
     private func getHangoutsData() async {
+        if state.uiModel.hangouts.isEmpty { state.isLoading = true }
+        defer { state.isLoading = false }
         do {
             let hangouts = try await dependencies.useCase.fetchHangouts(
                 query: makeQuery()

@@ -25,6 +25,8 @@ enum EventsDetailsModel {
         var membersData: CommunitiesMemberModuleModel.GroupedMembersData
         var joinButton: JoinButton? = nil
         var editPrefillData: EventsCreate.PrefillData? = nil
+        /// A reminder was already sent today, so the remind button is spent.
+        var isReminderSent: Bool = false
     }
 
     struct JoinButton {

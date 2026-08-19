@@ -81,16 +81,18 @@ struct ClubCardView: View {
     }
 
     private var categoriesRow: some View {
-        HStack(spacing: 6) {
-            ForEach(model.categories, id: \.self) { category in
-                Text(category)
-                    .font(Font.Typography.TextSm.medium)
-                    .lineLimit(1)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 3)
-                    .foregroundStyle(Color.Palette.blackHigh)
-                    .background(Color.Palette.whiteMedium)
-                    .clipShape(Capsule())
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 6) {
+                ForEach(model.categories, id: \.self) { category in
+                    Text(category)
+                        .font(Font.Typography.TextSm.medium)
+                        .lineLimit(1)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 3)
+                        .foregroundStyle(Color.Palette.blackHigh)
+                        .background(Color.Palette.whiteMedium)
+                        .clipShape(Capsule())
+                }
             }
         }
         .padding(.top, 2)

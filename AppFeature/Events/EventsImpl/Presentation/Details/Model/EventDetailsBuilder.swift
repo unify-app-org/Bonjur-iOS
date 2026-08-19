@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AppStorage
 
 // MARK: - EventDetails builder
 
@@ -22,7 +23,10 @@ struct EventDetailsBuilder {
             state: .init(),
             router: router,
             inputData: inputData,
-            dependencies: .init(useCase: resolve())
+            dependencies: .init(
+                useCase: resolve(),
+                userDefaults: resolve()
+            )
         )
         
         let controller = EventDetailsHostController(

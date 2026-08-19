@@ -23,12 +23,12 @@ struct AuthOptionalInterestsView: View {
     
     private var topView: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Your Interest")
+            Text("auth_interests_title".localized)
                 .font(Font.Typography.TitleXl.extraBold)
                 .foregroundStyle(Color.Palette.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
-            Text("Choose what you’re interested in")
+            Text("auth_interests_subtitle".localized)
                 .font(Font.Typography.BodyTextMd.regular)
                 .foregroundStyle(Color.Palette.grayPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)

@@ -6,6 +6,7 @@
 //
 
 import Communities
+import AppFoundation
 
 extension MemberListSectionViewData {
     static func browse(
@@ -15,7 +16,7 @@ extension MemberListSectionViewData {
         .init(
             id: id,
             title: section.title,
-            memberCountText: section.memberCount.map { "\($0) student\($0 == 1 ? "" : "s")" },
+            memberCountText: section.memberCount.map { "count_students".localized(with: $0) },
             rows: section.members.map(MemberCellViewData.disclosure(from:)),
             showsSelectGroup: false,
             isGroupSelected: false
@@ -32,7 +33,7 @@ extension MemberListSectionViewData {
         .init(
             id: id,
             title: section.title,
-            memberCountText: section.memberCount.map { "\($0) student\($0 == 1 ? "" : "s")" },
+            memberCountText: section.memberCount.map { "count_students".localized(with: $0) },
             rows: section.members.map { .options(from: $0, currentUserId: currentUserId) },
             showsSelectGroup: false,
             isGroupSelected: false

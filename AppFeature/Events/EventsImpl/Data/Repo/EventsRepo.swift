@@ -28,6 +28,7 @@ protocol EventsRepo {
     ) async throws(APIError) -> [EventsModuleModel.CardInputData]
     func joinEvent(eventId: String) async throws(APIError) -> Void
     func exitEvent(eventId: String) async throws(APIError) -> Void
+    func sendReminder(eventId: String) async throws(APIError) -> Void
     func createEvent(request: MultipartFormData) async throws(APIError) -> Void
     func editEvent(eventId: String, request: MultipartFormData) async throws(APIError) -> Void
     func fetchClubsForEvents() async throws(APIError) -> [EventsCreate.SelectableClub]
@@ -113,6 +114,12 @@ final class EventsRepoImpl: EventsRepo {
         _ = try await dataSource.joinEvent(eventId: eventId)
     }
 
+    /// Broadcast a reminder to the event group. 200 with no body; the new
+    /// `isReminder` state is read back from the detail endpoint.
+    func sendReminder(eventId: String) async throws(APIError) {
+        _ = try await dataSource.sendReminder(eventId: eventId)
+    }
+
     func exitEvent(eventId: String) async throws(APIError) {
         _ = try await dataSource.exitEvent(eventId: eventId)
     }
@@ -191,7 +198,8 @@ final class EventsRepoImpl: EventsRepo {
             attachments: mapAttachments(data.attachments ?? []),
             membersData: .init(users: []),
             joinButton: mapButtonModel(data),
-            editPrefillData: mapPrefillData(data, tags)
+            editPrefillData: mapPrefillData(data, tags),
+            isReminderSent: data.isReminder ?? false
         )
     }
 

@@ -5,6 +5,7 @@
 //  Created by Huseyn Hasanov on 25.11.25.
 //
 
+import AppFoundation
 import AppNetwork
 import UIKit
 import AppUIKit
@@ -48,18 +49,18 @@ final class AuthUsecasesImpl: AuthUsecases {
     func onboarding() -> [AuthUIModel.Onboarding] {
         [
             .init(
-                title: "Find Your \nPeople",
-                subtitle: "Join your university community and start connecting with like-minded friends.",
+                title: "auth_onboarding_1_title".localized,
+                subtitle: "auth_onboarding_1_subtitle".localized,
                 image: UIImage.Icons.bigGraduationHat
             ),
             .init(
-                title: "Chat Your \nWay",
-                subtitle: "Send messages and share idea instantly, all through your favorite apps.",
+                title: "auth_onboarding_2_title".localized,
+                subtitle: "auth_onboarding_2_subtitle".localized,
                 image: UIImage.Icons.bigLamps
             ),
             .init(
-                title: "Make It \nYours",
-                subtitle: "Customize your app style and enjoy conversations your way.",
+                title: "auth_onboarding_3_title".localized,
+                subtitle: "auth_onboarding_3_subtitle".localized,
                 image: UIImage.Icons.bigPeopleGroups
             )
         ]
@@ -67,8 +68,8 @@ final class AuthUsecasesImpl: AuthUsecases {
     
     func welcome() -> AuthUIModel.Onboarding {
         .init(
-            title: "Welcome",
-            subtitle: "Complete your profile for better interaction.It will take only 5 minutes.",
+            title: "auth_welcome_title".localized,
+            subtitle: "auth_welcome_subtitle".localized,
             image: UIImage.Icons.bigResume
         )
     }
@@ -77,13 +78,13 @@ final class AuthUsecasesImpl: AuthUsecases {
         [
             .init(
                 id: 1,
-                title: "Female",
+                title: "auth_gender_female".localized,
                 type: AuthUIModel.Gender.female.rawValue,
                 selected: false
             ),
             .init(
                 id: 2,
-                title: "Male",
+                title: "auth_gender_male".localized,
                 type: AuthUIModel.Gender.male.rawValue,
                 selected: false
             )

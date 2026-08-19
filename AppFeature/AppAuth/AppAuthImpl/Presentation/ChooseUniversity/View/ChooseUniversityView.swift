@@ -17,7 +17,7 @@ struct ChooseUniversityView: View {
             topView
             listView
             AppButton(
-                title: "Next",
+                title: "auth_next".localized,
                 model: .init(
                     contentSize: .fill
                 )
@@ -34,17 +34,18 @@ struct ChooseUniversityView: View {
         .appErrorAlert(
             alert: $store.state.error
         )
+        .localized()
     }
     
     private var topView: some View {
         VStack(spacing: 16) {
-            Text("Choose \nUniversity")
+            Text("auth_choose_university_title".localized)
                 .font(Font.Typography.TitleXl.extraBold)
                 .foregroundStyle(Color.Palette.blackHigh)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
             
-            Text("In which university are u studiying?")
+            Text("auth_choose_university_subtitle".localized)
                 .font(Font.Typography.BodyTextMd.regular)
                 .foregroundStyle(Color.Palette.grayPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)

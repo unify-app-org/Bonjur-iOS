@@ -30,3 +30,5 @@
 "comm_view_all" = "hamısına bax";
 "comm_row_location" = "Məkan";
 "comm_row_rules" = "Qaydalar";
+
+"comm_clubs_empty" = "Bu icmada hələ klub yoxdur.";

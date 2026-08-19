@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppPresentationModel
 
 enum AuthDTOModel {
     
@@ -28,6 +29,7 @@ enum AuthDTOModel {
         let refreshToken: String
         let userId: String
         let isFirstLogin: Bool
+        let userCommunityRole: AppPresentationModel.UserActivityRole
     }
     
     //MARK: - Communities

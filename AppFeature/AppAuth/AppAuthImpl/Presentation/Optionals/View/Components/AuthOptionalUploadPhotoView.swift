@@ -33,12 +33,12 @@ struct AuthOptionalUploadPhotoView: View {
     
     private var topView: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Your profile photo")
+            Text("auth_photo_title".localized)
                 .font(Font.Typography.TitleXl.extraBold)
                 .foregroundStyle(Color.Palette.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
-            Text("Upload a photo to get started")
+            Text("auth_photo_subtitle".localized)
                 .font(Font.Typography.BodyTextMd.regular)
                 .foregroundStyle(Color.Palette.grayPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -85,11 +85,11 @@ struct AuthOptionalUploadPhotoView: View {
                 HStack {
                     if store.state.selectedImage == nil {
                         Image(uiImage: UIImage.Icons.plus)
-                        Text("Add")
+                        Text("auth_photo_add".localized)
                             .foregroundStyle(Color.Palette.black)
                     } else {
                         Image(uiImage: UIImage.Icons.camera)
-                        Text("Change")
+                        Text("auth_photo_change".localized)
                             .foregroundStyle(Color.Palette.black)
                     }
                 }

@@ -106,8 +106,8 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
                 queryData: request.1
             )
             AppSnackBar.show(
-                title: "Profile updated successfully",
-                subtitle: "Your changes are saved",
+                title: "editprofile_updated".localized,
+                subtitle: "profile_changes_saved".localized,
                 style: .success
             )
             await handleEdit()
@@ -165,7 +165,7 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
             await handleCategories(data)
         } catch {
             await handleCategories([])
-            AppSnackBar.show(title: "Couldn't load categories", style: .error)
+            AppSnackBar.show(title: "editprofile_categories_fail".localized, style: .error)
         }
     }
     
@@ -189,7 +189,7 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
             await handleLanguages(data)
         } catch {
             await handleLanguages(selectedProfileLanguages())
-            AppSnackBar.show(title: "Couldn't load languages", style: .error)
+            AppSnackBar.show(title: "editprofile_languages_fail".localized, style: .error)
         }
     }
     

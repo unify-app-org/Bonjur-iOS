@@ -32,7 +32,7 @@ struct ClubsView: View {
                 Spacer()
             }
         }
-        .navigationTitle("Clubs")
+        .navigationTitle("clubs_title".localized)
         .dismissKeyboardOnTap()
         .onAppear {
             store.send(.fetchData)
@@ -43,7 +43,11 @@ struct ClubsView: View {
     @ViewBuilder
     private var scrollView: some View {
         let clubs = store.state.uiModel.clubs
-        if !clubs.isEmpty {
+        if clubs.isEmpty && store.state.isLoading {
+            ProgressView()
+                .frame(maxWidth: .infinity)
+                .padding(.top, 40)
+        } else if !clubs.isEmpty {
             ScrollView {
                 LazyVStack(spacing: 20) {
                     ForEach(Array(clubs.enumerated()), id: \.element.uuid) { index, item in
@@ -72,14 +76,14 @@ struct ClubsView: View {
             AppEmptyView(
                 model: .init(
                     icon: UIImage.Icons.twoUsers,
-                    text: "No clubs match your search. Try another name or clear your filters."
+                    text: "clubs_search_empty".localized
                 )
             )
         } else {
             AppEmptyView(
                 model: .init(
                     icon: UIImage.Icons.twoUsers,
-                    text: "No clubs yet. Be the pioneer and start the very first one now!",
+                    text: "clubs_list_empty".localized,
                     buttonTitle: "clubs_create_club".localized
                 )
             ) {

@@ -43,7 +43,11 @@ struct HangoutListView: View {
     @ViewBuilder
     private var scrollView: some View {
         let hangouts = store.state.uiModel.hangouts
-        if !hangouts.isEmpty {
+        if hangouts.isEmpty && store.state.isLoading {
+            ProgressView()
+                .frame(maxWidth: .infinity)
+                .padding(.top, 40)
+        } else if !hangouts.isEmpty {
             ScrollView {
                 LazyVStack(spacing: 20) {
                     ForEach(Array(hangouts.enumerated()), id: \.element.uuid) { index, item in

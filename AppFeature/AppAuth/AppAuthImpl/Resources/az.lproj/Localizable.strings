@@ -1,0 +1,65 @@
+/* Common auth actions */
+"auth_next" = "Növbəti";
+"auth_back" = "Geri";
+"auth_skip" = "Keç";
+"auth_continue" = "Davam et";
+"auth_got_it" = "Anladım";
+"auth_okay" = "Oldu";
+
+/* Choose university */
+"auth_choose_university_title" = "Universiteti \nseçin";
+"auth_choose_university_subtitle" = "Hansı universitetdə oxuyursunuz?";
+
+/* Sign in */
+"auth_sign_in_title" = "Daxil ol";
+"auth_sign_in_subtitle" = "Yalnız etibar etdiyiniz mağaza və ya saytdan yüklədinizsə davam edin.";
+"auth_sign_in_button" = "Daxil ol";
+"auth_email" = "E-poçt";
+"auth_email_placeholder" = "E-poçtunuzu daxil edin";
+"auth_password" = "Şifrə";
+"auth_password_placeholder" = "Şifrənizi daxil edin";
+"auth_microsoft_failed" = "Microsoft ilə giriş alınmadı";
+
+/* Optional info — photo */
+"auth_photo_title" = "Profil şəkliniz";
+"auth_photo_subtitle" = "Başlamaq üçün şəkil yükləyin";
+"auth_photo_add" = "Əlavə et";
+"auth_photo_change" = "Dəyiş";
+
+/* Optional info — birthday */
+"auth_birthday_title" = "Doğum gününüz";
+"auth_birthday_subtitle" = "Doğum tarixiniz nədir?";
+"auth_birthday_placeholder" = "Doğum tarixi";
+"auth_select_date" = "Tarix seçin";
+
+/* Optional info — gender */
+"auth_gender_title" = "Cinsiniz";
+"auth_gender_subtitle" = "Cinsinizi seçin";
+
+/* Optional info — languages */
+"auth_languages_title" = "Hansı dilləri bilirsiniz?";
+"auth_languages_subtitle" = "Bildiyiniz dilləri seçin";
+
+/* Optional info — bio */
+"auth_bio_title" = "Haqqınızda";
+"auth_bio_subtitle" = "Özünüz haqqında nəsə yazın";
+
+/* Optional info — interests */
+"auth_interests_title" = "Maraqlarınız";
+"auth_interests_subtitle" = "Maraqlandığınız sahələri seçin";
+
+/* Onboarding slides */
+"auth_onboarding_1_title" = "Öz \ninsanlarını tap";
+"auth_onboarding_1_subtitle" = "Universitet icmana qoşul və həmfikir dostlarla əlaqə qurmağa başla.";
+"auth_onboarding_2_title" = "Öz \ntərzində yaz";
+"auth_onboarding_2_subtitle" = "Sevimli tətbiqlərin vasitəsilə dərhal mesaj göndər və fikirlərini paylaş.";
+"auth_onboarding_3_title" = "Özünə \nuyğunlaşdır";
+"auth_onboarding_3_subtitle" = "Tətbiqin görünüşünü fərdiləşdir və söhbətlərdən öz tərzində zövq al.";
+
+/* Welcome */
+"auth_welcome_title" = "Xoş gəlmisiniz";
+"auth_welcome_subtitle" = "Daha yaxşı ünsiyyət üçün profilinizi tamamlayın. Cəmi 5 dəqiqə çəkəcək.";
+
+/* Gender options */
+"auth_gender_female" = "Qadın";
+"auth_gender_male" = "Kişi";

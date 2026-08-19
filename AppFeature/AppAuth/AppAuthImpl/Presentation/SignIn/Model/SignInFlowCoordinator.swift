@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AppFoundation
 import AppUIKit
 
 final class SignInFlowCoordinator {
@@ -78,13 +79,13 @@ final class SignInFlowCoordinator {
         if result.isCancelled { return }
 
         guard result.error == nil else {
-            errorAlert(title: "Microsoft Sign In Failed")
+            errorAlert(title: "auth_microsoft_failed".localized)
             return
         }
         guard let email = result.email,
                 let communityId = inputData?.communityId,
                 let idToken = result.idToken else {
-            errorAlert(title: "Microsoft Sign In Failed")
+            errorAlert(title: "auth_microsoft_failed".localized)
             return
         }
         Task {
@@ -144,7 +145,7 @@ final class SignInFlowCoordinator {
             config: .init(title: title),
             actions: {
                 AppAlert.Action(
-                    title: "Okay",
+                    title: "auth_okay".localized,
                     style: .primary
                 )
             }

@@ -63,3 +63,6 @@
 "clubs_required_hint" = "Fields marked with * are required.";
 
 "clubs_location_ph" = "Library";
+
+"clubs_search_empty" = "No clubs match your search. Try another name or clear your filters.";
+"clubs_list_empty" = "No clubs yet. Be the pioneer and start the very first one now!";

@@ -35,6 +35,9 @@ typealias ClubsFeature = UIFeatureDefinition<
 final class ClubsViewState: UIFeatureState {
     @Published var uiModel: UIModel = .init()
     @Published var searchText: String = ""
+    /// True during the initial/full clubs fetch — drives the inline spinner so the
+    /// empty state doesn't flash before the first page arrives.
+    @Published var isLoading: Bool = false
 
     struct UIModel {
         var clubs: [ClubCardView.Model] = []

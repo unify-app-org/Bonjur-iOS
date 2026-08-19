@@ -11,7 +11,11 @@ import AppUIKit
 
 struct OnboardingView: View {
     @ObservedObject var store: StoreOf<OnboardingFeature>
+    @ObservedObject private var languageManager = LanguageManager.shared
     @State private var currentPage = 0
+    @State private var showLanguagePicker = false
+
+    private let localization: AppLocalizationProtocol = resolve()
 
     init(store: StoreOf<OnboardingFeature>, currentPage: Int = 0) {
         self.store = store
@@ -25,32 +29,61 @@ struct OnboardingView: View {
             buttons
         }
         .onAppear {
-            currentPage = 0
+            // `.localized()` re-runs this on every language change; only rewind
+            // to the first slide on a genuinely fresh entry, not mid-flow.
+            if store.state.uiModel.isEmpty {
+                currentPage = 0
+            }
             store.send(.fetchData)
         }
         .navigationBarHidden(true)
+        .sheet(isPresented: $showLanguagePicker) {
+            LanguageSelectionView { code in
+                localization.setLanguage(code)
+                showLanguagePicker = false
+            }
+            .presentationDetents([.height(270)])
+            .presentationDragIndicator(.visible)
+            .activitySheetWhiteBackground()
+        }
+        .localized()
     }
     
     private var topView: some View {
-        ZStack {
+        HStack {
             if currentPage > 0 {
-                HStack {
-                    Button {
-                        withAnimation {
-                            currentPage -= 1
-                        }
-                    } label: {
-                        Image(uiImage: UIImage.Icons.arrowLeft01)
-                            .frame(width: 28)
+                Button {
+                    withAnimation {
+                        currentPage -= 1
                     }
-                    .padding(8)
-                    .applyGlassIfAvailable()
-                    Spacer()
+                } label: {
+                    Image(uiImage: UIImage.Icons.arrowLeft01)
+                        .frame(width: 28)
                 }
+                .padding(8)
+                .applyGlassIfAvailable()
             }
+
+            Spacer()
+
+            languageButton
         }
         .frame(height: 44)
         .padding(.horizontal)
+    }
+
+    /// Language switch, available before sign-in: shows the flag of the active
+    /// language and opens the same picker Profile settings uses.
+    private var languageButton: some View {
+        Button {
+            showLanguagePicker = true
+        } label: {
+            Text(LanguageSelectionView.flag(for: languageManager.languageCode))
+                .font(.system(size: 24))
+                .frame(width: 28, height: 28)
+        }
+        .padding(8)
+        .applyGlassIfAvailable()
     }
     
     private var tabView: some View {
@@ -72,13 +105,13 @@ struct OnboardingView: View {
     private var buttons: some View {
         HStack {
             AppButton(
-                title: "Skip",
+                title: "auth_skip".localized,
                 model: .init(type: .tertiary)
             ) {
                 store.send(.skipOnboarding)
             }
             AppButton(
-                title: "Next",
+                title: "auth_next".localized,
                 model: .init(contentSize: .fill)
             ) {
                 withAnimation {

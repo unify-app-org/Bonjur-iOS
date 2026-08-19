@@ -18,7 +18,7 @@ struct SignInView: View {
             txtfieldsView
             Spacer()
             AppButton(
-                title: "Sign in",
+                title: "auth_sign_in_button".localized,
                 model: .init(
                     contentSize: .fill
                 )
@@ -37,23 +37,24 @@ struct SignInView: View {
         .appErrorAlert(
             alert: $store.state.error
         )
+        .localized()
     }
     
     private var txtfieldsView: some View {
         VStack(spacing: 16) {
             AppTextField(
                 text: $store.state.email,
-                placeHolder: "Enter your email",
+                placeHolder: "auth_email_placeholder".localized,
                 model: .init(
-                    title: "Email",
+                    title: "auth_email".localized,
                     keyboardType: .emailAddress
                 )
             )
             AppTextField(
                 text: $store.state.password,
-                placeHolder: "Enter your password",
+                placeHolder: "auth_password_placeholder".localized,
                 model: .init(
-                    title: "Password",
+                    title: "auth_password".localized,
                     type: .secure,
                 )
             )
@@ -62,12 +63,12 @@ struct SignInView: View {
     
     private var topView: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Sign In")
+            Text("auth_sign_in_title".localized)
                 .font(Font.Typography.TitleXl.extraBold)
                 .foregroundStyle(Color.Palette.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
-            Text("Only continue if you downloaded the app from a store or website that you trust.")
+            Text("auth_sign_in_subtitle".localized)
                 .font(Font.Typography.BodyTextMd.regular)
                 .foregroundStyle(Color.Palette.grayPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)

@@ -36,3 +36,16 @@
 
 "field_optional" = "(optional)";
 "field_write_something" = "Write something";
+
+"common_coming_soon" = "Coming soon";
+
+"count_students" = "%d students";
+"count_see_all_members" = "See all %d members";
+
+/* Language picker (shared) */
+"language_title" = "Language";
+"language_english" = "English";
+"language_azerbaijan" = "Azerbaijani";
+"language_russian" = "Russian";
+
+"common_dont_show_again" = "Don't show this again";

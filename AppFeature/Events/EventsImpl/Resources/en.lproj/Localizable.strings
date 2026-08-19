@@ -73,3 +73,14 @@
 "events_reminder_desc" = "Members will receive a notification to remind them about the event start time.";
 "events_create_title" = "Create new event";
 "events_edit_title" = "Edit event";
+
+"events_request_again" = "Request again";
+
+/* Reminder broadcast (one per day) */
+"events_reminder_unavailable" = "Will available tomorrow";
+"events_reminder_send" = "Send reminder";
+"events_reminder_warning_title" = "Send a reminder?";
+"events_reminder_warning_subtitle" = "You can send one reminder per day. After sending, this button will be disabled for one day.";
+"events_reminder_sent" = "Reminder sent";
+"events_reminder_sent_sub" = "The group has been notified. You can send another one tomorrow.";
+"events_reminder_fail" = "Couldn't send the reminder";

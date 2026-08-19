@@ -37,6 +37,7 @@ struct AuthOptionalInfoView: View {
         .onAppear {
             store.send(.fetchData)
         }
+        .localized()
     }
     
     private var topView: some View {
@@ -70,7 +71,7 @@ struct AuthOptionalInfoView: View {
     
     private var datePickerOverlay: some View {
         DatePicker(
-            "Select Date",
+            "auth_select_date".localized,
             selection: Binding(
                 get: { store.state.birthDate ?? Date() },
                 set: { store.state.birthDate = $0 }
@@ -86,14 +87,14 @@ struct AuthOptionalInfoView: View {
         HStack {
             if store.state.currentStep > 1 {
                 AppButton(
-                    title: "Back",
+                    title: "auth_back".localized,
                     model: .init(type: .tertiary)
                 ) {
                     store.send(.previouseTapped)
                 }
             }
             AppButton(
-                title: "Next",
+                title: "auth_next".localized,
                 model: .init(contentSize: .fill)
             ) {
                 store.send(.nextTapped)

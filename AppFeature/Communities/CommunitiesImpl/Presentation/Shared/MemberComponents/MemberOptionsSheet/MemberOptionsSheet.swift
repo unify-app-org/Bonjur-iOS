@@ -96,7 +96,7 @@ struct MemberOptionsSheet: View {
                 systemIcon: "square.and.arrow.up",
                 title: "common_share".localized,
                 tint: Color.Palette.graySecondary,
-                trailing: "Coming soon",
+                trailing: "common_coming_soon".localized,
                 isDisabled: true
             ) {}
         }

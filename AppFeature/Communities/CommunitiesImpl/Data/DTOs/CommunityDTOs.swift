@@ -41,7 +41,16 @@ struct CommunityDTO {
     
     struct MemberResponse: Decodable {
         let content: [Member]
-        
+        let page: Int?
+        let totalPages: Int?
+        let totalElements: Int?
+
+        /// True when a further page exists (Spring Page metadata).
+        var hasMore: Bool {
+            guard let page, let totalPages else { return false }
+            return page + 1 < totalPages
+        }
+
         struct Member: Decodable {
             let userId: String?
             let role: AppPresentationModel.UserActivityRole

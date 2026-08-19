@@ -65,6 +65,9 @@ struct MembersListView: View {
                     ProgressView()
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
+                        // Re-identify per page: a single spinner instance only fires
+                        // `onAppear` once, which stalled paging after the 2nd page.
+                        .id(store.state.loadedCount)
                         .onAppear {
                             store.send(.loadMore)
                         }

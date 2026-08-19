@@ -18,11 +18,6 @@
 "settings_logout_subtitle" = "Are you sure you want to log out?";
 "settings_logout_confirm" = "Log out";
 
-/* Language picker */
-"language_title" = "Language";
-"language_english" = "English";
-"language_azerbaijan" = "Azerbaijani";
-"language_russian" = "Russian";
 
 "common_cancel" = "Cancel";
 
@@ -44,3 +39,22 @@
 "profile_card_degree" = "degree";
 "profile_card_entry" = "entry";
 "profile_user_card_id" = "User Card ID";
+
+/* Edit profile */
+"editprofile_title" = "Edit profile";
+"editprofile_save" = "Save";
+"editprofile_name" = "Name and surname";
+"editprofile_faculty" = "Faculty";
+"editprofile_university" = "University";
+"editprofile_entry" = "Entry";
+"editprofile_course" = "Course";
+"editprofile_spoken_languages" = "Spoken languages";
+"editprofile_add_language" = "Add language";
+"editprofile_select_spoken" = "Select spoken language";
+"editprofile_select_known" = "Select languages you know";
+"editprofile_select" = "Select";
+"editprofile_choose_gender" = "Choose gender";
+"editprofile_select_date" = "Select Date";
+"editprofile_categories_fail" = "Couldn't load categories";
+"editprofile_languages_fail" = "Couldn't load languages";
+"editprofile_updated" = "Profile updated successfully";

@@ -194,9 +194,9 @@ class ClubRepoImpl: ClubRepo {
         size: Int,
         keyword: String?
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
-        let data = try await dataSource.fetchClubMemberById(id: id, page: page, size: size, keyword: keyword).content
-        let users = data.map(Self.mapMember)
-        return .init(members: users, hasMore: users.count >= size)
+        let response = try await dataSource.fetchClubMemberById(id: id, page: page, size: size, keyword: keyword)
+        let users = response.content.map(Self.mapMember)
+        return .init(members: users, hasMore: response.hasMore)
     }
 
     private static func mapMember(

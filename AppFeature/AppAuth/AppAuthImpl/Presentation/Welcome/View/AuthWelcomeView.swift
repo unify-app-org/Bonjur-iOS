@@ -20,6 +20,7 @@ struct AuthWelcomeView: View {
         .onAppear {
             store.send(.fetchData)
         }
+        .localized()
     }
     
     private var itemView: some View {
@@ -43,14 +44,14 @@ struct AuthWelcomeView: View {
     private var buttons: some View {
         VStack {
             AppButton(
-                title: "Continue",
+                title: "auth_continue".localized,
                 model: .init(contentSize: .fill)
             ) {
                 store.send(.continueTapped)
             }
             
             AppButton(
-                title: "Skip",
+                title: "auth_skip".localized,
                 model: .init(type: .tertiary, contentSize: .fill)
             ) {
                 store.send(.skipTapped)

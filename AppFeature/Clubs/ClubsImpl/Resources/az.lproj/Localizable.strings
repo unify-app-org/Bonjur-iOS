@@ -63,3 +63,6 @@
 "clubs_required_hint" = "* ilə işarələnmiş sahələr məcburidir.";
 
 "clubs_location_ph" = "Kitabxana";
+
+"clubs_search_empty" = "Axtarışınıza uyğun klub yoxdur. Başqa ad yoxlayın və ya filtrləri təmizləyin.";
+"clubs_list_empty" = "Hələ klub yoxdur. Öncül ol və ilkini indi yarat!";

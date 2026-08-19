@@ -1,0 +1,65 @@
+/* Common auth actions */
+"auth_next" = "Next";
+"auth_back" = "Back";
+"auth_skip" = "Skip";
+"auth_continue" = "Continue";
+"auth_got_it" = "Got it";
+"auth_okay" = "Okay";
+
+/* Choose university */
+"auth_choose_university_title" = "Choose \nUniversity";
+"auth_choose_university_subtitle" = "In which university are you studying?";
+
+/* Sign in */
+"auth_sign_in_title" = "Sign In";
+"auth_sign_in_subtitle" = "Only continue if you downloaded the app from a store or website that you trust.";
+"auth_sign_in_button" = "Sign in";
+"auth_email" = "Email";
+"auth_email_placeholder" = "Enter your email";
+"auth_password" = "Password";
+"auth_password_placeholder" = "Enter your password";
+"auth_microsoft_failed" = "Microsoft Sign In Failed";
+
+/* Optional info — photo */
+"auth_photo_title" = "Your profile photo";
+"auth_photo_subtitle" = "Upload a photo to get started";
+"auth_photo_add" = "Add";
+"auth_photo_change" = "Change";
+
+/* Optional info — birthday */
+"auth_birthday_title" = "Your Birthday";
+"auth_birthday_subtitle" = "What's your date of birth?";
+"auth_birthday_placeholder" = "Date of birth";
+"auth_select_date" = "Select Date";
+
+/* Optional info — gender */
+"auth_gender_title" = "Your Gender";
+"auth_gender_subtitle" = "Select your gender";
+
+/* Optional info — languages */
+"auth_languages_title" = "Which language do you know?";
+"auth_languages_subtitle" = "Select languages you know";
+
+/* Optional info — bio */
+"auth_bio_title" = "About you";
+"auth_bio_subtitle" = "Write something about yourself";
+
+/* Optional info — interests */
+"auth_interests_title" = "Your Interest";
+"auth_interests_subtitle" = "Choose what you're interested in";
+
+/* Onboarding slides */
+"auth_onboarding_1_title" = "Find Your \nPeople";
+"auth_onboarding_1_subtitle" = "Join your university community and start connecting with like-minded friends.";
+"auth_onboarding_2_title" = "Chat Your \nWay";
+"auth_onboarding_2_subtitle" = "Send messages and share idea instantly, all through your favorite apps.";
+"auth_onboarding_3_title" = "Make It \nYours";
+"auth_onboarding_3_subtitle" = "Customize your app style and enjoy conversations your way.";
+
+/* Welcome */
+"auth_welcome_title" = "Welcome";
+"auth_welcome_subtitle" = "Complete your profile for better interaction. It will take only 5 minutes.";
+
+/* Gender options */
+"auth_gender_female" = "Female";
+"auth_gender_male" = "Male";

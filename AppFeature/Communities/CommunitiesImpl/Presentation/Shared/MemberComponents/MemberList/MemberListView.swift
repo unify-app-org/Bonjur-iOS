@@ -130,7 +130,7 @@ struct MemberListView: View {
             onSeeAllTapped?()
         } label: {
             HStack(spacing: 6) {
-                Text("See all \(totalCount ?? loadedCount) members")
+                Text("count_see_all_members".localized(with: totalCount ?? loadedCount))
                     .font(Font.Typography.TextL.bold)
                 Image(uiImage: .Icons.chevronRight)
                     .resizable()

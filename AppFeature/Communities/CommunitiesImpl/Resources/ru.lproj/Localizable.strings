@@ -30,3 +30,5 @@
 "comm_view_all" = "показать все";
 "comm_row_location" = "Место";
 "comm_row_rules" = "Правила";
+
+"comm_clubs_empty" = "В этом сообществе пока нет клубов.";

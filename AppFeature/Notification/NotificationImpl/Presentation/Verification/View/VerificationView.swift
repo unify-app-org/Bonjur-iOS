@@ -12,6 +12,9 @@ import AppUIKit
 struct VerificationView: View {
     @ObservedObject var store: StoreOf<VerificationFeature>
 
+    /// Non-nil while the reject-note sheet is up for that row.
+    @State private var rejectTarget: VerificationItem?
+
     private let avatarSize: CGFloat = 48
     private let cardRadius: CGFloat = 16
 
@@ -21,6 +24,11 @@ struct VerificationView: View {
             .navigationTitle("Verifications")
             .navigationBarTitleDisplayMode(.inline)
             .onFirstAppear { store.send(.onAppear) }
+            .appSheet(item: $rejectTarget) { item in
+                RejectVerificationSheet(item: item) { note in
+                    store.send(.performReject(item: item, note: note))
+                }
+            }
     }
 
     @ViewBuilder
@@ -114,7 +122,7 @@ struct VerificationView: View {
                     title: "notif_reject".localized,
                     model: .init(type: .destructive, contentSize: .fill, size: .small)
                 ) {
-                    store.send(.reject(item))
+                    rejectTarget = item
                 }
                 AppButton(
                     title: "notif_verify".localized,

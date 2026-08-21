@@ -44,3 +44,5 @@
 "hangouts_private_desc" = "Contact details and group links are only visible to members. Join the hangout to access this information.";
 "hangouts_create_title" = "Create new hangout";
 "hangouts_edit_title" = "Edit hangout";
+
+"hangouts_owner_role" = "Owner";

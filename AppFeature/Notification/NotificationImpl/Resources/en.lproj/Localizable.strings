@@ -29,3 +29,8 @@
 "notif_yesterday" = "Yesterday";
 "notif_this_week" = "This week";
 "notif_earlier" = "Earlier";
+
+/* Reject-verification note sheet */
+"notif_reject_note_desc" = "You're rejecting %@'s verification request.";
+"notif_reject_note_label" = "Note (optional)";
+"notif_reject_note_hint" = "The club organiser sees this note in their notification. Leave it blank to reject without a reason.";

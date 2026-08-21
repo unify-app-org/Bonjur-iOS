@@ -15,7 +15,9 @@ struct VerificationPageResult {
 protocol VerificationUseCase {
     func fetchPending(page: Int, size: Int) async throws(APIError) -> VerificationPageResult
     /// Approve (`true`) or reject (`false`) a club's verification.
-    func setStatus(clubId: Int, accept: Bool) async throws(APIError)
+    /// `rejectionReason` is the optional note attached to a rejection; it is
+    /// ignored when accepting.
+    func setStatus(clubId: Int, accept: Bool, rejectionReason: String?) async throws(APIError)
 }
 
 final class VerificationUseCaseImpl: VerificationUseCase {
@@ -34,7 +36,11 @@ final class VerificationUseCaseImpl: VerificationUseCase {
         )
     }
 
-    func setStatus(clubId: Int, accept: Bool) async throws(APIError) {
-        try await dataSource.setClubVerification(clubId: clubId, accept: accept)
+    func setStatus(clubId: Int, accept: Bool, rejectionReason: String?) async throws(APIError) {
+        try await dataSource.setClubVerification(
+            clubId: clubId,
+            accept: accept,
+            rejectionReason: rejectionReason
+        )
     }
 }

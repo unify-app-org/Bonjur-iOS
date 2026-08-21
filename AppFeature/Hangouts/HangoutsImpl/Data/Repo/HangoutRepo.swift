@@ -231,7 +231,11 @@ class HangoutRepoImpl: HangoutRepo {
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
         let data = try await dataSource.fetchMembers(id: id, page: 0, size: 10, keyword: nil).content
         let users = data.map(Self.mapMember)
-        return .init(users: users, titleOverrides: [.president: "Owner"])
+        return .init(
+            users: users,
+            roleTitles: AppUIEntities.UserActivityRole
+                .localizedTitles(overriding: [.president: "hangouts_owner_role".localized])
+        )
     }
 
     func fetchHangoutMembersPage(

@@ -134,7 +134,8 @@ struct CommunitiesModuleImpl: CommunitiesModule {
         MembersListBuilder(
             inputData: .init(
                 title: input.title,
-                titleOverrides: input.titleOverrides,
+                roleTitles: input.roleTitles,
+                totalCount: input.totalCount,
                 pageSize: input.pageSize,
                 loadPage: input.loadPage,
                 onMemberTapped: input.onMemberTapped,

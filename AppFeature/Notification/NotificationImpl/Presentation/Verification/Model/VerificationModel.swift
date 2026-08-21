@@ -19,8 +19,6 @@ struct VerificationInputData {
 
 enum VerificationSideEffect: UISideEffect {
     case error(APIError?)
-    /// Ask the user to confirm before rejecting a club's verification.
-    case confirmReject(VerificationItem)
 }
 
 // MARK: - Feature Definition
@@ -50,10 +48,9 @@ enum VerificationAction: UIFeatureAction {
     case loadMore
     case retry
     case verify(VerificationItem)
-    /// User tapped Reject — triggers the confirm alert (no API call yet).
-    case reject(VerificationItem)
-    /// User confirmed rejection — performs the API call.
-    case performReject(VerificationItem)
+    /// User confirmed the rejection in the note sheet — performs the API call.
+    /// `note` is the optional reason shown to the club; nil when left blank.
+    case performReject(item: VerificationItem, note: String?)
     /// Tapped a verification cell (not the buttons) — open the club detail.
     case cellTapped(VerificationItem)
 }

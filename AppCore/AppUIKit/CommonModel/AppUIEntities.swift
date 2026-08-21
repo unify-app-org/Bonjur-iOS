@@ -46,6 +46,18 @@ public enum AppUIEntities {
 }
 
 public extension AppPresentationModel.UserActivityRole {
+    /// Localized titles for every role, for handing to modules that must stay free of
+    /// localization dependencies (the `Communities` interface module builds member
+    /// sections but cannot resolve strings itself). `overrides` wins per role, e.g.
+    /// `[.president: "Owner"]` on hangouts/events.
+    static func localizedTitles(
+        overriding overrides: [AppPresentationModel.UserActivityRole: String] = [:]
+    ) -> [AppPresentationModel.UserActivityRole: String] {
+        allCases.reduce(into: [:]) { titles, role in
+            titles[role] = overrides[role] ?? role.title
+        }
+    }
+
     var title: String {
         switch self {
         case .member:
@@ -57,6 +69,8 @@ public extension AppPresentationModel.UserActivityRole {
         case .eventCreator:
             return "Event creators".localized
         case .notJoined:
+            return "-"
+        case .requested:
             return "-"
         }
     }

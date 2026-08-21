@@ -185,7 +185,10 @@ class ClubRepoImpl: ClubRepo {
     ) async throws(APIError) -> CommunitiesMemberModuleModel.GroupedMembersData {
         let data = try await dataSource.fetchClubMemberById(id: id, page: 0, size: 10, keyword: nil).content
         let users = data.map(Self.mapMember)
-        return .init(users: users)
+        return .init(
+            users: users,
+            roleTitles: AppPresentationModel.UserActivityRole.localizedTitles()
+        )
     }
 
     func fetchClubMembersPage(
@@ -196,7 +199,11 @@ class ClubRepoImpl: ClubRepo {
     ) async throws(APIError) -> CommunitiesMemberModuleModel.MembersPage {
         let response = try await dataSource.fetchClubMemberById(id: id, page: page, size: size, keyword: keyword)
         let users = response.content.map(Self.mapMember)
-        return .init(members: users, hasMore: response.hasMore)
+        return .init(
+            members: users,
+            hasMore: response.hasMore,
+            totalCount: response.totalElements
+        )
     }
 
     private static func mapMember(

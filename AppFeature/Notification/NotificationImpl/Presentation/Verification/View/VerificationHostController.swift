@@ -27,21 +27,6 @@ final class VerificationHostController: UIFeatureController<
                     }
                 )
             )
-        case .confirmReject(let item):
-            AppAlertPresenter.present(
-                .init(
-                    config: .init(
-                        title: "notif_reject_verification".localized,
-                        subtitle: "Are you sure you want to reject \(item.clubName)'s verification request?"
-                    ),
-                    actions: {
-                        AppAlert.Action(title: "common_cancel".localized, style: .secondary)
-                        AppAlert.Action(title: "notif_reject".localized, style: .destructive) { [weak self] in
-                            self?.store.send(.performReject(item))
-                        }
-                    }
-                )
-            )
         }
     }
 }

@@ -22,6 +22,14 @@ struct MemberListView: View {
     let previewLimit: Int?
     let totalCount: Int?
     let onSeeAllTapped: (() -> Void)?
+    /// Fired when the end of the list scrolls into view. Lives inside the
+    /// `LazyVStack` — the only lazy container here — so it tracks scrolling. A
+    /// trigger in the enclosing `ScrollView` would not: that one builds its children
+    /// eagerly, so its `onAppear` fires once at screen entry and never again.
+    let onReachEnd: (() -> Void)?
+    /// Identity for the end sentinel; bump it per loaded page so a fresh sentinel is
+    /// made each time and can fire again.
+    let reachEndToken: Int
 
     init(
         sections: [MemberListSectionViewData],
@@ -32,7 +40,9 @@ struct MemberListView: View {
         horizontalPadding: Bool = true,
         previewLimit: Int? = 5,
         totalCount: Int? = nil,
-        onSeeAllTapped: (() -> Void)? = nil
+        onSeeAllTapped: (() -> Void)? = nil,
+        onReachEnd: (() -> Void)? = nil,
+        reachEndToken: Int = 0
     ) {
         self.sections = sections
         self.onRowTap = onRowTap
@@ -43,6 +53,8 @@ struct MemberListView: View {
         self.previewLimit = previewLimit
         self.totalCount = totalCount
         self.onSeeAllTapped = onSeeAllTapped
+        self.onReachEnd = onReachEnd
+        self.reachEndToken = reachEndToken
     }
 
     var body: some View {
@@ -119,6 +131,16 @@ struct MemberListView: View {
 
             if showsSeeAll {
                 seeAllButton
+            }
+
+            if let onReachEnd {
+                // Direct child of the LazyVStack, so it is only built once the list
+                // has been scrolled to the end — that is what makes paging follow the
+                // scroll instead of firing once on entry.
+                Color.clear
+                    .frame(height: 1)
+                    .id(reachEndToken)
+                    .onAppear { onReachEnd() }
             }
         }
         .padding(.vertical,16)

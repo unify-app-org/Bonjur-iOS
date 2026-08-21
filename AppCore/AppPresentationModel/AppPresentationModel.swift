@@ -67,10 +67,17 @@ public enum AppPresentationModel {
     // MARK: - Club Status
 
     /// Verification state of a club. `verified` drives the verified tick on cards.
-    public enum ClubStatus: String, Codable {
+    /// Lenient on decode (unknown server states fall back to `unverified`) — a strict
+    /// enum here took down the whole `ds/v1/clubs` page the first time a club came
+    /// back `REJECTED`.
+    public enum ClubStatus: String, Codable, Hashable, CaseIterableWithDefault {
+        public static var defaultValue: AppPresentationModel.ClubStatus = .unverified
+
         case verified = "VERIFIED"
         case unverified = "UNVERIFIED"
         case pending = "PENDING"
+        /// Admin rejected the verification request; the club may request again.
+        case rejected = "REJECTED"
 
         public var isVerified: Bool { self == .verified }
     }
@@ -94,12 +101,16 @@ public enum AppPresentationModel {
     // MARK: - User Activity Role
     
     public enum UserActivityRole: String, Codable, CaseIterable, CaseIterableWithDefault {
-        public static var defaultValue: AppPresentationModel.UserActivityRole = .member
+        /// Unknown server roles (e.g. "REQUESTED") decode to `notJoined`, matching
+        /// Android's `toUserActivityRole()`. Defaulting to `.member` used to show a
+        /// pending requester as a joined member.
+        public static var defaultValue: AppPresentationModel.UserActivityRole = .notJoined
         
         case member = "MEMBER"
         case president = "PRESIDENT"
         case visePresident = "VICE_PRESIDENT"
         case eventCreator = "EVENT_CREATOR"
+        case requested = "REQUESTED"
         case notJoined
 
         /// Human-readable label for chips/badges.
@@ -110,6 +121,7 @@ public enum AppPresentationModel {
             case .visePresident: return "Vice president"
             case .eventCreator: return "Creator"
             case .notJoined: return ""
+            case .requested: return ""
             }
         }
 

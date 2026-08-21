@@ -40,10 +40,8 @@ final class VerificationViewModel: UIFeatureViewModel<VerificationFeature> {
             loadMore()
         case .verify(let item):
             process(item, accept: true)
-        case .reject(let item):
-            postEffect(.confirmReject(item))
-        case .performReject(let item):
-            process(item, accept: false)
+        case .performReject(let item, let note):
+            process(item, accept: false, rejectionReason: note)
         case .cellTapped(let item):
             Task { await router.navigate(to: .clubDetail(clubId: item.clubId)) }
         }
@@ -109,12 +107,16 @@ final class VerificationViewModel: UIFeatureViewModel<VerificationFeature> {
 
     // MARK: - Verify / Reject
 
-    private func process(_ item: VerificationItem, accept: Bool) {
+    private func process(_ item: VerificationItem, accept: Bool, rejectionReason: String? = nil) {
         guard !state.processingIds.contains(item.id) else { return }
         state.processingIds.insert(item.id)
         Task {
             do {
-                try await dependencies.useCase.setStatus(clubId: item.clubId, accept: accept)
+                try await dependencies.useCase.setStatus(
+                    clubId: item.clubId,
+                    accept: accept,
+                    rejectionReason: rejectionReason
+                )
                 await finishProcessing(item, removed: true, error: nil)
             } catch {
                 await finishProcessing(item, removed: false, error: error as? APIError)

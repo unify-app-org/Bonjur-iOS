@@ -89,9 +89,14 @@ public enum CommunitiesMemberModuleModel {
             self.sections = sections
         }
         
+        /// `roleTitles` supplies the section heading for every role. This module is
+        /// deliberately dependency-free (no localization), so the titles are localized
+        /// by the caller — see `UserActivityRole.localizedTitles(overriding:)` in
+        /// AppUIKit. A role missing from the map falls back to its raw value, which is
+        /// a diagnostic string, not something meant to reach the UI.
         public init(
             users: [MemberCellModel],
-            titleOverrides: [AppPresentationModel.UserActivityRole: String] = [:]
+            roleTitles: [AppPresentationModel.UserActivityRole: String]
         ) {
             let groupedUsers = Dictionary(grouping: users, by: \.role)
             let sections = groupedUsers
@@ -100,7 +105,7 @@ public enum CommunitiesMemberModuleModel {
                 }
                 .map { role, users in
                     MemberListSection(
-                        title: titleOverrides[role] ?? role.title,
+                        title: roleTitles[role] ?? role.rawValue,
                         memberCount: users.count,
                         members: users.sorted { lhs, rhs in
                             lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
@@ -157,21 +162,8 @@ private extension AppPresentationModel.UserActivityRole {
             return 3
         case .notJoined:
             return 4
-        }
-    }
-
-    var title: String {
-        switch self {
-        case .member:
-            return "Members"
-        case .president:
-            return "President"
-        case .visePresident:
-            return "Vise president"
-        case .eventCreator:
-            return "Event creators"
-        case .notJoined:
-            return "-"
+        case .requested:
+            return 5
         }
     }
 }
@@ -356,10 +348,15 @@ public extension CommunitiesMemberModuleModel {
     struct MembersPage: Sendable {
         public let members: [MemberCellModel]
         public let hasMore: Bool
+        /// Total rows the query matches (`totalElements`). Comes from the same
+        /// response as the page, so it also reflects an active keyword filter —
+        /// unlike a total handed in by the caller from a detail payload.
+        public let totalCount: Int?
 
-        public init(members: [MemberCellModel], hasMore: Bool) {
+        public init(members: [MemberCellModel], hasMore: Bool, totalCount: Int? = nil) {
             self.members = members
             self.hasMore = hasMore
+            self.totalCount = totalCount
         }
     }
 
@@ -394,7 +391,13 @@ public extension CommunitiesMemberModuleModel {
     /// `keyword` is the server-side member search term (nil/empty = unfiltered).
     struct MembersListInput {
         public let title: String
-        public let titleOverrides: [AppPresentationModel.UserActivityRole: String]
+        /// Localized section heading per role, supplied by the caller (this module
+        /// resolves no strings of its own).
+        public let roleTitles: [AppPresentationModel.UserActivityRole: String]
+        /// Total members on the server, when the caller knows it (e.g. from the
+        /// detail payload). The section header shows this rather than the number of
+        /// rows paged in so far.
+        public let totalCount: Int?
         public let pageSize: Int
         public let loadPage: (Int, Int, String?) async throws -> MembersPage
         public let onMemberTapped: (MemberCellModel) -> Void
@@ -403,14 +406,16 @@ public extension CommunitiesMemberModuleModel {
 
         public init(
             title: String,
-            titleOverrides: [AppPresentationModel.UserActivityRole: String] = [:],
+            roleTitles: [AppPresentationModel.UserActivityRole: String],
+            totalCount: Int? = nil,
             pageSize: Int = 20,
             loadPage: @escaping (Int, Int, String?) async throws -> MembersPage,
             onMemberTapped: @escaping (MemberCellModel) -> Void,
             options: MemberOptionsConfig? = nil
         ) {
             self.title = title
-            self.titleOverrides = titleOverrides
+            self.roleTitles = roleTitles
+            self.totalCount = totalCount
             self.pageSize = pageSize
             self.loadPage = loadPage
             self.onMemberTapped = onMemberTapped

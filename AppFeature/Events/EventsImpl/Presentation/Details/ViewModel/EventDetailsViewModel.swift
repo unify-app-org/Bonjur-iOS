@@ -224,7 +224,9 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
         let useCase = dependencies.useCase
         let input = CommunitiesMemberModuleModel.MembersListInput(
             title: "Members".localized,
-            titleOverrides: [.president: "events_owner_role".localized],
+            roleTitles: AppPresentationModel.UserActivityRole
+                .localizedTitles(overriding: [.president: "events_owner_role".localized]),
+            totalCount: state.uiModel?.membersCount,
             pageSize: 20,
             loadPage: { page, size, keyword in
                 try await useCase.fetchEventMembersPage(

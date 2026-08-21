@@ -44,3 +44,5 @@
 "hangouts_private_desc" = "Контакты и ссылки видны только участникам. Присоединитесь к тусовке, чтобы их увидеть.";
 "hangouts_create_title" = "Создать тусовку";
 "hangouts_edit_title" = "Редактировать тусовку";
+
+"hangouts_owner_role" = "Владелец";

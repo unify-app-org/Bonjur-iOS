@@ -196,7 +196,7 @@ final class EventsRepoImpl: EventsRepo {
             tags: tags,
             infoData: mapInfo(data),
             attachments: mapAttachments(data.attachments ?? []),
-            membersData: .init(users: []),
+            membersData: .init(users: [], roleTitles: [:]),
             joinButton: mapButtonModel(data),
             editPrefillData: mapPrefillData(data, tags),
             isReminderSent: data.isReminder ?? false
@@ -211,7 +211,11 @@ final class EventsRepoImpl: EventsRepo {
             query: ["page": "0", "size": "100"]
         ).content
         let users = data.map(Self.mapMember)
-        return .init(users: users, titleOverrides: [.president: "events_owner_role".localized])
+        return .init(
+            users: users,
+            roleTitles: AppPresentationModel.UserActivityRole
+                .localizedTitles(overriding: [.president: "events_owner_role".localized])
+        )
     }
 
     func fetchEventMembersPage(
@@ -233,7 +237,7 @@ final class EventsRepoImpl: EventsRepo {
         } else {
             hasMore = users.count >= size
         }
-        return .init(members: users, hasMore: hasMore)
+        return .init(members: users, hasMore: hasMore, totalCount: response.totalElements)
     }
 
     private static func mapMember(

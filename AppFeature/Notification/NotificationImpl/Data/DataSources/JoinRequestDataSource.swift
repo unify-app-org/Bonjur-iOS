@@ -17,7 +17,7 @@ protocol JoinRequestDataSource {
     func setEventStatus(eventId: String, userId: String, accept: Bool) async throws(APIError)
     /// Admin: clubs awaiting verification (same row shape as join requests).
     func fetchPendingClubs(page: Int, size: Int) async throws(APIError) -> JoinRequestPage<ClubJoinRequestDTO>
-    func setClubVerification(clubId: Int, accept: Bool) async throws(APIError)
+    func setClubVerification(clubId: Int, accept: Bool, rejectionReason: String?) async throws(APIError)
 }
 
 /// Live network source for the join-request endpoints. Decodes the Spring
@@ -76,12 +76,13 @@ final class JoinRequestDataSourceImpl: NetworkService<NotificationEndPoint>, Joi
         try await fetch(endPoint: .clubPending(query(page: page, size: size)))
     }
 
-    func setClubVerification(clubId: Int, accept: Bool) async throws(APIError) {
+    func setClubVerification(clubId: Int, accept: Bool, rejectionReason: String?) async throws(APIError) {
         _ = try await fetchRawData(
             endPoint: .setClubVerification(
                 ClubVerificationStatusBody(
                     clubId: clubId,
-                    status: accept ? "ACCEPT" : "REJECT"
+                    status: accept ? "ACCEPT" : "REJECT",
+                    rejectionReason: accept ? nil : rejectionReason
                 )
             )
         )

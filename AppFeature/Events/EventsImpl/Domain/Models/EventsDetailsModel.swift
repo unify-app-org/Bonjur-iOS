@@ -170,6 +170,7 @@ private extension CommunitiesMemberModuleModel.GroupedMembersData {
                 avatarURL: URL(string: "https://i.pinimg.com/736x/9e/52/3d/9e523d8faf76136111fa4b6f2596db1b.jpg"),
                 subtitle: "Master, Data science, 2020"
             )
-        ]
+        ],
+        roleTitles: AppUIEntities.UserActivityRole.localizedTitles()
     )
 }

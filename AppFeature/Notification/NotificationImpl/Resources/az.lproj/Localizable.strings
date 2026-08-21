@@ -29,3 +29,8 @@
 "notif_yesterday" = "Dünən";
 "notif_this_week" = "Bu həftə";
 "notif_earlier" = "Əvvəllər";
+
+/* Təsdiqin rədd edilməsi — qeyd paneli */
+"notif_reject_note_desc" = "%@ klubunun təsdiq sorğusunu rədd edirsiniz.";
+"notif_reject_note_label" = "Qeyd (istəyə bağlı)";
+"notif_reject_note_hint" = "Klub təşkilatçısı bu qeydi bildirişində görəcək. Səbəb göstərmədən rədd etmək üçün boş buraxın.";

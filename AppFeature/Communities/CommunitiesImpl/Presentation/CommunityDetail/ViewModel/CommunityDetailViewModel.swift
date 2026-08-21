@@ -118,7 +118,9 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
         let currentUserId = KeychainImpl().getString(key: .userId)
         let input = CommunitiesMemberModuleModel.MembersListInput(
             title: "Members".localized,
-            titleOverrides: [.president: "comm_owner_role".localized],
+            roleTitles: AppPresentationModel.UserActivityRole
+                .localizedTitles(overriding: [.president: "comm_owner_role".localized]),
+            totalCount: state.uiModel?.membersCount,
             pageSize: 20,
             loadPage: { page, size, keyword in
                 try await useCase.fetchCommunityMembersPage(

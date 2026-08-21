@@ -41,7 +41,25 @@ struct MembersListView: View {
     }
 
     private var content: some View {
+        ScrollViewReader { proxy in
+            scrollContent
+                // Replacing the rows (search, reload) leaves the ScrollView at its old
+                // offset, which is past the end of a shorter result set — the list reads
+                // as blank. Snap back to the top whenever the rows are replaced.
+                .onChange(of: store.state.listResetToken) { _ in
+                    proxy.scrollTo(Self.topAnchor, anchor: .top)
+                }
+        }
+    }
+
+    private static let topAnchor = "members-list-top"
+
+    private var scrollContent: some View {
         ScrollView(showsIndicators: false) {
+            Color.clear
+                .frame(height: 0)
+                .id(Self.topAnchor)
+
             if store.state.isLoading && store.state.sections.isEmpty {
                 ProgressView()
                     .frame(maxWidth: .infinity)
@@ -58,19 +76,15 @@ struct MembersListView: View {
                     },
                     onSelectGroupTap: { _ in },
                     showsScrollView: false,
-                    previewLimit: nil
+                    previewLimit: nil,
+                    onReachEnd: { store.send(.loadMore) },
+                    reachEndToken: store.state.pagesLoaded
                 )
 
                 if store.state.hasMore {
                     ProgressView()
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
-                        // Re-identify per page: a single spinner instance only fires
-                        // `onAppear` once, which stalled paging after the 2nd page.
-                        .id(store.state.loadedCount)
-                        .onAppear {
-                            store.send(.loadMore)
-                        }
                 }
             }
         }

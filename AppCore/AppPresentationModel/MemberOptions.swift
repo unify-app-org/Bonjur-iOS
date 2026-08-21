@@ -90,7 +90,7 @@ public extension AppPresentationModel {
                 return [.member, .president, .visePresident, .eventCreator]
             case .visePresident:
                 return [.member, .eventCreator]
-            case .member, .eventCreator, .notJoined:
+            case .member, .eventCreator, .notJoined, .requested:
                 return []
             }
         }
@@ -121,7 +121,7 @@ public extension AppPresentationModel {
             switch viewer {
             case .president, .eventCreator:
                 return false
-            case .member, .visePresident, .notJoined:
+            case .member, .visePresident, .notJoined, .requested:
                 return true
             }
         }
@@ -140,7 +140,7 @@ public extension AppPresentationModel.UserActivityRole {
         case .president: return "President"
         case .visePresident: return "Vice president"
         case .eventCreator: return "Event organizer"
-        case .notJoined: return ""
+        case .notJoined, .requested: return ""
         }
     }
 
@@ -151,7 +151,7 @@ public extension AppPresentationModel.UserActivityRole {
         case .president: return "Can manage club"
         case .visePresident: return "Can manage club, can't assign roles"
         case .eventCreator: return "Just can create event in club"
-        case .notJoined: return ""
+        case .notJoined, .requested: return ""
         }
     }
 }

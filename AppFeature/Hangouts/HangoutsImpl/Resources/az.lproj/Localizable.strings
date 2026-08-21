@@ -44,3 +44,5 @@
 "hangouts_private_desc" = "Əlaqə məlumatları və qrup linkləri yalnız üzvlərə görünür. Bu məlumatı görmək üçün görüşə qoşulun.";
 "hangouts_create_title" = "Yeni görüş yarat";
 "hangouts_edit_title" = "Görüşü redaktə et";
+
+"hangouts_owner_role" = "Sahib";

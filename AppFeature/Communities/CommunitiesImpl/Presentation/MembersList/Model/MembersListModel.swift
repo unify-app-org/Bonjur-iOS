@@ -14,7 +14,10 @@ import AppPresentationModel
 
 struct MembersListInputData {
     let title: String
-    let titleOverrides: [AppPresentationModel.UserActivityRole: String]
+    /// Localized section heading per role, passed down from the calling module.
+    let roleTitles: [AppPresentationModel.UserActivityRole: String]
+    /// Server-reported total, shown in the section header instead of the loaded count.
+    let totalCount: Int?
     let pageSize: Int
     let loadPage: (Int, Int, String?) async throws -> CommunitiesMemberModuleModel.MembersPage
     let onMemberTapped: (CommunitiesMemberModuleModel.MemberCellModel) -> Void
@@ -45,10 +48,13 @@ final class MembersListViewState: UIFeatureState {
     @Published var isLoadingMore: Bool = false
     @Published var hasMore: Bool = true
     @Published var isEmpty: Bool = false
-    /// Number of members loaded so far. Used to re-identify the paging spinner so
-    /// its `onAppear` fires again for every page (otherwise paging stalls after one).
     @Published var loadedCount: Int = 0
-    /// Non-nil when the 3-dot options menu is enabled for this list.
+    @Published var pagesLoaded: Int = 0
+    @Published var totalCount: Int?
+    /// Bumped whenever the rows are replaced (search, reload). The view scrolls back to
+    /// the top on change: a shrinking result set otherwise leaves the ScrollView parked
+    /// below the new, much shorter content — the list looks blank.
+    @Published var listResetToken: Int = 0
     @Published var optionsConfig: CommunitiesMemberModuleModel.MemberOptionsConfig?
 }
 

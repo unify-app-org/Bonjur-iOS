@@ -32,9 +32,12 @@ struct EventRequestStatusBody: Encodable {
 }
 
 /// Approve/reject a club's verification request. `status` ∈ {"ACCEPT", "REJECT"}.
+/// `rejectionReason` is the optional admin note shown to the club — omitted from
+/// the JSON when nil (and always nil on accept).
 struct ClubVerificationStatusBody: Encodable {
     let clubId: Int
     let status: String
+    let rejectionReason: String?
 }
 
 enum NotificationEndPoint {

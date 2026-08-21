@@ -237,6 +237,8 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
         let currentUserId = KeychainImpl().getString(key: .userId)
         let input = CommunitiesMemberModuleModel.MembersListInput(
             title: "clubs_members_title".localized,
+            roleTitles: AppPresentationModel.UserActivityRole.localizedTitles(),
+            totalCount: state.uiModel?.membersCount,
             pageSize: 20,
             loadPage: { page, size, keyword in
                 try await useCase.fetchClubMembersPage(

@@ -147,7 +147,9 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
         let useCase = dependencies.useCase
         let input = CommunitiesMemberModuleModel.MembersListInput(
             title: "Members".localized,
-            titleOverrides: [.president: "Owner"],
+            roleTitles: AppPresentationModel.UserActivityRole
+                .localizedTitles(overriding: [.president: "hangouts_owner_role".localized]),
+            totalCount: state.uiModel?.membersCount,
             pageSize: 20,
             loadPage: { page, size, keyword in
                 try await useCase.fetchHangoutMembersPage(

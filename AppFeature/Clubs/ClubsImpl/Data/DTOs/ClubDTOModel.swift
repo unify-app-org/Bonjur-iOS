@@ -118,13 +118,20 @@ struct ClubDTOModel {
     struct MemberResponse: Decodable {
         let content: [Member]
         let page: Int?
+        let size: Int?
         let totalPages: Int?
         let totalElements: Int?
+        /// Rows in *this* page — the server sends it alongside the page metadata.
+        let numberOfElements: Int?
 
-        /// True when a further page exists (Spring Page metadata).
+        /// True when a further page exists. Prefers the page metadata; falls back to
+        /// "this page came back full" so paging still works if `page`/`totalPages` ever
+        /// go missing (they'd otherwise decode as nil and silently end the list).
         var hasMore: Bool {
-            guard let page, let totalPages else { return false }
-            return page + 1 < totalPages
+            if let page, let totalPages { return page + 1 < totalPages }
+            let received = numberOfElements ?? content.count
+            guard let size, size > 0 else { return false }
+            return received >= size
         }
 
         struct Member: Decodable {

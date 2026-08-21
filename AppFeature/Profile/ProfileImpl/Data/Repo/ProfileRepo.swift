@@ -51,7 +51,7 @@ class ProfileRepoImpl: ProfileRepo {
         )
         let userCardModel: UserCardModel = .init(
             backgroundCover: data.background,
-            nameSurname: data.username ?? "-",
+            nameSurname: data.fullName ?? "-",
             speciality: data.specialization ?? "-",
             course: Self.yearText(data.year),
             community: data.communityName ?? "-",

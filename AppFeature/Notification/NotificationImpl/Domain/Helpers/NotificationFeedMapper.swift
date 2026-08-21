@@ -13,15 +13,28 @@ import AppFoundation
 /// This week / Earlier).
 enum NotificationFeedMapper {
 
+    /// Rejection outcomes are the only rows whose note box carries the admin reason.
+    private static let rejectionTypes: Set<NotificationType> = [
+        .rejectedUserFromClub,
+        .rejectedClubVerification,
+        .rejectedUserFromHangout,
+        .rejectedUserFromEvent
+    ]
+
     static func item(from dto: NotificationDTO) -> NotificationFeedItem? {
         guard let id = dto.id else { return nil }
         let createdAt = RelativeTime.parse(dto.createdAt)
+        let type = NotificationType(apiValue: dto.type ?? "")
+        // `metadata.rejectionReason` is only meaningful on a rejection — the
+        // backend also stamps it on SUCCESS rows, which used to render a stray
+        // note box under "Club verified".
+        let rejectionNote = rejectionTypes.contains(type) ? dto.metadata?.rejectionReason : nil
         return NotificationFeedItem(
             id: "\(id)",
-            type: NotificationType(apiValue: dto.type ?? ""),
+            type: type,
             title: dto.title ?? "",
             subtitle: dto.body ?? "",
-            note: dto.note ?? dto.metadata?.rejectionReason,
+            note: dto.note ?? rejectionNote,
             imageURL: dto.imageUrl,
             timeAgo: createdAt.map { RelativeTime.short(from: $0) } ?? "",
             isRead: dto.isRead ?? true,

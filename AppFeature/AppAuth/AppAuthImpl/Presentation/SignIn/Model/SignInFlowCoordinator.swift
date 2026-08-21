@@ -11,7 +11,7 @@ import AppUIKit
 
 final class SignInFlowCoordinator {
     
-    private let msalCommunityIds: Set<Int> = [1]
+    private let msalCommunityIds: Set<String> = ["UFAZ"]
     private var inputData: SignInInputData? = nil
     private let msalManager = MicrosoftAuthManager()
     private weak var presentingViewController: UIViewController?
@@ -23,7 +23,7 @@ final class SignInFlowCoordinator {
     func start(from viewController: UIViewController, with inputData: SignInInputData) {
         presentingViewController = viewController
         self.inputData = inputData
-        if msalCommunityIds.contains(inputData.communityId) {
+        if msalCommunityIds.contains(inputData.communityName) {
             startMSALFlow()
         } else {
             startCredentialsFlow(inputData: inputData)

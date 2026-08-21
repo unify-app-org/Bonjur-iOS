@@ -68,7 +68,10 @@ final class ChooseUniversityViewModel: UIFeatureViewModel<ChooseUniversityFeatur
         }
         Task {
             await router.navigate(to: .signIn(
-                .init(communityId: selectedItem.id)
+                .init(
+                    communityId: selectedItem.id,
+                    communityName: selectedItem.title
+                )
             ))
         }
     }

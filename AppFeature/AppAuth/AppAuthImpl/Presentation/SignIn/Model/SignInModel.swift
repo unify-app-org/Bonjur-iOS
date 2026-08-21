@@ -14,6 +14,7 @@ import AppUIKit
 
 struct SignInInputData {
     let communityId: Int
+    let communityName: String
 }
 
 // MARK: - Side effects

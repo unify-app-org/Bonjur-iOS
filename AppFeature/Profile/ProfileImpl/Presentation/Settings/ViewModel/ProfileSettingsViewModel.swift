@@ -7,6 +7,7 @@
 
 import AppFoundation
 import UIKit
+import AppNetwork
 
 final class ProfileSettingsViewModel: UIFeatureViewModel<ProfileSettingsFeature> {
     
@@ -80,8 +81,8 @@ final class ProfileSettingsViewModel: UIFeatureViewModel<ProfileSettingsFeature>
         } catch {
             postEffect(
                 .error(
-                    error.localizedDescription,
-                    error.detail
+                    APIError.popupTitle,
+                    error.popupSubtitle
                 )
             )
         }

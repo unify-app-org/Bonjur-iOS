@@ -55,3 +55,7 @@
 "document_preview_failed" = "Не удалось открыть этот файл";
 "document_preview_retry" = "Попробовать снова";
 "document_preview_share" = "Поделиться";
+
+/* API error popups */
+"error_generic_title" = "Что-то пошло не так";
+"error_generic_subtitle" = "Пожалуйста, попробуйте снова.";

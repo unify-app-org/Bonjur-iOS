@@ -8,6 +8,7 @@
 import UIKit
 import AppUIKit
 import AppFoundation
+import AppNetwork
 
 // MARK: - Controller
 
@@ -30,8 +31,8 @@ final class EventDetailsHostController: UIFeatureController<
             }
         case .error(let error):
             showAlert(
-                title: error?.localizedDescription ?? "common_something_went_wrong".localized,
-                subtitle: error?.detail
+                title: APIError.popupTitle,
+                subtitle: error.popupSubtitle
             )
         }
     }

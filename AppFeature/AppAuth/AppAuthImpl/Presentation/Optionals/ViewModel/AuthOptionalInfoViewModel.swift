@@ -71,8 +71,8 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
         } catch {
             postEffect(
                 .error(
-                    title: error.localizedDescription,
-                    subtitle: error.localizedDescription
+                    title: APIError.popupTitle,
+                    subtitle: error.popupSubtitle
                 )
             )
         }
@@ -92,8 +92,8 @@ final class AuthOptionalInfoViewModel: UIFeatureViewModel<AuthOptionalInfoFeatur
         } catch {
             postEffect(
                 .error(
-                    title: error.localizedDescription,
-                    subtitle: error.detail
+                    title: APIError.popupTitle,
+                    subtitle: error.popupSubtitle
                 )
             )
         }

@@ -114,8 +114,8 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
         } catch {
             postEffect(
                 .error(
-                    error.localizedDescription,
-                    error.detail
+                    APIError.popupTitle,
+                    error.popupSubtitle
                 )
             )
         }

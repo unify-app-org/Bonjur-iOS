@@ -55,3 +55,7 @@
 "document_preview_failed" = "Bu faylı açmaq mümkün olmadı";
 "document_preview_retry" = "Yenidən cəhd et";
 "document_preview_share" = "Paylaş";
+
+/* API error popups */
+"error_generic_title" = "Nəsə səhv getdi";
+"error_generic_subtitle" = "Zəhmət olmasa yenidən cəhd edin.";

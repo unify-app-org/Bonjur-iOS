@@ -8,6 +8,7 @@
 import UIKit
 import AppUIKit
 import AppFoundation
+import AppNetwork
 
 // MARK: - Controller
 
@@ -25,8 +26,8 @@ final class ClubsHostController: UIFeatureController<
             }
         case .error(let error):
             showAlert(
-                title: error.localizedDescription,
-                subtitle: error.detail
+                title: APIError.popupTitle,
+                subtitle: error.popupSubtitle
             )
         }
     }

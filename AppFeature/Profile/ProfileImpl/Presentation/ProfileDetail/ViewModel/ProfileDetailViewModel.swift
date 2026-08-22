@@ -107,7 +107,7 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
             let firstError = applyInitialFetchResults(results)
 
             if let firstError {
-                postEffect(.error(firstError.localizedDescription, firstError.detail))
+                postEffect(.error(APIError.popupTitle, firstError.popupSubtitle))
             }
         }
     }
@@ -203,7 +203,7 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
                 style: .success
             )
         } catch {
-            postEffect(.error(error.localizedDescription, (error as? APIError)?.detail))
+            postEffect(.error(APIError.popupTitle, (error as? APIError).popupSubtitle))
         }
     }
     

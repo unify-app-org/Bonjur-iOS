@@ -8,6 +8,7 @@
 import UIKit
 import AppFoundation
 import AppUIKit
+import AppNetwork
 
 final class SignInFlowCoordinator {
     
@@ -115,7 +116,7 @@ final class SignInFlowCoordinator {
             )
             await handleLogin( isFirstLogin)
         } catch {
-            await errorAlert(title: error.localizedDescription)
+            await errorAlert(title: APIError.popupTitle, subtitle: error.popupSubtitle)
         }
     }
     
@@ -140,9 +141,9 @@ final class SignInFlowCoordinator {
     }
     
     @MainActor
-    private func errorAlert(title: String) {
+    private func errorAlert(title: String, subtitle: String? = nil) {
         let alert = AppAlert(
-            config: .init(title: title),
+            config: .init(title: title, subtitle: subtitle),
             actions: {
                 AppAlert.Action(
                     title: "auth_okay".localized,

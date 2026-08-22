@@ -7,6 +7,7 @@
 
 import AppFoundation
 import AppStorage
+import AppNetwork
 
 final class SignInViewModel: UIFeatureViewModel<SignInFeature> {
     
@@ -60,8 +61,8 @@ final class SignInViewModel: UIFeatureViewModel<SignInFeature> {
             await handleSignIn(isFirstLogin)
         } catch {
             state.error = .init(
-                title: error.localizedDescription,
-                subtitle: error.detail
+                title: APIError.popupTitle,
+                subtitle: error.popupSubtitle
             )
         }
     }

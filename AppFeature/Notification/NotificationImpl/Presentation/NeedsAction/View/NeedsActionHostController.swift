@@ -8,6 +8,7 @@
 import UIKit
 import AppUIKit
 import AppFoundation
+import AppNetwork
 
 final class NeedsActionHostController: UIFeatureController<
     NeedsActionFeature,
@@ -19,8 +20,8 @@ final class NeedsActionHostController: UIFeatureController<
             AppAlertPresenter.present(
                 .init(
                     config: .init(
-                        title: error?.localizedDescription ?? "common_unknown_error".localized,
-                        subtitle: error?.detail
+                        title: APIError.popupTitle,
+                        subtitle: error.popupSubtitle
                     ),
                     actions: {
                         AppAlert.Action(title: "common_got_it".localized, style: .primary)

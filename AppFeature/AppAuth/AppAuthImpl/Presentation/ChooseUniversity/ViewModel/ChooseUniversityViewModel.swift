@@ -6,6 +6,7 @@
 //
 
 import AppFoundation
+import AppNetwork
 
 final class ChooseUniversityViewModel: UIFeatureViewModel<ChooseUniversityFeature> {
     
@@ -56,8 +57,8 @@ final class ChooseUniversityViewModel: UIFeatureViewModel<ChooseUniversityFeatur
             state.uiModel = try await dependencies.useCase.getCommunities()
         } catch {
             state.error = .init(
-                title: error.localizedDescription,
-                subtitle: error.detail
+                title: APIError.popupTitle,
+                subtitle: error.popupSubtitle
             )
         }
     }

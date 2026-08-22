@@ -7,6 +7,7 @@
 
 import AppFoundation
 import AppUIKit
+import AppNetwork
 
 final class HangoutCreateHostController: UIFeatureController<
     HangoutCreateFeature,
@@ -26,8 +27,8 @@ final class HangoutCreateHostController: UIFeatureController<
             }
         case .error(let error):
             showAlert(
-                title: error?.localizedDescription ?? "common_something_went_wrong".localized,
-                subtitle: error?.detail
+                title: APIError.popupTitle,
+                subtitle: error.popupSubtitle
             )
         }
     }

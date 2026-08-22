@@ -17,19 +17,23 @@ public extension AttachmentItemView {
         let name: String
         let type: AttachmentType = .none
         let canEdit: Bool
-        
+        /// Remote file URL. When set, tapping the row opens the document.
+        let url: URL?
+
         public init(
             id: Int,
             image: UIImage = UIImage.Icons.fileAttachment,
             name: String,
             size: String,
-            canEdit: Bool = false
+            canEdit: Bool = false,
+            url: URL? = nil
         ) {
             self.id = id
             self.image = image
             self.size = size
             self.name = name
             self.canEdit = canEdit
+            self.url = url
         }
     }
     

@@ -304,7 +304,12 @@ private extension EventsRepoImpl {
 
     func mapAttachments(_ urls: [EventDetailDTO.Attachments]) -> [AttachmentItemView.Model] {
         urls.enumerated().map { index, attachment in
-            return .init(id: index, name: attachment.name ?? "", size: attachment.size ?? "")
+            return .init(
+                id: index,
+                name: attachment.name ?? "",
+                size: attachment.size ?? "",
+                url: attachment.url.flatMap { URL(string: $0) }
+            )
         }
     }
 

@@ -19,7 +19,6 @@ protocol NotificationUseCase {
     func markAllRead() async throws(APIError)
     func markRead(id: String) async throws(APIError)
     /// Live pending-request totals for the "notif_needs_action".localized banner.
-    func fetchRequestCounts() async throws(APIError) -> ActionRequestCounts
     /// Admin-only pending-verification total; throwing (403) means not an admin.
     func fetchVerificationCount() async throws(APIError) -> Int
 }
@@ -54,17 +53,6 @@ final class NotificationUseCaseImpl: NotificationUseCase {
     }
 
     /// Cheap `size=1` probes — we only read `totalElements` from each source.
-    func fetchRequestCounts() async throws(APIError) -> ActionRequestCounts {
-        let clubs = try await joinRequestDataSource.fetchClubRequests(page: 0, size: 1)
-        let hangouts = try await joinRequestDataSource.fetchHangoutRequests(page: 0, size: 1)
-        let events = try await joinRequestDataSource.fetchEventRequests(page: 0, size: 1)
-        return ActionRequestCounts(
-            clubs: clubs.totalElements ?? 0,
-            hangouts: hangouts.totalElements ?? 0,
-            events: events.totalElements ?? 0
-        )
-    }
-
     func fetchVerificationCount() async throws(APIError) -> Int {
         let response = try await joinRequestDataSource.fetchPendingClubs(page: 0, size: 1)
         return response.totalElements ?? 0

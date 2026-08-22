@@ -49,3 +49,9 @@
 "language_russian" = "Rus dili";
 
 "common_dont_show_again" = "Bunu bir daha göstərmə";
+
+/* Document preview */
+"document_preview_loading" = "Sənəd açılır…";
+"document_preview_failed" = "Bu faylı açmaq mümkün olmadı";
+"document_preview_retry" = "Yenidən cəhd et";
+"document_preview_share" = "Paylaş";

@@ -49,3 +49,9 @@
 "language_russian" = "Russian";
 
 "common_dont_show_again" = "Don't show this again";
+
+/* Document preview */
+"document_preview_loading" = "Opening document…";
+"document_preview_failed" = "Could not open this file";
+"document_preview_retry" = "Try again";
+"document_preview_share" = "Share";

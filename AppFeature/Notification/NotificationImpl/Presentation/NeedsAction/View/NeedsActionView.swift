@@ -20,7 +20,15 @@ struct NeedsActionView: View {
             if store.state.isAdmin {
                 verificationBanner
             }
-            CapsuleSegmentedPicker(selection: tabSelection)
+            // Pending count per tab, always shown — "Clubs (0)" when there is nothing.
+            CapsuleSegmentedPicker(selection: tabSelection) { tab in
+                let count = switch tab {
+                case .clubs: store.state.clubs.items.count
+                case .hangouts: store.state.hangouts.items.count
+                case .events: store.state.events.items.count
+                }
+                return "\(tab.rawValue.localized) (\(count))"
+            }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
             pager
@@ -52,7 +60,7 @@ struct NeedsActionView: View {
                     Text("notif_verification_requests".localized)
                         .font(Font.Typography.BodyTextMd.semiBold)
                         .foregroundStyle(Color.Palette.black)
-                    Text("\(store.state.verificationCount) clubs awaiting your approval")
+                    Text("notif_clubs_awaiting_approval".localized(with: store.state.verificationCount))
                         .font(Font.Typography.TextSm.regular)
                         .foregroundStyle(Color.Palette.graySecondary)
                 }

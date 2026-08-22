@@ -8,9 +8,11 @@
 import SwiftUI
 
 public struct AttachmentItemView: View {
-    
+
+    @State private var previewItem: DocumentPreviewView.Item?
+
     private let model: Model
-    
+
     public init(model: Model) {
         self.model = model
     }
@@ -53,6 +55,13 @@ public struct AttachmentItemView: View {
             y: 6
         )
         .padding(.horizontal, 4)
+        // Preview the file inside the app; a row without a URL stays inert.
+        .contentShape(Rectangle())
+        .onTapGesture {
+            guard let url = model.url else { return }
+            previewItem = .init(url: url, name: model.name)
+        }
+        .documentPreview(item: $previewItem)
     }
 }
 

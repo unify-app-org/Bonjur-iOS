@@ -100,7 +100,15 @@ struct GroupsListView: View {
                     }
                 }
             )
-        )
+        ) { segment in
+            // Item count per tab, always shown — "Clubs (0)" when empty.
+            let count = switch segment {
+            case .clubs: store.state.uiModel.clubs.count
+            case .events: store.state.uiModel.events.count
+            case .hangouts: store.state.uiModel.hangouts.count
+            }
+            return "\(segment.rawValue.localized) (\(count))"
+        }
         .padding(.top)
         .padding(.horizontal)
     }

@@ -108,7 +108,6 @@ final class NotificationViewModel: UIFeatureViewModel<NotificationFeature> {
                 await applyFailure(error as? APIError)
             }
         }
-        refreshActionBanner()
     }
 
     private func loadMore() {
@@ -163,19 +162,6 @@ final class NotificationViewModel: UIFeatureViewModel<NotificationFeature> {
     /// Composes the banner client-side: join-request totals (club + hangout +
     /// event) plus the admin-only verification probe (403 → 0, banner shows
     /// requests only). Failures are silent — it's a secondary number.
-    private func refreshActionBanner() {
-        Task {
-            let requests = (try? await dependencies.useCase.fetchRequestCounts())?.total ?? 0
-            let verifications = (try? await dependencies.useCase.fetchVerificationCount()) ?? 0
-            await applyActionCounts(requests: requests, verifications: verifications)
-        }
-    }
-
-    @MainActor
-    private func applyActionCounts(requests: Int, verifications: Int) {
-        state.uiModel.action = .init(requests: requests, verifications: verifications)
-    }
-
     // MARK: - Read state
     /// Explicit toolbar action — flips rows locally too.
     private func markAllRead() {

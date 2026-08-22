@@ -21,6 +21,7 @@
 "notif_verifications_load_fail" = "Couldn't load verifications";
 
 "notif_action_subtitle" = "%d join requests · %d to verify";
+"notif_action_subtitle_idle" = "Review join requests and verifications";
 
 "notif_mark_all_title" = "Mark all as read?";
 "notif_mark_all_confirm" = "Mark all read";
@@ -34,3 +35,4 @@
 "notif_reject_note_desc" = "You're rejecting %@'s verification request.";
 "notif_reject_note_label" = "Note (optional)";
 "notif_reject_note_hint" = "The club organiser sees this note in their notification. Leave it blank to reject without a reason.";
+"notif_clubs_awaiting_approval" = "%d clubs awaiting your approval";

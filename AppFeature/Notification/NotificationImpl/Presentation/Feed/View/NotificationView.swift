@@ -84,19 +84,13 @@ struct NotificationView: View {
                     Text("notif_needs_action".localized)
                         .font(Font.Typography.BodyTextMd.semiBold)
                         .foregroundStyle(Color.Palette.black)
-                    Text(bannerSubtitle)
+                    Text("notif_action_subtitle_idle".localized)
                         .font(Font.Typography.TextSm.regular)
                         .foregroundStyle(Color.Palette.graySecondary)
                 }
 
                 Spacer(minLength: 8)
-                
-                if store.state.uiModel.action.hasActions {
-                    Circle()
-                        .fill(Color.Palette.destructiveRed)
-                        .frame(width: 10, height: 10)
-                }
-                
+
                 Image(uiImage: .Icons.chevronRight)
                     .renderingMode(.template)
                     .foregroundStyle(Color.Palette.graySecondary)
@@ -104,11 +98,6 @@ struct NotificationView: View {
             .cardStyle(radius: cardRadius)
         }
         .buttonStyle(.plain)
-    }
-
-    private var bannerSubtitle: String {
-        let action = store.state.uiModel.action
-        return "notif_action_subtitle".localized(with: action.requests, action.verifications)
     }
 
     // MARK: - Feed

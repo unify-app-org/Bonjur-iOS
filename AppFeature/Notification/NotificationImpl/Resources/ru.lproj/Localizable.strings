@@ -21,6 +21,7 @@
 "notif_verifications_load_fail" = "Не удалось загрузить верификации";
 
 "notif_action_subtitle" = "%d запросов · %d на проверку";
+"notif_action_subtitle_idle" = "Просмотрите заявки на вступление и подтверждения";
 
 "notif_mark_all_title" = "Отметить все как прочитанные?";
 "notif_mark_all_confirm" = "Отметить все";
@@ -34,3 +35,4 @@
 "notif_reject_note_desc" = "Вы отклоняете запрос на верификацию клуба %@.";
 "notif_reject_note_label" = "Заметка (необязательно)";
 "notif_reject_note_hint" = "Организатор клуба увидит эту заметку в уведомлении. Оставьте поле пустым, чтобы отклонить без причины.";
+"notif_clubs_awaiting_approval" = "%d клубов ожидают вашего одобрения";

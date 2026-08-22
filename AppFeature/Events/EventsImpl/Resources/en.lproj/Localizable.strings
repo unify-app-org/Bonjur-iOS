@@ -77,7 +77,7 @@
 "events_request_again" = "Request again";
 
 /* Reminder broadcast (one per day) */
-"events_reminder_unavailable" = "Will available tomorrow";
+"events_reminder_unavailable" = "Will be available tomorrow";
 "events_reminder_send" = "Send reminder";
 "events_reminder_warning_title" = "Send a reminder?";
 "events_reminder_warning_subtitle" = "You can send one reminder per day. After sending, this button will be disabled for one day.";

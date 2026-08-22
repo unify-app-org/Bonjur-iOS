@@ -11,23 +11,9 @@ import AppUIKit
 // MARK: - Inbox
 
 struct NotificationInbox {
-    var action: NeedsActionSummary
     var sections: [NotificationSection]
 
-    static let empty = NotificationInbox(
-        action: .init(requests: 0, verifications: 0),
-        sections: []
-    )
-}
-
-// MARK: - Needs your action (banner)
-
-struct NeedsActionSummary {
-    var requests: Int
-    var verifications: Int
-
-    var total: Int { requests + verifications }
-    var hasActions: Bool { total > 0 }
+    static let empty = NotificationInbox(sections: [])
 }
 
 // MARK: - Feed
@@ -78,6 +64,10 @@ enum NotificationType {
     case holiday
 
     case requestClub
+    /// The backend's name for a join request on a PRIVATE activity. These were
+    /// missing from the catalog, so the rows decoded to `.general` and their
+    /// "Continue" went nowhere.
+    case userRequestedPrivateClub
     case rejectedUserFromClub
     case acceptedUserFromClub
     case requestClubVerification
@@ -85,12 +75,15 @@ enum NotificationType {
     case rejectedClubVerification
 
     case requestHangout
+    case userRequestedPrivateHangout
     case rejectedUserFromHangout
     case acceptedUserFromHangout
     case userJoinedPublicHangout
 
     case userJoinedPublicClub
 
+    case requestEvent
+    case userRequestedPrivateEvent
     case rejectedUserFromEvent
     case acceptedUserFromEvent
 
@@ -109,6 +102,18 @@ enum NotificationType {
 
         case "VERIFICATION_OUTCOME":
             self = .verificationOutcome
+
+        case "USER_REQUESTED_PRIVATE_CLUB":
+            self = .userRequestedPrivateClub
+
+        case "USER_REQUESTED_PRIVATE_HANGOUT":
+            self = .userRequestedPrivateHangout
+
+        case "REQUEST_EVENT":
+            self = .requestEvent
+
+        case "USER_REQUESTED_PRIVATE_EVENT":
+            self = .userRequestedPrivateEvent
 
         case "REQUEST_CLUB":
             self = .requestClub
@@ -173,6 +178,18 @@ enum NotificationType {
 
         case .requestClub:
             return "REQUEST_CLUB"
+
+        case .userRequestedPrivateClub:
+            return "USER_REQUESTED_PRIVATE_CLUB"
+
+        case .userRequestedPrivateHangout:
+            return "USER_REQUESTED_PRIVATE_HANGOUT"
+
+        case .requestEvent:
+            return "REQUEST_EVENT"
+
+        case .userRequestedPrivateEvent:
+            return "USER_REQUESTED_PRIVATE_EVENT"
 
         case .rejectedUserFromClub:
             return "REJECTED_USER_FROM_CLUB"
@@ -241,7 +258,10 @@ enum NotificationType {
     var tapDestination: TapDestination {
         switch self {
         // Incoming requests the user must act on.
-        case .requestClub, .requestHangout, .requestClubVerification:
+        case .requestClub, .requestHangout, .requestEvent,
+             .userRequestedPrivateClub, .userRequestedPrivateHangout,
+             .userRequestedPrivateEvent,
+             .requestClubVerification:
             return .needsAction
         // Purely informational — nowhere meaningful to go.
         case .birthday, .holiday, .general:
@@ -265,7 +285,7 @@ enum NotificationType {
         case .birthday:
             return "gift.fill"
 
-        case .eventReminder:
+        case .eventReminder, .requestEvent, .userRequestedPrivateEvent:
             return "calendar"
 
         case .requestOutcome:
@@ -274,7 +294,7 @@ enum NotificationType {
         case .verificationOutcome:
             return "checkmark.seal.fill"
 
-        case .requestClub:
+        case .requestClub, .userRequestedPrivateClub:
             return "person.badge.plus"
 
         case .rejectedUserFromClub:
@@ -292,7 +312,7 @@ enum NotificationType {
         case .rejectedClubVerification:
             return "xmark.seal.fill"
 
-        case .requestHangout:
+        case .requestHangout, .userRequestedPrivateHangout:
             return "person.2.badge.plus"
 
         case .rejectedUserFromHangout:

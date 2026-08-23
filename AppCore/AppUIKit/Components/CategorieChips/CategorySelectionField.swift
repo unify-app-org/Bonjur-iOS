@@ -10,6 +10,7 @@ import SwiftUI
 public struct CategorySelectionField: View {
     private let title: String
     private let addTitle: String
+    private let isRequired: Bool?
     private let categories: [CategoriesChipsView.Model]
     private let onAdd: () -> Void
     private let onRemove: (Int) -> Void
@@ -17,12 +18,14 @@ public struct CategorySelectionField: View {
     public init(
         title: String = "Category",
         addTitle: String = "Add category",
+        isRequired: Bool? = nil,
         categories: [CategoriesChipsView.Model],
         onAdd: @escaping () -> Void,
         onRemove: @escaping (Int) -> Void
     ) {
         self.title = title
         self.addTitle = addTitle
+        self.isRequired = isRequired
         self.categories = categories
         self.onAdd = onAdd
         self.onRemove = onRemove
@@ -32,6 +35,7 @@ public struct CategorySelectionField: View {
         SelectionChipsField(
             title: title,
             addTitle: addTitle,
+            isRequired: isRequired,
             items: categories.map {
                 SelectionFieldItem(
                     id: $0.id,

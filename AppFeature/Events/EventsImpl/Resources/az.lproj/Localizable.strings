@@ -84,3 +84,5 @@
 "events_reminder_sent" = "Xatırlatma göndərildi";
 "events_reminder_sent_sub" = "Qrup məlumatlandırıldı. Növbətisini sabah göndərə bilərsiniz.";
 "events_reminder_fail" = "Xatırlatma göndərilmədi";
+"events_name_locked_hint" = "Tədbir adını sonra dəyişmək mümkün olmayacaq.";
+"events_club_locked_hint" = "Tədbiri sonra başqa kluba köçürmək mümkün olmayacaq.";

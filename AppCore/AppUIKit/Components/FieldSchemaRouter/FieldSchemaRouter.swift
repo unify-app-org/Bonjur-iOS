@@ -135,17 +135,25 @@ public enum AppFieldSchema {
         public let label: String
         public let type: FieldType
         public var required: Bool
+        /// Note shown under the input, e.g. "you won't be able to change this later".
+        ///
+        /// Rendered **only while the field is still editable** — see `FieldHint`. A
+        /// warning that something will lock is pointless once it has locked, so on the
+        /// edit screen (where the field arrives disabled) it disappears on its own.
+        public var hint: String?
 
         public init(
             id: FieldID,
             label: String,
             type: FieldType,
-            required: Bool = true
+            required: Bool = true,
+            hint: String? = nil
         ) {
             self.id = id
             self.label = label
             self.type = type
             self.required = required
+            self.hint = hint
         }
     }
 }
@@ -237,6 +245,7 @@ public struct FieldSchemaRouter: View {
             CategorySelectionField(
                 title: field.label,
                 addTitle: placeholder,
+                isRequired: field.required,
                 categories: selectedCategories,
                 onAdd: onAddCategory,
                 onRemove: onRemoveCategory
@@ -248,6 +257,7 @@ public struct FieldSchemaRouter: View {
             AppLinksField(
                 title: field.label,
                 addTitle: placeholder,
+                isRequired: field.required,
                 links: Binding(
                     get: { values.links(field.id).map(\.appLinkItem) },
                     set: { values[field.id] = .links($0.map(\.fieldLinkItem)) }
@@ -485,9 +495,27 @@ private struct TextInputField: View {
                 model: .init(keyboardType: keyboardType)
             )
             .disabled(isDisabled)
+            FieldHint(text: field.hint, isDisabled: isDisabled)
         }
         .padding(.horizontal, 16)
         .padding(.bottom, 14)
+    }
+}
+
+/// Muted note under an input. Hidden once the field is disabled: every hint we show is a
+/// heads-up that the field will lock, which stops being useful the moment it has.
+struct FieldHint: View {
+    let text: String?
+    let isDisabled: Bool
+
+    var body: some View {
+        if let text, !text.isEmpty, !isDisabled {
+            Text(text)
+                .font(Font.Typography.BodyTextSm.regular)
+                .foregroundStyle(Color.Palette.blackMedium)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 }
 
@@ -850,16 +878,27 @@ private struct AttachmentField: View {
     }
 }
 
-private struct FieldLabel: View {
-    let field: AppFieldSchema.Field
+/// Form-field title with the required `*` / `(optional)` marker.
+///
+/// Public so the chip and link fields — which draw their own title instead of going
+/// through `FieldLabel` — can show the same marker. Without it a required chip field
+/// (e.g. category) renders with no `*` and reads as optional.
+public struct AppFieldLabel: View {
+    private let text: String
+    private let isRequired: Bool
 
-    var body: some View {
+    public init(text: String, isRequired: Bool) {
+        self.text = text
+        self.isRequired = isRequired
+    }
+
+    public var body: some View {
         HStack(spacing: 2) {
-            Text(field.label)
+            Text(text)
                 .font(Font.Typography.HeadingMd.medium)
                 .foregroundStyle(Color.Palette.blackHigh)
 
-            if field.required {
+            if isRequired {
                 Text("*")
                     .font(Font.Typography.HeadingMd.medium)
                     .foregroundStyle(Color.Palette.green900)
@@ -870,5 +909,13 @@ private struct FieldLabel: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct FieldLabel: View {
+    let field: AppFieldSchema.Field
+
+    var body: some View {
+        AppFieldLabel(text: field.label, isRequired: field.required)
     }
 }

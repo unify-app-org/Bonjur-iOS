@@ -66,3 +66,5 @@
 
 "clubs_search_empty" = "No clubs match your search. Try another name or clear your filters.";
 "clubs_list_empty" = "No clubs yet. Be the pioneer and start the very first one now!";
+"clubs_owner_contact_ph" = "Enter owner contact";
+"clubs_name_locked_hint" = "You won't be able to change the club name later.";

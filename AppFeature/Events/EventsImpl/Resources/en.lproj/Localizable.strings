@@ -84,3 +84,5 @@
 "events_reminder_sent" = "Reminder sent";
 "events_reminder_sent_sub" = "The group has been notified. You can send another one tomorrow.";
 "events_reminder_fail" = "Couldn't send the reminder";
+"events_name_locked_hint" = "You won't be able to change the event name later.";
+"events_club_locked_hint" = "You won't be able to move the event to another club later.";

@@ -13,18 +13,23 @@ public struct AppLinksField: View {
     
     private let title: String
     private let addTitle: String
+    /// `nil` keeps the plain title (non-schema callers). Non-nil draws the
+    /// required `*` / `(optional)` marker, same as every other schema field.
+    private let isRequired: Bool?
     private let maxCount: Int
     private let typeOptions: [AppDropdownOption]
     
     public init(
         title: String = "Add link",
         addTitle: String = "Add link",
+        isRequired: Bool? = nil,
         links: Binding<[AppLinkItem]>,
         maxCount: Int = 4,
         typeOptions: [AppDropdownOption] = AddLinkView.defaultTypeOptions
     ) {
         self.title = title
         self.addTitle = addTitle
+        self.isRequired = isRequired
         self._links = links
         self.maxCount = maxCount
         self.typeOptions = typeOptions
@@ -32,10 +37,14 @@ public struct AppLinksField: View {
     
     public var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(title)
-                .font(Font.Typography.HeadingMd.medium)
-                .foregroundStyle(Color.Palette.blackHigh)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            if let isRequired {
+                AppFieldLabel(text: title, isRequired: isRequired)
+            } else {
+                Text(title)
+                    .font(Font.Typography.HeadingMd.medium)
+                    .foregroundStyle(Color.Palette.blackHigh)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
             
             ForEach(links) { link in
                 linkCell(link)

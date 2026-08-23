@@ -10,4 +10,7 @@ public enum KeychainKeys: String {
     case token
     case refreshToken
     case userId
+    /// Email the user signed in with. Prefills the owner-contact field on the
+    /// club / event / hangout create forms.
+    case userEmail
 }

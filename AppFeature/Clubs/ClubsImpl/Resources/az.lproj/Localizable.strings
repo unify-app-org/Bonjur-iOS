@@ -66,3 +66,5 @@
 
 "clubs_search_empty" = "Axtarışınıza uyğun klub yoxdur. Başqa ad yoxlayın və ya filtrləri təmizləyin.";
 "clubs_list_empty" = "Hələ klub yoxdur. Öncül ol və ilkini indi yarat!";
+"clubs_owner_contact_ph" = "Sahibin əlaqəsini daxil edin";
+"clubs_name_locked_hint" = "Klub adını sonra dəyişmək mümkün olmayacaq.";

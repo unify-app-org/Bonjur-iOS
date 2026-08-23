@@ -46,3 +46,5 @@
 "hangouts_edit_title" = "Edit hangout";
 
 "hangouts_owner_role" = "Owner";
+"hangouts_owner_contact_ph" = "Enter owner contact";
+"hangouts_name_locked_hint" = "You won't be able to change the hangout name later.";

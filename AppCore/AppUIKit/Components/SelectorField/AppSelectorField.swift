@@ -18,6 +18,9 @@ public struct AppSelectorField: View {
     private let value: String
     private let placeholder: String
     private let isDisabled: Bool
+    /// Note under the box, e.g. "you can't move this to another club later". Hidden once
+    /// the field is disabled — the warning has served its purpose by then.
+    private let hint: String?
     private let onTap: () -> Void
 
     public init(
@@ -27,6 +30,7 @@ public struct AppSelectorField: View {
         value: String,
         placeholder: String = "Select",
         isDisabled: Bool = false,
+        hint: String? = nil,
         onTap: @escaping () -> Void
     ) {
         self.title = title
@@ -35,6 +39,7 @@ public struct AppSelectorField: View {
         self.value = value
         self.placeholder = placeholder
         self.isDisabled = isDisabled
+        self.hint = hint
         self.onTap = onTap
     }
 
@@ -44,6 +49,7 @@ public struct AppSelectorField: View {
             Button(action: onTap) { boxView }
                 .buttonStyle(.plain)
                 .disabled(isDisabled)
+            FieldHint(text: hint, isDisabled: isDisabled)
         }
     }
 

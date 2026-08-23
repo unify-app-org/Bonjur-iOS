@@ -44,8 +44,14 @@ enum EventsCreate {
     }
 
     /// Declarative event-create form. Mirrors the Android `EventCreateSchema`.
+    ///
+    /// Same canonical field order and `required` flags as the club and hangout forms —
+    /// what → when → where → how many → describe → extras → contact. The club picker
+    /// and `visibility` are the fixed top block (the picker lives in the view, above
+    /// this schema).
     static var schema: [FieldSchema] {
         [
+            // MARK: Top block (fixed)
             FieldSchema(
                 id: .visibility,
                 label: "events_visibility".localized,
@@ -61,34 +67,15 @@ enum EventsCreate {
                         description: "events_private_desc".localized
                     )
                 ]),
-                required: false
+                required: true
             ),
+            // MARK: Body (canonical order)
             FieldSchema(
                 id: .eventName,
                 label: "events_name_label".localized,
                 type: .text(placeholder: "events_name_ph".localized),
-                required: true
-            ),
-            FieldSchema(
-                id: .ownerContact,
-                label: "events_owner_contact_label".localized,
-                type: .text(placeholder: "events_owner_contact_ph".localized),
-                required: true
-            ),
-            FieldSchema(
-                id: .attachment,
-                label: "events_attachment".localized,
-                type: .attachment(
-                    placeholder: "events_add".localized,
-                    description: "events_attachment_hint".localized
-                ),
-                required: false
-            ),
-            FieldSchema(
-                id: .about,
-                label: "events_about_label".localized,
-                type: .textArea(placeholder: "events_about_ph".localized, maxLength: 500),
-                required: true
+                required: true,
+                hint: "events_name_locked_hint".localized
             ),
             FieldSchema(
                 id: .category,
@@ -115,12 +102,33 @@ enum EventsCreate {
                 id: .location,
                 label: "events_location_label".localized,
                 type: .text(placeholder: "events_location_ph".localized),
-                required: false
+                required: true
             ),
             FieldSchema(
                 id: .capacity,
                 label: "events_capacity_label".localized,
                 type: .text(placeholder: "events_capacity_ph".localized, keyboardType: .numberPad),
+                required: false
+            ),
+            FieldSchema(
+                id: .about,
+                label: "events_about_label".localized,
+                type: .textArea(placeholder: "events_about_ph".localized, maxLength: 500),
+                required: true
+            ),
+            FieldSchema(
+                id: .rules,
+                label: "events_rules_label".localized,
+                type: .textArea(placeholder: "events_rules_ph".localized, maxLength: 500),
+                required: true
+            ),
+            FieldSchema(
+                id: .attachment,
+                label: "events_attachment".localized,
+                type: .attachment(
+                    placeholder: "events_add".localized,
+                    description: "events_attachment_hint".localized
+                ),
                 required: false
             ),
             FieldSchema(
@@ -130,10 +138,10 @@ enum EventsCreate {
                 required: false
             ),
             FieldSchema(
-                id: .rules,
-                label: "events_rules_label".localized,
-                type: .textArea(placeholder: "events_rules_ph".localized, maxLength: 500),
-                required: false
+                id: .ownerContact,
+                label: "events_owner_contact_label".localized,
+                type: .text(placeholder: "events_owner_contact_ph".localized),
+                required: true
             )
         ]
     }

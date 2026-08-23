@@ -271,9 +271,13 @@ private extension EventsRepoImpl {
     }
 
     /// Build edit-mode prefill from the detail DTO. Mirrors `ClubRepoImpl.mapPrefilData`.
-    /// Note: `eventDate`/`reminder` are not returned by the detail endpoint, so the
-    /// create-form defaults stay. Existing attachments arrive as remote URLs; they are
-    /// re-uploaded on save by `EventCreateViewModel.buildMultipart` (it re-downloads them).
+    ///
+    /// `eventDate` **is** returned by the detail endpoint — an earlier note here claimed it
+    /// was not, and the field was left unmapped, so edit fell back to the create-form default
+    /// (`Date()`) and every edit silently rewrote the start time to "now" on save.
+    ///
+    /// Existing attachments arrive as remote URLs; they are re-uploaded on save by
+    /// `EventCreateViewModel.buildMultipart` (it re-downloads them).
     func mapPrefillData(
         _ data: EventDetailDTO,
         _ tags: [AppPresentationModel.Tags]
@@ -291,6 +295,7 @@ private extension EventsRepoImpl {
                 .about: .text(data.about ?? ""),
                 .category: .tags(tags.map { .init(id: $0.id, label: $0.title) }),
                 .location: .text(data.location ?? ""),
+                .eventDate: .date(Date.fromISO8601(data.eventDate) ?? Date()),
                 .capacity: .text(data.capacity.map(String.init) ?? ""),
                 .links: .links((data.links ?? []).map {
                     .init(type: $0.type ?? "", name: $0.name ?? "", url: $0.url ?? "")

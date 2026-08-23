@@ -46,3 +46,5 @@
 "hangouts_edit_title" = "Редактировать тусовку";
 
 "hangouts_owner_role" = "Владелец";
+"hangouts_owner_contact_ph" = "Введите контакт владельца";
+"hangouts_name_locked_hint" = "Название тусовки нельзя будет изменить позже.";

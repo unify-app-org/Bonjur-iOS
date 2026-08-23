@@ -33,8 +33,16 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
         try await fetch(endPoint: .getClubs(query))
     }
 
+    /// Declarative club-create form.
+    ///
+    /// Field order and `required` flags are the canonical spine shared by all three
+    /// create forms (club / event / hangout) on both platforms — see the Android
+    /// `ClubCreateSchema`. Body order is: what → when → where → how many →
+    /// describe → extras → contact. Everything above `clubName` (cover, visibility)
+    /// is the fixed top block and is deliberately not part of that reordering.
     func fetchCreate() async throws(APIError) -> [ClubsCreate.FieldSchema] {
         [
+            // MARK: Top block (fixed)
             ClubsCreate.FieldSchema(
                 id: .cover,
                 label: "clubs_cover_card_label".localized,
@@ -49,7 +57,8 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
                         .red,
                         .pink
                     ])
-                )
+                ),
+                required: false
             ),
             ClubsCreate.FieldSchema(
                 id: .visibility,
@@ -67,15 +76,12 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
                     )
                 ])
             ),
+            // MARK: Body (canonical order)
             ClubsCreate.FieldSchema(
                 id: .clubName,
                 label: "clubs_name_label".localized,
-                type: .text(placeholder: "clubs_name_ph".localized)
-            ),
-            ClubsCreate.FieldSchema(
-                id: .ownerContact,
-                label: "clubs_owner_contact_label".localized,
-                type: .text(placeholder: "+994 123 45 67")
+                type: .text(placeholder: "clubs_name_ph".localized),
+                hint: "clubs_name_locked_hint".localized
             ),
             ClubsCreate.FieldSchema(
                 id: .category,
@@ -83,10 +89,9 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
                 type: .chipInput(placeholder: "clubs_add_category".localized)
             ),
             ClubsCreate.FieldSchema(
-                id: .links,
-                label: "clubs_add_link".localized,
-                type: .linkInput(placeholder: "clubs_add_link".localized),
-                required: false
+                id: .location,
+                label: "clubs_location_label".localized,
+                type: .text(placeholder: "clubs_location_ph".localized)
             ),
             ClubsCreate.FieldSchema(
                 id: .capacity,
@@ -95,19 +100,25 @@ final class ClubsDataSourceImpl: NetworkService<ClubsEndPoint>, ClubsDataSource 
                 required: false
             ),
             ClubsCreate.FieldSchema(
-                id: .location,
-                label: "clubs_location_label".localized,
-                type: .text(placeholder: "clubs_location_ph".localized)
+                id: .about,
+                label: "clubs_about_label".localized,
+                type: .textArea(placeholder: "clubs_about_ph".localized, maxLength: 500)
             ),
             ClubsCreate.FieldSchema(
                 id: .rules,
                 label: "clubs_rules_label".localized,
-                type: .textArea(placeholder: "clubs_rules_ph".localized,maxLength: 100)
+                type: .textArea(placeholder: "clubs_rules_ph".localized, maxLength: 500)
             ),
             ClubsCreate.FieldSchema(
-                id: .about,
-                label: "clubs_about_label".localized,
-                type: .textArea(placeholder: "clubs_about_ph".localized, maxLength: 100)
+                id: .links,
+                label: "clubs_add_link".localized,
+                type: .linkInput(placeholder: "clubs_add_link".localized),
+                required: false
+            ),
+            ClubsCreate.FieldSchema(
+                id: .ownerContact,
+                label: "clubs_owner_contact_label".localized,
+                type: .text(placeholder: "clubs_owner_contact_ph".localized)
             )
         ]
     }

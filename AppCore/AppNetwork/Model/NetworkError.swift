@@ -14,7 +14,12 @@ public struct NetworkError: Decodable, LocalizedError {
     let detail: String?
     let path: String?
     let error: String?
-    let errors: [String: [String]]?
+    let errors: [Error]?
+    
+    struct Error: Decodable {
+        let field: String?
+        let message: String?
+    }
     
     enum CodingKeys: String, CodingKey {
         case status
@@ -36,7 +41,7 @@ public struct NetworkError: Decodable, LocalizedError {
         detail = try container.decodeIfPresent(String.self, forKey: .detail)
         path = try container.decodeIfPresent(String.self, forKey: .path)
         error = try container.decodeIfPresent(String.self, forKey: .error)
-        errors = try? container.decodeIfPresent([String: [String]].self, forKey: .errors)
+        errors = try? container.decodeIfPresent([Error].self, forKey: .errors)
     }
     
     public var errorDescription: String? {
@@ -52,8 +57,8 @@ public struct NetworkError: Decodable, LocalizedError {
     public var userMessages: [String] {
         guard let errors else { return [] }
         return errors
-            .sorted { $0.key < $1.key }
-            .flatMap(\.value)
+            .sorted { $0.field ?? "" < $1.field ?? "" }
+            .compactMap(\.message)
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
     }

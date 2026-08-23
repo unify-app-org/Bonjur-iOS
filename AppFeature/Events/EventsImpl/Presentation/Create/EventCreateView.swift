@@ -195,12 +195,17 @@ struct EventCreateView: View {
                 value: store.state.selectedClub?.clubName ?? "",
                 placeholder: "events_select_club".localized,
                 isDisabled: store.state.isEdit,
+                hint: "events_club_locked_hint".localized,
                 onTap: { store.send(.selectClubTapped) }
             )
             .padding(.horizontal, 16)
             .padding(.bottom, 14)
 
             ForEach(store.state.schema) { field in
+                // Club + event name are immutable once the event exists. Passed as
+                // `isDisabled` rather than a `.disabled()` modifier so the router also
+                // knows to drop the field's "you can't change this later" hint, which
+                // has already done its job by the time the field is locked.
                 FieldSchemaRouter(
                     field: field,
                     values: Binding(
@@ -208,11 +213,10 @@ struct EventCreateView: View {
                         set: { store.state.values = $0 }
                     ),
                     selectedCategories: store.state.selectedCategories,
+                    isDisabled: store.state.isEdit && field.id == .eventName,
                     onAddCategory: { store.send(.addCategoryTapped) },
                     onRemoveCategory: { store.send(.removeCategory($0)) }
                 )
-                // Club + event name are immutable once the event exists.
-                .disabled(store.state.isEdit && field.id == .eventName)
             }
         }
     }

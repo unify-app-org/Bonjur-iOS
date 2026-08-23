@@ -15,6 +15,7 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
 
     struct Dependencies {
         let useCase: EventsUseCase
+        let tokenManager: TokenManager
     }
 
     private let router: EventCreateRouterProtocol
@@ -77,8 +78,21 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
         Task {
             await fetchClubs()
             await fetchCategories()
+            await prefillOwnerContact()
             applyPrefillData()
         }
+    }
+
+    /// Create-only convenience: seed owner contact with the email the user signed in
+    /// with. Edit mode is skipped — the stored contact wins there, and `applyPrefillData`
+    /// would overwrite this anyway. The field stays editable.
+    @MainActor
+    private func prefillOwnerContact() async {
+        guard inputData.eventId == nil,
+              state.values.text(.ownerContact).isEmpty else { return }
+        let email = await dependencies.tokenManager.getUserEmail()
+        guard !email.isEmpty else { return }
+        state.values[.ownerContact] = .text(email)
     }
 
     private func applyPrefillData() {

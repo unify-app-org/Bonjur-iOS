@@ -15,6 +15,7 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
 
     struct Dependencies {
         let useCase: HangoutsUseCase
+        let tokenManager: TokenManager
     }
 
     private let router: HangoutCreateRouterProtocol
@@ -67,8 +68,21 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
         Task {
             await fetchCreate()
             await fetchCategories()
+            await prefillOwnerContact()
             await applyPrefillData()
         }
+    }
+
+    /// Create-only convenience: seed owner contact with the email the user signed in
+    /// with. Edit mode is skipped — the stored contact wins there, and `applyPrefillData`
+    /// would overwrite this anyway. The field stays editable.
+    @MainActor
+    private func prefillOwnerContact() async {
+        guard inputData.id == nil,
+              state.values.text(.ownerContact).isEmpty else { return }
+        let email = await dependencies.tokenManager.getUserEmail()
+        guard !email.isEmpty else { return }
+        state.values[.ownerContact] = .text(email)
     }
 
     private func fetchCreate() async {

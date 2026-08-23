@@ -23,7 +23,8 @@ struct HangoutCreateBuilder {
             router: router,
             inputData: inputData,
             dependencies: .init(
-                useCase: resolve()
+                useCase: resolve(),
+                tokenManager: resolve()
             )
         )
         

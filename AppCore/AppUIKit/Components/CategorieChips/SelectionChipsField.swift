@@ -10,6 +10,9 @@ import SwiftUI
 public struct SelectionChipsField: View {
     private let title: String
     private let addTitle: String
+    /// `nil` keeps the plain title (non-schema callers). Non-nil draws the
+    /// required `*` / `(optional)` marker, same as every other schema field.
+    private let isRequired: Bool?
     private let items: [SelectionFieldItem]
     private let onAdd: () -> Void
     private let onRemove: (Int) -> Void
@@ -17,12 +20,14 @@ public struct SelectionChipsField: View {
     public init(
         title: String,
         addTitle: String,
+        isRequired: Bool? = nil,
         items: [SelectionFieldItem],
         onAdd: @escaping () -> Void,
         onRemove: @escaping (Int) -> Void
     ) {
         self.title = title
         self.addTitle = addTitle
+        self.isRequired = isRequired
         self.items = items
         self.onAdd = onAdd
         self.onRemove = onRemove
@@ -30,10 +35,14 @@ public struct SelectionChipsField: View {
     
     public var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(title)
-                .font(Font.Typography.HeadingMd.medium)
-                .foregroundStyle(Color.Palette.black)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            if let isRequired {
+                AppFieldLabel(text: title, isRequired: isRequired)
+            } else {
+                Text(title)
+                    .font(Font.Typography.HeadingMd.medium)
+                    .foregroundStyle(Color.Palette.black)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
             
             if !items.isEmpty {
                 FlowLayout(spacing: 12, items: items) { item in

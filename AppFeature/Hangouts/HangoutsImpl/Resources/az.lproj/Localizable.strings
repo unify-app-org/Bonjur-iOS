@@ -46,3 +46,5 @@
 "hangouts_edit_title" = "Görüşü redaktə et";
 
 "hangouts_owner_role" = "Sahib";
+"hangouts_owner_contact_ph" = "Sahibin əlaqəsini daxil edin";
+"hangouts_name_locked_hint" = "Görüş adını sonra dəyişmək mümkün olmayacaq.";

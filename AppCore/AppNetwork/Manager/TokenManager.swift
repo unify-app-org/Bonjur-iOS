@@ -17,6 +17,9 @@ public protocol TokenManager {
     
     func saveUserId(_ token: String) async
     func getUserId() async -> String
+
+    func saveUserEmail(_ email: String) async
+    func getUserEmail() async -> String
     
     func clearTokens() async
 }
@@ -60,9 +63,20 @@ public final actor TokenManagerImpl: TokenManager {
         keychain.getString(key: .userId)
     }
     
+    // MARK: - User Email
+
+    /// Stashed at sign-in so the create forms can prefill the owner-contact field.
+    public func saveUserEmail(_ email: String) async {
+        keychain.saveString(key: .userEmail, value: email)
+    }
+
+    public func getUserEmail() async -> String {
+        keychain.getString(key: .userEmail)
+    }
+
     // MARK: - Clear
     
     public func clearTokens() async {
-        keychain.delete(.refreshToken, .token)
+        keychain.delete(.refreshToken, .token, .userEmail)
     }
 }

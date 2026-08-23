@@ -24,7 +24,8 @@ struct ClubCreateBuilder {
             inputData: inputData,
             dependencies: .init(
                 useCase: resolve(),
-                userDefaults: resolve()
+                userDefaults: resolve(),
+                tokenManager: resolve()
             )
         )
         

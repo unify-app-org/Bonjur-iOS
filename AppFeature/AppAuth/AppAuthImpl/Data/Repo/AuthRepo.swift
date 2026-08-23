@@ -73,6 +73,7 @@ class AuthRepoImpl: AuthRepo {
         await tokenManager.saveAccessToken(data.accessToken)
         await tokenManager.saveRefreshToken(data.refreshToken)
         await tokenManager.saveUserId(data.userId)
+        await tokenManager.saveUserEmail(email)
         return data.isFirstLogin
     }
     

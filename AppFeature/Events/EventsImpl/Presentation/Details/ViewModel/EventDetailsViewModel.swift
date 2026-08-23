@@ -179,13 +179,25 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
 
     // MARK: - Exit flow
 
+    /// The last member leaving would strand an empty event, so that case warns and deletes
+    /// instead of exiting. Either way the alert closes on any tap — `AppAlertPresenter`
+    /// dismisses before it runs the handler.
     @MainActor
     private func presentExitConfirm() {
+        isLastMember ? presentDeleteOnExitConfirm() : presentLeaveConfirm()
+    }
+
+    private var isLastMember: Bool {
+        state.uiModel?.membersCount == 1
+    }
+
+    @MainActor
+    private func presentLeaveConfirm() {
         AppAlertPresenter.present(
             .init(
                 config: .init(
                     title: "events_leave_title".localized,
-                    subtitle: "Are you sure you want to leave this event? You will no longer be able to participate or see updates."
+                    subtitle: "events_leave_subtitle".localized
                 ),
                 actions: {
                     AppAlert.Action(title: "events_leave_confirm".localized, style: .destructive) { [weak self] in
@@ -195,6 +207,46 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
                 }
             )
         )
+    }
+
+    @MainActor
+    private func presentDeleteOnExitConfirm() {
+        AppAlertPresenter.present(
+            .init(
+                config: .init(
+                    title: "events_delete_on_exit_title".localized,
+                    subtitle: "events_delete_on_exit_subtitle".localized
+                ),
+                actions: {
+                    AppAlert.Action(title: "events_delete_on_exit_confirm".localized, style: .destructive) { [weak self] in
+                        self?.performDelete()
+                    }
+                    AppAlert.Action(title: "common_cancel".localized, style: .primary)
+                }
+            )
+        )
+    }
+
+    private func performDelete() {
+        Task {
+            postEffect(.loading(true))
+            defer { postEffect(.loading(false)) }
+            do {
+                try await dependencies.useCase.deleteEvent(eventId: inputData.eventId)
+                await MainActor.run {
+                    AppSnackBar.show(title: "events_deleted".localized, style: .success)
+                }
+                await router.navigate(to: .backTapped)
+            } catch {
+                await MainActor.run {
+                    AppSnackBar.show(
+                        title: "events_delete_fail".localized,
+                        subtitle: "common_try_again".localized,
+                        style: .error
+                    )
+                }
+            }
+        }
     }
 
     private func performExit() {

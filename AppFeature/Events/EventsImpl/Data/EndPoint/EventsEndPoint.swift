@@ -18,6 +18,8 @@ enum EventsEndPoint {
     case joinEvent(String)
     case editEvent(String, MultipartFormData)
     case exitEvent(String)
+    /// Removes the event itself, not just the caller's membership.
+    case deleteEvent(String)
     case sendReminder(String)
 }
 
@@ -45,6 +47,8 @@ extension EventsEndPoint: AppEndPoint {
             "api/es/v1/events/\(id)"
         case .exitEvent(let id):
             "api/es/v1/events/\(id)/exit"
+        case .deleteEvent(let id):
+            "api/es/v1/events/\(id)"
         case .sendReminder(let id):
             "api/es/v1/events/\(id)/reminder"
         }
@@ -65,7 +69,8 @@ extension EventsEndPoint: AppEndPoint {
                 .post
         case .editEvent:
                 .put
-        case .exitEvent:
+        case .exitEvent,
+                .deleteEvent:
                 .delete
         }
     }

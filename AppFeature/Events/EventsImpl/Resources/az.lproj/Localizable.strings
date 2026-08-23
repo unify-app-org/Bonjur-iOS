@@ -86,3 +86,10 @@
 "events_reminder_fail" = "Xatırlatma göndərilmədi";
 "events_name_locked_hint" = "Tədbir adını sonra dəyişmək mümkün olmayacaq.";
 "events_club_locked_hint" = "Tədbiri sonra başqa kluba köçürmək mümkün olmayacaq.";
+
+"events_leave_subtitle" = "Bu tədbiri tərk etmək istədiyinizə əminsiniz? Artıq iştirak edə və yenilikləri görə bilməyəcəksiniz.";
+"events_delete_on_exit_title" = "Tədbir silinsin?";
+"events_delete_on_exit_subtitle" = "Siz yeganə iştirakçısınız. Çıxsanız, bu tədbir silinəcək. Əminsiniz?";
+"events_delete_on_exit_confirm" = "Çıx və sil";
+"events_deleted" = "Tədbir silindi";
+"events_delete_fail" = "Tədbiri silmək mümkün olmadı";

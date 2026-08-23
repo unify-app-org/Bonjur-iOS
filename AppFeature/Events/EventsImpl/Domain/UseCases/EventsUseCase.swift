@@ -25,6 +25,7 @@ protocol EventsUseCase {
     ) async throws(APIError) -> [EventsModuleModel.CardInputData]
     func joinEvent(eventId: String) async throws(APIError)
     func exitEvent(eventId: String) async throws(APIError)
+    func deleteEvent(eventId: String) async throws(APIError)
     func sendReminder(eventId: String) async throws(APIError)
     func fetchEventDetail(eventId: String) async throws(APIError) -> EventsDetailsModel.UIModel
     func fetchEventMembers(
@@ -83,6 +84,10 @@ class EventsUseCaseImpl: EventsUseCase {
 
     func exitEvent(eventId: String) async throws(APIError) {
         try await repo.exitEvent(eventId: eventId)
+    }
+
+    func deleteEvent(eventId: String) async throws(APIError) {
+        try await repo.deleteEvent(eventId: eventId)
     }
 
     func fetchEventDetail(

@@ -48,3 +48,11 @@
 "hangouts_owner_role" = "Owner";
 "hangouts_owner_contact_ph" = "Enter owner contact";
 "hangouts_name_locked_hint" = "You won't be able to change the hangout name later.";
+
+/* Exit flow. The last member leaving deletes the hangout instead of stranding it empty. */
+"hangouts_exit_subtitle" = "Are you sure you want to leave this hangout? You will no longer be able to participate or see updates.";
+"hangouts_delete_on_exit_title" = "Delete hangout?";
+"hangouts_delete_on_exit_subtitle" = "You are the only member. If you leave, this hangout will be deleted. Are you sure?";
+"hangouts_delete_on_exit_confirm" = "Leave and delete";
+"hangouts_deleted" = "Hangout deleted";
+"hangouts_delete_fail" = "Could not delete hangout";

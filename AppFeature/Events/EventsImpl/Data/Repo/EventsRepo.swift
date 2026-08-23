@@ -28,6 +28,7 @@ protocol EventsRepo {
     ) async throws(APIError) -> [EventsModuleModel.CardInputData]
     func joinEvent(eventId: String) async throws(APIError) -> Void
     func exitEvent(eventId: String) async throws(APIError) -> Void
+    func deleteEvent(eventId: String) async throws(APIError) -> Void
     func sendReminder(eventId: String) async throws(APIError) -> Void
     func createEvent(request: MultipartFormData) async throws(APIError) -> Void
     func editEvent(eventId: String, request: MultipartFormData) async throws(APIError) -> Void
@@ -122,6 +123,10 @@ final class EventsRepoImpl: EventsRepo {
 
     func exitEvent(eventId: String) async throws(APIError) {
         _ = try await dataSource.exitEvent(eventId: eventId)
+    }
+
+    func deleteEvent(eventId: String) async throws(APIError) {
+        _ = try await dataSource.deleteEvent(eventId: eventId)
     }
 
     func createEvent(request: MultipartFormData) async throws(APIError) {

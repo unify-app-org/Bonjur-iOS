@@ -48,3 +48,10 @@
 "hangouts_owner_role" = "Sahib";
 "hangouts_owner_contact_ph" = "Sahibin əlaqəsini daxil edin";
 "hangouts_name_locked_hint" = "Görüş adını sonra dəyişmək mümkün olmayacaq.";
+
+"hangouts_exit_subtitle" = "Bu görüşdən çıxmaq istədiyinizə əminsiniz? Artıq iştirak edə və yenilikləri görə bilməyəcəksiniz.";
+"hangouts_delete_on_exit_title" = "Görüş silinsin?";
+"hangouts_delete_on_exit_subtitle" = "Siz yeganə iştirakçısınız. Çıxsanız, bu görüş silinəcək. Əminsiniz?";
+"hangouts_delete_on_exit_confirm" = "Çıx və sil";
+"hangouts_deleted" = "Görüş silindi";
+"hangouts_delete_fail" = "Görüşü silmək mümkün olmadı";

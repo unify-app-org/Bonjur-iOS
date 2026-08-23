@@ -43,6 +43,7 @@ protocol HangoutsUseCase {
     func fetchDetailHangout(id: String) async throws(APIError) -> HangoutDetails.UIModel
 
     func exitHangout(id: String) async throws(APIError) -> Void
+    func deleteHangout(id: String) async throws(APIError) -> Void
     func joinHangout(id: String) async throws(APIError) -> Void
 }
 
@@ -108,6 +109,10 @@ class HangoutsUseCaseImpl: HangoutsUseCase {
 
     func exitHangout(id: String) async throws(APIError) {
         try await repo.exitHangout(id: id)
+    }
+
+    func deleteHangout(id: String) async throws(APIError) {
+        try await repo.deleteHangout(id: id)
     }
 
     func joinHangout(id: String) async throws(APIError) {

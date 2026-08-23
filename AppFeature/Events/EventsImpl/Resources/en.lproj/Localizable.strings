@@ -86,3 +86,11 @@
 "events_reminder_fail" = "Couldn't send the reminder";
 "events_name_locked_hint" = "You won't be able to change the event name later.";
 "events_club_locked_hint" = "You won't be able to move the event to another club later.";
+
+/* Exit flow. The last member leaving deletes the event instead of stranding it empty. */
+"events_leave_subtitle" = "Are you sure you want to leave this event? You will no longer be able to participate or see updates.";
+"events_delete_on_exit_title" = "Delete event?";
+"events_delete_on_exit_subtitle" = "You are the only member. If you leave, this event will be deleted. Are you sure?";
+"events_delete_on_exit_confirm" = "Leave and delete";
+"events_deleted" = "Event deleted";
+"events_delete_fail" = "Could not delete event";

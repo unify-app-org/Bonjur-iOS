@@ -41,6 +41,7 @@ protocol HangoutsDataSource {
     ) async throws(APIError) -> PageNationResponse<[HangoutsDTOModel.MemberResponse]>
 
     func exitHangout(id: String) async throws(APIError) -> Data
+    func deleteHangout(id: String) async throws(APIError) -> Data
     func joinHangout(request: HangoutsDTOModel.JoinRequest) async throws(APIError) -> Data
 }
 
@@ -170,5 +171,9 @@ final class HangoutsDataSourceImpl: NetworkService<HangoutsEndPoint>, HangoutsDa
 
     func exitHangout(id: String) async throws(APIError) -> Data {
         try await fetchRawData(endPoint: .exitHangout(id))
+    }
+
+    func deleteHangout(id: String) async throws(APIError) -> Data {
+        try await fetchRawData(endPoint: .deleteHangout(id))
     }
 }

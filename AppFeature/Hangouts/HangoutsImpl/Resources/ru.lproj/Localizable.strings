@@ -48,3 +48,10 @@
 "hangouts_owner_role" = "Владелец";
 "hangouts_owner_contact_ph" = "Введите контакт владельца";
 "hangouts_name_locked_hint" = "Название тусовки нельзя будет изменить позже.";
+
+"hangouts_exit_subtitle" = "Вы уверены, что хотите покинуть эту тусовку? Вы больше не сможете участвовать и видеть обновления.";
+"hangouts_delete_on_exit_title" = "Удалить тусовку?";
+"hangouts_delete_on_exit_subtitle" = "Вы единственный участник. Если вы выйдете, эта тусовка будет удалена. Вы уверены?";
+"hangouts_delete_on_exit_confirm" = "Выйти и удалить";
+"hangouts_deleted" = "Тусовка удалена";
+"hangouts_delete_fail" = "Не удалось удалить тусовку";

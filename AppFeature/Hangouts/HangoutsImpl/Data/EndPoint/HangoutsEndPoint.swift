@@ -16,6 +16,8 @@ enum HangoutsEndPoint {
     case hangoutDetail(String)
     case members(String, [String: String])
     case exitHangout(String)
+    /// Removes the hangout itself, not just the caller's membership.
+    case deleteHangout(String)
     case joinHangout(HangoutsDTOModel.JoinRequest)
 }
 
@@ -37,6 +39,8 @@ extension HangoutsEndPoint: AppEndPoint {
             "api/hs/v1/hangouts/\(id)/members"
         case .exitHangout(let id):
             "api/hs/v1/hangouts/exit/\(id)"
+        case .deleteHangout(let id):
+            "api/hs/v1/hangouts/\(id)"
         case .joinHangout:
             "api/hs/v1/hangouts/join"
         }
@@ -54,7 +58,8 @@ extension HangoutsEndPoint: AppEndPoint {
                 .post
         case .editHangout:
                 .put
-        case .exitHangout:
+        case .exitHangout,
+                .deleteHangout:
                 .delete
         }
     }

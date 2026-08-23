@@ -49,6 +49,8 @@ protocol HangoutRepo {
 
     func exitHangout(id: String) async throws(APIError) -> Void
 
+    func deleteHangout(id: String) async throws(APIError) -> Void
+
     func joinHangout(id: String) async throws(APIError) -> Void
 }
 
@@ -257,6 +259,10 @@ class HangoutRepoImpl: HangoutRepo {
 
     func exitHangout(id: String) async throws(APIError) {
         let _ = try await dataSource.exitHangout(id: id)
+    }
+
+    func deleteHangout(id: String) async throws(APIError) {
+        let _ = try await dataSource.deleteHangout(id: id)
     }
 
     func joinHangout(id: String) async throws(APIError) {

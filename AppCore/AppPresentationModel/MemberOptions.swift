@@ -7,7 +7,13 @@
 //  by both the shared options sheet and each activity's detail view models.
 //
 
+import AppLocalization
 import Foundation
+
+/// Anchor class so the app can register this framework's bundle with
+/// `AppLocalizationProtocol.registerBundle` — enums can't be used with
+/// `Bundle(for:)`.
+public final class AppPresentationModelBundleToken {}
 
 public extension AppPresentationModel {
 
@@ -30,14 +36,14 @@ public extension AppPresentationModel {
 
         public var displayTitle: String {
             switch self {
-            case .fakeProfile: return "Fake profile"
-            case .inappropriateProfilePicture: return "Inappropriate profile picture"
-            case .inappropriateProfileText: return "Inappropriate profile text"
-            case .inappropriateOffers: return "Inappropriate offers"
-            case .offensive: return "Ofensive word, threats, insults"
-            case .underage: return "Underage"
-            case .scamAndCommercial: return "Scam and commercial"
-            case .other: return "Other"
+            case .fakeProfile: return "report_reason_fake_profile".localized
+            case .inappropriateProfilePicture: return "report_reason_inappropriate_profile_picture".localized
+            case .inappropriateProfileText: return "report_reason_inappropriate_profile_text".localized
+            case .inappropriateOffers: return "report_reason_inappropriate_offers".localized
+            case .offensive: return "report_reason_offensive".localized
+            case .underage: return "report_reason_underage".localized
+            case .scamAndCommercial: return "report_reason_scam_and_commercial".localized
+            case .other: return "report_reason_other".localized
             }
         }
     }
@@ -59,12 +65,12 @@ public extension AppPresentationModel {
 
         public var displayTitle: String {
             switch self {
-            case .inappropriateContent: return "Inappropriate content"
-            case .spam: return "Spam"
-            case .scamAndCommercial: return "Scam and commercial"
-            case .harassment: return "Harassment or hate speech"
-            case .misleadingInfo: return "Misleading information"
-            case .other: return "Other"
+            case .inappropriateContent: return "activity_report_reason_inappropriate_content".localized
+            case .spam: return "activity_report_reason_spam".localized
+            case .scamAndCommercial: return "activity_report_reason_scam_and_commercial".localized
+            case .harassment: return "activity_report_reason_harassment".localized
+            case .misleadingInfo: return "activity_report_reason_misleading_info".localized
+            case .other: return "activity_report_reason_other".localized
             }
         }
     }
@@ -87,7 +93,7 @@ public extension AppPresentationModel {
         ) -> [UserActivityRole] {
             switch viewer {
             case .president:
-                return [.member, .president, .visePresident, .eventCreator]
+                return [.member, .visePresident, .eventCreator]
             case .visePresident:
                 return [.member, .eventCreator]
             case .member, .eventCreator, .notJoined, .requested:
@@ -136,10 +142,10 @@ public extension AppPresentationModel.UserActivityRole {
     /// (badge text) — e.g. event creator reads "Event organizer" here.
     var assignTitle: String {
         switch self {
-        case .member: return "Member"
-        case .president: return "President"
-        case .visePresident: return "Vice president"
-        case .eventCreator: return "Event organizer"
+        case .member: return "role_assign_title_member".localized
+        case .president: return "role_assign_title_president".localized
+        case .visePresident: return "role_assign_title_vice_president".localized
+        case .eventCreator: return "role_assign_title_event_creator".localized
         case .notJoined, .requested: return ""
         }
     }
@@ -147,10 +153,10 @@ public extension AppPresentationModel.UserActivityRole {
     /// Subtitle under each picker row describing the role's powers.
     var assignSubtitle: String {
         switch self {
-        case .member: return "Just can view content"
-        case .president: return "Can manage club"
-        case .visePresident: return "Can manage club, can't assign roles"
-        case .eventCreator: return "Just can create event in club"
+        case .member: return "role_assign_subtitle_member".localized
+        case .president: return "role_assign_subtitle_president".localized
+        case .visePresident: return "role_assign_subtitle_vice_president".localized
+        case .eventCreator: return "role_assign_subtitle_event_creator".localized
         case .notJoined, .requested: return ""
         }
     }

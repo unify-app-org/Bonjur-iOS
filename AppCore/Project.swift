@@ -64,7 +64,8 @@ let appLocalizationTarget = Target.createFrameworkTarget(
 let appPresentationModelTarget = Target.createFrameworkTarget(
     name: "AppPresentationModel",
     dependencies: [
-        .AppCore.DependecyInjection
+        .AppCore.DependecyInjection,
+        .AppCore.AppLocalization
     ]
 ).add(to: &frameworkTargets)
 

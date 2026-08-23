@@ -1,0 +1,31 @@
+/* Member & activity options (AppPresentationModel) */
+
+/* Report reasons — member */
+"report_reason_fake_profile" = "Поддельный профиль";
+"report_reason_inappropriate_profile_picture" = "Неприемлемое фото профиля";
+"report_reason_inappropriate_profile_text" = "Неприемлемый текст профиля";
+"report_reason_inappropriate_offers" = "Неприемлемые предложения";
+"report_reason_offensive" = "Оскорбления, угрозы, брань";
+"report_reason_underage" = "Несовершеннолетний";
+"report_reason_scam_and_commercial" = "Мошенничество и реклама";
+"report_reason_other" = "Другое";
+
+/* Report reasons — activity (club / event / hangout) */
+"activity_report_reason_inappropriate_content" = "Неприемлемый контент";
+"activity_report_reason_spam" = "Спам";
+"activity_report_reason_scam_and_commercial" = "Мошенничество и реклама";
+"activity_report_reason_harassment" = "Травля или разжигание ненависти";
+"activity_report_reason_misleading_info" = "Вводящая в заблуждение информация";
+"activity_report_reason_other" = "Другое";
+
+/* Assign-role picker — titles */
+"role_assign_title_member" = "Участник";
+"role_assign_title_president" = "Президент";
+"role_assign_title_vice_president" = "Вице-президент";
+"role_assign_title_event_creator" = "Организатор мероприятий";
+
+/* Assign-role picker — subtitles */
+"role_assign_subtitle_member" = "Может только просматривать контент";
+"role_assign_subtitle_president" = "Может управлять клубом";
+"role_assign_subtitle_vice_president" = "Может управлять клубом, но не назначать роли";
+"role_assign_subtitle_event_creator" = "Может только создавать мероприятия в клубе";

@@ -1,0 +1,31 @@
+/* Member & activity options (AppPresentationModel) */
+
+/* Report reasons — member */
+"report_reason_fake_profile" = "Fake profile";
+"report_reason_inappropriate_profile_picture" = "Inappropriate profile picture";
+"report_reason_inappropriate_profile_text" = "Inappropriate profile text";
+"report_reason_inappropriate_offers" = "Inappropriate offers";
+"report_reason_offensive" = "Offensive words, threats, insults";
+"report_reason_underage" = "Underage";
+"report_reason_scam_and_commercial" = "Scam and commercial";
+"report_reason_other" = "Other";
+
+/* Report reasons — activity (club / event / hangout) */
+"activity_report_reason_inappropriate_content" = "Inappropriate content";
+"activity_report_reason_spam" = "Spam";
+"activity_report_reason_scam_and_commercial" = "Scam and commercial";
+"activity_report_reason_harassment" = "Harassment or hate speech";
+"activity_report_reason_misleading_info" = "Misleading information";
+"activity_report_reason_other" = "Other";
+
+/* Assign-role picker — titles */
+"role_assign_title_member" = "Member";
+"role_assign_title_president" = "President";
+"role_assign_title_vice_president" = "Vice president";
+"role_assign_title_event_creator" = "Event organizer";
+
+/* Assign-role picker — subtitles */
+"role_assign_subtitle_member" = "Just can view content";
+"role_assign_subtitle_president" = "Can manage club";
+"role_assign_subtitle_vice_president" = "Can manage club, can't assign roles";
+"role_assign_subtitle_event_creator" = "Just can create event in club";

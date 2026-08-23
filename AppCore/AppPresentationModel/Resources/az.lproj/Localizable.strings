@@ -1,0 +1,31 @@
+/* Member & activity options (AppPresentationModel) */
+
+/* Report reasons — member */
+"report_reason_fake_profile" = "Saxta profil";
+"report_reason_inappropriate_profile_picture" = "Uyğunsuz profil şəkli";
+"report_reason_inappropriate_profile_text" = "Uyğunsuz profil mətni";
+"report_reason_inappropriate_offers" = "Uyğunsuz təkliflər";
+"report_reason_offensive" = "Təhqiredici sözlər, hədələr, təhqirlər";
+"report_reason_underage" = "Yaş həddinə uyğun deyil";
+"report_reason_scam_and_commercial" = "Fırıldaq və reklam";
+"report_reason_other" = "Digər";
+
+/* Report reasons — activity (club / event / hangout) */
+"activity_report_reason_inappropriate_content" = "Uyğunsuz məzmun";
+"activity_report_reason_spam" = "Spam";
+"activity_report_reason_scam_and_commercial" = "Fırıldaq və reklam";
+"activity_report_reason_harassment" = "Təqib və ya nifrət nitqi";
+"activity_report_reason_misleading_info" = "Yanıldıcı məlumat";
+"activity_report_reason_other" = "Digər";
+
+/* Assign-role picker — titles */
+"role_assign_title_member" = "Üzv";
+"role_assign_title_president" = "Prezident";
+"role_assign_title_vice_president" = "Vitse-prezident";
+"role_assign_title_event_creator" = "Tədbir təşkilatçısı";
+
+/* Assign-role picker — subtitles */
+"role_assign_subtitle_member" = "Yalnız məzmuna baxa bilər";
+"role_assign_subtitle_president" = "Klubu idarə edə bilər";
+"role_assign_subtitle_vice_president" = "Klubu idarə edə bilər, rol təyin edə bilməz";
+"role_assign_subtitle_event_creator" = "Yalnız klubda tədbir yarada bilər";

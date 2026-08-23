@@ -10,6 +10,7 @@ import AppLocalization
 import DependecyInjection
 import Foundation
 import AppUIKit
+import AppPresentationModel
 import AppAuthImpl
 import ProfileImpl
 import DiscoverImpl
@@ -38,6 +39,7 @@ extension AppDelegate {
             Bundle(for: NotificationConfigurator.self),
             Bundle(for: GroupsConfigurator.self),
             Bundle(for: FilterViewModel.self),
+            Bundle(for: AppPresentationModelBundleToken.self),
         )
      }
 }

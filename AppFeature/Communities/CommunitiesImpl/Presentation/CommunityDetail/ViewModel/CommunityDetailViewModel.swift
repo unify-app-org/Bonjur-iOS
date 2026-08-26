@@ -67,7 +67,7 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
             }
         case .userTapped(let id):
             Task {
-                await router.navigate(to: .userDetails(id: id))
+                await router.navigate(to: .userDetails(id: id, communityId: inputData.communityId))
             }
         case .seeAllMembersTapped:
             presentMembersList()
@@ -132,7 +132,7 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
             },
             onMemberTapped: { [weak self] member in
                 Task { @MainActor in
-                    self?.router.navigate(to: .userDetails(id: member.id))
+                    self?.router.navigate(to: .userDetails(id: member.id, communityId: communityId))
                 }
             },
             options: .init(

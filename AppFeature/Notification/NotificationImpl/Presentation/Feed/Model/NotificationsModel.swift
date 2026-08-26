@@ -38,6 +38,8 @@ final class NotificationViewState: UIFeatureState {
     @Published var phase: RequestsPhase = .idle
     @Published var isLoadingMore = false
     @Published var canLoadMore = false
+    /// Pending join requests behind the "Needs your action" banner. Drives its red dot.
+    @Published var pendingActionCount = 0
 }
 
 // MARK: - Feature Action

@@ -36,3 +36,6 @@
 "notif_reject_note_label" = "Qeyd (istəyə bağlı)";
 "notif_reject_note_hint" = "Klub təşkilatçısı bu qeydi bildirişində görəcək. Səbəb göstərmədən rədd etmək üçün boş buraxın.";
 "notif_clubs_awaiting_approval" = "%d klub təsdiqinizi gözləyir";
+
+/* Feed banner badge: pending join requests across clubs + hangouts + events. */
+"notif_requests_waiting" = "%d sorğu sizi gözləyir";

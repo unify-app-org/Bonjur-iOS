@@ -56,7 +56,7 @@ final class ClubDetailsRouter: ClubDetailsRouterProtocol {
             ).build()
             view?.navigationController?.pushViewController(vc, animated: true)
         case .userDetail(let id):
-            let vc = profile.makeProfileViewController(userId: id) as! UIViewController
+            let vc = profile.makeProfileViewController(userId: id, communityId: nil) as! UIViewController
             view?.navigationController?.pushViewController(vc, animated: true)
         case .eventDetail(let id):
             guard let vc = eventsModule.makeEventsDetails(eventId: id) as? UIViewController else { return }

@@ -16,7 +16,10 @@ enum ProfileEndPoint {
     case getCategories
     case getLanguages
     case deleteAccount
-    case getUserById(String)
+    /// (userId, clubId) — the trailing segment is named clubId server-side but carries the
+    /// **community** id: the one stored at login, or the community being viewed when the
+    /// profile was opened from a community detail.
+    case getUserById(String, Int)
     case getMyClubs(String)
     case myHangouts(String)
     case myEvents
@@ -30,8 +33,8 @@ extension ProfileEndPoint: AppEndPoint {
             "api/us/v1/users/profile"
         case .updateUserData, .deleteAccount:
             "api/us/v1/users"
-        case .getUserById(let id):
-            "api/us/v1/users/\(id)"
+        case .getUserById(let id, let clubId):
+            "api/us/v1/users/\(id)/\(clubId)"
         case .getCategories:
             "api/sd/v1/categories"
         case .getLanguages:

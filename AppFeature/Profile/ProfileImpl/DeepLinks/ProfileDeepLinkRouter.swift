@@ -49,7 +49,7 @@ final class ProfileDeepLinkRouter: DeepLinkRouter {
 
     private func showProfile(userId: String, context: DeepLinkContext) {
         let module: ProfileModule = resolve()
-        guard let viewController = module.makeProfileViewController(userId: userId) as? UIViewController else {
+        guard let viewController = module.makeProfileViewController(userId: userId, communityId: nil) as? UIViewController else {
             return
         }
         show(viewController, with: context)

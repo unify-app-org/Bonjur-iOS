@@ -8,6 +8,7 @@
 import AppUIKit
 import AppUtils
 import AppNetwork
+import AppStorage
 import Foundation
 import Clubs
 import Events
@@ -15,7 +16,8 @@ import Hangouts
 import AppPresentationModel
 
 protocol ProfileRepo {
-    func getUsers(userId: String?) async throws(APIError) -> ProfileDetail.UIModel
+    /// [communityId] scopes the lookup; nil falls back to the community stored at login.
+    func getUsers(userId: String?, communityId: Int?) async throws(APIError) -> ProfileDetail.UIModel
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
     func getLanguages() async throws(APIError) -> [SelectableListItemView.Model]
     func deleteAccount() async throws(APIError) -> Data
@@ -35,19 +37,24 @@ class ProfileRepoImpl: ProfileRepo {
     
     private let dataSource: ProfileDataSource
     private let tokenManager: TokenManager
+    private let userDefaults: UserDefaultsProtocol
     
     init(
         dataSource: ProfileDataSource = resolve(),
-        tokenManager: TokenManager = resolve()
+        tokenManager: TokenManager = resolve(),
+        userDefaults: UserDefaultsProtocol = resolve()
     ) {
         self.dataSource = dataSource
         self.tokenManager = tokenManager
+        self.userDefaults = userDefaults
     }
     
-    func getUsers(userId: String?) async throws(APIError) -> ProfileDetail.UIModel {
+    func getUsers(userId: String?, communityId: Int?) async throws(APIError) -> ProfileDetail.UIModel {
         let fallbackId = await tokenManager.getUserId()
         let data = try await dataSource.fetchProfile(
-            userId: userId ?? fallbackId
+            userId: userId ?? fallbackId,
+            // Every context except a community detail uses the community picked at login.
+            clubId: communityId ?? userDefaults.integer(forKey: .communityId)
         )
         let userCardModel: UserCardModel = .init(
             backgroundCover: data.background,

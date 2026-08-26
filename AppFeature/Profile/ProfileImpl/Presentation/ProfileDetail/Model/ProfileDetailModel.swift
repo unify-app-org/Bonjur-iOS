@@ -17,6 +17,9 @@ import Clubs
 
 struct ProfileDetailInputData {
     let userId: String?
+    /// Community the profile is being viewed inside; nil falls back to the one stored at
+    /// login. Only a community detail sets this.
+    var communityId: Int? = nil
 }
 
 // MARK: - Side effects

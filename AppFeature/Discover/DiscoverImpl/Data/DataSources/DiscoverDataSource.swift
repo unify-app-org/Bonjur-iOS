@@ -29,7 +29,8 @@ protocol DiscoverDataSource {
     func getCategories() async throws(APIError) -> [DiscoverDTOModel.CategoriesResponse]
     
     func getUser(
-        userId: String
+        userId: String,
+        clubId: Int
     ) async throws(APIError) -> AppPresentationModel.UserResponse
     
     func joinHangout(
@@ -72,9 +73,10 @@ final class DiscoverDataSourceImpl: NetworkService<DiscoverEndPoint>, DiscoverDa
     }
     
     func getUser(
-        userId: String
+        userId: String,
+        clubId: Int
     ) async throws(APIError) -> AppPresentationModel.UserResponse {
-        try await fetch(endPoint: .getUserById(userId))
+        try await fetch(endPoint: .getUserById(userId, clubId))
     }
     
     func joinHangout(

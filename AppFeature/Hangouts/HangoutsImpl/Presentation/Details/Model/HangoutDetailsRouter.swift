@@ -52,7 +52,7 @@ final class HangoutDetailsRouter: HangoutDetailsRouterProtocol {
             guard let vc = communitiesModule.makeCommunityDetail(communityId: id) as? UIViewController else { return }
             view?.navigationController?.pushViewController(vc, animated: true)
         case .userDetail(let id):
-            let vc = profile.makeProfileViewController(userId: id) as! UIViewController
+            let vc = profile.makeProfileViewController(userId: id, communityId: nil) as! UIViewController
             view?.navigationController?.pushViewController(vc, animated: true)
         case .membersList(let input):
             guard let vc = communitiesModule.makeMembersListScreen(input: input) as? UIViewController else { return }

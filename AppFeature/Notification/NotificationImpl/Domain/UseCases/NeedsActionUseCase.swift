@@ -26,6 +26,12 @@ protocol NeedsActionUseCase {
     /// Admin-only pending-verification total. Throwing (e.g. 403) means the
     /// caller isn't an admin — the banner stays hidden.
     func fetchVerificationCount() async throws(APIError) -> Int
+    /// Total pending join requests across clubs + hangouts + events, for the feed banner's
+    /// badge. Each source is read off `totalElements` at page 0 / size 1 (same trick as
+    /// `fetchVerificationCount`) and guarded on its own, so one failing source doesn't zero
+    /// the other two. Verification is deliberately excluded — admin-only (403 for everyone
+    /// else) and already has its own banner inside Needs Action. Never throws.
+    func fetchPendingActionCount() async -> Int
 }
 
 final class NeedsActionUseCaseImpl: NeedsActionUseCase {
@@ -75,5 +81,16 @@ final class NeedsActionUseCaseImpl: NeedsActionUseCase {
     func fetchVerificationCount() async throws(APIError) -> Int {
         let response = try await dataSource.fetchPendingClubs(page: 0, size: 1)
         return response.totalElements ?? 0
+    }
+
+    func fetchPendingActionCount() async -> Int {
+        async let clubs = total { try await self.dataSource.fetchClubRequests(page: 0, size: 1).totalElements }
+        async let hangouts = total { try await self.dataSource.fetchHangoutRequests(page: 0, size: 1).totalElements }
+        async let events = total { try await self.dataSource.fetchEventRequests(page: 0, size: 1).totalElements }
+        return await clubs + hangouts + events
+    }
+
+    private func total(_ fetch: () async throws -> Int?) async -> Int {
+        (try? await fetch()).flatMap { $0 } ?? 0
     }
 }

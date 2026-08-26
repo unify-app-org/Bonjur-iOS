@@ -14,7 +14,7 @@ import Events
 import Hangouts
 
 protocol ProfileUseCase {
-    func getProfileData(userId: String?) async throws(APIError) -> ProfileDetail.UIModel
+    func getProfileData(userId: String?, communityId: Int?) async throws(APIError) -> ProfileDetail.UIModel
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section]
     func getLanguages() async throws(APIError) -> [SelectableListItemView.Model]
     func fetchSections(notificationsEnabled: Bool) -> [ProfileSettingsViewState.SettingsSection]
@@ -36,8 +36,8 @@ class ProfileUseCaseImpl: ProfileUseCase {
         self.repo = repo
     }
     
-    func getProfileData(userId: String?) async throws(APIError) -> ProfileDetail.UIModel {
-        try await repo.getUsers(userId: userId)
+    func getProfileData(userId: String?, communityId: Int?) async throws(APIError) -> ProfileDetail.UIModel {
+        try await repo.getUsers(userId: userId, communityId: communityId)
     }
 
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section] {

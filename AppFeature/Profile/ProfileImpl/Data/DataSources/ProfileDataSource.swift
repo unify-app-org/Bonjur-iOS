@@ -12,7 +12,7 @@ import AppNetwork
 import UIKit
 
 protocol ProfileDataSource {
-    func fetchProfile(userId: String) async throws(APIError) -> AppPresentationModel.UserResponse
+    func fetchProfile(userId: String, clubId: Int) async throws(APIError) -> AppPresentationModel.UserResponse
     func getCategories() async throws(APIError) -> [ProfileDTOModel.CategoriesResponse]
     func getLanguages() async throws(APIError) -> [ProfileDTOModel.LanguagesResponse]
     func editProfile(
@@ -32,8 +32,8 @@ protocol ProfileDataSource {
 
 final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataSource {
 
-    func fetchProfile(userId: String) async throws(APIError) -> AppPresentationModel.UserResponse {
-        try await fetch(endPoint: .getUserById(userId))
+    func fetchProfile(userId: String, clubId: Int) async throws(APIError) -> AppPresentationModel.UserResponse {
+        try await fetch(endPoint: .getUserById(userId, clubId))
     }
 
     func getCategories() async throws(APIError) -> [ProfileDTOModel.CategoriesResponse] {

@@ -14,7 +14,9 @@ import Communities
 enum CommunityDetailRoute {
     case back
     case clubsDetails(id: Int)
-    case userDetails(id: String)
+    /// [communityId] is the community the profile is being viewed inside — inside a
+    /// community the profile is scoped to THAT community, not the one stored at login.
+    case userDetails(id: String, communityId: Int)
     case edit(id: Int, prefillData: ClubsModuleModel.CreatePrefillData)
     case membersList(CommunitiesMemberModuleModel.MembersListInput)
     case createClub
@@ -61,8 +63,11 @@ final class CommunityDetailRouter: CommunityDetailRouterProtocol {
             self.view?.navigationController?.pushViewController(vc, animated: true)
         case .back:
             self.view?.navigationController?.popViewController(animated: true)
-        case .userDetails(let id):
-            let vc = profileModule.makeProfileViewController(userId: id) as! UIViewController
+        case .userDetails(let id, let communityId):
+            let vc = profileModule.makeProfileViewController(
+                userId: id,
+                communityId: communityId
+            ) as! UIViewController
             view?.navigationController?.pushViewController(vc, animated: true)
         case .membersList(let input):
             guard let vc = communitiesModule.makeMembersListScreen(input: input) as? UIViewController else { return }

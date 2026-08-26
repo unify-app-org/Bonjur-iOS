@@ -14,6 +14,7 @@ final class NotificationViewModel: UIFeatureViewModel<NotificationFeature> {
 
     struct Dependencies {
         let useCase: NotificationUseCase
+        let needsActionUseCase: NeedsActionUseCase
     }
 
     private let router: NotificationRouterProtocol
@@ -100,6 +101,7 @@ final class NotificationViewModel: UIFeatureViewModel<NotificationFeature> {
         if state.uiModel.sections.isEmpty {
             state.phase = .loading
         }
+        fetchPendingActionCount()
         Task {
             do {
                 let result = try await dependencies.useCase.fetchFeedPage(page: 0, size: pageSize)
@@ -107,6 +109,14 @@ final class NotificationViewModel: UIFeatureViewModel<NotificationFeature> {
             } catch {
                 await applyFailure(error as? APIError)
             }
+        }
+    }
+
+    /// Badge on the "Needs your action" banner. Runs alongside the feed rather than inside
+    /// it: three extra calls that must not delay (or fail) the feed itself.
+    private func fetchPendingActionCount() {
+        Task { @MainActor in
+            state.pendingActionCount = await dependencies.needsActionUseCase.fetchPendingActionCount()
         }
     }
 

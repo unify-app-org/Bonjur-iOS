@@ -36,3 +36,6 @@
 "notif_reject_note_label" = "Note (optional)";
 "notif_reject_note_hint" = "The club organiser sees this note in their notification. Leave it blank to reject without a reason.";
 "notif_clubs_awaiting_approval" = "%d clubs awaiting your approval";
+
+/* Feed banner badge: pending join requests across clubs + hangouts + events. */
+"notif_requests_waiting" = "%d requests waiting for you";

@@ -11,12 +11,46 @@ import UserNotifications
 import FirebaseMessaging
 import AppStorage
 import AppNetwork
+import AppLocalization
 
 extension AppDelegate {
 
     func setUpFirebase(_ application: UIApplication) {
         configureFirebase()
         registerForPushNotifications(application)
+        observeLanguageChanges()
+    }
+
+    // MARK: - Language
+
+    /// The backend stores the user's language from the `Accept-Language` header, so any
+    /// device call re-registers it. Re-PUT on every in-app language switch — the payload
+    /// itself is unchanged (token only).
+    private func observeLanguageChanges() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(languageDidChange),
+            name: .languageDidChange,
+            object: nil
+        )
+    }
+
+    @objc
+    private func languageDidChange() {
+        registerDevice()
+    }
+
+    /// PUT api/as/v1/device/{id} with the current FCM token.
+    func registerDevice() {
+        Messaging.messaging().token { token, error in
+            guard let token else {
+                print("🔔 [Push] token fetch failed:", String(describing: error))
+                return
+            }
+            Task {
+                try? await UserDataServiceImpl().updateUser(body: UserUpdate(fcmToken: token))
+            }
+        }
     }
 
     // MARK: - Configure
@@ -90,7 +124,7 @@ extension AppDelegate: MessagingDelegate {
         let userUpdate = UserDataServiceImpl()
         let request = UserUpdate(fcmToken: fcmToken)
         Task {
-            try await userUpdate.updateUser(body: request)
+            try? await userUpdate.updateUser(body: request)
         }
         print("FCM registration token:", fcmToken)
     }

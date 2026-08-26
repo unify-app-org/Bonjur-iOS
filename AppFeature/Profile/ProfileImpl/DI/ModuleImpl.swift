@@ -11,11 +11,13 @@ import Profile
 struct ProfileModuleImpl: ProfileModule {
     
     func makeProfileViewController(
-        userId: String?
+        userId: String?,
+        communityId: Int?
     ) -> AnyObject {
         ProfileDetailBuilder(
             inputData: .init(
-                userId: userId
+                userId: userId,
+                communityId: communityId
             )
         ).build()
     }

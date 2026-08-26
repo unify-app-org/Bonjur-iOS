@@ -23,7 +23,8 @@ struct NotificationBuilder {
             router: router,
             inputData: inputData,
             dependencies: .init(
-                useCase: resolve()
+                useCase: resolve(),
+                needsActionUseCase: resolve()
             )
         )
 

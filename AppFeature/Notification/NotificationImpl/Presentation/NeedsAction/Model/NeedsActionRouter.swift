@@ -40,7 +40,7 @@ final class NeedsActionRouter: NeedsActionRouterProtocol {
             let vc = VerificationBuilder(inputData: .init()).build()
             view?.navigationController?.pushViewController(vc, animated: true)
         case .userProfile(let userId):
-            guard let vc = profileModule.makeProfileViewController(userId: userId) as? UIViewController else { return }
+            guard let vc = profileModule.makeProfileViewController(userId: userId, communityId: nil) as? UIViewController else { return }
             view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

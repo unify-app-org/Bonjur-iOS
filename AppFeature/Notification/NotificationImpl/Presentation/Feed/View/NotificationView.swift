@@ -84,13 +84,24 @@ struct NotificationView: View {
                     Text("notif_needs_action".localized)
                         .font(Font.Typography.BodyTextMd.semiBold)
                         .foregroundStyle(Color.Palette.black)
-                    Text("notif_action_subtitle_idle".localized)
-                        .font(Font.Typography.TextSm.regular)
-                        .foregroundStyle(Color.Palette.graySecondary)
+                    // Falls back to the generic prompt at zero, so the row never reads
+                    // "0 requests".
+                    Text(
+                        store.state.pendingActionCount > 0
+                        ? "notif_requests_waiting".localized(with: store.state.pendingActionCount)
+                        : "notif_action_subtitle_idle".localized
+                    )
+                    .font(Font.Typography.TextSm.regular)
+                    .foregroundStyle(Color.Palette.graySecondary)
                 }
 
                 Spacer(minLength: 8)
 
+                if store.state.pendingActionCount > 0 {
+                    Circle()
+                        .fill(Color.Palette.destructiveRed)
+                        .frame(width: 10, height: 10)
+                }
                 Image(uiImage: .Icons.chevronRight)
                     .renderingMode(.template)
                     .foregroundStyle(Color.Palette.graySecondary)

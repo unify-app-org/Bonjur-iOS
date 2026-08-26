@@ -14,7 +14,9 @@ enum DiscoverEndPoint {
     case getEvents([String : String])
     case getCategories
     case getUser
-    case getUserById(String)
+    /// (userId, clubId) — see `ProfileEndPoint.getUserById`; the trailing segment is the
+    /// community id.
+    case getUserById(String, Int)
     case joinHangout(Encodable)
     case joinEvent(String)
 }
@@ -35,8 +37,8 @@ extension DiscoverEndPoint: AppEndPoint {
             "api/sd/v1/categories"
         case .getUser:
             "api/us/v1/users/profile"
-        case .getUserById(let id):
-            "api/us/v1/users/\(id)"
+        case .getUserById(let id, let clubId):
+            "api/us/v1/users/\(id)/\(clubId)"
         case .joinHangout:
             "api/hs/v1/hangouts/join"
         case .joinEvent(let id):

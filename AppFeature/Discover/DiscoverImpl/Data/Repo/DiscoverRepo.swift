@@ -209,7 +209,8 @@ class DiscoverRepoImpl: DiscoverRepo {
     func getUser() async throws(APIError) -> UserModel {
         let userId = await tokenManger.getUserId()
         let data = try await dataSource.getUser(
-            userId: userId
+            userId: userId,
+            clubId: userDefault.integer(forKey: .communityId)
         )
         return .init(
             name: data.fullName ?? "-",

@@ -36,3 +36,6 @@
 "notif_reject_note_label" = "Заметка (необязательно)";
 "notif_reject_note_hint" = "Организатор клуба увидит эту заметку в уведомлении. Оставьте поле пустым, чтобы отклонить без причины.";
 "notif_clubs_awaiting_approval" = "%d клубов ожидают вашего одобрения";
+
+/* Feed banner badge: pending join requests across clubs + hangouts + events. */
+"notif_requests_waiting" = "%d запросов ожидают вас";

@@ -115,7 +115,8 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
     private func fetchInitialData() async -> InitialFetchResults {
         async let user = apiResult {
             try await dependencies.useCase.getProfileData(
-                userId: inputData.userId
+                userId: inputData.userId,
+                communityId: inputData.communityId
             )
         }
         async let clubs = apiResult {

@@ -166,6 +166,7 @@ struct EventDetailsView: View {
                 .backgroundType(store.state.uiModel?.coverColorType ?? .primary)
                 .cornerRadius(.zero)
         }
+        .imagePreview(url: store.state.uiModel?.coverImage)
     }
     
     // MARK: - Bottom Content

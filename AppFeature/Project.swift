@@ -93,7 +93,10 @@ let profileTarget = Target.createFeatureModule(
             .AppFeature.Groups,
             .AppFeature.Clubs,
             .AppFeature.Events,
-            .AppFeature.Hangouts
+            .AppFeature.Hangouts,
+            // Profile is where the signed-in user's card is loaded, so it is
+            // also what feeds the home-screen widget's App Group snapshot.
+            .AppCore.AppWidgetShared
         ]
     )
 ).add(to: &frameworkTargets)

@@ -50,8 +50,33 @@ let appTarget: Target = .target(
             runForInstallBuildsOnly: true
         )
     ],
-    dependencies: TargetDependency.AllDependencies,
+    dependencies: TargetDependency.AllDependencies + [.target(name: "UnifyWidget")],
     settings: .settings(base: .mainTargetBuildSettings)
+)
+
+/// Home-screen widget. Reads the user card the app writes into the shared App
+/// Group (`group.$(BUNDLE_ID)`) — the extension has no session of its own, so
+/// it never talks to the API. Kept dependency-light on purpose: only
+/// `AppWidgetShared`, never the design system.
+let widgetTarget: Target = .target(
+    name: "UnifyWidget",
+    destinations: [.iPhone],
+    product: .appExtension,
+    bundleId: "$(BUNDLE_ID).widget",
+    deploymentTargets: .iOS(Project.deploymentTarget),
+    infoPlist: .file(path: .relativeToRoot("Widget/Info.plist")),
+    sources: [.glob(.relativeToRoot("Widget/Widget/**/*.swift"))],
+    entitlements: .file(path: .relativeToRoot("Widget/Widget.entitlements")),
+    dependencies: [
+        .AppCore.AppWidgetShared
+    ],
+    settings: .settings(
+        base: [
+            "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME": "AccentColor",
+            "MARKETING_VERSION": "\(Project.marketingVersion)",
+            "CURRENT_PROJECT_VERSION": "$(CURRENT_PROJECT_VERSION)"
+        ]
+    )
 )
 
 let project = Project(
@@ -59,7 +84,7 @@ let project = Project(
     organizationName: Project.organizationName,
     options: .options(automaticSchemesOptions: .disabled),
     settings: .settings(base: .default, configurations: .default),
-    targets: [appTarget],
+    targets: [appTarget, widgetTarget],
     schemes: [
         .testScheme,
         .prodScheme,

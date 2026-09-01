@@ -59,3 +59,6 @@
 /* API error popups */
 "error_generic_title" = "Что-то пошло не так";
 "error_generic_subtitle" = "Пожалуйста, попробуйте снова.";
+
+/* Image preview */
+"image_preview_close" = "Закрыть";

@@ -64,9 +64,13 @@ final class ProfileSettingsRouter: ProfileSettingsRouterProtocol {
                 confirmTitle: "settings_logout_confirm".localized,
                 confirmStyle: .destructive
             ) { [weak self] in
+                // The widget lives outside the session — wipe its snapshot so a
+                // signed-out phone stops showing the last user's card.
+                UserCardWidgetPublisher.clear()
                 self?.delegate.logout()
             }
         case .finishSession:
+            UserCardWidgetPublisher.clear()
             delegate.logout()
         }
     }

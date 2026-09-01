@@ -102,6 +102,11 @@ public extension TargetDependency {
             target: "AppPresentationModel",
             path: .relativeToRoot(Project.Projects.core)
         )
+
+        public static let AppWidgetShared: TargetDependency = .project(
+            target: "AppWidgetShared",
+            path: .relativeToRoot(Project.Projects.core)
+        )
     }
     
     enum AppFeature {

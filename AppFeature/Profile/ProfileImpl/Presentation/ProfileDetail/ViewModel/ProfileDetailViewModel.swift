@@ -154,6 +154,12 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
                 if let id = inputData.userId, id != myId {
                     state.navigationTitle = "profile_about_user".localized
                     state.isOtherUser = true
+                } else {
+                    // Own profile: refresh what the home-screen widget shows.
+                    UserCardWidgetPublisher.publish(
+                        card: user.userCardModel,
+                        userId: myId
+                    )
                 }
             }
         case .failure(let error):

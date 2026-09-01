@@ -54,6 +54,12 @@ let appUIKitTarget = Target.createFrameworkTarget(
     ]
 ).add(to: &frameworkTargets)
 
+/// Pure-Foundation types shared with the widget extension. Keep it dependency
+/// free: it is linked into a memory-capped extension process.
+let appWidgetSharedTarget = Target.createFrameworkTarget(
+    name: "AppWidgetShared"
+).add(to: &frameworkTargets)
+
 let appLocalizationTarget = Target.createFrameworkTarget(
     name: "AppLocalization",
     dependencies: [

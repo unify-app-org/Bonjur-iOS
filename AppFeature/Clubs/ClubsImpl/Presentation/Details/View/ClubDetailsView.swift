@@ -171,6 +171,7 @@ struct ClubDetailsView: View {
                 .backgroundType(store.state.uiModel?.coverColorType ?? .primary)
                 .cornerRadius(.zero)
         }
+        .imagePreview(url: store.state.uiModel?.coverImage)
     }
     
     // MARK: - Logo
@@ -185,6 +186,11 @@ struct ClubDetailsView: View {
     }
     
     private var clubLogo: some View {
+        avatar
+            .imagePreview(url: store.state.uiModel?.logo)
+    }
+
+    private var avatar: some View {
         AvatarView(url: store.state.uiModel?.logo) {
             if let image = UIImage(systemName: "person") {
                 Image(uiImage: image)

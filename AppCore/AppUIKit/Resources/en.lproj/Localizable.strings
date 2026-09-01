@@ -59,3 +59,6 @@
 /* API error popups */
 "error_generic_title" = "Something went wrong";
 "error_generic_subtitle" = "Please try again.";
+
+/* Image preview */
+"image_preview_close" = "Close";

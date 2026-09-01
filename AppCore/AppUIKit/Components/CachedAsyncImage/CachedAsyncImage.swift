@@ -37,6 +37,15 @@ public struct CachedAsyncImage<Content: View, Placeholder: View>: View {
     }
 
     private func resolvedURL(from url: URL?) -> URL? {
+        RemoteImageURL.resolved(url)
+    }
+}
+
+/// Rewrites the internal `minio` host to the public base URL host. Lives apart
+/// from the generic view so non-SwiftUI callers (e.g. the widget snapshot
+/// writer, which downloads the avatar itself) can resolve URLs the same way.
+public enum RemoteImageURL {
+    public static func resolved(_ url: URL?) -> URL? {
         guard
             let url,
             url.host == "minio",

@@ -104,6 +104,7 @@ struct ProfileDetailViewV2: View {
                         lineWidth: 3
                     )
                 )
+                .imagePreview(url: card.imageUrl)
 
                 Text(card.nameSurname)
                     .font(Font.Typography.TitleMd.bold)

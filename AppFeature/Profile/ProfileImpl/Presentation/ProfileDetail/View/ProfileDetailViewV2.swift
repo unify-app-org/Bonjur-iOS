@@ -445,7 +445,11 @@ struct ProfileDetailViewV2: View {
                         },
                         onClubTap: nil
                     ) as? AnyView {
+                        // The paging TabView proposes its full height to every page and
+                        // the card's internal Spacer is greedy, so without fixedSize the
+                        // card stretches and leaves a tall gap above the tags/action row.
                         view
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
             }
@@ -471,6 +475,7 @@ struct ProfileDetailViewV2: View {
                         }
                     ) as? AnyView {
                         view
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
             }

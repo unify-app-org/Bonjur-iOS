@@ -68,7 +68,9 @@ final class EventCreateViewState: UIFeatureState {
     @Published var values: [EventsCreate.FieldID: EventsCreate.FieldValue] = [
         .visibility: .radio(.public),
         .eventDate: .date(Date()),
-        .reminder: .reminders([.none])
+        // Reminders default to AT_EVENT_TIME and are sent as such unless the user
+        // deselects it in the reminder sheet (which collapses back to NONE).
+        .reminder: .reminders([.atEventTime])
     ]
 
     @Published var clubs: [EventsCreate.SelectableClub] = []

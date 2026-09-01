@@ -26,7 +26,7 @@ protocol HangoutsUseCase {
 
     func editHangout(
         id: String,
-        request: HangoutsDTOModel.Request
+        request: HangoutsDTOModel.UpdateRequest
     ) async throws(APIError) -> Void
 
     func fetchDetailHangoutMembers(
@@ -81,7 +81,7 @@ class HangoutsUseCaseImpl: HangoutsUseCase {
 
     func editHangout(
         id: String,
-        request: HangoutsDTOModel.Request
+        request: HangoutsDTOModel.UpdateRequest
     ) async throws(APIError) {
         try await repo.editHangout(id: id, request: request)
     }

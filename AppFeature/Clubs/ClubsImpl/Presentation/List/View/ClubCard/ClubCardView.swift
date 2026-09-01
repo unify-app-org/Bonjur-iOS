@@ -42,8 +42,12 @@ struct ClubCardView: View {
     
     var body: some View {
         CardBackgroundView(cardType: .club) {
-            VStack(spacing: 8) {
+            // Spacer, not VStack spacing: cards in a row are stretched to a shared
+            // height, and the members/arrow row belongs at the bottom of that height
+            // rather than floating under the last line of text.
+            VStack(spacing: 0) {
                 topLeftView
+                Spacer(minLength: 8)
                 bottomView
             }
             .padding()

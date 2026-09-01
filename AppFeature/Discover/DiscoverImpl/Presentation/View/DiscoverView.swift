@@ -374,7 +374,11 @@ struct DiscoverView: View {
             LazyHStack(spacing: 16) {
                 ForEach(items.indices, id: \.self) { index in
                     content(items[index], index)
+                        // maxHeight, not just width: without it each card sizes to its
+                        // own content and the row's bottom edge zig-zags (a club card
+                        // with a category chip is taller than one without).
                         .frame(width: cardWidth)
+                        .frame(maxHeight: .infinity)
                         .padding(.vertical)
                         .id(index)
                         .onAppear {

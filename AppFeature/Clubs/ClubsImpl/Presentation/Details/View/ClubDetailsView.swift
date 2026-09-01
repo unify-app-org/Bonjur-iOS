@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AppUtils
 import SwiftUI
 import AppFoundation
 import AppUIKit
@@ -469,7 +470,7 @@ struct ClubDetailsView: View {
     }
 
     private func openLink(_ string: String) {
-        guard let url = URL(string: string) else { return }
+        guard let url = string.browsableURL else { return }
         UIApplication.shared.open(url)
     }
 

@@ -27,6 +27,22 @@ public extension String {
         return formatted
     }
     
+    /// A user-entered link turned into something `UIApplication.open` can handle.
+    ///
+    /// The add-link form no longer validates the URL shape — members paste bare
+    /// handles (`instagram.com/ufaz`), intranet hosts and deep links. `open` needs a
+    /// scheme, so assume `https://` when none is present. Mirrors Android
+    /// `String.asBrowsableUri()`.
+    var browsableURL: URL? {
+        let value = trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !value.isEmpty else { return nil }
+        let hasScheme = value.range(
+            of: "^[a-zA-Z][a-zA-Z0-9+.-]*:",
+            options: .regularExpression
+        ) != nil
+        return URL(string: hasScheme ? value : "https://\(value)")
+    }
+    
     var capitalizedFirstLetter: String {
         guard let first = first else { return self }
         return first.uppercased() + dropFirst()

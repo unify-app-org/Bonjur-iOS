@@ -124,7 +124,11 @@ final class EventCreateViewModel: UIFeatureViewModel<EventCreateFeature> {
             let clubs = try await dependencies.useCase.fetchClubsForEvents()
             state.clubs = clubs
             if state.selectedClub == nil {
-                state.selectedClub = clubs.first
+                // Entered from a club → open on that club; otherwise fall back to the
+                // first eligible one.
+                state.selectedClub = inputData.preselectedClubId
+                    .flatMap { id in clubs.first { $0.clubId == id } }
+                    ?? clubs.first
             }
             // Editing an existing event: the club is fixed (selector disabled),
             // so never gate the form behind the empty state.

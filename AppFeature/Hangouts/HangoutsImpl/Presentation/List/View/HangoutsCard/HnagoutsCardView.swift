@@ -25,8 +25,12 @@ struct HangoutsCardView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        // Spacer, not VStack spacing: cards in a row are stretched to a shared
+        // height, and the members/join row belongs at the bottom of that height
+        // rather than floating under the last line of text.
+        VStack(alignment: .leading, spacing: 0) {
             topView
+            Spacer(minLength: 12)
             bottomView
         }
         .padding()

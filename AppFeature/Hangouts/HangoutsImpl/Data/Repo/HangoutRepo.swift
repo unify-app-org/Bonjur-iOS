@@ -29,7 +29,7 @@ protocol HangoutRepo {
 
     func editHangout(
         id: String,
-        request: HangoutsDTOModel.Request
+        request: HangoutsDTOModel.UpdateRequest
     ) async throws(APIError) -> Void
 
     func fetchDetailHangout(
@@ -147,7 +147,7 @@ class HangoutRepoImpl: HangoutRepo {
 
     func editHangout(
         id: String,
-        request: HangoutsDTOModel.Request
+        request: HangoutsDTOModel.UpdateRequest
     ) async throws(APIError) {
         let _ = try await dataSource.editHangout(id: id, request: request)
     }

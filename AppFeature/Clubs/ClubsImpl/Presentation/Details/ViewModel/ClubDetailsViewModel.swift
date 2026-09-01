@@ -89,7 +89,7 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
             }
         case .createEventTapped:
             Task { @MainActor in
-                router.navigate(to: .createEvent)
+                router.navigate(to: .createEvent(clubId: inputData.clubId))
             }
         }
     }

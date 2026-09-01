@@ -16,7 +16,7 @@ enum ClubDetailsRoute {
     case userDetail(String)
     case eventDetail(String)
     case membersList(CommunitiesMemberModuleModel.MembersListInput)
-    case createEvent
+    case createEvent(clubId: Int)
 }
 
 protocol ClubDetailsRouterProtocol {
@@ -64,8 +64,10 @@ final class ClubDetailsRouter: ClubDetailsRouterProtocol {
         case .membersList(let input):
             guard let vc = communitiesModule.makeMembersListScreen(input: input) as? UIViewController else { return }
             view?.navigationController?.pushViewController(vc, animated: true)
-        case .createEvent:
-            guard let vc = eventsModule.makeCreateVC() as? UIViewController else { return }
+        case .createEvent(let clubId):
+            // Open the club picker on the club we came from, not on the first eligible one.
+            guard let vc = eventsModule.makeCreateVC(preselectedClubId: clubId) as? UIViewController
+            else { return }
             view?.navigationController?.pushViewController(vc, animated: true)
         }
     }

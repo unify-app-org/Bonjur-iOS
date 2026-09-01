@@ -190,7 +190,7 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
         do {
             try await dependencies.useCase.editHangout(
                 id: id,
-                request: buildRequest()
+                request: buildUpdateRequest()
             )
             AppSnackBar.show(
                 title: "hangouts_updated".localized,
@@ -209,6 +209,22 @@ final class HangoutCreateViewModel: UIFeatureViewModel<HangoutCreateFeature> {
             name: state.values.text(.hangoutName),
             ownerContact: state.values.text(.ownerContact),
             categoriesId: state.values.tags(.category).map(\.id),
+            capacity: Int(state.values.text(.capacity)) ?? 0,
+            links: state.values.links(.links).map(\.hangoutLink),
+            rules: state.values.text(.rules),
+            location: state.values.text(.location),
+            about: state.values.text(.about),
+            hangoutDate: isoString(from: state.values.date(.hangoutDate))
+        )
+    }
+
+    /// Update payload. `hangout-service` calls the category list `interestId` on PUT
+    /// (`categoriesId` is create-only) and takes no `name` — the name is immutable.
+    private func buildUpdateRequest() -> HangoutsDTOModel.UpdateRequest {
+        HangoutsDTOModel.UpdateRequest(
+            visibility: state.values.radio(.visibility),
+            ownerContact: state.values.text(.ownerContact),
+            interestId: state.values.tags(.category).map(\.id),
             capacity: Int(state.values.text(.capacity)) ?? 0,
             links: state.values.links(.links).map(\.hangoutLink),
             rules: state.values.text(.rules),

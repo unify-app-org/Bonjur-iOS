@@ -31,6 +31,7 @@ enum NotificationFeedMapper {
         let rejectionNote = rejectionTypes.contains(type) ? dto.metadata?.rejectionReason : nil
         return NotificationFeedItem(
             id: "\(id)",
+            notificationId: dto.notificationId,
             type: type,
             title: dto.title ?? "",
             subtitle: dto.body ?? "",

@@ -11,7 +11,7 @@ import AppNetwork
 enum HangoutsEndPoint {
     case getHangouts([String: String])
     case createHangout(HangoutsDTOModel.Request)
-    case editHangout(String, HangoutsDTOModel.Request)
+    case editHangout(String, HangoutsDTOModel.UpdateRequest)
     case getCategories
     case hangoutDetail(String)
     case members(String, [String: String])

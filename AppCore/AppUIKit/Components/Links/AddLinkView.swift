@@ -133,22 +133,12 @@ public struct AddLinkView: View {
         }
     }
     
+    /// No URL shape validation: members paste handles, deep links and intranet
+    /// addresses that no web-URL rule accepts. Whatever they type is stored as-is.
     private var canAdd: Bool {
         guard selectedType != nil else { return false }
-        guard isValidLink else { return false }
+        guard !trimmed(url).isEmpty else { return false }
         guard selectedType?.id != customTypeID || !trimmed(linkName).isEmpty else { return false }
-        return true
-    }
-    
-    private var isValidLink: Bool {
-        guard let components = URLComponents(string: trimmed(url)),
-              let scheme = components.scheme?.lowercased(),
-              ["http", "https"].contains(scheme),
-              let host = components.host,
-              !host.isEmpty,
-              host.contains(".") else {
-            return false
-        }
         return true
     }
     

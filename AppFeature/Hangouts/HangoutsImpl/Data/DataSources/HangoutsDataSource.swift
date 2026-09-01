@@ -24,7 +24,7 @@ protocol HangoutsDataSource {
 
     func editHangout(
         id: String,
-        request: HangoutsDTOModel.Request
+        request: HangoutsDTOModel.UpdateRequest
     ) async throws(APIError) -> Data
 
     func getCategories() async throws(APIError) -> [HangoutsDTOModel.CategoriesResponse]
@@ -137,7 +137,7 @@ final class HangoutsDataSourceImpl: NetworkService<HangoutsEndPoint>, HangoutsDa
 
     func editHangout(
         id: String,
-        request: HangoutsDTOModel.Request
+        request: HangoutsDTOModel.UpdateRequest
     ) async throws(APIError) -> Data {
         try await fetchRawData(endPoint: .editHangout(id, request))
     }

@@ -77,8 +77,15 @@ final class NotificationViewModel: UIFeatureViewModel<NotificationFeature> {
 
         Task { @MainActor in
             setReadFlag(id: id, isRead: true)
+
+            // The endpoint is keyed by the server UUID, not the numeric row id —
+            // sending `id` marks the wrong row (or nothing). With no UUID there
+            // is nothing valid to send, so the row stays read locally and the
+            // badge re-syncs on the next fetch.
+            guard let notificationId = item.notificationId else { return }
+
             do {
-                try await dependencies.useCase.markRead(id: id)
+                try await dependencies.useCase.markRead(id: notificationId)
             } catch {
                 setReadFlag(id: id, isRead: false)
             }

@@ -175,6 +175,13 @@ struct ClubCreateView: View {
     private var logoView: some View {
         HStack(alignment: .lastTextBaseline) {
             clubLogo
+            // The logo gates Continue (`hasProfilePhoto`) but drew no label at all, so
+            // a form with every visible field filled sat on a disabled button with
+            // nothing marked as missing. Label it like any other required field.
+            AppFieldLabel(
+                text: "clubs_logo_label".localized,
+                isRequired: true
+            )
             Spacer()
             cameraButton
                 .padding(.bottom, 60)

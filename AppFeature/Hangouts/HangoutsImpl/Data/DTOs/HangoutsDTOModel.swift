@@ -44,6 +44,23 @@ struct HangoutsDTOModel {
         let hangoutDate: String
     }
 
+    /// Update payload. NOT the same shape as `Request`: `hangout-service`'s
+    /// `HangoutUpdateRequest` names the category list **`interestId`** (create calls
+    /// it `categoriesId`) and carries no `name` — the name is immutable once the
+    /// hangout exists. Sending `categoriesId` here parses fine and is silently
+    /// ignored, which is why edited categories never changed.
+    struct UpdateRequest: Encodable {
+        let visibility: AppPresentationModel.AccessType
+        let ownerContact: String
+        let interestId: [Int]
+        let capacity: Int
+        let links: [Link]
+        let rules: String
+        let location: String
+        let about: String
+        let hangoutDate: String
+    }
+
     struct JoinRequest: Encodable {
         let hangoutId: String
     }

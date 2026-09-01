@@ -59,6 +59,12 @@ struct EventsModuleImpl: EventsModule {
         ).build()
     }
 
+    func makeCreateVC(preselectedClubId: Int) -> AnyObject {
+        EventCreateBuilder(
+            inputData: .init(preselectedClubId: preselectedClubId)
+        ).build()
+    }
+
     func makeCreateVC(
         eventId: String,
         prefillData: EventsModuleModel.CreatePrefillData

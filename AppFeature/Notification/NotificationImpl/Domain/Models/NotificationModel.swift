@@ -26,6 +26,10 @@ struct NotificationSection: Identifiable {
 
 struct NotificationFeedItem: Identifiable {
     let id: String
+    /// Server UUID used by the single-row read call. Kept separate from `id`,
+    /// which stays the numeric row id the list uses as its key. Nil when the
+    /// backend omits it — then the row is marked read locally only.
+    let notificationId: String?
     let type: NotificationType
     let title: String
     let subtitle: String

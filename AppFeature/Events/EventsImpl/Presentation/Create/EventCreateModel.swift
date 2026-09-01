@@ -15,13 +15,21 @@ import Foundation
 struct EventCreateInputData {
     let eventId: String?
     let prefillData: EventsCreate.PrefillData?
+    /// Club to open the picker on, when create was entered from a club (its detail
+    /// screen's "Create event" button). Honoured only if that club comes back in
+    /// `forEvents` — the server decides eligibility (organizer role + verified club),
+    /// so an ineligible club falls back to the usual first-club default rather than
+    /// pre-selecting something the create call would reject.
+    let preselectedClubId: Int?
 
     init(
         eventId: String? = nil,
-        prefillData: EventsCreate.PrefillData? = nil
+        prefillData: EventsCreate.PrefillData? = nil,
+        preselectedClubId: Int? = nil
     ) {
         self.eventId = eventId
         self.prefillData = prefillData
+        self.preselectedClubId = preselectedClubId
     }
 }
 

@@ -30,6 +30,10 @@ public protocol EventsModule {
 
     func makeCreateVC() -> AnyObject
 
+    /// Create entered from a club: the picker opens on `preselectedClubId` when that
+    /// club is event-eligible, instead of defaulting to the first one in the list.
+    func makeCreateVC(preselectedClubId: Int) -> AnyObject
+
     func makeCreateVC(
         eventId: String,
         prefillData: EventsModuleModel.CreatePrefillData

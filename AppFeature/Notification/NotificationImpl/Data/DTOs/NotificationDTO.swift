@@ -15,6 +15,9 @@ import Foundation
 /// `RelativeTime.parse`.
 struct NotificationDTO: Decodable {
     let id: Int?
+    /// Server-side UUID. This — not the numeric `id` — is what
+    /// `POST api/ns/v1/notifications/read/{notificationId}` expects.
+    let notificationId: String?
     let type: String?
     let title: String?
     let body: String?

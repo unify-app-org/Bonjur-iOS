@@ -232,9 +232,12 @@ struct NotificationView: View {
                 Spacer(minLength: 8)
 
                 if item.isUnread {
+                    // Same attention dot as the "Needs your action" banner and the
+                    // verification row below it — unread used to be a pale green that
+                    // read as decoration next to those.
                     Circle()
-                        .fill(Color.Palette.secondary)
-                        .frame(width: 9, height: 9)
+                        .fill(Color.Palette.destructiveRed)
+                        .frame(width: 10, height: 10)
                 }
             }
             .cardStyle(radius: cardRadius)

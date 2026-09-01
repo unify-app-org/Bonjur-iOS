@@ -134,8 +134,10 @@ struct DiscoverView: View {
     private var unreadBadge: some View {
         let count = store.state.unreadNotifications
         if count > 0 {
+            // Palette token, not the system red — same attention dot as the feed's
+            // unread row / needs-action / verification markers.
             Circle()
-                .fill(Color.red)
+                .fill(Color.Palette.destructiveRed)
                 .frame(width: 12, height: 12)
                 .overlay(Circle().stroke(Color.Palette.white, lineWidth: 1.5))
                 .allowsHitTesting(false)

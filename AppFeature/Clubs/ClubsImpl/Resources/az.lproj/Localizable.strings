@@ -47,6 +47,7 @@
 "clubs_created_title" = "Klub yaradıldı 🎉";
 "clubs_request_verification" = "Təsdiq istə";
 "common_later" = "Sonra";
+"clubs_verify_prompt_body" = "Klubunuz hələ təsdiqlənməyib. Təsdiq nişanı almaq və tədbir yaratmağı açmaq üçün təsdiq sorğusu göndərin.";
 "clubs_request_verification_from_admins" = "Adminlərdən təsdiq istə";
 "clubs_verified" = "Təsdiqlənmiş klub";
 "clubs_create_event" = "Tədbir yarat +";

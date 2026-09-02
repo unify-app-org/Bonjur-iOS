@@ -47,6 +47,7 @@
 "clubs_created_title" = "Club created 🎉";
 "clubs_request_verification" = "Request verification";
 "common_later" = "Later";
+"clubs_verify_prompt_body" = "Your club isn't verified yet. Request verification to earn the verified badge and unlock event creation.";
 "clubs_request_verification_from_admins" = "Request verification from admins";
 "clubs_verified" = "Verified club";
 "clubs_create_event" = "Create an event +";

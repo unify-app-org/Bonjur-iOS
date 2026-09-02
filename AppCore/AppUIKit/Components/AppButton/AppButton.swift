@@ -45,6 +45,11 @@ public struct AppButton: View {
                              lineWidth: model.borderWidth
                          )
                  )
+                 // A #EAEAEA pill with 38%-black text still reads as a filled, tappable
+                 // button in the primary slot of the create forms — and a bordered
+                 // Secondary/Tertiary keeps its full-strength border on top. Fading the
+                 // finished button (border included) is what actually says "inert".
+                 .opacity(isEnabled ? 1 : 0.5)
         }
         .buttonStyle(ScaleOpacityButtonStyle())
     }

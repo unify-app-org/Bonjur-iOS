@@ -27,10 +27,13 @@ struct ClubVerifyPromptView: View {
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Color.Palette.black)
 
-            Text("Your club isn't verified yet. Request verification to earn the verified badge and unlock event creation — you can't create events in an unverified club.")
+            Text("clubs_verify_prompt_body".localized)
                 .font(Font.Typography.BodyTextSm.regular)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Color.Palette.blackMedium)
+                // Without this the sheet's fixed detent squeezes the copy into two
+                // lines and truncates it.
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, 8)
 
             VStack(spacing: 8) {

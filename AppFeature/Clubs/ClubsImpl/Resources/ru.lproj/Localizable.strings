@@ -47,6 +47,7 @@
 "clubs_created_title" = "Клуб создан 🎉";
 "clubs_request_verification" = "Запросить верификацию";
 "common_later" = "Позже";
+"clubs_verify_prompt_body" = "Ваш клуб ещё не верифицирован. Запросите верификацию, чтобы получить значок и открыть создание событий.";
 "clubs_request_verification_from_admins" = "Запросить верификацию у админов";
 "clubs_verified" = "Верифицированный клуб";
 "clubs_create_event" = "Создать событие +";

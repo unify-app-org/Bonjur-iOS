@@ -88,7 +88,9 @@ struct ClubCreateView: View {
                 get: { store.state.showVerifyPrompt },
                 set: { if !$0 { store.send(.dismissVerifyPrompt) } }
             ),
-            detents: [.height(360)],
+            // 360 clipped the localized body to two lines with an ellipsis — the RU
+            // and AZ copy runs a line longer than the English it replaced.
+            detents: [.height(420)],
             dragIndicator: .visible
         ) {
             ClubVerifyPromptView(

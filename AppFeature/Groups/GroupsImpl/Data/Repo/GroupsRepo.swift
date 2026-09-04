@@ -16,15 +16,15 @@ import Hangouts
 protocol GroupsRepo {
     func fetchJoinedClubs(
         query: GroupsDTOModel.PaginationQuery
-    ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
+    ) async throws(APIError) -> Page<ClubsModuleModel.CardInputData>
 
     func fetchJoinedHangouts(
         query: GroupsDTOModel.PaginationQuery
-    ) async throws(APIError) -> [HangoutsModuleModel.CardInputData]
+    ) async throws(APIError) -> Page<HangoutsModuleModel.CardInputData>
 
     func fetchJoinedEvents(
         query: GroupsDTOModel.PaginationQuery
-    ) async throws(APIError) -> [EventsModuleModel.CardInputData]
+    ) async throws(APIError) -> Page<EventsModuleModel.CardInputData>
 }
 
 final class GroupsRepoImpl: GroupsRepo {
@@ -36,12 +36,12 @@ final class GroupsRepoImpl: GroupsRepo {
     
     func fetchJoinedClubs(
         query: GroupsDTOModel.PaginationQuery
-    ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
-        let data = try await dataSource.fetchJoinedClubs(
+    ) async throws(APIError) -> Page<ClubsModuleModel.CardInputData> {
+        let response = try await dataSource.fetchJoinedClubs(
             query: query.toDictionary()
-        ).content
-        
-        return data.map { item in
+        )
+
+        let items: [ClubsModuleModel.CardInputData] = response.content.map { item in
             let members: [AppUIEntities.Member] = item.members?.map { member in
                 .init(
                     id: member.id ?? "",
@@ -69,16 +69,21 @@ final class GroupsRepoImpl: GroupsRepo {
                 isVerified: item.clubStatus?.isVerified ?? false
             )
         }
+        return response.page(
+            requestedPage: query.page,
+            requestedSize: query.size,
+            items: items
+        )
     }
 
     func fetchJoinedHangouts(
         query: GroupsDTOModel.PaginationQuery
-    ) async throws(APIError) -> [HangoutsModuleModel.CardInputData] {
-        let data = try await dataSource.fetchJoinedHangouts(
+    ) async throws(APIError) -> Page<HangoutsModuleModel.CardInputData> {
+        let response = try await dataSource.fetchJoinedHangouts(
             query: query.toDictionary()
-        ).content
-        
-        return data.map { item in
+        )
+
+        let items: [HangoutsModuleModel.CardInputData] = response.content.map { item in
             let tags: [AppUIEntities.Tags] = item.categories.map { category in
                 .init(
                     id: category.id ?? 0,
@@ -101,16 +106,21 @@ final class GroupsRepoImpl: GroupsRepo {
                 role: item.role
             )
         }
+        return response.page(
+            requestedPage: query.page,
+            requestedSize: query.size,
+            items: items
+        )
     }
 
     func fetchJoinedEvents(
         query: GroupsDTOModel.PaginationQuery
-    ) async throws(APIError) -> [EventsModuleModel.CardInputData] {
-        let data = try await dataSource.fetchJoinedEvents(
+    ) async throws(APIError) -> Page<EventsModuleModel.CardInputData> {
+        let response = try await dataSource.fetchJoinedEvents(
             query: query.toDictionary()
-        ).content
+        )
 
-        return data.map { item in
+        let items: [EventsModuleModel.CardInputData] = response.content.map { item in
             let tags: [AppUIEntities.Tags] = item.categoryResponses.map { category in
                 .init(
                     id: category.id ?? 0,
@@ -135,5 +145,10 @@ final class GroupsRepoImpl: GroupsRepo {
                 eventDate: Date.fromISO8601(item.eventDate) ?? Date()
             )
         }
+        return response.page(
+            requestedPage: query.page,
+            requestedSize: query.size,
+            items: items
+        )
     }
 }

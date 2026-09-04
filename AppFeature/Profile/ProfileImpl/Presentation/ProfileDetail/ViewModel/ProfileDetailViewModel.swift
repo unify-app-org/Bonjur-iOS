@@ -25,10 +25,21 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
 
     private struct InitialFetchResults {
         let user: APIResult<ProfileDetail.UIModel>
-        let clubs: APIResult<[ClubsModuleModel.CardInputData]>
-        let events: APIResult<[EventsModuleModel.CardInputData]>
-        let hangouts: APIResult<[HangoutsModuleModel.CardInputData]>
+        let clubs: APIResult<Page<ClubsModuleModel.CardInputData>>
+        let events: APIResult<Page<EventsModuleModel.CardInputData>>
+        let hangouts: APIResult<Page<HangoutsModuleModel.CardInputData>>
     }
+
+    private static let pageSize = 10
+
+    /// Last page index fetched per tab, and the in-flight guard that keeps the
+    /// end-of-list sentinel from firing the same page twice while it scrolls past.
+    private var clubsPage = 0
+    private var eventsPage = 0
+    private var hangoutsPage = 0
+    private var isLoadingMoreClubs = false
+    private var isLoadingMoreEvents = false
+    private var isLoadingMoreHangouts = false
 
     init(
         state: ProfileDetailFeature.State,
@@ -46,6 +57,12 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .loadMoreClubs:
+            loadMoreClubs()
+        case .loadMoreEvents:
+            loadMoreEvents()
+        case .loadMoreHangouts:
+            loadMoreHangouts()
         case .editProfile:
             Task {
                 guard let uiModel = state.uiModel else { return }
@@ -97,6 +114,9 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
     }
     
     private func fetchData() {
+        clubsPage = 0
+        eventsPage = 0
+        hangoutsPage = 0
         Task {
             postEffect(.loading(true))
             defer {
@@ -121,15 +141,22 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
         }
         async let clubs = apiResult {
             try await dependencies.useCase.getMyClubs(
-                userId: inputData.userId
+                userId: inputData.userId,
+                page: 0,
+                size: Self.pageSize
             )
         }
         async let events = apiResult {
-            try await dependencies.useCase.getMyEvents()
+            try await dependencies.useCase.getMyEvents(
+                page: 0,
+                size: Self.pageSize
+            )
         }
         async let hangouts = apiResult {
             try await dependencies.useCase.getMyHangouts(
-                userId: inputData.userId
+                userId: inputData.userId,
+                page: 0,
+                size: Self.pageSize
             )
         }
 
@@ -168,7 +195,9 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
 
         switch results.clubs {
         case .success(let clubs):
-            state.clubs = clubs
+            state.clubs = clubs.items
+            state.clubsHasMore = clubs.hasMore
+            state.clubsPagesLoaded = 1
         case .failure(let error):
             firstError = firstError ?? error
         }
@@ -177,14 +206,19 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
         case .success(let events):
             // `events/my` returns the logged-in user's events only,
             // so hide them when viewing another user's profile.
-            state.events = inputData.userId == nil ? events : []
+            let isOwnProfile = inputData.userId == nil
+            state.events = isOwnProfile ? events.items : []
+            state.eventsHasMore = isOwnProfile && events.hasMore
+            state.eventsPagesLoaded = 1
         case .failure(let error):
             firstError = firstError ?? error
         }
 
         switch results.hangouts {
-        case .success(let clubs):
-            state.hangouts = clubs
+        case .success(let hangouts):
+            state.hangouts = hangouts.items
+            state.hangoutsHasMore = hangouts.hasMore
+            state.hangoutsPagesLoaded = 1
         case .failure(let error):
             firstError = firstError ?? error
         }
@@ -192,6 +226,91 @@ final class ProfileDetailViewModel: UIFeatureViewModel<ProfileDetailFeature> {
         return firstError
     }
     
+    // MARK: - Paging
+
+    private func loadMoreClubs() {
+        guard !isLoadingMoreClubs, state.clubsHasMore else { return }
+        isLoadingMoreClubs = true
+        let nextPage = clubsPage + 1
+
+        Task {
+            defer { isLoadingMoreClubs = false }
+            do {
+                let result = try await dependencies.useCase.getMyClubs(
+                    userId: inputData.userId,
+                    page: nextPage,
+                    size: Self.pageSize
+                )
+                clubsPage = result.page
+                state.clubs = Self.appending(result.items, to: state.clubs, id: \.id)
+                state.clubsHasMore = result.hasMore
+                state.clubsPagesLoaded += 1
+            } catch {
+                // Stop paging rather than retry-looping the sentinel on every scroll.
+                state.clubsHasMore = false
+                postEffect(.error(APIError.popupTitle, (error as? APIError).popupSubtitle))
+            }
+        }
+    }
+
+    private func loadMoreEvents() {
+        guard !isLoadingMoreEvents, state.eventsHasMore else { return }
+        isLoadingMoreEvents = true
+        let nextPage = eventsPage + 1
+
+        Task {
+            defer { isLoadingMoreEvents = false }
+            do {
+                let result = try await dependencies.useCase.getMyEvents(
+                    page: nextPage,
+                    size: Self.pageSize
+                )
+                eventsPage = result.page
+                state.events = Self.appending(result.items, to: state.events, id: \.id)
+                state.eventsHasMore = result.hasMore
+                state.eventsPagesLoaded += 1
+            } catch {
+                state.eventsHasMore = false
+                postEffect(.error(APIError.popupTitle, (error as? APIError).popupSubtitle))
+            }
+        }
+    }
+
+    private func loadMoreHangouts() {
+        guard !isLoadingMoreHangouts, state.hangoutsHasMore else { return }
+        isLoadingMoreHangouts = true
+        let nextPage = hangoutsPage + 1
+
+        Task {
+            defer { isLoadingMoreHangouts = false }
+            do {
+                let result = try await dependencies.useCase.getMyHangouts(
+                    userId: inputData.userId,
+                    page: nextPage,
+                    size: Self.pageSize
+                )
+                hangoutsPage = result.page
+                state.hangouts = Self.appending(result.items, to: state.hangouts, id: \.id)
+                state.hangoutsHasMore = result.hasMore
+                state.hangoutsPagesLoaded += 1
+            } catch {
+                state.hangoutsHasMore = false
+                postEffect(.error(APIError.popupTitle, (error as? APIError).popupSubtitle))
+            }
+        }
+    }
+
+    /// Appends a page, dropping rows already on screen. The server re-sorts by
+    /// `modifiedAt`, so a row can shift across the page boundary and arrive twice.
+    private static func appending<Item, ID: Hashable>(
+        _ newItems: [Item],
+        to existing: [Item],
+        id: (Item) -> ID
+    ) -> [Item] {
+        var seen = Set(existing.map(id))
+        return existing + newItems.filter { seen.insert(id($0)).inserted }
+    }
+
     private func editUser(
         _ request: ProfileDTOModel.UpdateRequest?
     ) async {

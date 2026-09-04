@@ -11,11 +11,15 @@ import AppWidgetShared
 
 struct UserCardEntry: TimelineEntry {
     let date: Date
-    let snapshot: UserCardWidgetSnapshot
+    /// `nil` until the app has published a card.
+    let snapshot: UserCardWidgetSnapshot?
     let avatar: UIImage?
-    /// `false` until the app has written a real snapshot — the widget then
-    /// renders sample data behind a "open Unify" hint instead of blanks.
+    /// Mirrored from the app's session flag, NOT from the snapshot: the snapshot is
+    /// only written on the first own-profile load, so a freshly signed-in user has
+    /// none and would otherwise be told to sign in again.
     let isSignedIn: Bool
+    /// Signed in, but the card has not been loaded yet.
+    var hasCard: Bool { isSignedIn && snapshot != nil }
 }
 
 struct UserCardProvider: TimelineProvider {
@@ -25,7 +29,7 @@ struct UserCardProvider: TimelineProvider {
             date: Date(),
             snapshot: .placeholder,
             avatar: nil,
-            isSignedIn: false
+            isSignedIn: true
         )
     }
 
@@ -49,9 +53,9 @@ struct UserCardProvider: TimelineProvider {
         let avatarData = UserCardWidgetStore.loadAvatarData()
         return UserCardEntry(
             date: Date(),
-            snapshot: stored ?? .placeholder,
+            snapshot: stored,
             avatar: avatarData.flatMap(UIImage.init(data:)),
-            isSignedIn: stored != nil
+            isSignedIn: UserCardWidgetStore.loadSignedIn()
         )
     }
 }

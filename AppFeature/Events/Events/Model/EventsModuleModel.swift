@@ -90,6 +90,29 @@ public enum EventsModuleModel {
         }
     }
 
+    /// One page of event cards. Mirrors `CommunitiesMemberModuleModel.MembersPage`:
+    /// the page envelope lives in the interface module so callers in other features
+    /// can page without reaching into `AppNetwork`.
+    public struct CardPage {
+        public let items: [CardInputData]
+        /// Zero-based index of the page these items came from.
+        public let page: Int
+        public let hasMore: Bool
+        public let totalCount: Int?
+
+        public init(
+            items: [CardInputData],
+            page: Int,
+            hasMore: Bool,
+            totalCount: Int? = nil
+        ) {
+            self.items = items
+            self.page = page
+            self.hasMore = hasMore
+            self.totalCount = totalCount
+        }
+    }
+
     public struct CardInputData: Identifiable {
         public let uuid: UUID = UUID()
         public let id: String

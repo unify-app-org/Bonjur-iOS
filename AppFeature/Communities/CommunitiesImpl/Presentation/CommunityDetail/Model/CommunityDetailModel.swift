@@ -40,6 +40,9 @@ final class CommunityDetailViewState: UIFeatureState {
     @Published var uiModel: CommunityDetails.UIModel?
     @Published var selectedSegment: SegmentTypes = .about
     @Published var clubsData: [ClubsModuleModel.CardInputData] = []
+    /// Sub-club paging. `api/ds/v1/clubs` sends no page envelope, so "more exists"
+    /// means only "the last page came back full".
+    @Published var clubsHasMore = false
     @Published var membersData: CommunitiesMemberModuleModel.GroupedMembersData?
     @Published var joinButtonTitle: String = "Join"
     
@@ -66,6 +69,7 @@ final class CommunityDetailViewState: UIFeatureState {
 
 enum CommunityDetailAction: UIFeatureAction {
     case fetchData
+    case loadMoreClubs
     case backTapped
     case editTapped
     case clubItemTapped(Int)

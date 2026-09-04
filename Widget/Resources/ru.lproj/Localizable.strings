@@ -1,0 +1,16 @@
+/* Widget gallery */
+"widget_user_card_label" = "Карта Unify";
+"widget_user_card_description" = "Ваша студенческая карта — в одно касание с главного экрана.";
+
+/* Card info row */
+"widget_user_card_course" = "курс";
+"widget_user_card_degree" = "степень";
+"widget_user_card_entry" = "год поступления";
+
+/* Signed out */
+"widget_sign_in_title" = "Войдите в Unify";
+"widget_sign_in_subtitle" = "Нажмите, чтобы войти и увидеть студенческую карту.";
+
+/* Signed in, card not published yet */
+"widget_card_pending_title" = "Карта скоро появится";
+"widget_card_pending_subtitle" = "Откройте Unify, чтобы загрузить студенческую карту.";

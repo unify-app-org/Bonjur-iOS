@@ -12,13 +12,15 @@ import Clubs
 import Hangouts
 
 protocol GroupsUseCase {
-    func fetchEvents(keyword: String?) async throws(APIError) -> [EventsModuleModel.CardInputData]
+    func fetchEvents(
+        query: GroupsDTOModel.PaginationQuery
+    ) async throws(APIError) -> Page<EventsModuleModel.CardInputData>
     func fetchClubs(
         query: GroupsDTOModel.PaginationQuery
-    ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
+    ) async throws(APIError) -> Page<ClubsModuleModel.CardInputData>
     func fetchHangouts(
         query: GroupsDTOModel.PaginationQuery
-    ) async throws(APIError) -> [HangoutsModuleModel.CardInputData]
+    ) async throws(APIError) -> Page<HangoutsModuleModel.CardInputData>
 }
 
 class GroupsUseCaseImpl: GroupsUseCase {
@@ -29,21 +31,21 @@ class GroupsUseCaseImpl: GroupsUseCase {
         self.repo = repo
     }
 
-    func fetchEvents(keyword: String?) async throws(APIError) -> [EventsModuleModel.CardInputData] {
-        try await repo.fetchJoinedEvents(
-            query: .init(page: 0, size: 50, keyword: keyword)
-        )
+    func fetchEvents(
+        query: GroupsDTOModel.PaginationQuery
+    ) async throws(APIError) -> Page<EventsModuleModel.CardInputData> {
+        try await repo.fetchJoinedEvents(query: query)
     }
     
     func fetchClubs(
         query: GroupsDTOModel.PaginationQuery
-    ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
+    ) async throws(APIError) -> Page<ClubsModuleModel.CardInputData> {
         try await repo.fetchJoinedClubs(query: query)
     }
     
     func fetchHangouts(
         query: GroupsDTOModel.PaginationQuery
-    ) async throws(APIError) -> [HangoutsModuleModel.CardInputData] {
+    ) async throws(APIError) -> Page<HangoutsModuleModel.CardInputData> {
         try await repo.fetchJoinedHangouts(query: query)
     }
 }

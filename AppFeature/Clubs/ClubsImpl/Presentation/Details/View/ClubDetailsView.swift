@@ -25,6 +25,7 @@ struct ClubDetailsView: View {
     @State private var tabHeights: [ClubDetailsViewState.SegmentTypes: CGFloat] = [:]
     @State private var optionsMember: CommunitiesMemberModuleModel.MemberCellModel?
     @State private var optionsToken: ClubOptionsToken?
+    @State private var viewportHeight: CGFloat = 0
 
     private let eventsModule: EventsModule
     private let communitiesModule: CommunitiesModule
@@ -115,12 +116,52 @@ struct ClubDetailsView: View {
                     stretchableHeader
                     logoView
                     bottomView
+                    eventsPagingFooter
+                    eventsPagingTrigger
                 }
             }
             .coordinateSpace(name: "scroll")
+            .onGeometryChange(for: CGFloat.self) {
+                $0.size.height
+            } action: { height in
+                viewportHeight = height
+            }
             joinButton
         }
     }
+
+    @ViewBuilder
+    private var eventsPagingFooter: some View {
+        if store.state.selectedSegment == .events, store.state.eventsHasMore {
+            ProgressView()
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+        }
+    }
+
+    /// Bottom-of-content marker for the Events tab.
+    ///
+    /// The tabs sit in a height-fitted `TabView`, so every event card is laid out as
+    /// soon as the screen appears — a lazy sentinel or a last-row `onAppear` would fire
+    /// on entry and pull every page at once. Scroll position is the only honest "reached
+    /// the end" signal; the view model drops repeat calls while a page is in flight.
+    private var eventsPagingTrigger: some View {
+        Color.clear
+            .frame(height: 1)
+            .onGeometryChange(for: CGFloat.self) {
+                $0.frame(in: .named("scroll")).minY
+            } action: { minY in
+                guard store.state.selectedSegment == .events,
+                      viewportHeight > 0,
+                      minY <= viewportHeight + Self.paginationLeadDistance else {
+                    return
+                }
+                store.send(.loadMoreEvents)
+            }
+    }
+
+    /// How far above the fold the next page starts loading.
+    private static let paginationLeadDistance: CGFloat = 200
     
     @ViewBuilder
     private var joinButton: some View {

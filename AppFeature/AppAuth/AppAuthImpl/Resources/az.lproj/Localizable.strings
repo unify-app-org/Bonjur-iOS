@@ -9,6 +9,9 @@
 /* Choose university */
 "auth_choose_university_title" = "Universiteti \nseçin";
 "auth_choose_university_subtitle" = "Hansı universitetdə oxuyursunuz?";
+"auth_communities_empty" = "Hələ heç bir icma mövcud deyil.";
+"auth_communities_error" = "Nəsə səhv oldu. İcmaları yükləmək mümkün olmadı.";
+"auth_try_again" = "Yenidən cəhd edin";
 
 /* Sign in */
 "auth_sign_in_title" = "Daxil ol";

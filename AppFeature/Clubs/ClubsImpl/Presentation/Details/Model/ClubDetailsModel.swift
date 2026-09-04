@@ -41,6 +41,7 @@ final class ClubDetailsViewState: UIFeatureState {
     @Published var uiModel: ClubsDetailsModel.UIModel?
     @Published var members: CommunitiesMemberModuleModel.GroupedMembersData?
     @Published var eventsData: [EventsModuleModel.CardInputData] = []
+    @Published var eventsHasMore = false
     @Published var selectedSegment: SegmentTypes = .about
     
     var isEditable: Bool {
@@ -77,6 +78,7 @@ final class ClubDetailsViewState: UIFeatureState {
 
 enum ClubDetailsAction: UIFeatureAction {
     case fetchData
+    case loadMoreEvents
     case backTapped
     case editTapped
     case userTapped(String)

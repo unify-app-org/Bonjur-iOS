@@ -75,20 +75,29 @@ final class SignInFlowCoordinator {
     @MainActor
     private func handleMSALResult(_ result: MSALSignInResult) {
         authUIWaitTask?.cancel()
-        AppLoadingUI.dismiss()
 
-        if result.isCancelled { return }
+        if result.isCancelled {
+            AppLoadingUI.dismiss()
+            return
+        }
 
         guard result.error == nil else {
+            AppLoadingUI.dismiss()
             errorAlert(title: "auth_microsoft_failed".localized)
             return
         }
         guard let email = result.email,
                 let communityId = inputData?.communityId,
                 let idToken = result.idToken else {
+            AppLoadingUI.dismiss()
             errorAlert(title: "auth_microsoft_failed".localized)
             return
         }
+        // Microsoft has handed control back to Unify and the token exchange starts
+        // now. The overlay is raised here, synchronously with the result, and stays
+        // up until the dashboard: dismissing first and re-showing from inside
+        // `login()` left the community screen bare for the length of the call.
+        AppLoadingUI.show()
         Task {
             await login(
                 email,
@@ -103,7 +112,8 @@ final class SignInFlowCoordinator {
         _ communityId: Int,
         _ idToken: String
     ) async {
-        AppLoadingUI.show()
+        // The overlay is already up from `handleMSALResult` — it must not blink
+        // between the redirect and the dashboard.
         defer {
             AppLoadingUI.dismiss()
         }

@@ -23,7 +23,7 @@ protocol CommunityUseCase {
     func fetchClubs(
         communityId: Int,
         query: CommunityDTO.PaginationQuery
-    ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
+    ) async throws(APIError) -> Page<ClubsModuleModel.CardInputData>
     func assignRole(
         communityId: Int,
         userId: String,
@@ -50,7 +50,7 @@ class CommunityUseCaseImpl: CommunityUseCase {
     func fetchClubs(
         communityId: Int,
         query: CommunityDTO.PaginationQuery
-    ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
+    ) async throws(APIError) -> Page<ClubsModuleModel.CardInputData> {
         try await repo.getClubs(
             communityId: communityId,
             query: query

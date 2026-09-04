@@ -7,8 +7,10 @@
 //
 
 import AppLocalization
+import AppWidgetShared
 import DependecyInjection
 import Foundation
+import WidgetKit
 import AppUIKit
 import AppPresentationModel
 import AppAuthImpl
@@ -41,5 +43,31 @@ extension AppDelegate {
             Bundle(for: FilterViewModel.self),
             Bundle(for: AppPresentationModelBundleToken.self),
         )
+
+        mirrorLanguageToWidget(localization.currentLanguage)
+        observeLanguageChangesForWidget(localization)
      }
+
+    /// The widget extension cannot read `UserDefaults.standard`, where
+    /// `AppLocalizationImpl` keeps the choice — it has its own container. Mirror the
+    /// code into the App Group so `WidgetStrings` can resolve the card's labels in
+    /// the app's language instead of the device's.
+    private func mirrorLanguageToWidget(_ code: String) {
+        UserCardWidgetStore.saveLanguage(code)
+    }
+
+    /// A language switch does not touch the card data, so nothing else asks the
+    /// widget to redraw — without this the placed card keeps the old language until
+    /// the next profile load republishes the snapshot.
+    private func observeLanguageChangesForWidget(_ localization: AppLocalizationProtocol) {
+        NotificationCenter.default.addObserver(
+            forName: .languageDidChange,
+            object: nil,
+            queue: .main
+        ) { note in
+            let code = (note.userInfo?["language"] as? String) ?? localization.currentLanguage
+            UserCardWidgetStore.saveLanguage(code)
+            WidgetCenter.shared.reloadTimelines(ofKind: UserCardWidgetStore.widgetKind)
+        }
+    }
 }

@@ -9,6 +9,9 @@
 /* Choose university */
 "auth_choose_university_title" = "Выберите \nуниверситет";
 "auth_choose_university_subtitle" = "В каком университете вы учитесь?";
+"auth_communities_empty" = "Сообщества пока недоступны.";
+"auth_communities_error" = "Что-то пошло не так. Не удалось загрузить сообщества.";
+"auth_try_again" = "Попробовать снова";
 
 /* Sign in */
 "auth_sign_in_title" = "Вход";

@@ -7,6 +7,9 @@
 
 import Foundation
 import Profile
+import AppNetwork
+import AppWidgetShared
+import DependecyInjection
 
 struct ProfileModuleImpl: ProfileModule {
     
@@ -20,5 +23,21 @@ struct ProfileModuleImpl: ProfileModule {
                 communityId: communityId
             )
         ).build()
+    }
+
+    func publishWidgetCardIfNeeded() {
+        guard UserCardWidgetStore.load() == nil else { return }
+        Task {
+            let tokenManager: TokenManager = resolve()
+            let userId = await tokenManager.getUserId()
+            guard !userId.isEmpty else { return }
+            let useCase: ProfileUseCase = resolve()
+            // `userId: nil` = "me", scoped to the community stored at login.
+            guard let model = try? await useCase.getProfileData(
+                userId: nil,
+                communityId: nil
+            ) else { return }
+            UserCardWidgetPublisher.publish(card: model.userCardModel, userId: userId)
+        }
     }
 }

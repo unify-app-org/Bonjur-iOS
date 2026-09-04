@@ -22,8 +22,13 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
     private struct InitialFetchResults {
         let detail: APIResult<CommunityDetails.UIModel>
         let members: APIResult<CommunitiesMemberModuleModel.GroupedMembersData>
-        let clubs: APIResult<[ClubsModuleModel.CardInputData]>
+        let clubs: APIResult<Page<ClubsModuleModel.CardInputData>>
     }
+
+    private static let clubsPageSize = 10
+
+    private var clubsPage = 0
+    private var isLoadingMoreClubs = false
     
     private let router: CommunityDetailRouterProtocol
     private let inputData: CommunityDetailInputData
@@ -49,6 +54,8 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
             }
         case .fetchData:
             fetchData()
+        case .loadMoreClubs:
+            loadMoreClubs()
         case .editTapped:
             guard let prefillData = state.uiModel?.editPrefillData else {
                 return
@@ -193,7 +200,7 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
         async let clubs = apiResult {
             try await dependencies.useCase.fetchClubs(
                 communityId: inputData.communityId,
-                query: .init(page: 0, size: 10)
+                query: .init(page: 0, size: Self.clubsPageSize)
             )
         }
         
@@ -254,8 +261,40 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
     
     @MainActor
     private func handleClubs(
-        _ data: [ClubsModuleModel.CardInputData]
+        _ data: Page<ClubsModuleModel.CardInputData>
     ) {
-        state.clubsData = data
+        clubsPage = data.page
+        state.clubsData = data.items
+        state.clubsHasMore = data.hasMore
+    }
+
+    // MARK: - Paging
+
+    private func loadMoreClubs() {
+        guard !isLoadingMoreClubs, state.clubsHasMore else { return }
+        isLoadingMoreClubs = true
+        let nextPage = clubsPage + 1
+
+        Task {
+            defer { isLoadingMoreClubs = false }
+            do {
+                let result = try await dependencies.useCase.fetchClubs(
+                    communityId: inputData.communityId,
+                    query: .init(page: nextPage, size: Self.clubsPageSize)
+                )
+                await MainActor.run {
+                    clubsPage = result.page
+                    // The list is re-sorted server-side, so a club can straddle the
+                    // page boundary and arrive twice.
+                    var seen = Set(state.clubsData.map(\.id))
+                    state.clubsData += result.items.filter { seen.insert($0.id).inserted }
+                    state.clubsHasMore = result.hasMore
+                }
+            } catch {
+                // Stop paging rather than retry-looping on every scroll tick.
+                await MainActor.run { state.clubsHasMore = false }
+                postEffect(.error(error as? APIError))
+            }
+        }
     }
 }

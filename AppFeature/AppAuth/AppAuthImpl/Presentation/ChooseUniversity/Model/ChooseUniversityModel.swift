@@ -30,9 +30,17 @@ typealias ChooseUniversityFeature = UIFeatureDefinition<
 
 // MARK: - View State
 
+/// Load state of the community list. Mirrors Android `CommunitiesPhase`.
+enum CommunitiesPhase {
+    case loading
+    case loaded
+    case failed
+}
+
 final class ChooseUniversityViewState: UIFeatureState {
     @Published var uiModel: [SelectableListItemView.Model] = []
     @Published var error: AppAlert.Config? = nil
+    @Published var phase: CommunitiesPhase = .loading
     var disabled: Bool {
          uiModel.first(where: { $0.selected }) == nil
      }

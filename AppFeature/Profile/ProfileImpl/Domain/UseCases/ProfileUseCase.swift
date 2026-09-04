@@ -23,9 +23,20 @@ protocol ProfileUseCase {
         queryData: ProfileDTOModel.UpdateRequest?
     ) async throws(APIError) -> Data
     func deleteAccount() async throws(APIError) -> Data
-    func getMyClubs(userId: String?) async throws(APIError) -> [ClubsModuleModel.CardInputData]
-    func getMyHangouts(userId: String?) async throws(APIError) -> [HangoutsModuleModel.CardInputData]
-    func getMyEvents() async throws(APIError) -> [EventsModuleModel.CardInputData]
+    func getMyClubs(
+        userId: String?,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> Page<ClubsModuleModel.CardInputData>
+    func getMyHangouts(
+        userId: String?,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> Page<HangoutsModuleModel.CardInputData>
+    func getMyEvents(
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> Page<EventsModuleModel.CardInputData>
 }
 
 class ProfileUseCaseImpl: ProfileUseCase {
@@ -71,18 +82,25 @@ class ProfileUseCaseImpl: ProfileUseCase {
     }
     
     func getMyClubs(
-        userId: String?
-    ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
-        try await repo.getMyClubs(userId: userId)
+        userId: String?,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> Page<ClubsModuleModel.CardInputData> {
+        try await repo.getMyClubs(userId: userId, page: page, size: size)
     }
     
     func getMyHangouts(
-        userId: String?
-    ) async throws(APIError) -> [HangoutsModuleModel.CardInputData] {
-        try await repo.getMyHangouts(userId: userId)
+        userId: String?,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> Page<HangoutsModuleModel.CardInputData> {
+        try await repo.getMyHangouts(userId: userId, page: page, size: size)
     }
 
-    func getMyEvents() async throws(APIError) -> [EventsModuleModel.CardInputData] {
-        try await repo.getMyEvents()
+    func getMyEvents(
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> Page<EventsModuleModel.CardInputData> {
+        try await repo.getMyEvents(page: page, size: size)
     }
 }

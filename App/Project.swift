@@ -66,6 +66,10 @@ let widgetTarget: Target = .target(
     deploymentTargets: .iOS(Project.deploymentTarget),
     infoPlist: .file(path: .relativeToRoot("Widget/Info.plist")),
     sources: [.glob(.relativeToRoot("Widget/Widget/**/*.swift"))],
+    // The extension carries its own {en,az,ru}.lproj: `WidgetStrings` resolves them
+    // against the language the app mirrors into the App Group, because linking
+    // `AppLocalization` here would pull DI into a memory-capped process.
+    resources: [.glob(pattern: .relativeToRoot("Widget/Resources/**/*.{lproj,strings}"))],
     entitlements: .file(path: .relativeToRoot("Widget/Widget.entitlements")),
     dependencies: [
         .AppCore.AppWidgetShared

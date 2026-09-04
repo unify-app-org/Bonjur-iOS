@@ -33,7 +33,7 @@ protocol CommunityRepo {
     func getClubs(
         communityId: Int,
         query: CommunityDTO.PaginationQuery
-    ) async throws(APIError) -> [ClubsModuleModel.CardInputData]
+    ) async throws(APIError) -> Page<ClubsModuleModel.CardInputData>
 
     func assignRole(
         communityId: Int,
@@ -153,10 +153,12 @@ class CommunityRepoImpl: CommunityRepo {
         )
     }
 
+    /// `api/ds/v1/clubs` answers with a bare array — discover-service has no page
+    /// envelope — so `hasMore` can only be "this page came back full".
     func getClubs(
         communityId: Int,
         query: CommunityDTO.PaginationQuery
-    ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
+    ) async throws(APIError) -> Page<ClubsModuleModel.CardInputData> {
         var dict = query.toDictionary()
         dict["parentId"] = "\(communityId)"
         let data = try await dataSource.getClubs(
@@ -189,7 +191,11 @@ class CommunityRepoImpl: CommunityRepo {
                     isVerified: item.clubStatus?.isVerified ?? false
                 )
         }
-        return uiModel
+        return .init(
+            items: uiModel,
+            page: query.page,
+            hasMore: query.size > 0 && uiModel.count >= query.size
+        )
     }
 
     func assignRole(

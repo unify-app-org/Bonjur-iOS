@@ -1,0 +1,16 @@
+/* Widget gallery */
+"widget_user_card_label" = "Unify card";
+"widget_user_card_description" = "Your student card, one tap from the home screen.";
+
+/* Card info row */
+"widget_user_card_course" = "course";
+"widget_user_card_degree" = "degree";
+"widget_user_card_entry" = "entry";
+
+/* Signed out */
+"widget_sign_in_title" = "Sign in to Unify";
+"widget_sign_in_subtitle" = "Tap to log in and see your student card.";
+
+/* Signed in, card not published yet */
+"widget_card_pending_title" = "Your card is on the way";
+"widget_card_pending_subtitle" = "Open Unify to load your student card.";

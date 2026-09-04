@@ -16,6 +16,7 @@ struct ProfileDetailViewV2: View {
 
     @State private var isSegmentSticky = false
     @State private var tabHeights: [ProfileDetailViewState.SegmentTypes: CGFloat] = [:]
+    @State private var viewportHeight: CGFloat = 0
 
     private let clubsModule: ClubsModule
     private let eventsModule: EventsModule
@@ -74,11 +75,69 @@ struct ProfileDetailViewV2: View {
                 aboutBoxView
                 segmentView
                 tabView
+                pagingFooter
+                pagingTrigger
             }
             .padding(.horizontal)
             .padding(.top, 8)
         }
         .coordinateSpace(name: "scroll")
+        .onGeometryChange(for: CGFloat.self) {
+            $0.size.height
+        } action: { height in
+            viewportHeight = height
+        }
+    }
+
+    @ViewBuilder
+    private var pagingFooter: some View {
+        if selectedSegmentHasMore {
+            ProgressView()
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+        }
+    }
+
+    private var selectedSegmentHasMore: Bool {
+        switch store.state.selectedSegment {
+        case .clubs: store.state.clubsHasMore
+        case .events: store.state.eventsHasMore
+        case .hangouts: store.state.hangoutsHasMore
+        }
+    }
+
+    /// Bottom-of-content marker for the activity tabs.
+    ///
+    /// The tabs are laid out at full height inside a height-fitted `TabView`, so every
+    /// row exists from the moment the screen appears — a `LazyVStack` sentinel or a
+    /// last-row `onAppear` would fire on entry and pull every page at once. Scroll
+    /// position is the only honest "user reached the end" signal here. The view model
+    /// drops repeat calls while a page is in flight.
+    private var pagingTrigger: some View {
+        Color.clear
+            .frame(height: 1)
+            .onGeometryChange(for: CGFloat.self) {
+                $0.frame(in: .named("scroll")).minY
+            } action: { minY in
+                guard viewportHeight > 0, minY <= viewportHeight + Self.paginationLeadDistance else {
+                    return
+                }
+                requestNextPage()
+            }
+    }
+
+    /// How far above the fold the next page starts loading.
+    private static let paginationLeadDistance: CGFloat = 200
+
+    private func requestNextPage() {
+        switch store.state.selectedSegment {
+        case .clubs:
+            store.send(.loadMoreClubs)
+        case .events:
+            store.send(.loadMoreEvents)
+        case .hangouts:
+            store.send(.loadMoreHangouts)
+        }
     }
 
     // MARK: - Compact Header

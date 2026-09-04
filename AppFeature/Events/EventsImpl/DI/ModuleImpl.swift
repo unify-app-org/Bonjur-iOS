@@ -18,7 +18,7 @@ struct EventsModuleImpl: EventsModule {
         clubId: Int,
         page: Int,
         size: Int
-    ) async throws -> [EventsModuleModel.CardInputData] {
+    ) async throws -> EventsModuleModel.CardPage {
         let useCase: EventsUseCase = resolve()
         return try await useCase.fetchClubEvents(clubId: clubId, page: page, size: size)
     }

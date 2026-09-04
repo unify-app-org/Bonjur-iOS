@@ -9,6 +9,9 @@
 /* Choose university */
 "auth_choose_university_title" = "Choose \nUniversity";
 "auth_choose_university_subtitle" = "In which university are you studying?";
+"auth_communities_empty" = "No communities are available yet.";
+"auth_communities_error" = "Something went wrong. We couldn’t load the communities.";
+"auth_try_again" = "Try again";
 
 /* Sign in */
 "auth_sign_in_title" = "Sign In";

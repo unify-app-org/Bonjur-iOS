@@ -159,10 +159,21 @@ struct DiscoverView: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack {
-                    communitiesView(geometry: geometry)
-                    clubsView(geometry: geometry)
-                    eventsView(geometry: geometry)
-                    hangoutsView(geometry: geometry)
+                    if store.state.isContentLoading {
+                        // Shimmer, not a blocking overlay: the dashboard keeps its shape
+                        // and the content lands in place. The sections are skipped
+                        // entirely meanwhile, so no empty states flash before the data
+                        // arrives.
+                        DiscoverSkeletonView(
+                            width: geometry.size.width,
+                            showFilterChips: store.state.uiModel.filters.isEmpty
+                        )
+                    } else {
+                        communitiesView(geometry: geometry)
+                        clubsView(geometry: geometry)
+                        eventsView(geometry: geometry)
+                        hangoutsView(geometry: geometry)
+                    }
                 }
                 .padding(.bottom, 110)
             }

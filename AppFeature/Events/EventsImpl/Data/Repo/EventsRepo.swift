@@ -25,7 +25,7 @@ protocol EventsRepo {
         clubId: Int,
         page: Int,
         size: Int
-    ) async throws(APIError) -> [EventsModuleModel.CardInputData]
+    ) async throws(APIError) -> EventsModuleModel.CardPage
     func joinEvent(eventId: String) async throws(APIError) -> Void
     func exitEvent(eventId: String) async throws(APIError) -> Void
     func deleteEvent(eventId: String) async throws(APIError) -> Void
@@ -82,10 +82,20 @@ final class EventsRepoImpl: EventsRepo {
         clubId: Int,
         page: Int,
         size: Int
-    ) async throws(APIError) -> [EventsModuleModel.CardInputData] {
+    ) async throws(APIError) -> EventsModuleModel.CardPage {
         let query = ["page": "\(page)", "size": "\(size)"]
         let response = try await dataSource.fetchClubEvents(clubId: clubId, query: query)
-        return response.content.map(Self.mapCard)
+        let items = response.content.map(Self.mapCard)
+        return .init(
+            items: items,
+            page: response.page ?? page,
+            hasMore: response.hasMore(
+                requestedPage: page,
+                requestedSize: size,
+                receivedCount: items.count
+            ),
+            totalCount: response.totalElements
+        )
     }
 
     private static func mapCard(

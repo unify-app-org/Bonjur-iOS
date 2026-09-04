@@ -28,9 +28,20 @@ protocol ProfileRepo {
     func fetchSections(
         notificationsEnabled: Bool
     ) -> [ProfileSettingsViewState.SettingsSection]
-    func getMyClubs(userId: String?) async throws(APIError) -> [ClubsModuleModel.CardInputData]
-    func getMyHangouts(userId: String?) async throws(APIError) -> [HangoutsModuleModel.CardInputData]
-    func getMyEvents() async throws(APIError) -> [EventsModuleModel.CardInputData]
+    func getMyClubs(
+        userId: String?,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> Page<ClubsModuleModel.CardInputData>
+    func getMyHangouts(
+        userId: String?,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> Page<HangoutsModuleModel.CardInputData>
+    func getMyEvents(
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> Page<EventsModuleModel.CardInputData>
 }
 
 class ProfileRepoImpl: ProfileRepo {
@@ -170,12 +181,14 @@ class ProfileRepoImpl: ProfileRepo {
     }
     
     func getMyClubs(
-        userId: String?
-    ) async throws(APIError) -> [ClubsModuleModel.CardInputData] {
+        userId: String?,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> Page<ClubsModuleModel.CardInputData> {
         let myUserId = await tokenManager.getUserId()
         let userId = userId ?? myUserId
-        let data = try await dataSource.getMyClubs(userID: userId).content
-        return data.map { item in
+        let response = try await dataSource.getMyClubs(userID: userId, page: page, size: size)
+        let items: [ClubsModuleModel.CardInputData] = response.content.map { item in
             let members: [AppUIEntities.Member] = item.members?.map { member in
                 .init(
                     id: member.id ?? "",
@@ -203,15 +216,18 @@ class ProfileRepoImpl: ProfileRepo {
                 isVerified: item.clubStatus?.isVerified ?? false
             )
         }
+        return response.page(requestedPage: page, requestedSize: size, items: items)
     }
 
     func getMyHangouts(
-        userId: String?
-    ) async throws(APIError) -> [HangoutsModuleModel.CardInputData] {
+        userId: String?,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> Page<HangoutsModuleModel.CardInputData> {
         let myUserId = await tokenManager.getUserId()
         let userId = userId ?? myUserId
-        let data = try await dataSource.fetchMyHangouts(id: userId).content
-        return data.map { item in
+        let response = try await dataSource.fetchMyHangouts(id: userId, page: page, size: size)
+        let items: [HangoutsModuleModel.CardInputData] = response.content.map { item in
             let tags: [AppUIEntities.Tags] = item.categories.map { category in
                 .init(
                     id: category.id ?? 0,
@@ -234,11 +250,15 @@ class ProfileRepoImpl: ProfileRepo {
                 role: item.role
             )
         }
+        return response.page(requestedPage: page, requestedSize: size, items: items)
     }
 
-    func getMyEvents() async throws(APIError) -> [EventsModuleModel.CardInputData] {
-        let data = try await dataSource.fetchMyEvents().content
-        return data.map { item in
+    func getMyEvents(
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> Page<EventsModuleModel.CardInputData> {
+        let response = try await dataSource.fetchMyEvents(page: page, size: size)
+        let items: [EventsModuleModel.CardInputData] = response.content.map { item in
             let tags: [AppPresentationModel.Tags] = item.categoryResponses.map { category in
                 .init(
                     id: category.id ?? 0,
@@ -262,5 +282,6 @@ class ProfileRepoImpl: ProfileRepo {
                 eventDate: Date.fromISO8601(item.eventDate) ?? Date()
             )
         }
+        return response.page(requestedPage: page, requestedSize: size, items: items)
     }
 }

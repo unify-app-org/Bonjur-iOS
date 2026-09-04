@@ -20,9 +20,9 @@ enum ProfileEndPoint {
     /// **community** id: the one stored at login, or the community being viewed when the
     /// profile was opened from a community detail.
     case getUserById(String, Int)
-    case getMyClubs(String)
-    case myHangouts(String)
-    case myEvents
+    case getMyClubs(String, [String: String])
+    case myHangouts(String, [String: String])
+    case myEvents([String: String])
 }
 
 extension ProfileEndPoint: AppEndPoint {
@@ -39,9 +39,9 @@ extension ProfileEndPoint: AppEndPoint {
             "api/sd/v1/categories"
         case .getLanguages:
             "api/sd/v1/languages"
-        case .getMyClubs(let userId):
+        case .getMyClubs(let userId, _):
             "api/cs/v1/clubs/\(userId)/myclubs"
-        case .myHangouts(let id):
+        case .myHangouts(let id, _):
             "api/hs/v1/hangouts/\(id)/myhangouts"
         case .myEvents:
             "api/es/v1/events/my"
@@ -51,6 +51,12 @@ extension ProfileEndPoint: AppEndPoint {
     var queryParameters: [String : String]? {
         switch self {
         case .updateUserData(let query, _):
+            query
+        // Without these the server falls back to page=0&size=10 and every activity
+        // list on the profile is silently capped at ten rows.
+        case .getMyClubs(_, let query),
+                .myHangouts(_, let query),
+                .myEvents(let query):
             query
         default:
             nil

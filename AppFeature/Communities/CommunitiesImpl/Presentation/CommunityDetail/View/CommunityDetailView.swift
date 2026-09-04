@@ -25,6 +25,7 @@ struct CommunityDetailView: View {
     @State private var tabHeights: [CommunityDetailViewState.SegmentTypes: CGFloat] = [:]
     @State private var optionsMember: CommunitiesMemberModuleModel.MemberCellModel?
     @State private var optionsToken: CommunityOptionsToken?
+    @State private var viewportHeight: CGFloat = 0
 
     private let clubsModule: ClubsModule
     private let keychain: KeychainProtocol
@@ -105,10 +106,60 @@ struct CommunityDetailView: View {
                 stretchableHeader
                 logoView
                 bottomView
+                clubsPagingFooter
+                clubsPagingTrigger
             }
         }
         .coordinateSpace(name: "scroll")
+        .onGeometryChange(for: CGFloat.self) {
+            $0.size.height
+        } action: { height in
+            viewportHeight = height
+        }
     }
+
+    /// Spinner slot under the Clubs tab.
+    ///
+    /// The slot keeps its height for the whole tab instead of appearing with
+    /// `clubsHasMore` and vanishing on the last page — inserting and removing it
+    /// resized the scroll content mid-drag, which read as the same jump as the
+    /// animated tab height.
+    @ViewBuilder
+    private var clubsPagingFooter: some View {
+        if store.state.selectedSegment == .clubs {
+            ProgressView()
+                .frame(maxWidth: .infinity)
+                .frame(height: Self.pagingFooterHeight)
+                .opacity(store.state.clubsHasMore ? 1 : 0)
+        }
+    }
+
+    /// Reserved height for `clubsPagingFooter`, spinner shown or not.
+    private static let pagingFooterHeight: CGFloat = 36
+
+    /// Bottom-of-content marker for the Clubs tab.
+    ///
+    /// The tabs sit in a height-fitted `TabView`, so every club card is laid out as
+    /// soon as the screen appears — a lazy sentinel or a last-row `onAppear` would fire
+    /// on entry and pull every page at once. Scroll position is the only honest "reached
+    /// the end" signal; the view model drops repeat calls while a page is in flight.
+    private var clubsPagingTrigger: some View {
+        Color.clear
+            .frame(height: 1)
+            .onGeometryChange(for: CGFloat.self) {
+                $0.frame(in: .named("scroll")).minY
+            } action: { minY in
+                guard store.state.selectedSegment == .clubs,
+                      viewportHeight > 0,
+                      minY <= viewportHeight + Self.paginationLeadDistance else {
+                    return
+                }
+                store.send(.loadMoreClubs)
+            }
+    }
+
+    /// How far above the fold the next page starts loading.
+    private static let paginationLeadDistance: CGFloat = 200
     
     // MARK: - Header
     
@@ -319,7 +370,11 @@ struct CommunityDetailView: View {
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .frame(height: tabHeights[store.state.selectedSegment] ?? 300)
-        .animation(.spring(response: 0.1, dampingFraction: 1), value: tabHeights[store.state.selectedSegment])
+        // Animate on the *segment*, not on the height. Keyed to the height, every
+        // appended page of clubs re-ran the spring on the frame while the user was
+        // still dragging, and the whole scroll content jumped under their finger.
+        // Growth from pagination now lands instantly; only switching tabs animates.
+        .animation(.spring(response: 0.1, dampingFraction: 1), value: store.state.selectedSegment)
         .onPreferenceChange(TabHeightPreferenceKey.self) { heights in
             tabHeights.merge(heights) { _, new in new }
         }

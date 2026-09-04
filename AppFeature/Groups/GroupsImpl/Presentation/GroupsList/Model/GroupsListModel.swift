@@ -45,6 +45,14 @@ final class GroupsListViewState: UIFeatureState {
     
     @Published var selectedSegment: SegmentType = .clubs
     @Published var searchText: String = ""
+    /// Per-tab paging flags. `pagesLoaded` is the end-of-list sentinel's identity:
+    /// bumping it rebuilds the sentinel so it can ask for the page after this one.
+    @Published var clubsHasMore = false
+    @Published var eventsHasMore = false
+    @Published var hangoutsHasMore = false
+    @Published var clubsPagesLoaded = 0
+    @Published var eventsPagesLoaded = 0
+    @Published var hangoutsPagesLoaded = 0
     
     func currentPageBinding() -> Binding<Int> {
         Binding { [self] in
@@ -122,6 +130,7 @@ final class GroupsListViewState: UIFeatureState {
 enum GroupsListAction: UIFeatureAction {
     case fetchData
     case loadMoreClubs
+    case loadMoreEvents
     case loadMoreHangouts
     case searchChanged(String)
     case clubItemTapped(id: Int)

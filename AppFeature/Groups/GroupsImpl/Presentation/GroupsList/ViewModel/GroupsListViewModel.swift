@@ -20,14 +20,17 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
     private let router: GroupsListRouterProtocol
     private let inputData: GroupsListInputData
     private let dependencies: GroupsListViewModel.Dependencies
-    private let paginationStep = 10
+    private static let pageSize = 10
     private let searchDebounceNanoseconds: UInt64 = 300_000_000
-    private var clubsSize = 10
-    private var hangoutsSize = 10
+    /// Last page index fetched per tab. Pages are appended; the previous version grew
+    /// `size` and refetched page 0 every time, which re-downloaded the whole list on
+    /// every scroll and reset the scroll position.
+    private var clubsPage = 0
+    private var eventsPage = 0
+    private var hangoutsPage = 0
     private var isLoadingMoreClubs = false
+    private var isLoadingMoreEvents = false
     private var isLoadingMoreHangouts = false
-    private var hasMoreClubs = true
-    private var hasMoreHangouts = true
     private var searchTask: Task<Void, Never>?
     
     init(
@@ -48,6 +51,8 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
             fetchData()
         case .loadMoreClubs:
             loadMoreClubs()
+        case .loadMoreEvents:
+            loadMoreEvents()
         case .loadMoreHangouts:
             loadMoreHangouts()
         case .searchChanged(let text):
@@ -90,11 +95,13 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
     
     private func getClubs() async {
         do {
-            let clubs = try await dependencies.useCase.fetchClubs(
-                query: makeQuery(size: clubsSize)
+            let result = try await dependencies.useCase.fetchClubs(
+                query: makeQuery(page: 0)
             )
-            hasMoreClubs = clubs.count >= clubsSize
-            state.uiModel.clubs = clubs
+            clubsPage = result.page
+            state.uiModel.clubs = result.items
+            state.clubsHasMore = result.hasMore
+            state.clubsPagesLoaded += 1
         } catch {
             postError(error)
         }
@@ -102,9 +109,13 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
 
     private func getEvents() async {
         do {
-            state.uiModel.events = try await dependencies.useCase.fetchEvents(
-                keyword: currentKeyword
+            let result = try await dependencies.useCase.fetchEvents(
+                query: makeQuery(page: 0)
             )
+            eventsPage = result.page
+            state.uiModel.events = result.items
+            state.eventsHasMore = result.hasMore
+            state.eventsPagesLoaded += 1
         } catch {
             postError(error)
         }
@@ -112,72 +123,113 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
 
     private func getHangouts() async {
         do {
-            let hangouts = try await dependencies.useCase.fetchHangouts(
-                query: makeQuery(size: hangoutsSize)
+            let result = try await dependencies.useCase.fetchHangouts(
+                query: makeQuery(page: 0)
             )
-            hasMoreHangouts = hangouts.count >= hangoutsSize
-            state.uiModel.hangouts = hangouts
+            hangoutsPage = result.page
+            state.uiModel.hangouts = result.items
+            state.hangoutsHasMore = result.hasMore
+            state.hangoutsPagesLoaded += 1
         } catch {
             postError(error)
         }
     }
     
     private func loadMoreClubs() {
-        guard !isLoadingMoreClubs, hasMoreClubs else { return }
+        guard !isLoadingMoreClubs, state.clubsHasMore else { return }
         isLoadingMoreClubs = true
-        let previousSize = clubsSize
-        clubsSize += paginationStep
-        
+        let nextPage = clubsPage + 1
+
         Task {
-            defer {
-                isLoadingMoreClubs = false
-            }
-            
+            defer { isLoadingMoreClubs = false }
             do {
-                let previousCount = state.uiModel.clubs.count
-                let clubs = try await dependencies.useCase.fetchClubs(
-                    query: makeQuery(size: clubsSize)
+                let result = try await dependencies.useCase.fetchClubs(
+                    query: makeQuery(page: nextPage)
                 )
-                hasMoreClubs = clubs.count > previousCount
-                state.uiModel.clubs = clubs
+                clubsPage = result.page
+                state.uiModel.clubs = Self.appending(
+                    result.items,
+                    to: state.uiModel.clubs,
+                    id: \.id
+                )
+                state.clubsHasMore = result.hasMore
+                state.clubsPagesLoaded += 1
             } catch {
-                clubsSize = previousSize
+                // Stop paging rather than retry-looping the sentinel on every scroll.
+                state.clubsHasMore = false
+                postError(error)
+            }
+        }
+    }
+
+    private func loadMoreEvents() {
+        guard !isLoadingMoreEvents, state.eventsHasMore else { return }
+        isLoadingMoreEvents = true
+        let nextPage = eventsPage + 1
+
+        Task {
+            defer { isLoadingMoreEvents = false }
+            do {
+                let result = try await dependencies.useCase.fetchEvents(
+                    query: makeQuery(page: nextPage)
+                )
+                eventsPage = result.page
+                state.uiModel.events = Self.appending(
+                    result.items,
+                    to: state.uiModel.events,
+                    id: \.id
+                )
+                state.eventsHasMore = result.hasMore
+                state.eventsPagesLoaded += 1
+            } catch {
+                state.eventsHasMore = false
                 postError(error)
             }
         }
     }
     
     private func loadMoreHangouts() {
-        guard !isLoadingMoreHangouts, hasMoreHangouts else { return }
+        guard !isLoadingMoreHangouts, state.hangoutsHasMore else { return }
         isLoadingMoreHangouts = true
-        let previousSize = hangoutsSize
-        hangoutsSize += paginationStep
-        
+        let nextPage = hangoutsPage + 1
+
         Task {
-            defer {
-                isLoadingMoreHangouts = false
-            }
-            
+            defer { isLoadingMoreHangouts = false }
             do {
-                let previousCount = state.uiModel.hangouts.count
-                let hangouts = try await dependencies.useCase.fetchHangouts(
-                    query: makeQuery(size: hangoutsSize)
+                let result = try await dependencies.useCase.fetchHangouts(
+                    query: makeQuery(page: nextPage)
                 )
-                hasMoreHangouts = hangouts.count > previousCount
-                state.uiModel.hangouts = hangouts
+                hangoutsPage = result.page
+                state.uiModel.hangouts = Self.appending(
+                    result.items,
+                    to: state.uiModel.hangouts,
+                    id: \.id
+                )
+                state.hangoutsHasMore = result.hasMore
+                state.hangoutsPagesLoaded += 1
             } catch {
-                hangoutsSize = previousSize
+                state.hangoutsHasMore = false
                 postError(error)
             }
         }
     }
+
+    /// Appends a page, dropping rows already on screen. The server re-sorts by
+    /// `modifiedAt`, so a row can shift across the page boundary and arrive twice.
+    private static func appending<Item, ID: Hashable>(
+        _ newItems: [Item],
+        to existing: [Item],
+        id: (Item) -> ID
+    ) -> [Item] {
+        var seen = Set(existing.map(id))
+        return existing + newItems.filter { seen.insert(id($0)).inserted }
+    }
     
     private func searchChanged(_ text: String) {
         state.searchText = text
-        clubsSize = paginationStep
-        hangoutsSize = paginationStep
-        hasMoreClubs = true
-        hasMoreHangouts = true
+        clubsPage = 0
+        eventsPage = 0
+        hangoutsPage = 0
 
         searchTask?.cancel()
         searchTask = Task { [weak self] in
@@ -190,10 +242,10 @@ final class GroupsListViewModel: UIFeatureViewModel<GroupsListFeature> {
         }
     }
 
-    private func makeQuery(size: Int) -> GroupsDTOModel.PaginationQuery {
+    private func makeQuery(page: Int) -> GroupsDTOModel.PaginationQuery {
         .init(
-            page: 0,
-            size: size,
+            page: page,
+            size: Self.pageSize,
             keyword: currentKeyword
         )
     }

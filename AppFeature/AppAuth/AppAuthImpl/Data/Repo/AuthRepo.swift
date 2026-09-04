@@ -11,6 +11,7 @@ import AppUIKit
 import Foundation
 import AppUtils
 import AppPresentationModel
+import AppWidgetShared
 
 protocol AuthRepo {
     func login(
@@ -69,6 +70,11 @@ class AuthRepoImpl: AuthRepo {
         let data = try await dataSource.login(body: body)
         userDefaults.set(data.userCommunityRole.rawValue, forKey: .userCommunityRole)
         userDefaults.set(true, forKey: .isAuthenticated)
+        // The widget extension cannot read app UserDefaults, so the session flag is
+        // mirrored into the shared group. Without it the widget can only infer "signed
+        // out" from a missing snapshot — and the snapshot is written on the first own-
+        // profile load, not at login, so a fresh sign-in showed the sign-in tile.
+        UserCardWidgetStore.setSignedIn(true)
         userDefaults.set(communityId, forKey: .communityId)
         await tokenManager.saveAccessToken(data.accessToken)
         await tokenManager.saveRefreshToken(data.refreshToken)

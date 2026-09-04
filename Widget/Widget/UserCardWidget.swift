@@ -18,8 +18,11 @@ struct UserCardWidget: Widget {
             UserCardWidgetView(entry: entry)
                 .widgetBackground(WidgetPalette.white)
         }
-        .configurationDisplayName("Unify card")
-        .description("Your student card, one tap from the home screen.")
+        // Resolved through the App Group language like the card itself. The gallery
+        // caches these, so a language switch shows there on the next reinstall —
+        // the placed widget updates immediately.
+        .configurationDisplayName(WidgetStrings.displayName)
+        .description(WidgetStrings.description)
         .supportedFamilies([.systemSmall, .systemMedium])
         .contentMarginsDisabled()
     }
@@ -33,8 +36,13 @@ struct UserCardWidgetView: View {
 
     @Environment(\.widgetFamily) private var family
 
+    /// Only read on the branch where `entry.snapshot` is non-nil.
+    private var snapshot: UserCardWidgetSnapshot {
+        entry.snapshot ?? .placeholder
+    }
+
     private var cover: WidgetCardCover? {
-        entry.snapshot.background.flatMap(WidgetCardCover.init(rawValue:))
+        snapshot.background.flatMap(WidgetCardCover.init(rawValue:))
     }
 
     /// Card text color: the cover decides it, exactly like `UserCardView`.
@@ -49,20 +57,76 @@ struct UserCardWidgetView: View {
     }
 
     var body: some View {
-        ZStack {
-            cardBackground
-            content
+        Group {
+            if entry.hasCard {
+                ZStack {
+                    cardBackground
+                    content
+                }
+            } else if entry.isSignedIn {
+                // Signed in, but the app has not published a card yet — the snapshot
+                // is written on the first own-profile load, not at login. Do NOT say
+                // "sign in" here; the user already is.
+                messageBody(
+                    systemImage: "person.crop.circle",
+                    title: WidgetStrings.pendingTitle,
+                    subtitle: WidgetStrings.pendingSubtitle
+                )
+            } else {
+                // Nobody is signed in on this device. The sample data used to render
+                // here read as a real person's card, which is worse than saying
+                // nothing — ask for the login instead and open the app on tap.
+                messageBody(
+                    systemImage: "person.crop.circle.badge.questionmark",
+                    title: WidgetStrings.signInTitle,
+                    subtitle: WidgetStrings.signInSubtitle
+                )
+            }
         }
         // Lands on the user's own profile; the card itself is one tap from there.
         // Uses the existing `bonjur://user` deep link rather than a new route, and
         // falls back to a plain app launch when no id is stored.
         .widgetURL(deepLinkURL)
-        .opacity(entry.isSignedIn ? 1 : 0.55)
     }
 
     private var deepLinkURL: URL? {
-        guard entry.isSignedIn, !entry.snapshot.userId.isEmpty else { return nil }
-        return URL(string: "bonjur://user?id=\(entry.snapshot.userId)")
+        guard entry.hasCard, !snapshot.userId.isEmpty else {
+            // No route to deep-link into; the bare scheme just brings Unify forward.
+            return URL(string: "bonjur://")
+        }
+        return URL(string: "bonjur://user?id=\(snapshot.userId)")
+    }
+
+    // MARK: - No card
+
+    private func messageBody(
+        systemImage: String,
+        title: String,
+        subtitle: String
+    ) -> some View {
+        ZStack {
+            WidgetPalette.white
+
+            VStack(spacing: 6) {
+                Image(systemName: systemImage)
+                    .font(.system(size: family == .systemSmall ? 24 : 28))
+                    .foregroundStyle(WidgetPalette.blackMedium)
+
+                Text(title)
+                    .font(.system(size: family == .systemSmall ? 13 : 15, weight: .bold))
+                    .foregroundStyle(WidgetPalette.blackHigh)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+
+                Text(subtitle)
+                    .font(.system(size: family == .systemSmall ? 10 : 11))
+                    .foregroundStyle(WidgetPalette.blackMedium)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
+            }
+            .padding(.horizontal, 14)
+        }
     }
 
     // MARK: - Background
@@ -177,14 +241,14 @@ struct UserCardWidgetView: View {
 
     private func nameAndSpeciality(nameSize: CGFloat, specialitySize: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(entry.snapshot.nameSurname)
+            Text(snapshot.nameSurname)
                 .font(.system(size: nameSize, weight: .bold))
                 .foregroundStyle(foreground)
                 .lineLimit(2)
                 .minimumScaleFactor(0.8)
 
-            if !entry.snapshot.speciality.isEmpty {
-                Text(entry.snapshot.speciality)
+            if !snapshot.speciality.isEmpty {
+                Text(snapshot.speciality)
                     .font(.system(size: specialitySize, weight: .medium))
                     .foregroundStyle(foreground)
                     .lineLimit(1)
@@ -195,8 +259,8 @@ struct UserCardWidgetView: View {
 
     @ViewBuilder
     private func communityBadge(fontSize: CGFloat) -> some View {
-        if !entry.snapshot.community.isEmpty {
-            Text(entry.snapshot.community)
+        if !snapshot.community.isEmpty {
+            Text(snapshot.community)
                 .font(.system(size: fontSize, weight: .bold))
                 .foregroundStyle(WidgetPalette.blackHigh)
                 .lineLimit(1)
@@ -212,11 +276,11 @@ struct UserCardWidgetView: View {
 
     private var infoRow: some View {
         HStack(alignment: .top, spacing: 8) {
-            infoItem(title: "Course", value: entry.snapshot.course)
+            infoItem(title: WidgetStrings.course, value: snapshot.course)
             Spacer(minLength: 0)
-            infoItem(title: "Degree", value: entry.snapshot.degree)
+            infoItem(title: WidgetStrings.degree, value: snapshot.degree)
             Spacer(minLength: 0)
-            infoItem(title: "Entry", value: entry.snapshot.entryYear)
+            infoItem(title: WidgetStrings.entry, value: snapshot.entryYear)
         }
     }
 
@@ -244,7 +308,7 @@ struct UserCardWidgetView: View {
                 Image(systemName: "envelope")
                     .font(.system(size: fontSize, weight: .medium))
                     .foregroundStyle(foreground)
-                Text(entry.snapshot.email)
+                Text(snapshot.email)
                     .font(.system(size: fontSize, weight: .regular))
                     .foregroundStyle(foreground)
                     .lineLimit(1)

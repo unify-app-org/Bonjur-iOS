@@ -11,6 +11,9 @@ import DependecyInjection
 import AppStorage
 import AppNetwork
 import AppUIKit
+import AppWidgetShared
+import WidgetKit
+import Profile
 
 final class AppCoordinator {
     private let window: UIWindow
@@ -29,6 +32,11 @@ final class AppCoordinator {
     func start() {
 //        userDefaults.set(false, forKey: .isAuthenticated)
         let isAuthenticated = userDefaults.bool(forKey: .isAuthenticated)
+        // Re-mirror every launch: sessions that signed in before the flag existed have
+        // no value in the group, and a forced 401 logout clears the app flag only.
+        UserCardWidgetStore.setSignedIn(isAuthenticated)
+        if !isAuthenticated { UserCardWidgetStore.clear() }
+        WidgetCenter.shared.reloadTimelines(ofKind: UserCardWidgetStore.widgetKind)
         
         var apiClient: APIClientProtocol = dependencyContainer.resolve(
             APIClientProtocol.self
@@ -37,6 +45,10 @@ final class AppCoordinator {
         
         Task { @MainActor in
             if isAuthenticated {
+                // The widget's card is normally written when the user opens their own
+                // profile. A widget added right after signing in would otherwise sit
+                // empty until they happen to visit that tab.
+                dependencyContainer.resolve(ProfileModule.self).publishWidgetCardIfNeeded()
                 showTabBar()
             } else {
                 showRegisterVC()

@@ -47,6 +47,14 @@ final class ProfileDetailViewState: UIFeatureState {
     @Published var selectedSegment: SegmentTypes = .clubs
     @Published var navigationTitle = "profile_title".localized
     @Published var isOtherUser = false
+    /// Per-tab paging flags. `pagesLoaded` is the sentinel's identity: bumping it
+    /// rebuilds the end-of-list marker so it can ask for the page after this one.
+    @Published var clubsHasMore = false
+    @Published var eventsHasMore = false
+    @Published var hangoutsHasMore = false
+    @Published var clubsPagesLoaded = 0
+    @Published var eventsPagesLoaded = 0
+    @Published var hangoutsPagesLoaded = 0
     
     enum SegmentTypes: String, CaseIterable, Identifiable {
         case clubs = "Clubs"
@@ -61,6 +69,9 @@ final class ProfileDetailViewState: UIFeatureState {
 
 enum ProfileDetailAction: UIFeatureAction {
     case fetchData
+    case loadMoreClubs
+    case loadMoreEvents
+    case loadMoreHangouts
     case editProfile
     case clubsItemTapped(Int)
     case eventsItemTapped(String)

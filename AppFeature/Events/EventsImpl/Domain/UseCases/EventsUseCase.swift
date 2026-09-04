@@ -22,7 +22,7 @@ protocol EventsUseCase {
         clubId: Int,
         page: Int,
         size: Int
-    ) async throws(APIError) -> [EventsModuleModel.CardInputData]
+    ) async throws(APIError) -> EventsModuleModel.CardPage
     func joinEvent(eventId: String) async throws(APIError)
     func exitEvent(eventId: String) async throws(APIError)
     func deleteEvent(eventId: String) async throws(APIError)
@@ -70,7 +70,7 @@ class EventsUseCaseImpl: EventsUseCase {
         clubId: Int,
         page: Int,
         size: Int
-    ) async throws(APIError) -> [EventsModuleModel.CardInputData] {
+    ) async throws(APIError) -> EventsModuleModel.CardPage {
         try await repo.fetchClubEvents(clubId: clubId, page: page, size: size)
     }
 

@@ -1,0 +1,16 @@
+/* Widget gallery */
+"widget_user_card_label" = "Unify kartı";
+"widget_user_card_description" = "Tələbə kartınız — ana ekrandan bir toxunuşla.";
+
+/* Card info row */
+"widget_user_card_course" = "kurs";
+"widget_user_card_degree" = "dərəcə";
+"widget_user_card_entry" = "qəbul ili";
+
+/* Signed out */
+"widget_sign_in_title" = "Unify-a daxil olun";
+"widget_sign_in_subtitle" = "Tələbə kartınızı görmək üçün toxunun.";
+
+/* Signed in, card not published yet */
+"widget_card_pending_title" = "Kartınız hazırlanır";
+"widget_card_pending_subtitle" = "Tələbə kartınızı yükləmək üçün Unify-ı açın.";

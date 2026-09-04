@@ -136,17 +136,18 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         }
     }
 
-    /// First load: nothing is on screen yet, so the whole screen shows the
-    /// loading overlay rather than flashing empty states section by section.
+    /// First load: nothing is on screen yet, so the dashboard shows its shimmer
+    /// skeleton rather than a blocking overlay or empty states flashing section by
+    /// section.
     private func fetchData() {
         Task {
-            postEffect(.loading(true))
-            defer {
-                postEffect(.loading(false))
-            }
+            await setContentLoading(true)
 
             let results = await fetchInitialData()
             let firstError = await applyInitialFetchResults(results)
+            // Cleared after the results are applied, so the sections are already
+            // populated the frame the skeleton goes away.
+            await setContentLoading(false)
             publishActivityCounts()
 
             if let firstError {
@@ -184,6 +185,11 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
     @MainActor
     private func applyUnreadCount(_ count: Int) {
         state.unreadNotifications = count
+    }
+
+    @MainActor
+    private func setContentLoading(_ isLoading: Bool) {
+        state.isContentLoading = isLoading
     }
     
     private func joinHangout(id: String) async {
@@ -343,13 +349,13 @@ final class DiscoverViewModel: UIFeatureViewModel<DiscoverFeature> {
         resetPagination()
         
         Task {
-            postEffect(.loading(true))
-            defer {
-                postEffect(.loading(false))
-            }
+            // Re-filtering replaces every section, so the skeleton stands in for the
+            // outgoing content — same as the first load, no blocking overlay.
+            await setContentLoading(true)
             
             let results = await fetchFilteredData()
             let firstError = applyFilteredFetchResults(results)
+            await setContentLoading(false)
             publishActivityCounts()
             
             if let firstError {

@@ -80,7 +80,7 @@ final class VerificationViewModel: UIFeatureViewModel<VerificationFeature> {
 
     @MainActor
     private func applyInitial(_ result: VerificationPageResult) {
-        state.items = result.items
+        state.items = Self.dedupedById(result.items)
         state.canLoadMore = result.hasMore
         state.phase = .loaded
     }
@@ -88,9 +88,19 @@ final class VerificationViewModel: UIFeatureViewModel<VerificationFeature> {
     @MainActor
     private func applyMore(page: Int, result: VerificationPageResult) {
         self.page = page
-        state.items += result.items
+        // De-duped before storing: `/clubs/pending` repeats a club across pages and the
+        // id is derived from the club id alone, so the same row can arrive twice. On
+        // Android the duplicate key takes the screen down; here it silently renders the
+        // row twice. Same guard as `NeedsActionViewModel`.
+        state.items = Self.dedupedById(state.items + result.items)
         state.canLoadMore = result.hasMore
         state.isLoadingMore = false
+    }
+
+    /// Keeps the first occurrence of each id.
+    private static func dedupedById(_ items: [VerificationItem]) -> [VerificationItem] {
+        var seen = Set<String>()
+        return items.filter { seen.insert($0.id).inserted }
     }
 
     @MainActor

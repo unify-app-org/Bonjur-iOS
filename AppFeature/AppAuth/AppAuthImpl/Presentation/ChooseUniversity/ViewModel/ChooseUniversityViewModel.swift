@@ -49,13 +49,20 @@ final class ChooseUniversityViewModel: UIFeatureViewModel<ChooseUniversityFeatur
     
     private func getCommunities() async {
         postEffect(.loading(true))
+        state.phase = .loading
         defer {
             postEffect(.loading(false))
         }
         
         do {
             state.uiModel = try await dependencies.useCase.getCommunities()
+            state.phase = .loaded
         } catch {
+            // No fallback list: the sign-in gate is picked by community name, so a
+            // stand-in community would route the user into the wrong auth flow. The
+            // screen shows the failure and a retry instead.
+            state.uiModel = []
+            state.phase = .failed
             state.error = .init(
                 title: APIError.popupTitle,
                 subtitle: error.popupSubtitle

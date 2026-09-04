@@ -23,11 +23,20 @@ protocol ProfileDataSource {
     func fetchSections(
         notificationsEnabled: Bool
     ) -> [ProfileSettingsViewState.SettingsSection]
-    func getMyClubs(userID: String) async throws(APIError) -> PageNationResponse<[ProfileDTOModel.MyClubListResponse]>
+    func getMyClubs(
+        userID: String,
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> PageNationResponse<[ProfileDTOModel.MyClubListResponse]>
     func fetchMyHangouts(
-        id: String
+        id: String,
+        page: Int,
+        size: Int
     ) async throws(APIError) -> PageNationResponse<[ProfileDTOModel.HangoutItem]>
-    func fetchMyEvents() async throws(APIError) -> PageNationResponse<[ProfileDTOModel.MyEventResponse]>
+    func fetchMyEvents(
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> PageNationResponse<[ProfileDTOModel.MyEventResponse]>
 }
 
 final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataSource {
@@ -56,9 +65,15 @@ final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataS
     }
     
     func getMyClubs(
-        userID: String
+        userID: String,
+        page: Int,
+        size: Int
     ) async throws(APIError) -> PageNationResponse<[ProfileDTOModel.MyClubListResponse]> {
-        try await fetch(endPoint: .getMyClubs(userID))
+        try await fetch(endPoint: .getMyClubs(userID, Self.pageQuery(page: page, size: size)))
+    }
+
+    private static func pageQuery(page: Int, size: Int) -> [String: String] {
+        ["page": "\(page)", "size": "\(size)"]
     }
     
     func fetchSections(
@@ -129,12 +144,17 @@ final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataS
     }
     
     func fetchMyHangouts(
-        id: String
+        id: String,
+        page: Int,
+        size: Int
     ) async throws(APIError) -> PageNationResponse<[ProfileDTOModel.HangoutItem]> {
-        try await fetch(endPoint: .myHangouts(id))
+        try await fetch(endPoint: .myHangouts(id, Self.pageQuery(page: page, size: size)))
     }
 
-    func fetchMyEvents() async throws(APIError) -> PageNationResponse<[ProfileDTOModel.MyEventResponse]> {
-        try await fetch(endPoint: .myEvents)
+    func fetchMyEvents(
+        page: Int,
+        size: Int
+    ) async throws(APIError) -> PageNationResponse<[ProfileDTOModel.MyEventResponse]> {
+        try await fetch(endPoint: .myEvents(Self.pageQuery(page: page, size: size)))
     }
 }

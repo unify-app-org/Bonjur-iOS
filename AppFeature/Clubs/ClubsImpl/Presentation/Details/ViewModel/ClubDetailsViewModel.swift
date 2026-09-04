@@ -22,8 +22,13 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
     private struct InitialFetchResults {
         let detail: APIResult<ClubsDetailsModel.UIModel>
         let members: APIResult<CommunitiesMemberModuleModel.GroupedMembersData>
-        let events: APIResult<[EventsModuleModel.CardInputData]>
+        let events: APIResult<EventsModuleModel.CardPage>
     }
+
+    private static let eventsPageSize = 10
+
+    private var eventsPage = 0
+    private var isLoadingMoreEvents = false
     
     private let router: ClubDetailsRouterProtocol
     private let inputData: ClubDetailsInputData
@@ -45,6 +50,8 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
         switch action {
         case .fetchData:
             fetchData()
+        case .loadMoreEvents:
+            loadMoreEvents()
         case .backTapped:
             Task { @MainActor in
                 router.navigate(to: .backTapped)
@@ -346,7 +353,7 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
             try await dependencies.eventsModule.fetchClubEvents(
                 clubId: inputData.clubId,
                 page: 0,
-                size: 10
+                size: Self.eventsPageSize
             )
         }
 
@@ -357,6 +364,37 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
         )
     }
     
+    // MARK: - Paging
+
+    private func loadMoreEvents() {
+        guard !isLoadingMoreEvents, state.eventsHasMore else { return }
+        isLoadingMoreEvents = true
+        let nextPage = eventsPage + 1
+
+        Task {
+            defer { isLoadingMoreEvents = false }
+            do {
+                let result = try await dependencies.eventsModule.fetchClubEvents(
+                    clubId: inputData.clubId,
+                    page: nextPage,
+                    size: Self.eventsPageSize
+                )
+                await MainActor.run {
+                    eventsPage = result.page
+                    // Server re-sorts by `modified_at`, so an event can straddle the
+                    // page boundary and come back twice.
+                    var seen = Set(state.eventsData.map(\.id))
+                    state.eventsData += result.items.filter { seen.insert($0.id).inserted }
+                    state.eventsHasMore = result.hasMore
+                }
+            } catch {
+                // Events tab is best-effort: stop paging instead of retry-looping
+                // the trigger on every scroll tick.
+                await MainActor.run { state.eventsHasMore = false }
+            }
+        }
+    }
+
     private func applyInitialFetchResults(
         _ results: InitialFetchResults
     ) -> APIError? {
@@ -383,7 +421,9 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
         switch results.events {
         case .success(let events):
             Task { @MainActor in
-                state.eventsData = events
+                eventsPage = events.page
+                state.eventsData = events.items
+                state.eventsHasMore = events.hasMore
             }
         case .failure(let error):
             // Events tab is best-effort; surface the error but keep the rest visible.

@@ -12,6 +12,8 @@ import Profile
 import UIKit
 import AppNetwork
 import AppStorage
+import AppWidgetShared
+import WidgetKit
 
 extension AppDelegate {
     func setUpProfile(_ container: AppDIContainer) {
@@ -40,6 +42,8 @@ class ProfileDelegateImpl: ProfileDelegate {
     func logout() {
         Task {
             userDefaults.set(false, forKey: .isAuthenticated)
+            UserCardWidgetStore.clear()
+            WidgetCenter.shared.reloadTimelines(ofKind: UserCardWidgetStore.widgetKind)
             await tokenManger.clearTokens()
             await showRegister()
         }

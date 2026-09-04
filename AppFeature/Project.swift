@@ -14,7 +14,10 @@ let appAuthTarget = Target.createFeatureModule(
     name: "AppAuth",
     implConfig: .init(
         dependencies: [
-            .AppPackage.MSAL
+            .AppPackage.MSAL,
+            // Login mirrors the session flag into the widget's App Group — the
+            // extension cannot read app UserDefaults.
+            .AppCore.AppWidgetShared
         ]
     )
 ).add(to: &frameworkTargets)

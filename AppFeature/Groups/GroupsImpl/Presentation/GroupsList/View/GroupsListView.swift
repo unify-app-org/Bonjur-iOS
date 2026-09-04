@@ -121,9 +121,12 @@ struct GroupsListView: View {
         
             ScrollView {
                 if !clubs.isEmpty {
-                VStack(spacing: 20) {
+                // Lazy so the paging footer below is only built once the list is
+                // scrolled to the end. In a plain VStack every row — and the footer —
+                // is built on entry, which fired load-more immediately.
+                LazyVStack(spacing: 20) {
                     tabCaption(.clubs)
-                    ForEach(Array(clubs.enumerated()), id: \.element.uuid) { index, club in
+                    ForEach(clubs, id: \.uuid) { club in
                         if let view = clubsModule.makeCardView(
                             inputData: club,
                             onTap: {
@@ -131,10 +134,14 @@ struct GroupsListView: View {
                             }
                         ) as? AnyView {
                             view
-                                .onAppear {
-                                    loadMoreClubsIfNeeded(index: index, count: clubs.count)
-                                }
                         }
+                    }
+
+                    PagingFooterView(
+                        hasMore: store.state.clubsHasMore,
+                        token: store.state.clubsPagesLoaded
+                    ) {
+                        store.send(.loadMoreClubs)
                     }
                 }
                 .padding()
@@ -150,7 +157,7 @@ struct GroupsListView: View {
         
         ScrollView {
             if !events.isEmpty {
-                VStack(spacing: 20) {
+                LazyVStack(spacing: 20) {
                     tabCaption(.events)
                     ForEach(events, id: \.uuid) { event in
                         if let view = eventsModule.makeEventsCard(
@@ -163,6 +170,13 @@ struct GroupsListView: View {
                         ) as? AnyView {
                             view
                         }
+                    }
+
+                    PagingFooterView(
+                        hasMore: store.state.eventsHasMore,
+                        token: store.state.eventsPagesLoaded
+                    ) {
+                        store.send(.loadMoreEvents)
                     }
                 }
                 .padding()
@@ -178,9 +192,9 @@ struct GroupsListView: View {
         
         ScrollView {
             if !hangouts.isEmpty {
-                VStack(spacing: 20) {
+                LazyVStack(spacing: 20) {
                     tabCaption(.hangouts)
-                    ForEach(Array(hangouts.enumerated()), id: \.element.uuid) { index, hangout in
+                    ForEach(hangouts, id: \.uuid) { hangout in
                         if let view = hangoutsModule.makeHangoutsCard(
                             model: hangout,
                             onTap: {
@@ -189,10 +203,14 @@ struct GroupsListView: View {
                             onButtonTap: { }
                         ) as? AnyView {
                             view
-                                .onAppear {
-                                    loadMoreHangoutsIfNeeded(index: index, count: hangouts.count)
-                                }
                         }
+                    }
+
+                    PagingFooterView(
+                        hasMore: store.state.hangoutsHasMore,
+                        token: store.state.hangoutsPagesLoaded
+                    ) {
+                        store.send(.loadMoreHangouts)
                     }
                 }
                 .padding()
@@ -234,15 +252,5 @@ struct GroupsListView: View {
         case .events: return UIImage.Icons.calendar
         case .hangouts: return UIImage.Icons.twoUsers
         }
-    }
-    
-    private func loadMoreClubsIfNeeded(index: Int, count: Int) {
-        guard count > 0, index == count - 1 else { return }
-        store.send(.loadMoreClubs)
-    }
-    
-    private func loadMoreHangoutsIfNeeded(index: Int, count: Int) {
-        guard count > 0, index == count - 1 else { return }
-        store.send(.loadMoreHangouts)
     }
 }

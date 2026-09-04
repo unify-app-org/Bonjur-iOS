@@ -48,6 +48,11 @@ final class DiscoverViewState: UIFeatureState {
     )
     /// Unread notification total shown on the bell (hidden when 0).
     @Published var unreadNotifications = 0
+    /// First load and filter-apply: the dashboard renders its shimmer skeleton
+    /// instead of a blocking overlay. Starts `true` so the screen never flashes
+    /// empty states in the frame before `fetchData` lands. Pull-to-refresh has its
+    /// own spinner and the reappear refresh stays silent.
+    @Published var isContentLoading = true
 
     struct UIModel {
         var user: UserModel

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppLocalization
 
 public enum AppPresentationModel {
     
@@ -178,10 +179,12 @@ public enum AppPresentationModel {
             self.title = title
         }
         
+        /// Computed per read, not stored: the app language can change while a screen
+        /// is up, and a title captured once would keep the old language.
         public static var all: [GenderModel] {
             [
-                GenderModel(type: .male, title: "Male"),
-                GenderModel(type: .female, title: "Female"),
+                GenderModel(type: .male, title: "profile_gender_male".localized),
+                GenderModel(type: .female, title: "profile_gender_female".localized),
             ]
         }
         

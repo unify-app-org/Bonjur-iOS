@@ -29,3 +29,7 @@
 "role_assign_subtitle_president" = "Can manage club";
 "role_assign_subtitle_vice_president" = "Can manage club, can't assign roles";
 "role_assign_subtitle_event_creator" = "Just can create event in club";
+
+/* Gender values */
+"profile_gender_male" = "Male";
+"profile_gender_female" = "Female";

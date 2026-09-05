@@ -29,3 +29,7 @@
 "role_assign_subtitle_president" = "Может управлять клубом";
 "role_assign_subtitle_vice_president" = "Может управлять клубом, но не назначать роли";
 "role_assign_subtitle_event_creator" = "Может только создавать мероприятия в клубе";
+
+/* Gender values */
+"profile_gender_male" = "Мужской";
+"profile_gender_female" = "Женский";

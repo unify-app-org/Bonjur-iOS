@@ -135,8 +135,26 @@ class ProfileRepoImpl: ProfileRepo {
     ) async throws(APIError) -> Data {
         try await dataSource.editProfile(
             multiPart: multiPart,
-            queryData: queryData?.toDictionary()
+            queryData: queryData.map(Self.updateQuery)
         )
+    }
+
+    /// `toDictionary()` drops empty arrays, which is right for filters but wrong here:
+    /// the form always posts the full current selection, so an omitted `categoriesId`
+    /// reads as "leave them alone" server-side and the user can never remove the last
+    /// chip — the call returns 200 and the profile keeps the old list. Both id lists are
+    /// therefore forced back in, empty string included.
+    private static func updateQuery(
+        _ request: ProfileDTOModel.UpdateRequest
+    ) -> [String: String] {
+        var query = request.toDictionary()
+        if let categories = request.categoriesId {
+            query["categoriesId"] = categories.map(String.init).joined(separator: ",")
+        }
+        if let languages = request.languagesId {
+            query["languagesId"] = languages.map(String.init).joined(separator: ",")
+        }
+        return query
     }
 
     func getCategories() async throws(APIError) -> [SelectCategoryView.Section] {

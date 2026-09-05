@@ -109,15 +109,24 @@ struct DiscoverView: View {
     
     @ViewBuilder
     private var navigationTitleTexts: some View {
-        Text(store.state.uiModel.user.greeting)
-            .font(Font.Typography.TextMd.regular)
-            .foregroundStyle(Color.Palette.grayPrimary)
-            .lineLimit(1)
-            .truncationMode(.tail)
-        Text(store.state.uiModel.user.name)
-            .font(Font.Typography.BodyTextMd.bold)
-            .foregroundStyle(Color.Palette.black)
-            .lineLimit(1)
+        // Greeting + name arrive with the rest of the dashboard; until then they
+        // shimmer instead of rendering as two empty lines that pop in.
+        if store.state.isContentLoading {
+            ShimmerBox(cornerRadius: 4)
+                .frame(width: 120, height: 12)
+            ShimmerBox(cornerRadius: 4)
+                .frame(width: 160, height: 16)
+        } else {
+            Text(store.state.uiModel.user.greeting)
+                .font(Font.Typography.TextMd.regular)
+                .foregroundStyle(Color.Palette.grayPrimary)
+                .lineLimit(1)
+                .truncationMode(.tail)
+            Text(store.state.uiModel.user.name)
+                .font(Font.Typography.BodyTextMd.bold)
+                .foregroundStyle(Color.Palette.black)
+                .lineLimit(1)
+        }
     }
 
     private var bellButton: some View {

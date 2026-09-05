@@ -16,8 +16,10 @@ struct ProfileDTOModel {
         let birthDate: String?
         let gender: String?
         let about: String?
-        let categoriesId: [Int]
-        let languagesId: [Int]
+        /// `nil` = leave the server's list alone (the pickers never loaded, so the form
+        /// has nothing trustworthy to send); `[]` = clear every entry.
+        let categoriesId: [Int]?
+        let languagesId: [Int]?
         let background: AppPresentationModel.BackgroundType?
         
         enum CodingKeys: String, CodingKey {

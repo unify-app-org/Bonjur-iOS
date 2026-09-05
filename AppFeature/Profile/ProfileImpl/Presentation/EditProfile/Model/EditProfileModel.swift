@@ -53,6 +53,11 @@ final class EditProfileViewState: UIFeatureState {
     @Published var bgType: AppPresentationModel.BackgroundType = .primary
     @Published var categorySections: [SelectCategoryView.Section] = []
     @Published var languages: [SelectableListItemView.Model] = []
+    /// False while the pickers are loading, and after a failed load. Save sends an
+    /// empty list as "clear them all", so an empty list that only means "the options
+    /// never arrived" must not be sent — it would wipe the profile.
+    @Published var categoriesLoaded: Bool = false
+    @Published var languagesLoaded: Bool = false
 
     @Published var avatarURL: URL?
     @Published var selectedImage: Data?

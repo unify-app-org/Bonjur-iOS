@@ -246,7 +246,16 @@ final class APIClient: APIClientProtocol {
         }
         
         let refreshToken = await tokenManager.getRefreshToken()
-        
+
+        // No token to refresh with — the keychain read came back empty. Sending it
+        // anyway earns a 400 (`refreshToken: must not be blank`) that reads like a
+        // server problem and leaves the session half-alive; there is nothing to
+        // recover here, so fail the same way a rejected refresh does. Mirrors
+        // Android, which throws `Unauthorized` rather than posting a blank token.
+        guard !refreshToken.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw await failRefresh()
+        }
+
         let body = RefreshTokenRequest(
             refreshToken: refreshToken
         )
@@ -258,17 +267,22 @@ final class APIClient: APIClientProtocol {
             await tokenManager.saveAccessToken(newTokens.accessToken)
             await tokenManager.saveRefreshToken(newTokens.refreshToken)
         } catch {
-            let error = APIError.unauthorized
-            logger.logError(
-                error,
-                url: nil,
-                statusCode: nil,
-                errorBody: nil
-            )
-            await tokenManager.clearTokens()
-            activityDelegate?.refreshFailure()
-            userDefault.set(false, forKey: .isAuthenticated)
-            throw error
+            throw await failRefresh()
         }
+    }
+
+    /// Tears the session down and returns the error to throw.
+    private func failRefresh() async -> APIError {
+        let error = APIError.unauthorized
+        logger.logError(
+            error,
+            url: nil,
+            statusCode: nil,
+            errorBody: nil
+        )
+        await tokenManager.clearTokens()
+        activityDelegate?.refreshFailure()
+        userDefault.set(false, forKey: .isAuthenticated)
+        return error
     }
 }

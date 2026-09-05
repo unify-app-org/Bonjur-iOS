@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppLocalization
 
 public struct CategorySelectionField: View {
     private let title: String
@@ -15,9 +16,12 @@ public struct CategorySelectionField: View {
     private let onAdd: () -> Void
     private let onRemove: (Int) -> Void
     
+    /// The defaults are resolved at each call site, so they follow a language switch —
+    /// the profile edit form relies on them and used to show English "Category" /
+    /// "Add category" whatever language the app was in.
     public init(
-        title: String = "Category",
-        addTitle: String = "Add category",
+        title: String = "common_category".localized,
+        addTitle: String = "common_add_category".localized,
         isRequired: Bool? = nil,
         categories: [CategoriesChipsView.Model],
         onAdd: @escaping () -> Void,

@@ -142,8 +142,9 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
             birthDate: birthDate,
             gender: gender,
             about: state.about,
-            categoriesId: categories,
-            languagesId: languages,
+            // Only when the pickers actually loaded — see `categoriesLoaded`.
+            categoriesId: state.categoriesLoaded ? categories : nil,
+            languagesId: state.languagesLoaded ? languages : nil,
             background: bgType
         )
         guard let image = state.selectedImage else {
@@ -164,13 +165,14 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
             let data = try await dependencies.useCase.getCategories()
             await handleCategories(data)
         } catch {
-            await handleCategories([])
+            await handleCategories([], loaded: false)
             AppSnackBar.show(title: "editprofile_categories_fail".localized, style: .error)
         }
     }
     
     @MainActor
-    private func handleCategories(_ sections: [SelectCategoryView.Section]) {
+    private func handleCategories(_ sections: [SelectCategoryView.Section], loaded: Bool = true) {
+        state.categoriesLoaded = loaded
         let selectedIds = Set(inputData.profileData.tags.map(\.id))
         state.categorySections = sections.map { section in
             var updatedSection = section
@@ -188,13 +190,14 @@ final class EditProfileViewModel: UIFeatureViewModel<EditProfileFeature> {
             let data = try await dependencies.useCase.getLanguages()
             await handleLanguages(data)
         } catch {
-            await handleLanguages(selectedProfileLanguages())
+            await handleLanguages(selectedProfileLanguages(), loaded: false)
             AppSnackBar.show(title: "editprofile_languages_fail".localized, style: .error)
         }
     }
     
     @MainActor
-    private func handleLanguages(_ languages: [SelectableListItemView.Model]) {
+    private func handleLanguages(_ languages: [SelectableListItemView.Model], loaded: Bool = true) {
+        state.languagesLoaded = loaded
         let selectedIds = Set((inputData.profileData.languages ?? []).map(\.id))
         state.languages = languages.map { language in
             var updatedLanguage = language

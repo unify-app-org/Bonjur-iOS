@@ -98,7 +98,18 @@ public enum CommunitiesMemberModuleModel {
             users: [MemberCellModel],
             roleTitles: [AppPresentationModel.UserActivityRole: String]
         ) {
-            let groupedUsers = Dictionary(grouping: users, by: \.role)
+            // Every row here is an accepted member, so a role that does not describe one
+            // — `.notJoined` (which is also where an unrecognised server value lands) or
+            // `.requested` — means "rank unknown", not "not a member". Both carry the
+            // title "-", which is what reached the screen as a section headed with a dash.
+            let groupedUsers = Dictionary(grouping: users) { user in
+                switch user.role {
+                case .notJoined, .requested:
+                    return AppPresentationModel.UserActivityRole.member
+                default:
+                    return user.role
+                }
+            }
             let sections = groupedUsers
                 .sorted { lhs, rhs in
                     lhs.key.sortPriority < rhs.key.sortPriority

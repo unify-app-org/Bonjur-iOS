@@ -60,7 +60,14 @@ public final class KeychainImpl: KeychainProtocol {
         let attributes: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrAccount as String: key,
-            kSecValueData as String: data
+            kSecValueData as String: data,
+            // Without this the item defaults to `WhenUnlocked`, and a read on a locked
+            // device fails with `errSecInteractionNotAllowed` — which `readItem` cannot
+            // tell apart from "no item", so a stored token reads back as "". That is one
+            // way the refresh call ends up posting a blank `refreshToken`. Tokens are
+            // needed by background work (push handling, refresh) that can run before the
+            // user unlocks, so `AfterFirstUnlock` is the right level.
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock
         ]
 
         SecItemAdd(attributes as CFDictionary, nil)

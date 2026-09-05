@@ -62,3 +62,7 @@
 
 /* Image preview */
 "image_preview_close" = "Bağla";
+
+/* Category chips field (shared defaults) */
+"common_category" = "Kateqoriya";
+"common_add_category" = "Kateqoriya əlavə et";

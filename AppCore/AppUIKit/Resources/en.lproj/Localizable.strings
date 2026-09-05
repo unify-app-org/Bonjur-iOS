@@ -62,3 +62,7 @@
 
 /* Image preview */
 "image_preview_close" = "Close";
+
+/* Category chips field (shared defaults) */
+"common_category" = "Category";
+"common_add_category" = "Add category";

@@ -29,3 +29,7 @@
 "role_assign_subtitle_president" = "Klubu idarə edə bilər";
 "role_assign_subtitle_vice_president" = "Klubu idarə edə bilər, rol təyin edə bilməz";
 "role_assign_subtitle_event_creator" = "Yalnız klubda tədbir yarada bilər";
+
+/* Gender values */
+"profile_gender_male" = "Kişi";
+"profile_gender_female" = "Qadın";

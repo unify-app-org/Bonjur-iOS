@@ -55,3 +55,7 @@
 "hangouts_delete_on_exit_confirm" = "Выйти и удалить";
 "hangouts_deleted" = "Тусовка удалена";
 "hangouts_delete_fail" = "Не удалось удалить тусовку";
+"hangouts_joined" = "Вы присоединились: %@";
+"hangouts_join_request_review" = "%@ рассмотрит ваш запрос";
+"hangouts_join_failed" = "Не удалось присоединиться";
+"hangouts_join_fallback_name" = "Тусовка";

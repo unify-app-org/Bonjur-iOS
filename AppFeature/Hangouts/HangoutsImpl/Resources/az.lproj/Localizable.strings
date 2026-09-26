@@ -55,3 +55,7 @@
 "hangouts_delete_on_exit_confirm" = "Çıx və sil";
 "hangouts_deleted" = "Görüş silindi";
 "hangouts_delete_fail" = "Görüşü silmək mümkün olmadı";
+"hangouts_joined" = "Qoşuldunuz: %@";
+"hangouts_join_request_review" = "%@ sorğunuzu nəzərdən keçirəcək";
+"hangouts_join_failed" = "Qoşulmaq mümkün olmadı";
+"hangouts_join_fallback_name" = "Görüş";

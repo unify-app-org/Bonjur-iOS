@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AppFoundation
 import AppUIKit
 import Communities
 
@@ -83,7 +84,7 @@ extension HangoutDetails.UIModel {
                 ]
             ),
             .init(
-                title: "Event info",
+                title: "hangouts_info_section".localized,
                 subItems: [
                     .init(
                         title: "Created/Updated Data",

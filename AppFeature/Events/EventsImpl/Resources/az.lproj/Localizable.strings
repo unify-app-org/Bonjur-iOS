@@ -93,3 +93,7 @@
 "events_delete_on_exit_confirm" = "Çıx və sil";
 "events_deleted" = "Tədbir silindi";
 "events_delete_fail" = "Tədbiri silmək mümkün olmadı";
+"events_joined" = "Qoşuldunuz: %@";
+"events_join_request_review" = "%@ sorğunuzu nəzərdən keçirəcək";
+"events_join_failed" = "Qoşulmaq mümkün olmadı";
+"events_join_fallback_name" = "Tədbir";

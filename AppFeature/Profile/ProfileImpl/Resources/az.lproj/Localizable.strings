@@ -18,6 +18,13 @@
 "settings_logout_subtitle" = "Çıxış etmək istədiyinizə əminsiniz?";
 "settings_logout_confirm" = "Çıxış";
 
+/* Help center + in-app documents */
+"help_center_description" = "Probleminiz və ya sualınız var? Onu təsvir edib e-poçtumuza göndərin — ən qısa zamanda cavab verəcəyik.";
+"help_center_email_label" = "E-poçt";
+"help_center_copy" = "E-poçtu kopyala";
+"help_center_email_copied" = "E-poçt kopyalandı";
+"settings_web_load_error" = "Səhifə yüklənmədi. İnternet bağlantınızı yoxlayıb yenidən cəhd edin.";
+
 
 "common_cancel" = "Ləğv et";
 

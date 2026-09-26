@@ -14,7 +14,7 @@
 "hangouts_start_date" = "Start date";
 "hangouts_rules_label" = "Rules";
 "hangouts_about_label" = "About";
-"hangouts_info_section" = "Event info";
+"hangouts_info_section" = "Hangout info";
 "hangouts_row_date" = "Date";
 "hangouts_row_owner_contact" = "Owner Contact";
 "hangouts_row_links" = "Links";
@@ -56,3 +56,7 @@
 "hangouts_delete_on_exit_confirm" = "Leave and delete";
 "hangouts_deleted" = "Hangout deleted";
 "hangouts_delete_fail" = "Could not delete hangout";
+"hangouts_joined" = "Joined %@";
+"hangouts_join_request_review" = "%@ will review your request";
+"hangouts_join_failed" = "Could not join";
+"hangouts_join_fallback_name" = "the hangout";

@@ -310,15 +310,15 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
     /// Branch the copy on the current model's access type.
     @MainActor
     private func showJoinSnackBar() {
-        let name = state.uiModel?.name ?? "the club"
+        let name = state.uiModel?.name ?? "clubs_join_fallback_name".localized
         if state.uiModel?.accessType == .private {
             AppSnackBar.show(
                 title: "clubs_join_request_sent".localized,
-                subtitle: "\(name) will review your request",
+                subtitle: "clubs_join_request_review".localized(with: name),
                 style: .success
             )
         } else {
-            AppSnackBar.show(title: "Joined \(name)", style: .success)
+            AppSnackBar.show(title: "clubs_joined".localized(with: name), style: .success)
         }
     }
     

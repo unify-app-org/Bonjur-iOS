@@ -70,3 +70,7 @@
 "clubs_owner_contact_ph" = "Введите контакт владельца";
 "clubs_name_locked_hint" = "Название клуба нельзя будет изменить позже.";
 "clubs_logo_label" = "Фото клуба";
+"clubs_joined" = "Вы присоединились: %@";
+"clubs_join_request_review" = "%@ рассмотрит ваш запрос";
+"clubs_join_failed" = "Не удалось присоединиться";
+"clubs_join_fallback_name" = "Клуб";

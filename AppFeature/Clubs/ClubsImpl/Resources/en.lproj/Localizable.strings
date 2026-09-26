@@ -70,3 +70,7 @@
 "clubs_owner_contact_ph" = "Enter owner contact";
 "clubs_name_locked_hint" = "You won't be able to change the club name later.";
 "clubs_logo_label" = "Club photo";
+"clubs_joined" = "Joined %@";
+"clubs_join_request_review" = "%@ will review your request";
+"clubs_join_failed" = "Could not join";
+"clubs_join_fallback_name" = "the club";

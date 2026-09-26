@@ -88,15 +88,15 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
     /// Public hangouts join immediately; private hangouts create a pending request.
     @MainActor
     private func showJoinSnackBar() {
-        let name = state.uiModel?.name ?? "the hangout"
+        let name = state.uiModel?.name ?? "hangouts_join_fallback_name".localized
         if state.uiModel?.accessType == .private {
             AppSnackBar.show(
                 title: "hangouts_join_request_sent".localized,
-                subtitle: "\(name) will review your request",
+                subtitle: "hangouts_join_request_review".localized(with: name),
                 style: .success
             )
         } else {
-            AppSnackBar.show(title: "Joined \(name)", style: .success)
+            AppSnackBar.show(title: "hangouts_joined".localized(with: name), style: .success)
         }
     }
 

@@ -102,15 +102,15 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
 
     @MainActor
     private func showJoinSnackBar() {
-        let name = state.uiModel?.name ?? "the event"
+        let name = state.uiModel?.name ?? "events_join_fallback_name".localized
         if state.uiModel?.accessType == .private {
             AppSnackBar.show(
                 title: "events_join_request_sent".localized,
-                subtitle: "\(name) will review your request",
+                subtitle: "events_join_request_review".localized(with: name),
                 style: .success
             )
         } else {
-            AppSnackBar.show(title: "Joined \(name)", style: .success)
+            AppSnackBar.show(title: "events_joined".localized(with: name), style: .success)
         }
     }
 

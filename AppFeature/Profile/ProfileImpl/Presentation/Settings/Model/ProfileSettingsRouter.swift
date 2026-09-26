@@ -46,9 +46,13 @@ final class ProfileSettingsRouter: ProfileSettingsRouterProtocol {
         case .language:
             presentLanguagePicker()
         case .helpCenter:
-            break
+            presentHelpCenter()
         case .termsAndConditions:
-            break
+            let controller = SettingsWebViewController(
+                url: SupportContact.termsURL,
+                title: "settings_terms".localized
+            )
+            view?.navigationController?.pushViewController(controller, animated: true)
         case .deleteAccount(let onConfirm):
             showConfirmationAlert(
                 title: "settings_delete_title".localized,
@@ -91,6 +95,45 @@ final class ProfileSettingsRouter: ProfileSettingsRouterProtocol {
             ]
         }
         view?.present(host, animated: true)
+    }
+
+    @MainActor
+    private func presentHelpCenter() {
+        let helpCenter = HelpCenterView(
+            onEmailTap: { [weak self] in self?.openSupportEmail() },
+            onCopyTap: { [weak self] in self?.copySupportEmail() }
+        )
+        let host = UIHostingController(rootView: helpCenter)
+        if let sheet = host.sheetPresentationController {
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 24
+            sheet.detents = [
+                .custom { _ in 250 }
+            ]
+        }
+        view?.present(host, animated: true)
+    }
+
+    /// No mail account set up (common on simulators and some phones) means
+    /// `mailto:` can't open — fall back to copying so the address isn't lost.
+    @MainActor
+    private func openSupportEmail() {
+        // `open`'s result rather than `canOpenURL`, which needs the scheme
+        // whitelisted in Info.plist to answer truthfully.
+        guard let url = SupportContact.emailURL else {
+            copySupportEmail()
+            return
+        }
+        UIApplication.shared.open(url) { [weak self] opened in
+            guard !opened else { return }
+            Task { @MainActor in self?.copySupportEmail() }
+        }
+    }
+
+    @MainActor
+    private func copySupportEmail() {
+        UIPasteboard.general.string = SupportContact.email
+        AppSnackBar.show(title: "help_center_email_copied".localized)
     }
 
     @MainActor

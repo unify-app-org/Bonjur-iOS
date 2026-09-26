@@ -70,3 +70,7 @@
 "clubs_owner_contact_ph" = "Sahibin əlaqəsini daxil edin";
 "clubs_name_locked_hint" = "Klub adını sonra dəyişmək mümkün olmayacaq.";
 "clubs_logo_label" = "Klub şəkli";
+"clubs_joined" = "Qoşuldunuz: %@";
+"clubs_join_request_review" = "%@ sorğunuzu nəzərdən keçirəcək";
+"clubs_join_failed" = "Qoşulmaq mümkün olmadı";
+"clubs_join_fallback_name" = "Klub";

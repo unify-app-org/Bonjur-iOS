@@ -94,3 +94,7 @@
 "events_delete_on_exit_confirm" = "Leave and delete";
 "events_deleted" = "Event deleted";
 "events_delete_fail" = "Could not delete event";
+"events_joined" = "Joined %@";
+"events_join_request_review" = "%@ will review your request";
+"events_join_failed" = "Could not join";
+"events_join_fallback_name" = "the event";

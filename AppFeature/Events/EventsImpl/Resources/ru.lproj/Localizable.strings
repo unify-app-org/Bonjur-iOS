@@ -93,3 +93,7 @@
 "events_delete_on_exit_confirm" = "Выйти и удалить";
 "events_deleted" = "Событие удалено";
 "events_delete_fail" = "Не удалось удалить событие";
+"events_joined" = "Вы присоединились: %@";
+"events_join_request_review" = "%@ рассмотрит ваш запрос";
+"events_join_failed" = "Не удалось присоединиться";
+"events_join_fallback_name" = "Событие";

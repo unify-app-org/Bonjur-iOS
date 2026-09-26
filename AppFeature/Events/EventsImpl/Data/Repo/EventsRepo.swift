@@ -276,11 +276,13 @@ private extension EventsRepoImpl {
     ) -> EventsDetailsModel.JoinButton? {
         // Hide once accepted (by role or request status).
         let role = data.eventUserRole ?? .notJoined
-        guard role == .notJoined, data.requestStatus != .joined else { return nil }
+        guard data.requestStatus != .joined else { return nil }
         // A pending request keeps a disabled "events_join_request_sent".localized button visible.
-        if data.requestStatus == .pending {
+        // It can arrive only as role `REQUESTED`, so that counts as pending too.
+        if data.requestStatus == .pending || role == .requested {
             return .init(title: "events_join_request_sent".localized, disabled: true)
         }
+        guard role == .notJoined else { return nil }
         let title = data.visibility == .public ? "events_join".localized : "events_request".localized
         return .init(title: title, disabled: false)
     }

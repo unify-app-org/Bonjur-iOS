@@ -11,7 +11,6 @@ import AppUIKit
 
 struct HelpCenterView: View {
     let onEmailTap: () -> Void
-    let onCopyTap: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -65,14 +64,14 @@ struct HelpCenterView: View {
             }
             .buttonStyle(.plain)
 
-            Button(action: onCopyTap) {
-                Image(systemName: "doc.on.doc")
+            Button(action: onEmailTap) {
+                Image(systemName: "paperplane")
                     .font(.system(size: 16))
                     .foregroundStyle(Color.Palette.blackMedium)
                     .frame(width: 40, height: 40)
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("help_center_copy".localized)
+            .accessibilityLabel("help_center_send".localized)
         }
         .padding(12)
         .overlay(

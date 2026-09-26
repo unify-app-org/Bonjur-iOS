@@ -18,6 +18,7 @@
 "hangouts_row_date" = "Date";
 "hangouts_row_owner_contact" = "Owner Contact";
 "hangouts_row_links" = "Links";
+"hangouts_capacity_members" = "%d/%d members";
 "hangouts_form_load_fail" = "Couldn't load the form";
 "hangouts_categories_load_fail" = "Couldn't load categories";
 "hangouts_created" = "Hangout created successfully";

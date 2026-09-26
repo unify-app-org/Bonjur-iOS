@@ -18,6 +18,7 @@
 "hangouts_row_date" = "Tarix";
 "hangouts_row_owner_contact" = "Sahibin əlaqəsi";
 "hangouts_row_links" = "Linklər";
+"hangouts_capacity_members" = "%d/%d üzv";
 "hangouts_form_load_fail" = "Forma yüklənə bilmədi";
 "hangouts_categories_load_fail" = "Kateqoriyalar yüklənə bilmədi";
 "hangouts_created" = "Görüş uğurla yaradıldı";

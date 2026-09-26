@@ -22,7 +22,8 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
     private struct InitialFetchResults {
         let detail: APIResult<CommunityDetails.UIModel>
         let members: APIResult<CommunitiesMemberModuleModel.GroupedMembersData>
-        let clubs: APIResult<Page<ClubsModuleModel.CardInputData>>
+        // TODO: Clubs section temporarily hidden.
+        // let clubs: APIResult<Page<ClubsModuleModel.CardInputData>>
     }
 
     private static let clubsPageSize = 10
@@ -197,17 +198,18 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
             )
         }
         
-        async let clubs = apiResult {
-            try await dependencies.useCase.fetchClubs(
-                communityId: inputData.communityId,
-                query: .init(page: 0, size: Self.clubsPageSize)
-            )
-        }
+        // TODO: Clubs section temporarily hidden — don't fetch community clubs.
+        // async let clubs = apiResult {
+        //     try await dependencies.useCase.fetchClubs(
+        //         communityId: inputData.communityId,
+        //         query: .init(page: 0, size: Self.clubsPageSize)
+        //     )
+        // }
         
         return await .init(
             detail: detail,
-            members: members,
-            clubs: clubs
+            members: members
+            // clubs: clubs
         )
     }
     
@@ -234,14 +236,15 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
             firstError = firstError ?? error
         }
         
-        switch results.clubs {
-        case .success(let clubs):
-            Task { @MainActor in
-                handleClubs(clubs)
-            }
-        case .failure(let error):
-            firstError = firstError ?? error
-        }
+        // TODO: Clubs section temporarily hidden.
+        // switch results.clubs {
+        // case .success(let clubs):
+        //     Task { @MainActor in
+        //         handleClubs(clubs)
+        //     }
+        // case .failure(let error):
+        //     firstError = firstError ?? error
+        // }
         return firstError
     }
     

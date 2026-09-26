@@ -19,6 +19,28 @@ extension AppDelegate {
         configureFirebase()
         registerForPushNotifications(application)
         observeLanguageChanges()
+        observeLogin()
+    }
+
+    // MARK: - Login
+
+    private func observeLogin() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(userDidLogin),
+            name: .userDidLogin,
+            object: nil
+        )
+    }
+
+    @objc
+    private func userDidLogin() {
+        registerDevice()
+    }
+
+    /// The device endpoint needs a session; signed out it would only 401.
+    private var isAuthenticated: Bool {
+        UserDefaultsImpl().bool(forKey: .isAuthenticated)
     }
 
     // MARK: - Language
@@ -40,8 +62,13 @@ extension AppDelegate {
         registerDevice()
     }
 
-    /// PUT api/as/v1/device/{id} with the current FCM token.
+    /// PUT api/as/v1/device/{id} with the current FCM token. Skipped while signed out;
+    /// `userDidLogin` calls it again once there is a session.
     func registerDevice() {
+        guard isAuthenticated else {
+            print("🔔 [Push] signed out, device registration deferred until login")
+            return
+        }
         Messaging.messaging().token { token, error in
             guard let token else {
                 print("🔔 [Push] token fetch failed:", String(describing: error))
@@ -121,12 +148,14 @@ extension AppDelegate: MessagingDelegate {
         didReceiveRegistrationToken fcmToken: String?
     ) {
         guard let fcmToken else { return }
+        print("FCM registration token:", fcmToken)
+        // Signed out: nothing to attach the token to. Login re-reads it (`userDidLogin`).
+        guard isAuthenticated else { return }
         let userUpdate = UserDataServiceImpl()
         let request = UserUpdate(fcmToken: fcmToken)
         Task {
             try? await userUpdate.updateUser(body: request)
         }
-        print("FCM registration token:", fcmToken)
     }
 }
 

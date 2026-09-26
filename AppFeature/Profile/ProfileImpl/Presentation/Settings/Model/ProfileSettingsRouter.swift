@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftUI
+import MessageUI
 import AppFoundation
 import AppUIKit
 import Profile
@@ -29,6 +30,8 @@ protocol ProfileSettingsRouterProtocol {
 final class ProfileSettingsRouter: ProfileSettingsRouterProtocol {
     weak var view: UIViewController?
     private var delegate: ProfileDelegate
+    /// Retained here — `MFMailComposeViewController.mailComposeDelegate` is weak.
+    private let mailComposer = SupportMailComposer()
     
     init(
         view: UIViewController? = nil,
@@ -100,8 +103,7 @@ final class ProfileSettingsRouter: ProfileSettingsRouterProtocol {
     @MainActor
     private func presentHelpCenter() {
         let helpCenter = HelpCenterView(
-            onEmailTap: { [weak self] in self?.openSupportEmail() },
-            onCopyTap: { [weak self] in self?.copySupportEmail() }
+            onEmailTap: { [weak self] in self?.openSupportEmail() }
         )
         let host = UIHostingController(rootView: helpCenter)
         if let sheet = host.sheetPresentationController {
@@ -114,10 +116,17 @@ final class ProfileSettingsRouter: ProfileSettingsRouterProtocol {
         view?.present(host, animated: true)
     }
 
-    /// No mail account set up (common on simulators and some phones) means
-    /// `mailto:` can't open — fall back to copying so the address isn't lost.
+    /// In-app composer when Mail has an account; otherwise hand `mailto:` to
+    /// whatever mail app is default (Gmail, Outlook…). Neither available
+    /// (common on simulators) — fall back to copying so the address isn't lost.
     @MainActor
     private func openSupportEmail() {
+        if MFMailComposeViewController.canSendMail() {
+            // Present over the Help center sheet, which is the top controller.
+            let presenter = view?.presentedViewController ?? view
+            presenter?.present(mailComposer.makeController(), animated: true)
+            return
+        }
         // `open`'s result rather than `canOpenURL`, which needs the scheme
         // whitelisted in Info.plist to answer truthfully.
         guard let url = SupportContact.emailURL else {
@@ -164,5 +173,25 @@ final class ProfileSettingsRouter: ProfileSettingsRouterProtocol {
                 }
             )
         )
+    }
+}
+
+/// Delegate for the in-app support mail composer; only dismisses it.
+private final class SupportMailComposer: NSObject, MFMailComposeViewControllerDelegate {
+    @MainActor
+    func makeController() -> MFMailComposeViewController {
+        let controller = MFMailComposeViewController()
+        controller.mailComposeDelegate = self
+        controller.setToRecipients([SupportContact.email])
+        controller.setSubject(SupportContact.emailSubject)
+        return controller
+    }
+
+    func mailComposeController(
+        _ controller: MFMailComposeViewController,
+        didFinishWith result: MFMailComposeResult,
+        error: Error?
+    ) {
+        controller.dismiss(animated: true)
     }
 }

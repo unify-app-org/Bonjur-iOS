@@ -18,6 +18,7 @@
 "hangouts_row_date" = "Дата";
 "hangouts_row_owner_contact" = "Контакт владельца";
 "hangouts_row_links" = "Ссылки";
+"hangouts_capacity_members" = "%d/%d участников";
 "hangouts_form_load_fail" = "Не удалось загрузить форму";
 "hangouts_categories_load_fail" = "Не удалось загрузить категории";
 "hangouts_created" = "Тусовка успешно создана";

@@ -106,8 +106,9 @@ struct CommunityDetailView: View {
                 stretchableHeader
                 logoView
                 bottomView
-                clubsPagingFooter
-                clubsPagingTrigger
+                // TODO: Clubs section temporarily hidden.
+                // clubsPagingFooter
+                // clubsPagingTrigger
             }
         }
         .coordinateSpace(name: "scroll")
@@ -118,45 +119,46 @@ struct CommunityDetailView: View {
         }
     }
 
-    /// Spinner slot under the Clubs tab.
-    ///
-    /// The slot keeps its height for the whole tab instead of appearing with
-    /// `clubsHasMore` and vanishing on the last page — inserting and removing it
-    /// resized the scroll content mid-drag, which read as the same jump as the
-    /// animated tab height.
-    @ViewBuilder
-    private var clubsPagingFooter: some View {
-        if store.state.selectedSegment == .clubs {
-            ProgressView()
-                .frame(maxWidth: .infinity)
-                .frame(height: Self.pagingFooterHeight)
-                .opacity(store.state.clubsHasMore ? 1 : 0)
-        }
-    }
-
-    /// Reserved height for `clubsPagingFooter`, spinner shown or not.
-    private static let pagingFooterHeight: CGFloat = 36
-
-    /// Bottom-of-content marker for the Clubs tab.
-    ///
-    /// The tabs sit in a height-fitted `TabView`, so every club card is laid out as
-    /// soon as the screen appears — a lazy sentinel or a last-row `onAppear` would fire
-    /// on entry and pull every page at once. Scroll position is the only honest "reached
-    /// the end" signal; the view model drops repeat calls while a page is in flight.
-    private var clubsPagingTrigger: some View {
-        Color.clear
-            .frame(height: 1)
-            .onGeometryChange(for: CGFloat.self) {
-                $0.frame(in: .named("scroll")).minY
-            } action: { minY in
-                guard store.state.selectedSegment == .clubs,
-                      viewportHeight > 0,
-                      minY <= viewportHeight + Self.paginationLeadDistance else {
-                    return
-                }
-                store.send(.loadMoreClubs)
-            }
-    }
+    // TODO: Clubs section temporarily hidden — restore with `SegmentTypes.clubs`.
+    // /// Spinner slot under the Clubs tab.
+    // ///
+    // /// The slot keeps its height for the whole tab instead of appearing with
+    // /// `clubsHasMore` and vanishing on the last page — inserting and removing it
+    // /// resized the scroll content mid-drag, which read as the same jump as the
+    // /// animated tab height.
+    // @ViewBuilder
+    // private var clubsPagingFooter: some View {
+    //     if store.state.selectedSegment == .clubs {
+    //         ProgressView()
+    //             .frame(maxWidth: .infinity)
+    //             .frame(height: Self.pagingFooterHeight)
+    //             .opacity(store.state.clubsHasMore ? 1 : 0)
+    //     }
+    // }
+    //
+    // /// Reserved height for `clubsPagingFooter`, spinner shown or not.
+    // private static let pagingFooterHeight: CGFloat = 36
+    //
+    // /// Bottom-of-content marker for the Clubs tab.
+    // ///
+    // /// The tabs sit in a height-fitted `TabView`, so every club card is laid out as
+    // /// soon as the screen appears — a lazy sentinel or a last-row `onAppear` would fire
+    // /// on entry and pull every page at once. Scroll position is the only honest "reached
+    // /// the end" signal; the view model drops repeat calls while a page is in flight.
+    // private var clubsPagingTrigger: some View {
+    //     Color.clear
+    //         .frame(height: 1)
+    //         .onGeometryChange(for: CGFloat.self) {
+    //             $0.frame(in: .named("scroll")).minY
+    //         } action: { minY in
+    //             guard store.state.selectedSegment == .clubs,
+    //                   viewportHeight > 0,
+    //                   minY <= viewportHeight + Self.paginationLeadDistance else {
+    //                 return
+    //             }
+    //             store.send(.loadMoreClubs)
+    //         }
+    // }
 
     /// How far above the fold the next page starts loading.
     private static let paginationLeadDistance: CGFloat = 200
@@ -365,7 +367,8 @@ struct CommunityDetailView: View {
             )
         ) {
             tabContent(for: .about, content: infoTab)
-            tabContent(for: .clubs, content: clubsTab)
+            // TODO: Clubs section temporarily hidden.
+            // tabContent(for: .clubs, content: clubsTab)
             tabContent(for: .members, content: membersTab)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))

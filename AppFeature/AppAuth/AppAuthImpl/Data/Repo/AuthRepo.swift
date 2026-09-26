@@ -80,6 +80,9 @@ class AuthRepoImpl: AuthRepo {
         await tokenManager.saveRefreshToken(data.refreshToken)
         await tokenManager.saveUserId(data.userId)
         await tokenManager.saveUserEmail(email)
+        await MainActor.run {
+            NotificationCenter.default.post(name: .userDidLogin, object: nil)
+        }
         return data.isFirstLogin
     }
     

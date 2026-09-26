@@ -162,7 +162,7 @@ class HangoutRepoImpl: HangoutRepo {
         let membersCount = data.membersCount ?? 0
         var info: [HangoutDetails.Info] = []
 
-        appendSection(&info, title: "About".localized, rows: [
+        appendSection(&info, title: "hangouts_about_label".localized, rows: [
             row(title: nil, value: data.about)
         ])
 
@@ -170,9 +170,9 @@ class HangoutRepoImpl: HangoutRepo {
             row(title: "hangouts_row_date".localized, value: meetupDate(data.hangoutDate)),
             row(title: "hangouts_row_owner_contact".localized, value: cleaned(data.ownerContact),
                 phoneNumber: phoneNumber(data.ownerContact)),
-            row(title: "Capacity".localized, value: capacityText(members: data.membersCount, capacity: data.capacity)),
-            row(title: "Rules", value: data.rules),
-            row(title: "Location", value: data.location)
+            row(title: "hangouts_capacity_label".localized, value: capacityText(members: data.membersCount, capacity: data.capacity)),
+            row(title: "hangouts_rules_label".localized, value: data.rules),
+            row(title: "hangouts_location_label".localized, value: data.location)
         ])
 
         let linkRows = (data.links ?? []).map { link in
@@ -216,14 +216,17 @@ class HangoutRepoImpl: HangoutRepo {
 
     /// Join button for the detail screen. Hidden once accepted (by role or request
     /// status); a pending request keeps a disabled "hangouts_join_request_sent".localized button visible.
+    /// The detail endpoint reports a pending request as `role: REQUESTED` with no
+    /// `requestStatus`, so `.requested` counts as pending instead of hiding the button.
     private func mapButtonModel(
         _ data: HangoutsDTOModel.HangoutDetail
     ) -> HangoutDetails.JoinButton? {
         let role = data.role ?? .notJoined
-        guard role == .notJoined, data.requestStatus != .joined else { return nil }
-        if data.requestStatus == .pending {
+        guard data.requestStatus != .joined else { return nil }
+        if data.requestStatus == .pending || role == .requested {
             return .init(title: "hangouts_join_request_sent".localized, disabled: true)
         }
+        guard role == .notJoined else { return nil }
         let title = (data.visibility ?? .private) == .public ? "hangouts_join".localized : "hangouts_request".localized
         return .init(title: title, disabled: false)
     }
@@ -314,7 +317,7 @@ private extension HangoutRepoImpl {
 
     func capacityText(members: Int?, capacity: Int?) -> String? {
         guard let capacity, capacity > 0 else { return nil }
-        return "\(members ?? 0)/\(capacity) members"
+        return "hangouts_capacity_members".localized(with: members ?? 0, capacity)
     }
 
     /// Meetup date+time, rendered in device-local time.

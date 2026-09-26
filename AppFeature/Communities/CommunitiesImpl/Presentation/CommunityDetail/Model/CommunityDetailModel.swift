@@ -58,7 +58,8 @@ final class CommunityDetailViewState: UIFeatureState {
     
     enum SegmentTypes: String, CaseIterable, Identifiable {
         case about = "About"
-        case clubs = "Clubs"
+        // TODO: Clubs section temporarily hidden on community details.
+        // case clubs = "Clubs"
         case members = "Members"
         
         var id: Self { self }

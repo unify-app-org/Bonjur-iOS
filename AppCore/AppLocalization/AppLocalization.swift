@@ -21,8 +21,7 @@ public final class AppLocalizationImpl: AppLocalizationProtocol {
     public var currentLanguage: String {
         get {
             UserDefaults.standard.string(forKey: "AppLanguage") 
-            ?? Locale.preferredLanguages.first?.prefix(2).description 
-            ?? ""
+            ?? "az"
         }
         set {
             UserDefaults.standard.setValue(newValue, forKey: "AppLanguage")

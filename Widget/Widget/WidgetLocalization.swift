@@ -32,12 +32,10 @@ enum WidgetStrings {
     static var pendingTitle: String { localized("widget_card_pending_title") }
     static var pendingSubtitle: String { localized("widget_card_pending_subtitle") }
 
-    /// The app's chosen language, falling back to the device's when the app has not
-    /// written one yet (a build older than the mirror, or a fresh install).
+    /// The app's chosen language, falling back to the app default (Azerbaijani) when
+    /// the app has not written one yet (a build older than the mirror, or a fresh install).
     private static var languageCode: String {
-        let stored = UserCardWidgetStore.loadLanguage()
-        let code = stored ?? Locale.preferredLanguages.first.map { String($0.prefix(2)) }
-        return (code ?? "en").lowercased()
+        (UserCardWidgetStore.loadLanguage() ?? "az").lowercased()
     }
 
     /// Resolved per call, never cached: the timeline is rebuilt on a language switch

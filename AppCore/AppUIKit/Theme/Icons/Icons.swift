@@ -18,6 +18,12 @@ public extension UIImage {
         
         public static let bigPeopleGroups = UIImage(resource: .bigPeopleGroups)
         
+        public static let onboardingFindPeople = UIImage(resource: .onboardingFindPeople)
+        
+        public static let onboardingClubsEvents = UIImage(resource: .onboardingClubsEvents)
+        
+        public static let onboardingHangouts = UIImage(resource: .onboardingHangouts)
+        
         public static let arrowLeft01 = UIImage(resource: .arrowLeft01)
         
         public static let notSelectedCheckBox = UIImage(resource: .notSelectedCheckBox)

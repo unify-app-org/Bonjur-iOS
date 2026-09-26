@@ -54,10 +54,10 @@
 /* Onboarding slides */
 "auth_onboarding_1_title" = "Найди \nсвоих людей";
 "auth_onboarding_1_subtitle" = "Присоединяйся к университетскому сообществу и знакомься с единомышленниками.";
-"auth_onboarding_2_title" = "Общайся \nпо-своему";
-"auth_onboarding_2_subtitle" = "Отправляй сообщения и делись идеями мгновенно — через любимые приложения.";
-"auth_onboarding_3_title" = "Настрой \nпод себя";
-"auth_onboarding_3_subtitle" = "Настрой внешний вид приложения и общайся так, как удобно тебе.";
+"auth_onboarding_2_title" = "Клубы \nи события";
+"auth_onboarding_2_subtitle" = "Находи клубы по интересам и не пропускай ничего, что происходит в кампусе.";
+"auth_onboarding_3_title" = "Начни \nтусовку";
+"auth_onboarding_3_subtitle" = "Кофе, матч или совместная учёба — создай тусовку и позови кого угодно. Клуб не нужен.";
 
 /* Welcome */
 "auth_welcome_title" = "Добро пожаловать";

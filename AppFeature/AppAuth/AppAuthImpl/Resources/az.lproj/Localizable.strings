@@ -54,10 +54,10 @@
 /* Onboarding slides */
 "auth_onboarding_1_title" = "Öz \ninsanlarını tap";
 "auth_onboarding_1_subtitle" = "Universitet icmana qoşul və həmfikir dostlarla əlaqə qurmağa başla.";
-"auth_onboarding_2_title" = "Öz \ntərzində yaz";
-"auth_onboarding_2_subtitle" = "Sevimli tətbiqlərin vasitəsilə dərhal mesaj göndər və fikirlərini paylaş.";
-"auth_onboarding_3_title" = "Özünə \nuyğunlaşdır";
-"auth_onboarding_3_subtitle" = "Tətbiqin görünüşünü fərdiləşdir və söhbətlərdən öz tərzində zövq al.";
+"auth_onboarding_2_title" = "Klublar və \ntədbirlər";
+"auth_onboarding_2_subtitle" = "Maraqlarına uyğun klubları kəşf et və kampusda baş verənləri qaçırma.";
+"auth_onboarding_3_title" = "Görüş \nbaşlat";
+"auth_onboarding_3_subtitle" = "Qəhvə, oyun və ya birgə dərs — görüş yarat və istədiyini dəvət et. Klub lazım deyil.";
 
 /* Welcome */
 "auth_welcome_title" = "Xoş gəlmisiniz";

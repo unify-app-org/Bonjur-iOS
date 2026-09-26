@@ -51,17 +51,17 @@ final class AuthUsecasesImpl: AuthUsecases {
             .init(
                 title: "auth_onboarding_1_title".localized,
                 subtitle: "auth_onboarding_1_subtitle".localized,
-                image: UIImage.Icons.bigGraduationHat
+                image: UIImage.Icons.onboardingFindPeople
             ),
             .init(
                 title: "auth_onboarding_2_title".localized,
                 subtitle: "auth_onboarding_2_subtitle".localized,
-                image: UIImage.Icons.bigLamps
+                image: UIImage.Icons.onboardingClubsEvents
             ),
             .init(
                 title: "auth_onboarding_3_title".localized,
                 subtitle: "auth_onboarding_3_subtitle".localized,
-                image: UIImage.Icons.bigPeopleGroups
+                image: UIImage.Icons.onboardingHangouts
             )
         ]
     }

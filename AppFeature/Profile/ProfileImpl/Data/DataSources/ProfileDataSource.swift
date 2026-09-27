@@ -111,6 +111,13 @@ final class ProfileDataSourceImpl: NetworkService<ProfileEndPoint>, ProfileDataS
                         action: .didTapTerms
                     ),
                     .init(
+                        icon: UIImage(systemName: "lock.shield") ?? UIImage.Icons.clipboardList,
+                        title: "settings_privacy".localized,
+                        rightIcon: UIImage.Icons.chevronRight,
+                        isSwitch: false,
+                        action: .didTapPrivacy
+                    ),
+                    .init(
                         icon: UIImage.Icons.mobilePhone,
                         title: "settings_app_version".localized,
                         rightIcon: UIImage.Icons.chevronRight,

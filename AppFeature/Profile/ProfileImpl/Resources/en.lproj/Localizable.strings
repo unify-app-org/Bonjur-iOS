@@ -3,6 +3,7 @@
 "settings_notification" = "Notification";
 "settings_language" = "Language";
 "settings_help_center" = "Help center";
+"settings_privacy" = "Privacy policy";
 "settings_terms" = "Terms and conditions";
 "settings_app_version" = "App version";
 "settings_delete_account" = "Delete account";

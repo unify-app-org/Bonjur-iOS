@@ -43,6 +43,8 @@ final class ProfileSettingsViewModel: UIFeatureViewModel<ProfileSettingsFeature>
             Task {@MainActor in  router.navigate(to: .helpCenter)}
         case .didTapTerms:
             Task {@MainActor in  router.navigate(to: .termsAndConditions)}
+        case .didTapPrivacy:
+            Task {@MainActor in  router.navigate(to: .privacyPolicy)}
         case .didTapDeleteAccount:
             Task { @MainActor in
                 router.navigate(to: .deleteAccount { [weak self] in

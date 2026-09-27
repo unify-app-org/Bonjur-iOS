@@ -17,6 +17,7 @@ enum ProfileSettingsRoute {
     case language
     case helpCenter
     case termsAndConditions
+    case privacyPolicy
     case deleteAccount(onConfirm: () -> Void)
     case logout
     case finishSession
@@ -54,6 +55,12 @@ final class ProfileSettingsRouter: ProfileSettingsRouterProtocol {
             let controller = AppWebViewController(
                 url: SupportContact.termsURL,
                 title: "settings_terms".localized
+            )
+            view?.navigationController?.pushViewController(controller, animated: true)
+        case .privacyPolicy:
+            let controller = AppWebViewController(
+                url: LegalLinks.privacyURL,
+                title: "settings_privacy".localized
             )
             view?.navigationController?.pushViewController(controller, animated: true)
         case .deleteAccount(let onConfirm):

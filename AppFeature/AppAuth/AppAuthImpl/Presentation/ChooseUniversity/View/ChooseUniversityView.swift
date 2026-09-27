@@ -54,7 +54,7 @@ struct ChooseUniversityView: View {
         }
     }
     
-    /// Checkbox toggles acceptance; only the underlined title opens the document.
+    /// Checkbox toggles acceptance; only the underlined titles open the documents.
     private var termsView: some View {
         HStack(alignment: .top, spacing: 10) {
             Button {
@@ -79,21 +79,22 @@ struct ChooseUniversityView: View {
                 .foregroundStyle(Color.Palette.blackHigh)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .multilineTextAlignment(.leading)
-                .environment(\.openURL, OpenURLAction { _ in
-                    store.send(.termsTapped)
+                .environment(\.openURL, OpenURLAction { url in
+                    store.send(url == LegalLinks.privacyURL ? .privacyTapped : .termsTapped)
                     return .handled
                 })
         }
     }
 
-    /// "I have read and agree to the <Terms and Conditions>" with the title as a
-    /// link. The link target is a placeholder: `openURL` above routes it in-app.
+    /// "I have read and agree to the <Terms and Conditions> and <Privacy Policy>",
+    /// each title a link. `openURL` above routes the tap in-app instead of Safari.
     private var termsText: AttributedString {
-        let linkTitle = "auth_terms_link".localized
-        let sentence = "auth_terms_agree".localized(with: linkTitle)
-        var text = AttributedString(sentence)
-        if let range = text.range(of: linkTitle) {
-            text[range].link = LegalLinks.termsURL
+        let termsTitle = "auth_terms_link".localized
+        let privacyTitle = "auth_privacy_link".localized
+        var text = AttributedString("auth_terms_agree".localized(with: termsTitle, privacyTitle))
+        for (title, url) in [(termsTitle, LegalLinks.termsURL), (privacyTitle, LegalLinks.privacyURL)] {
+            guard let range = text.range(of: title) else { continue }
+            text[range].link = url
             text[range].foregroundColor = Color.Palette.appBlue
             text[range].underlineStyle = .single
         }

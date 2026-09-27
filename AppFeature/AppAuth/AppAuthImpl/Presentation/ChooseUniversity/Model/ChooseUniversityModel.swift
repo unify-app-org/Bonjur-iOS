@@ -57,4 +57,5 @@ enum ChooseUniversityAction: UIFeatureAction {
     case nextTapped
     case termsToggled
     case termsTapped
+    case privacyTapped
 }

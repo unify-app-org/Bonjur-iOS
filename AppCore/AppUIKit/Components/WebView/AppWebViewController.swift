@@ -2,7 +2,7 @@
 //  AppWebViewController.swift
 //  AppUIKit
 //
-//  Read-only in-app page for legal documents (Terms and conditions). Shown from
+//  Read-only in-app page for legal documents (Terms, Privacy Policy). Shown from
 //  Settings and from the sign-in terms checkbox.
 //
 
@@ -12,18 +12,19 @@ import AppLocalization
 
 /// Public legal documents. Keep in sync with Android `LegalLinks.kt`.
 public enum LegalLinks {
-    /// Google Doc (shared "anyone with the link"). `/mobilebasic` is Google's
-    /// read-only reader view — `/edit` would drop the user into the editor.
     public static let termsURL = URL(
-        string: "https://docs.google.com/document/d/15iHIcgQvaHAG80U_0mOgehCm8RQfvn68Qdgdwv8viY0/mobilebasic"
+        string: "https://sites.google.com/view/myunify-app-terms-conditions/home"
+    )!
+    public static let privacyURL = URL(
+        string: "https://sites.google.com/view/myunify-app-privacy-policy/home"
     )!
 }
 
 public final class AppWebViewController: UIViewController {
 
-    /// Google's reader view ships its own title bar (with a back arrow that
-    /// goes nowhere inside the app) and an "open in the Docs app" banner.
-    /// Our navigation bar already covers both, so they are hidden.
+    /// Google Docs' reader view ships its own title bar and an "open in the Docs
+    /// app" banner; this hides them. A no-op on the Google Sites pages in use now,
+    /// kept so a Docs link still renders cleanly.
     private static let hideGoogleChromeScript = """
     var style = document.createElement('style');
     style.textContent = '#docs-ml-header-id, .docs-ml-promotion { display: none !important; }';

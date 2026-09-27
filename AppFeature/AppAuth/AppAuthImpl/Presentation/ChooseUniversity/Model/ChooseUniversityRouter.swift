@@ -12,6 +12,7 @@ import AppFoundation
 enum ChooseUniversityRoute {
     case signIn(SignInInputData)
     case terms
+    case privacy
 }
 
 protocol ChooseUniversityRouterProtocol {
@@ -33,6 +34,12 @@ final class ChooseUniversityRouter: ChooseUniversityRouterProtocol {
             let controller = AppWebViewController(
                 url: LegalLinks.termsURL,
                 title: "auth_terms_link".localized
+            )
+            view?.navigationController?.pushViewController(controller, animated: true)
+        case .privacy:
+            let controller = AppWebViewController(
+                url: LegalLinks.privacyURL,
+                title: "auth_privacy_title".localized
             )
             view?.navigationController?.pushViewController(controller, animated: true)
         }

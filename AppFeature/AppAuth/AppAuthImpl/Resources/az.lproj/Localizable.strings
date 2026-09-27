@@ -67,5 +67,7 @@
 "auth_gender_female" = "Qadın";
 "auth_gender_male" = "Kişi";
 
-"auth_terms_agree" = "%@ ilə tanış oldum və razıyam";
+"auth_terms_agree" = "%1$@ və %2$@ ilə tanış oldum və razıyam";
+"auth_privacy_link" = "Məxfilik siyasəti";
+"auth_privacy_title" = "Məxfilik siyasəti";
 "auth_terms_link" = "Şərtlər və qaydalar";

@@ -62,6 +62,7 @@ enum ProfileSettingsAction: UIFeatureAction {
     case didTapLanguage
     case didTapHelpCenter
     case didTapTerms
+    case didTapPrivacy
     case didTapDeleteAccount
     case didTapLogOut
     case didToggleNotification(Bool)

@@ -67,5 +67,7 @@
 "auth_gender_female" = "Женский";
 "auth_gender_male" = "Мужской";
 
-"auth_terms_agree" = "Я прочитал(а) и принимаю %@";
+"auth_terms_agree" = "Я прочитал(а) и принимаю %1$@ и %2$@";
+"auth_privacy_link" = "Политику конфиденциальности";
+"auth_privacy_title" = "Политика конфиденциальности";
 "auth_terms_link" = "Условия и положения";

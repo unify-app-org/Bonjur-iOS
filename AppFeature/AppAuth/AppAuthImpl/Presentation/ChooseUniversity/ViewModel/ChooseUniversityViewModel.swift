@@ -44,6 +44,10 @@ final class ChooseUniversityViewModel: UIFeatureViewModel<ChooseUniversityFeatur
             Task {
                 await router.navigate(to: .terms)
             }
+        case .privacyTapped:
+            Task {
+                await router.navigate(to: .privacy)
+            }
         }
     }
     

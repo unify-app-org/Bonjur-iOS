@@ -49,7 +49,9 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
                 await router.navigate(to: .backTapped)
             }
         case .editTapped:
-            guard let prefillData = state.uiModel?.editPrefillData else {
+            // Organizers only — the backend's event update has no permission check.
+            guard [.president, .visePresident, .eventCreator].contains(state.uiModel?.userActivityType),
+                  let prefillData = state.uiModel?.editPrefillData else {
                 return
             }
             Task {
@@ -298,9 +300,12 @@ final class EventDetailsViewModel: UIFeatureViewModel<EventDetailsFeature> {
                 activity: .events,
                 currentUserId: KeychainImpl().getString(key: .userId),
                 onAssignRole: { _, _ in false },
-                onReport: { _, _ in
-                    await MainActor.run { AppSnackBar.show(title: "events_report_submitted".localized, style: .success) }
-                    return true
+                onReport: { userId, reason in
+                    await ReportSubmitter.submit(
+                        .user(id: userId),
+                        reason: reason,
+                        successTitle: "events_report_submitted".localized
+                    )
                 }
             )
         )

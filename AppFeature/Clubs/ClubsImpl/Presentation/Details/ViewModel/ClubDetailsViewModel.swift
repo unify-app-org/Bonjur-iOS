@@ -276,9 +276,12 @@ final class ClubDetailsViewModel: UIFeatureViewModel<ClubDetailsFeature> {
                         return false
                     }
                 },
-                onReport: { _, _ in
-                    await MainActor.run { AppSnackBar.show(title: "clubs_report_submitted".localized, style: .success) }
-                    return true
+                onReport: { userId, reason in
+                    await ReportSubmitter.submit(
+                        .user(id: userId),
+                        reason: reason,
+                        successTitle: "clubs_report_submitted".localized
+                    )
                 }
             )
         )

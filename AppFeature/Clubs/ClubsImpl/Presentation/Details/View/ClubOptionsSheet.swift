@@ -24,7 +24,7 @@ struct ClubOptionsSheetInput {
     let viewerRole: AppPresentationModel.UserActivityRole
     /// Dismisses the sheet then kicks off the exit flow in the view model.
     let onExit: () -> Void
-    /// Stub until the report API ships. Returns `true` on "success".
+    /// Submits the report; the sheet closes only on `true`.
     let onReport: (AppPresentationModel.ActivityReportReason) async -> Bool
 }
 

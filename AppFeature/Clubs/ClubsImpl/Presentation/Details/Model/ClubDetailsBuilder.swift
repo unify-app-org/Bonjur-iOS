@@ -32,7 +32,7 @@ struct ClubDetailsBuilder {
         let controller = ClubDetailsHostController(
             viewModel: viewModel
         ) { store in
-            ClubDetailsView(store: store)
+            ClubDetailsView(store: store, clubId: inputData.clubId)
         }
         
         router.view = controller

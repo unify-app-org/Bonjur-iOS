@@ -221,9 +221,12 @@ final class HangoutDetailsViewModel: UIFeatureViewModel<HangoutDetailsFeature> {
                 activity: .hangOuts,
                 currentUserId: KeychainImpl().getString(key: .userId),
                 onAssignRole: { _, _ in false },
-                onReport: { _, _ in
-                    await MainActor.run { AppSnackBar.show(title: "hangouts_report_submitted".localized, style: .success) }
-                    return true
+                onReport: { userId, reason in
+                    await ReportSubmitter.submit(
+                        .user(id: userId),
+                        reason: reason,
+                        successTitle: "hangouts_report_submitted".localized
+                    )
                 }
             )
         )

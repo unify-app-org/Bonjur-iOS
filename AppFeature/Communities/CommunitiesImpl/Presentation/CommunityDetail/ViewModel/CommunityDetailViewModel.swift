@@ -159,9 +159,12 @@ final class CommunityDetailViewModel: UIFeatureViewModel<CommunityDetailFeature>
                         return false
                     }
                 },
-                onReport: { _, _ in
-                    await MainActor.run { AppSnackBar.show(title: "comm_report_submitted".localized, style: .success) }
-                    return true
+                onReport: { userId, reason in
+                    await ReportSubmitter.submit(
+                        .user(id: userId),
+                        reason: reason,
+                        successTitle: "comm_report_submitted".localized
+                    )
                 }
             )
         )

@@ -26,12 +26,14 @@ struct EventDetailsView: View {
     @State private var optionsMember: CommunitiesMemberModuleModel.MemberCellModel?
     @State private var optionsToken: EventOptionsToken?
 
+    private let eventId: String
     private let clubsModule: ClubsModule
     private let communitiesModule: CommunitiesModule
     private let keychain: KeychainProtocol
 
     init(
         store: StoreOf<EventDetailsFeature>,
+        eventId: String,
         clubsModule: ClubsModule = resolve(),
         communitiesModule: CommunitiesModule = resolve(),
         keychain: KeychainProtocol = KeychainImpl()
@@ -40,6 +42,7 @@ struct EventDetailsView: View {
         self.communitiesModule = communitiesModule
         self.keychain = keychain
         self.store = store
+        self.eventId = eventId
     }
     
     var body: some View {
@@ -89,13 +92,16 @@ struct EventDetailsView: View {
                         optionsToken = EventOptionsToken()
                     }
             }
-            ToolbarItem(placement: .topBarTrailing) {
-                Image(uiImage: UIImage.Icons.penLine)
-                    .toolbarItemBackground(
-                        isScrolled: isScrolled
-                    ) {
-                        store.send(.editTapped)
-                    }
+            // Edit is organizer-only, like the club/hangout/community pencil.
+            if isOrganizer {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Image(uiImage: UIImage.Icons.penLine)
+                        .toolbarItemBackground(
+                            isScrolled: isScrolled
+                        ) {
+                            store.send(.editTapped)
+                        }
+                }
             }
         }
         .enableSwipeBack()
@@ -202,8 +208,9 @@ struct EventDetailsView: View {
         store.state.uiModel?.userActivityType ?? .notJoined
     }
 
-    /// Members (and organizers) can see attachments; outsiders cannot.
-    private var isMember: Bool { viewerRole != .notJoined }
+    /// Members (and organizers) can see attachments; outsiders and pending
+    /// requesters cannot (Android maps `REQUESTED` to not-joined too).
+    private var isMember: Bool { viewerRole != .notJoined && viewerRole != .requested }
 
     /// Only organizers (president / vice president / event creator) may add docs
     /// or set reminders.
@@ -230,7 +237,10 @@ struct EventDetailsView: View {
                     AppEmptyView(
                         model: .init(
                             icon: nil,
-                            text: "events_attachments_empty".localized,
+                            // The upload-limit hint only makes sense to someone who can upload.
+                            text: isOrganizer
+                                ? "events_attachments_empty".localized
+                                : "events_attachments_empty_viewer".localized,
                             // Only organizers can add documents.
                             buttonTitle: isOrganizer ? "events_add_plus".localized : nil
                         )
@@ -509,11 +519,12 @@ struct EventDetailsView: View {
             input: .init(
                 viewerRole: store.state.uiModel?.userActivityType ?? .notJoined,
                 onExit: { store.send(.exitTapped) },
-                onReport: { _ in
-                    await MainActor.run {
-                        AppSnackBar.show(title: "events_report_submitted".localized, style: .success)
-                    }
-                    return true
+                onReport: { reason in
+                    await ReportSubmitter.submit(
+                        .event(id: eventId),
+                        reason: reason,
+                        successTitle: "events_report_submitted".localized
+                    )
                 }
             )
         )
@@ -531,11 +542,12 @@ struct EventDetailsView: View {
             showChangeRole: false,
             showReport: AppPresentationModel.MemberOptionsPolicy.canReport(isSelf: isSelf),
             onAssignRole: { _ in false },
-            onReport: { _ in
-                await MainActor.run {
-                    AppSnackBar.show(title: "events_report_submitted".localized, style: .success)
-                }
-                return true
+            onReport: { reason in
+                await ReportSubmitter.submit(
+                    .user(id: member.id),
+                    reason: reason,
+                    successTitle: "events_report_submitted".localized
+                )
             }
         )
 

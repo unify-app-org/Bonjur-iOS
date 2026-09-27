@@ -12,6 +12,7 @@
 "events_attachments" = "Attachments";
 "events_attachment_hint" = "You can upload files up to 15 MB total for this event.";
 "events_attachments_empty" = "No attachments yet. You can upload files up to 15 MB total for this event.";
+"events_attachments_empty_viewer" = "No attachments yet.";
 "events_category_label" = "Category";
 "events_add_category" = "Add category";
 "events_add_link" = "Add link";

@@ -564,11 +564,12 @@ struct CommunityDetailView: View {
                     }
                     return true
                 },
-                onReport: { _ in
-                    await MainActor.run {
-                        AppSnackBar.show(title: "comm_report_submitted".localized, style: .success)
-                    }
-                    return true
+                onReport: { reason in
+                    await ReportSubmitter.submit(
+                        .user(id: member.id),
+                        reason: reason,
+                        successTitle: "comm_report_submitted".localized
+                    )
                 }
             )
         )

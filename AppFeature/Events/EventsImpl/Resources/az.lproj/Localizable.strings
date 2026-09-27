@@ -12,6 +12,7 @@
 "events_attachments" = "Əlavələr";
 "events_attachment_hint" = "Bu tədbir üçün cəmi 15 MB-a qədər fayl yükləyə bilərsiniz.";
 "events_attachments_empty" = "Hələ əlavə yoxdur. Bu tədbir üçün cəmi 15 MB-a qədər fayl yükləyə bilərsiniz.";
+"events_attachments_empty_viewer" = "Hələ əlavə yoxdur.";
 "events_category_label" = "Kateqoriya";
 "events_add_category" = "Kateqoriya əlavə et";
 "events_add_link" = "Link əlavə et";

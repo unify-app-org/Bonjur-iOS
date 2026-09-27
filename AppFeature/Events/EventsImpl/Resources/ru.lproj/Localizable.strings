@@ -12,6 +12,7 @@
 "events_attachments" = "Вложения";
 "events_attachment_hint" = "Можно загрузить файлы общим объёмом до 15 МБ.";
 "events_attachments_empty" = "Пока нет вложений. Можно загрузить до 15 МБ.";
+"events_attachments_empty_viewer" = "Пока нет вложений.";
 "events_category_label" = "Категория";
 "events_add_category" = "Добавить категорию";
 "events_add_link" = "Добавить ссылку";

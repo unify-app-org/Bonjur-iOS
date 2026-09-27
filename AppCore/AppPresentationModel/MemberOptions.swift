@@ -19,9 +19,8 @@ public extension AppPresentationModel {
 
     // MARK: - Report Reason
 
-    /// Hardcoded report reasons backing the "Report user" sheet.
-    /// The report API is not built yet; reasons live here until the backend
-    /// provides a source of truth.
+    /// Hardcoded report reasons backing the "Report user" sheet. `rawValue` is
+    /// sent as `request.reason` to POST api/us/v1/users/reports (reportType USER).
     enum ReportReason: String, Codable, Hashable, CaseIterable, Identifiable {
         case fakeProfile = "FAKE_PROFILE"
         case inappropriateProfilePicture = "INAPPROPRIATE_PROFILE_PICTURE"
@@ -51,8 +50,8 @@ public extension AppPresentationModel {
     // MARK: - Activity Report Reason
 
     /// Report reasons for an activity itself (club / event / hangout), as opposed
-    /// to reporting a member. The report API is not built yet; submitting is a
-    /// no-op stub at the call site until the backend provides an endpoint.
+    /// to reporting a member. `rawValue` is sent as `request.reason` to
+    /// POST api/us/v1/users/reports (reportType CLUB / EVENT / HANGOUT).
     enum ActivityReportReason: String, Codable, Hashable, CaseIterable, Identifiable {
         case inappropriateContent = "INAPPROPRIATE_CONTENT"
         case spam = "SPAM"

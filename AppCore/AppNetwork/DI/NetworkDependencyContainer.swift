@@ -43,6 +43,8 @@ enum NetworkDependencyContainer {
         register(isSingleton: true) { NetworkLoggerImpl() as NetworkLogger }
         register(isSingleton: true) { TokenManagerImpl() as TokenManager }
         register(isSingleton: true) { APIClient() as APIClientProtocol }
+        // Shared container: feature modules resolve this for every report sheet.
+        register(isSingleton: true) { ReportServiceImpl() as ReportService }
     }
     
     // MARK: - Dependencies Managing

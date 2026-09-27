@@ -27,12 +27,14 @@ struct ClubDetailsView: View {
     @State private var optionsToken: ClubOptionsToken?
     @State private var viewportHeight: CGFloat = 0
 
+    private let clubId: Int
     private let eventsModule: EventsModule
     private let communitiesModule: CommunitiesModule
     private let keychain: KeychainProtocol
 
     init(
         store: StoreOf<ClubDetailsFeature>,
+        clubId: Int,
         eventsModule: EventsModule = resolve(),
         communitiesModule: CommunitiesModule = resolve(),
         keychain: KeychainProtocol = KeychainImpl()
@@ -41,6 +43,7 @@ struct ClubDetailsView: View {
         self.communitiesModule = communitiesModule
         self.keychain = keychain
         self.store = store
+        self.clubId = clubId
     }
     
     var body: some View {
@@ -629,11 +632,12 @@ struct ClubDetailsView: View {
             input: .init(
                 viewerRole: store.state.uiModel?.userActivityType ?? .notJoined,
                 onExit: { store.send(.exitTapped) },
-                onReport: { _ in
-                    await MainActor.run {
-                        AppSnackBar.show(title: "clubs_report_submitted".localized, style: .success)
-                    }
-                    return true
+                onReport: { reason in
+                    await ReportSubmitter.submit(
+                        .club(id: clubId),
+                        reason: reason,
+                        successTitle: "clubs_report_submitted".localized
+                    )
                 }
             )
         )
@@ -660,11 +664,12 @@ struct ClubDetailsView: View {
                 }
                 return true
             },
-            onReport: { _ in
-                await MainActor.run {
-                    AppSnackBar.show(title: "clubs_report_submitted".localized, style: .success)
-                }
-                return true
+            onReport: { reason in
+                await ReportSubmitter.submit(
+                    .user(id: member.id),
+                    reason: reason,
+                    successTitle: "clubs_report_submitted".localized
+                )
             }
         )
 

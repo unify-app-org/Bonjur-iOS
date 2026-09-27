@@ -30,7 +30,7 @@ struct HangoutDetailsBuilder {
         let controller = HangoutDetailsHostController(
             viewModel: viewModel
         ) { store in
-            HangoutDetailsView(store: store)
+            HangoutDetailsView(store: store, hangoutId: inputData.hangoutId)
         }
         
         router.view = controller

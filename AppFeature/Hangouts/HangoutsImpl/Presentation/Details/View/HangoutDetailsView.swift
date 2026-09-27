@@ -24,17 +24,20 @@ struct HangoutDetailsView: View {
     @State private var optionsMember: CommunitiesMemberModuleModel.MemberCellModel?
     @State private var optionsToken: HangoutOptionsToken?
 
+    private let hangoutId: String
     private let communitiesModule: CommunitiesModule
     private let keychain: KeychainProtocol
 
     init(
         store: StoreOf<HangoutDetailsFeature>,
+        hangoutId: String,
         communitiesModule: CommunitiesModule = resolve(),
         keychain: KeychainProtocol = KeychainImpl()
     ) {
         self.communitiesModule = communitiesModule
         self.keychain = keychain
         self.store = store
+        self.hangoutId = hangoutId
     }
     
     var body: some View {
@@ -404,11 +407,12 @@ struct HangoutDetailsView: View {
             input: .init(
                 viewerRole: store.state.uiModel?.userActivityType ?? .notJoined,
                 onExit: { store.send(.exitTapped) },
-                onReport: { _ in
-                    await MainActor.run {
-                        AppSnackBar.show(title: "hangouts_report_submitted".localized, style: .success)
-                    }
-                    return true
+                onReport: { reason in
+                    await ReportSubmitter.submit(
+                        .hangout(id: hangoutId),
+                        reason: reason,
+                        successTitle: "hangouts_report_submitted".localized
+                    )
                 }
             )
         )
@@ -426,11 +430,12 @@ struct HangoutDetailsView: View {
             showChangeRole: false,
             showReport: AppPresentationModel.MemberOptionsPolicy.canReport(isSelf: isSelf),
             onAssignRole: { _ in false },
-            onReport: { _ in
-                await MainActor.run {
-                    AppSnackBar.show(title: "hangouts_report_submitted".localized, style: .success)
-                }
-                return true
+            onReport: { reason in
+                await ReportSubmitter.submit(
+                    .user(id: member.id),
+                    reason: reason,
+                    successTitle: "hangouts_report_submitted".localized
+                )
             }
         )
 

@@ -32,7 +32,7 @@ struct EventDetailsBuilder {
         let controller = EventDetailsHostController(
             viewModel: viewModel
         ) { store in
-            EventDetailsView(store: store)
+            EventDetailsView(store: store, eventId: inputData.eventId)
         }
         
         router.view = controller

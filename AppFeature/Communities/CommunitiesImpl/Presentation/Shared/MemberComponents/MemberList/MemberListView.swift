@@ -105,46 +105,68 @@ struct MemberListView: View {
         return (totalCount ?? loadedCount) > previewLimit
     }
 
+    /// Lazy only where something scrolls this list and needs rows built on demand:
+    /// its own `ScrollView`, or a paging host that relies on the end sentinel.
+    ///
+    /// The embedded preview (members tab of community/club/hangout/event detail) sits
+    /// in a `TabView` whose height is read back from this content. A `LazyVStack`
+    /// there reports an estimated height, the tab resizes to it, which realises a
+    /// different set of rows and a new estimate — an endless layout pass that froze
+    /// the main thread on the Members tab until the system killed the app.
+    private var usesLazyStack: Bool {
+        showsScrollView || onReachEnd != nil
+    }
+
+    @ViewBuilder
     private var content: some View {
-        LazyVStack(spacing: 20) {
-            ForEach(visibleSections) { section in
-                VStack(alignment: .leading, spacing: 12) {
-                    MemberSectionHeaderView(
-                        title: section.title,
-                        memberCountText: section.memberCountText,
-                        showsSelectGroup: section.showsSelectGroup,
-                        isGroupSelected: section.isGroupSelected,
-                        onSelectGroupTap: { onSelectGroupTap(section) }
-                    )
-
-                    VStack(spacing: 10) {
-                        ForEach(section.rows) { row in
-                            MemberCellView(
-                                data: row,
-                                onTap: { onRowTap(row) },
-                                onAccessoryTap: { onAccessoryTap(row) }
-                            )
-                        }
-                    }
-                }
-            }
-
-            if showsSeeAll {
-                seeAllButton
-            }
-
-            if let onReachEnd {
-                // Direct child of the LazyVStack, so it is only built once the list
-                // has been scrolled to the end — that is what makes paging follow the
-                // scroll instead of firing once on entry.
-                Color.clear
-                    .frame(height: 1)
-                    .id(reachEndToken)
-                    .onAppear { onReachEnd() }
+        Group {
+            if usesLazyStack {
+                LazyVStack(spacing: 20) { rows }
+            } else {
+                VStack(spacing: 20) { rows }
             }
         }
         .padding(.vertical,16)
         .padding(.horizontal,horizontalPadding ? 16:0)
+    }
+
+    @ViewBuilder
+    private var rows: some View {
+        ForEach(visibleSections) { section in
+            VStack(alignment: .leading, spacing: 12) {
+                MemberSectionHeaderView(
+                    title: section.title,
+                    memberCountText: section.memberCountText,
+                    showsSelectGroup: section.showsSelectGroup,
+                    isGroupSelected: section.isGroupSelected,
+                    onSelectGroupTap: { onSelectGroupTap(section) }
+                )
+
+                VStack(spacing: 10) {
+                    ForEach(section.rows) { row in
+                        MemberCellView(
+                            data: row,
+                            onTap: { onRowTap(row) },
+                            onAccessoryTap: { onAccessoryTap(row) }
+                        )
+                    }
+                }
+            }
+        }
+
+        if showsSeeAll {
+            seeAllButton
+        }
+
+        if let onReachEnd {
+            // Direct child of the LazyVStack, so it is only built once the list
+            // has been scrolled to the end — that is what makes paging follow the
+            // scroll instead of firing once on entry.
+            Color.clear
+                .frame(height: 1)
+                .id(reachEndToken)
+                .onAppear { onReachEnd() }
+        }
     }
 
     private var seeAllButton: some View {

@@ -386,7 +386,7 @@ struct EventDetailsView: View {
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .frame(height: tabHeights[store.state.selectedSegment] ?? 300)
-        .animation(.spring(response: 0.1, dampingFraction: 1), value: tabHeights[store.state.selectedSegment])
+        .animation(.spring(response: 0.1, dampingFraction: 1), value: store.state.selectedSegment)
         .onPreferenceChange(TabHeightPreferenceKey.self) { heights in
             tabHeights.merge(heights) { _, new in new }
         }

@@ -66,3 +66,5 @@
 /* Category chips field (shared defaults) */
 "common_category" = "Kateqoriya";
 "common_add_category" = "Kateqoriya əlavə et";
+
+"web_load_error" = "Səhifə yüklənmədi. İnternet bağlantınızı yoxlayıb yenidən cəhd edin.";

@@ -16,6 +16,7 @@ struct ChooseUniversityView: View {
         VStack(spacing: 28) {
             topView
             listView
+            termsView
             AppButton(
                 title: "auth_next".localized,
                 model: .init(
@@ -53,6 +54,52 @@ struct ChooseUniversityView: View {
         }
     }
     
+    /// Checkbox toggles acceptance; only the underlined title opens the document.
+    private var termsView: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Button {
+                store.send(.termsToggled)
+            } label: {
+                Image(
+                    uiImage: store.state.termsAccepted
+                        ? .Icons.selectedCheckBox
+                        : .Icons.notSelectedCheckBox
+                )
+                .resizable()
+                .scaledToFit()
+                .frame(width: 22, height: 22)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("auth_terms_link".localized)
+            .accessibilityAddTraits(store.state.termsAccepted ? .isSelected : [])
+
+            Text(termsText)
+                .font(Font.Typography.TextMd.regular)
+                .foregroundStyle(Color.Palette.blackHigh)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .multilineTextAlignment(.leading)
+                .environment(\.openURL, OpenURLAction { _ in
+                    store.send(.termsTapped)
+                    return .handled
+                })
+        }
+    }
+
+    /// "I have read and agree to the <Terms and Conditions>" with the title as a
+    /// link. The link target is a placeholder: `openURL` above routes it in-app.
+    private var termsText: AttributedString {
+        let linkTitle = "auth_terms_link".localized
+        let sentence = "auth_terms_agree".localized(with: linkTitle)
+        var text = AttributedString(sentence)
+        if let range = text.range(of: linkTitle) {
+            text[range].link = LegalLinks.termsURL
+            text[range].foregroundColor = Color.Palette.appBlue
+            text[range].underlineStyle = .single
+        }
+        return text
+    }
+
     @ViewBuilder
     private var listView: some View {
         if store.state.uiModel.isEmpty {

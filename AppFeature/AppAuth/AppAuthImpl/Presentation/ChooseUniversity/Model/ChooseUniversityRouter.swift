@@ -6,9 +6,12 @@
 //
 
 import UIKit
+import AppUIKit
+import AppFoundation
 
 enum ChooseUniversityRoute {
     case signIn(SignInInputData)
+    case terms
 }
 
 protocol ChooseUniversityRouterProtocol {
@@ -26,6 +29,12 @@ final class ChooseUniversityRouter: ChooseUniversityRouterProtocol {
         case .signIn(let inputData):
             guard let view else { return }
             signInFlowCoordinator.start(from: view, with: inputData)
+        case .terms:
+            let controller = AppWebViewController(
+                url: LegalLinks.termsURL,
+                title: "auth_terms_link".localized
+            )
+            view?.navigationController?.pushViewController(controller, animated: true)
         }
     }
 }

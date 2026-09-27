@@ -66,3 +66,5 @@
 /* Category chips field (shared defaults) */
 "common_category" = "Category";
 "common_add_category" = "Add category";
+
+"web_load_error" = "Couldn't load the page. Check your connection and try again.";

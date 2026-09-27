@@ -23,7 +23,6 @@
 "help_center_email_label" = "Эл. почта";
 "help_center_send" = "Написать письмо";
 "help_center_email_copied" = "Почта скопирована";
-"settings_web_load_error" = "Не удалось загрузить страницу. Проверьте подключение и попробуйте снова.";
 
 
 "common_cancel" = "Отмена";

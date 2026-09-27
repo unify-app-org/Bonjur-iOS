@@ -23,7 +23,6 @@
 "help_center_email_label" = "Email";
 "help_center_send" = "Send email";
 "help_center_email_copied" = "Email copied";
-"settings_web_load_error" = "Couldn't load the page. Check your connection and try again.";
 
 
 "common_cancel" = "Cancel";

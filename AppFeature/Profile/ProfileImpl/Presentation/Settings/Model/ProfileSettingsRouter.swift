@@ -51,7 +51,7 @@ final class ProfileSettingsRouter: ProfileSettingsRouterProtocol {
         case .helpCenter:
             presentHelpCenter()
         case .termsAndConditions:
-            let controller = SettingsWebViewController(
+            let controller = AppWebViewController(
                 url: SupportContact.termsURL,
                 title: "settings_terms".localized
             )

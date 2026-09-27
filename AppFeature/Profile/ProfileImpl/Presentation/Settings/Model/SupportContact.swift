@@ -7,16 +7,14 @@
 //
 
 import Foundation
+import AppUIKit
 
 enum SupportContact {
     static let email = "unifyapp2026@gmail.com"
     static let emailSubject = "Unify support"
 
-    /// Google Doc (shared "anyone with the link"). `/mobilebasic` is Google's
-    /// read-only reader view — `/edit` would drop the user into the editor.
-    static let termsURL = URL(
-        string: "https://docs.google.com/document/d/15iHIcgQvaHAG80U_0mOgehCm8RQfvn68Qdgdwv8viY0/mobilebasic"
-    )!
+    /// Lives in AppUIKit so sign-in can show the same document.
+    static let termsURL = LegalLinks.termsURL
 
     static var emailURL: URL? {
         var components = URLComponents()

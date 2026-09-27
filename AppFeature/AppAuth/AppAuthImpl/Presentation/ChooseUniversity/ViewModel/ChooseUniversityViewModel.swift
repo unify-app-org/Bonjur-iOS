@@ -38,6 +38,12 @@ final class ChooseUniversityViewModel: UIFeatureViewModel<ChooseUniversityFeatur
             selectedCell(id)
         case .nextTapped:
             nextTapped()
+        case .termsToggled:
+            state.termsAccepted.toggle()
+        case .termsTapped:
+            Task {
+                await router.navigate(to: .terms)
+            }
         }
     }
     
@@ -71,6 +77,7 @@ final class ChooseUniversityViewModel: UIFeatureViewModel<ChooseUniversityFeatur
     }
     
     private func nextTapped() {
+        guard state.termsAccepted else { return }
         guard let selectedItem = state.uiModel.first(where: { $0.selected == true }) else {
             return
         }

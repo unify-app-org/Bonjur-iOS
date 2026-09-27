@@ -66,3 +66,6 @@
 /* Gender options */
 "auth_gender_female" = "Женский";
 "auth_gender_male" = "Мужской";
+
+"auth_terms_agree" = "Я прочитал(а) и принимаю %@";
+"auth_terms_link" = "Условия и положения";

@@ -66,3 +66,6 @@
 /* Gender options */
 "auth_gender_female" = "Female";
 "auth_gender_male" = "Male";
+
+"auth_terms_agree" = "I have read and agree to the %@";
+"auth_terms_link" = "Terms and Conditions";

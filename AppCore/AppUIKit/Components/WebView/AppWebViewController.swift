@@ -1,16 +1,25 @@
 //
-//  SettingsWebViewController.swift
-//  ProfileImpl
+//  AppWebViewController.swift
+//  AppUIKit
 //
-//  Read-only in-app page for Settings documents (Terms and conditions).
+//  Read-only in-app page for legal documents (Terms and conditions). Shown from
+//  Settings and from the sign-in terms checkbox.
 //
 
 import UIKit
 import WebKit
-import AppUIKit
-import AppFoundation
+import AppLocalization
 
-final class SettingsWebViewController: UIViewController {
+/// Public legal documents. Keep in sync with Android `LegalLinks.kt`.
+public enum LegalLinks {
+    /// Google Doc (shared "anyone with the link"). `/mobilebasic` is Google's
+    /// read-only reader view — `/edit` would drop the user into the editor.
+    public static let termsURL = URL(
+        string: "https://docs.google.com/document/d/15iHIcgQvaHAG80U_0mOgehCm8RQfvn68Qdgdwv8viY0/mobilebasic"
+    )!
+}
+
+public final class AppWebViewController: UIViewController {
 
     /// Google's reader view ships its own title bar (with a back arrow that
     /// goes nowhere inside the app) and an "open in the Docs app" banner.
@@ -46,7 +55,7 @@ final class SettingsWebViewController: UIViewController {
         return spinner
     }()
 
-    init(url: URL, title: String) {
+    public init(url: URL, title: String) {
         self.url = url
         self.pageTitle = title
         super.init(nibName: nil, bundle: nil)
@@ -58,7 +67,7 @@ final class SettingsWebViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         title = pageTitle
         view.backgroundColor = .white
@@ -78,7 +87,7 @@ final class SettingsWebViewController: UIViewController {
         webView.load(URLRequest(url: url))
     }
 
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: animated)
     }
@@ -86,9 +95,9 @@ final class SettingsWebViewController: UIViewController {
 
 // MARK: - WKNavigationDelegate
 
-extension SettingsWebViewController: WKNavigationDelegate {
+extension AppWebViewController: WKNavigationDelegate {
 
-    func webView(
+    public func webView(
         _ webView: WKWebView,
         decidePolicyFor navigationAction: WKNavigationAction,
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
@@ -104,15 +113,15 @@ extension SettingsWebViewController: WKNavigationDelegate {
         decisionHandler(.cancel)
     }
 
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         spinner.stopAnimating()
     }
 
-    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+    public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         showLoadError()
     }
 
-    func webView(
+    public func webView(
         _ webView: WKWebView,
         didFailProvisionalNavigation navigation: WKNavigation!,
         withError error: Error
@@ -124,7 +133,7 @@ extension SettingsWebViewController: WKNavigationDelegate {
         spinner.stopAnimating()
         AppSnackBar.show(
             title: "error_generic_title".localized,
-            subtitle: "settings_web_load_error".localized,
+            subtitle: "web_load_error".localized,
             style: .error
         )
     }

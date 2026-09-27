@@ -66,3 +66,5 @@
 /* Category chips field (shared defaults) */
 "common_category" = "Категория";
 "common_add_category" = "Добавить категорию";
+
+"web_load_error" = "Не удалось загрузить страницу. Проверьте подключение и попробуйте снова.";

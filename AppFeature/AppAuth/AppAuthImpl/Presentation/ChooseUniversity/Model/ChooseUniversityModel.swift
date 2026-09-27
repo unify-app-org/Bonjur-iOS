@@ -41,8 +41,11 @@ final class ChooseUniversityViewState: UIFeatureState {
     @Published var uiModel: [SelectableListItemView.Model] = []
     @Published var error: AppAlert.Config? = nil
     @Published var phase: CommunitiesPhase = .loading
+    /// App Store guideline 1.2: users must accept the terms before they reach any
+    /// user content, so sign-in (both MSAL and credentials) is gated on this.
+    @Published var termsAccepted = false
     var disabled: Bool {
-         uiModel.first(where: { $0.selected }) == nil
+         uiModel.first(where: { $0.selected }) == nil || !termsAccepted
      }
 }
 
@@ -52,4 +55,6 @@ enum ChooseUniversityAction: UIFeatureAction {
     case fetchData
     case selectedCell(Int)
     case nextTapped
+    case termsToggled
+    case termsTapped
 }
